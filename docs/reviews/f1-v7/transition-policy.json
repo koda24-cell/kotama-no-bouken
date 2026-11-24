@@ -1,0 +1,2127 @@
+{
+  "passed": true,
+  "counts": {
+    "native": 148,
+    "wall_c": 20,
+    "wall_f3": 7,
+    "wall_a": 26,
+    "wall_b": 63
+  },
+  "firstHalfNative": true,
+  "up": 0,
+  "down": 1,
+  "tiles": [
+    {
+      "tile": [
+        1,
+        1
+      ],
+      "progress": 0.3023255813953488,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        2,
+        1
+      ],
+      "progress": 0.313953488372093,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        1
+      ],
+      "progress": 0.32558139534883723,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        1
+      ],
+      "progress": 0.3372093023255814,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        1
+      ],
+      "progress": 0.3488372093023256,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        6,
+        1
+      ],
+      "progress": 0.36046511627906974,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        1
+      ],
+      "progress": 0.37209302325581395,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        1
+      ],
+      "progress": 0.38372093023255816,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        1
+      ],
+      "progress": 0.3953488372093023,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        1
+      ],
+      "progress": 0.4069767441860465,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        1
+      ],
+      "progress": 0.4186046511627907,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        12,
+        1
+      ],
+      "progress": 0.43023255813953487,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        1
+      ],
+      "progress": 0.4418604651162791,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        14,
+        1
+      ],
+      "progress": 0.45348837209302323,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        1
+      ],
+      "progress": 0.46511627906976744,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        19,
+        1
+      ],
+      "progress": 0.8888888888888888,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        20,
+        1
+      ],
+      "progress": 0.8977272727272727,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        21,
+        1
+      ],
+      "progress": 0.9069767441860465,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        22,
+        1
+      ],
+      "progress": 0.9186046511627907,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        23,
+        1
+      ],
+      "progress": 0.9302325581395349,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        25,
+        1
+      ],
+      "progress": 1,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        1,
+        2
+      ],
+      "progress": 0.29069767441860467,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        2
+      ],
+      "progress": 0.47674418604651164,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        2
+      ],
+      "progress": 0.85,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        19,
+        2
+      ],
+      "progress": 0.8804347826086957,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        21,
+        2
+      ],
+      "progress": 0.8953488372093024,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        23,
+        2
+      ],
+      "progress": 0.9418604651162791,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        25,
+        2
+      ],
+      "progress": 0.9883720930232558,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        1,
+        3
+      ],
+      "progress": 0.27906976744186046,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        3
+      ],
+      "progress": 0.21568627450980393,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        3
+      ],
+      "progress": 0.22115384615384615,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        3
+      ],
+      "progress": 0.22641509433962265,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        6,
+        3
+      ],
+      "progress": 0.23148148148148148,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        3
+      ],
+      "progress": 0.23636363636363636,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        3
+      ],
+      "progress": 0.24107142857142858,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        3
+      ],
+      "progress": 0.24561403508771928,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        3
+      ],
+      "progress": 0.25,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        3
+      ],
+      "progress": 0.2542372881355932,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        12,
+        3
+      ],
+      "progress": 0.25833333333333336,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        3
+      ],
+      "progress": 0.26229508196721313,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        3
+      ],
+      "progress": 0.4883720930232558,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        3
+      ],
+      "progress": 0.8571428571428571,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        18,
+        3
+      ],
+      "progress": 0.8645833333333334,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        19,
+        3
+      ],
+      "progress": 0.8723404255319149,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        21,
+        3
+      ],
+      "progress": 0.8837209302325582,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        23,
+        3
+      ],
+      "progress": 0.9534883720930233,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        24,
+        3
+      ],
+      "progress": 0.9651162790697675,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        25,
+        3
+      ],
+      "progress": 0.9767441860465116,
+      "wall": "wall_f3"
+    },
+    {
+      "tile": [
+        1,
+        4
+      ],
+      "progress": 0.26744186046511625,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        4
+      ],
+      "progress": 0.21,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        4
+      ],
+      "progress": 0.2661290322580645,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        4
+      ],
+      "progress": 0.5,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        21,
+        4
+      ],
+      "progress": 0.872093023255814,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        1,
+        5
+      ],
+      "progress": 0.2558139534883721,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        5
+      ],
+      "progress": 0.20408163265306123,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        5
+      ],
+      "progress": 0.30666666666666664,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        6,
+        5
+      ],
+      "progress": 0.30405405405405406,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        5
+      ],
+      "progress": 0.3013698630136986,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        5
+      ],
+      "progress": 0.2986111111111111,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        5
+      ],
+      "progress": 0.29577464788732394,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        5
+      ],
+      "progress": 0.27692307692307694,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        12,
+        5
+      ],
+      "progress": 0.2734375,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        5
+      ],
+      "progress": 0.2698412698412698,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        5
+      ],
+      "progress": 0.5116279069767442,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        16,
+        5
+      ],
+      "progress": 0.5232558139534884,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        5
+      ],
+      "progress": 0.5348837209302325,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        18,
+        5
+      ],
+      "progress": 0.5465116279069767,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        19,
+        5
+      ],
+      "progress": 0.5581395348837209,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        21,
+        5
+      ],
+      "progress": 0.8604651162790697,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        22,
+        5
+      ],
+      "progress": 0.8488372093023255,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        23,
+        5
+      ],
+      "progress": 0.8372093023255814,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        24,
+        5
+      ],
+      "progress": 0.8255813953488372,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        25,
+        5
+      ],
+      "progress": 0.813953488372093,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        1,
+        6
+      ],
+      "progress": 0.2441860465116279,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        6
+      ],
+      "progress": 0.19791666666666666,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        6
+      ],
+      "progress": 0.3092105263157895,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        6
+      ],
+      "progress": 0.29285714285714287,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        6
+      ],
+      "progress": 0.2803030303030303,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        19,
+        6
+      ],
+      "progress": 0.5697674418604651,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        21,
+        6
+      ],
+      "progress": 0.8522727272727273,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        25,
+        6
+      ],
+      "progress": 0.8023255813953488,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        1,
+        7
+      ],
+      "progress": 0.23255813953488372,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        7
+      ],
+      "progress": 0.19148936170212766,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        7
+      ],
+      "progress": 0.3116883116883117,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        7
+      ],
+      "progress": 0.29285714285714287,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        7
+      ],
+      "progress": 0.2898550724637681,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        7
+      ],
+      "progress": 0.2867647058823529,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        7
+      ],
+      "progress": 0.2835820895522388,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        14,
+        7
+      ],
+      "progress": 0.625,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        15,
+        7
+      ],
+      "progress": 0.627906976744186,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        16,
+        7
+      ],
+      "progress": 0.6162790697674418,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        17,
+        7
+      ],
+      "progress": 0.6046511627906976,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        18,
+        7
+      ],
+      "progress": 0.5930232558139535,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        19,
+        7
+      ],
+      "progress": 0.5813953488372093,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        21,
+        7
+      ],
+      "progress": 0.8444444444444444,
+      "wall": "wall_c"
+    },
+    {
+      "tile": [
+        23,
+        7
+      ],
+      "progress": 0.7674418604651163,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        24,
+        7
+      ],
+      "progress": 0.7790697674418605,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        7
+      ],
+      "progress": 0.7906976744186046,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        8
+      ],
+      "progress": 0.22093023255813954,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        8
+      ],
+      "progress": 0.18478260869565216,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        8
+      ],
+      "progress": 0.3141025641025641,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        8
+      ],
+      "progress": 0.6395348837209303,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        23,
+        8
+      ],
+      "progress": 0.7558139534883721,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        8
+      ],
+      "progress": 0.7840909090909091,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        9
+      ],
+      "progress": 0.20930232558139536,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        9
+      ],
+      "progress": 0.17777777777777778,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        9
+      ],
+      "progress": 0.31645569620253167,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        6,
+        9
+      ],
+      "progress": 0.31875,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        9
+      ],
+      "progress": 0.32098765432098764,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        9
+      ],
+      "progress": 0.3231707317073171,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        9
+      ],
+      "progress": 0.3253012048192771,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        9
+      ],
+      "progress": 0.3192771084337349,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        9
+      ],
+      "progress": 0.3132530120481928,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        12,
+        9
+      ],
+      "progress": 0.3072289156626506,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        9
+      ],
+      "progress": 0.30120481927710846,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        9
+      ],
+      "progress": 0.6511627906976745,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        16,
+        9
+      ],
+      "progress": 0.6627906976744186,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        17,
+        9
+      ],
+      "progress": 0.6744186046511628,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        18,
+        9
+      ],
+      "progress": 0.686046511627907,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        19,
+        9
+      ],
+      "progress": 0.6976744186046512,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        9
+      ],
+      "progress": 0.7093023255813954,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        9
+      ],
+      "progress": 0.7209302325581395,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        22,
+        9
+      ],
+      "progress": 0.7325581395348837,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        23,
+        9
+      ],
+      "progress": 0.7441860465116279,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        9
+      ],
+      "progress": 0.7777777777777778,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        10
+      ],
+      "progress": 0.19767441860465115,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        10
+      ],
+      "progress": 0.17045454545454544,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        10
+      ],
+      "progress": 0.29878048780487804,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        19,
+        10
+      ],
+      "progress": 0.6931818181818182,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        10
+      ],
+      "progress": 0.7045454545454546,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        10
+      ],
+      "progress": 0.7159090909090909,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        10
+      ],
+      "progress": 0.7717391304347826,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        11
+      ],
+      "progress": 0.18604651162790697,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        2,
+        11
+      ],
+      "progress": 0.1744186046511628,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        11
+      ],
+      "progress": 0.16279069767441862,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        11
+      ],
+      "progress": 0.1511627906976744,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        11
+      ],
+      "progress": 0.13953488372093023,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        11
+      ],
+      "progress": 0.14893617021276595,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        11
+      ],
+      "progress": 0.15625,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        11
+      ],
+      "progress": 0.16326530612244897,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        11
+      ],
+      "progress": 0.17,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        11
+      ],
+      "progress": 0.17647058823529413,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        11
+      ],
+      "progress": 0.2962962962962963,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        14,
+        11
+      ],
+      "progress": 0.29375,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        11
+      ],
+      "progress": 0.2911392405063291,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        11
+      ],
+      "progress": 0.6666666666666666,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        19,
+        11
+      ],
+      "progress": 0.6888888888888889,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        11
+      ],
+      "progress": 0.7,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        11
+      ],
+      "progress": 0.7111111111111111,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        11
+      ],
+      "progress": 0.7659574468085106,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        5,
+        12
+      ],
+      "progress": 0.12790697674418605,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        12
+      ],
+      "progress": 0.14130434782608695,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        12
+      ],
+      "progress": 0.18269230769230768,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        12
+      ],
+      "progress": 0.28846153846153844,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        12
+      ],
+      "progress": 0.67,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        19,
+        12
+      ],
+      "progress": 0.6847826086956522,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        12
+      ],
+      "progress": 0.6956521739130435,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        12
+      ],
+      "progress": 0.7065217391304348,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        23,
+        12
+      ],
+      "progress": 0.7403846153846154,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        12
+      ],
+      "progress": 0.7604166666666666,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        13
+      ],
+      "progress": 0.06976744186046512,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        2,
+        13
+      ],
+      "progress": 0.08139534883720931,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        13
+      ],
+      "progress": 0.09302325581395349,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        13
+      ],
+      "progress": 0.10465116279069768,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        13
+      ],
+      "progress": 0.11627906976744186,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        6,
+        13
+      ],
+      "progress": 0.125,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        13
+      ],
+      "progress": 0.13333333333333333,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        13
+      ],
+      "progress": 0.19444444444444445,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        13
+      ],
+      "progress": 0.18867924528301888,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        12,
+        13
+      ],
+      "progress": 0.19444444444444445,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        13
+      ],
+      "progress": 0.2,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        13
+      ],
+      "progress": 0.2857142857142857,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        13
+      ],
+      "progress": 0.673469387755102,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        18,
+        13
+      ],
+      "progress": 0.6770833333333334,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        19,
+        13
+      ],
+      "progress": 0.6808510638297872,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        13
+      ],
+      "progress": 0.6914893617021277,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        13
+      ],
+      "progress": 0.7021276595744681,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        23,
+        13
+      ],
+      "progress": 0.7450980392156863,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        24,
+        13
+      ],
+      "progress": 0.75,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        13
+      ],
+      "progress": 0.7551020408163265,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        14
+      ],
+      "progress": 0.05813953488372093,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        14
+      ],
+      "progress": 0.10227272727272728,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        14
+      ],
+      "progress": 0.11363636363636363,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        14
+      ],
+      "progress": 0.125,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        14
+      ],
+      "progress": 0.28289473684210525,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        14
+      ],
+      "progress": 0.67,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        18,
+        14
+      ],
+      "progress": 0.673469387755102,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        19,
+        14
+      ],
+      "progress": 0.6770833333333334,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        23,
+        14
+      ],
+      "progress": 0.7352941176470589,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        14
+      ],
+      "progress": 0.75,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        15
+      ],
+      "progress": 0.046511627906976744,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        15
+      ],
+      "progress": 0.1111111111111111,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        15
+      ],
+      "progress": 0.12222222222222222,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        15
+      ],
+      "progress": 0.13333333333333333,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        15
+      ],
+      "progress": 0.2537313432835821,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        15
+      ],
+      "progress": 0.25735294117647056,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        15
+      ],
+      "progress": 0.2608695652173913,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        15
+      ],
+      "progress": 0.2642857142857143,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        15
+      ],
+      "progress": 0.2676056338028169,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        12,
+        15
+      ],
+      "progress": 0.2708333333333333,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        15
+      ],
+      "progress": 0.273972602739726,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        14,
+        15
+      ],
+      "progress": 0.27702702702702703,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        15,
+        15
+      ],
+      "progress": 0.28,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        15
+      ],
+      "progress": 0.6666666666666666,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        18,
+        15
+      ],
+      "progress": 0.67,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        19,
+        15
+      ],
+      "progress": 0.673469387755102,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        15
+      ],
+      "progress": 0.7058823529411765,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        22,
+        15
+      ],
+      "progress": 0.7156862745098039,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        23,
+        15
+      ],
+      "progress": 0.7254901960784313,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        15
+      ],
+      "progress": 0.7450980392156863,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        16
+      ],
+      "progress": 0.03488372093023256,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        16
+      ],
+      "progress": 0.14130434782608695,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        16
+      ],
+      "progress": 0.25,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        17,
+        16
+      ],
+      "progress": 0.6634615384615384,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        19,
+        16
+      ],
+      "progress": 0.67,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        16
+      ],
+      "progress": 0.696078431372549,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        16
+      ],
+      "progress": 0.7403846153846154,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        17
+      ],
+      "progress": 0.023255813953488372,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        17
+      ],
+      "progress": 0.16326530612244897,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        17
+      ],
+      "progress": 0.15625,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        17
+      ],
+      "progress": 0.14893617021276595,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        17
+      ],
+      "progress": 0.24615384615384617,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        17
+      ],
+      "progress": 0.2421875,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        17
+      ],
+      "progress": 0.23809523809523808,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        17
+      ],
+      "progress": 0.23387096774193547,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        17
+      ],
+      "progress": 0.22950819672131148,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        17
+      ],
+      "progress": 0.639344262295082,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        14,
+        17
+      ],
+      "progress": 0.6416666666666667,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        15,
+        17
+      ],
+      "progress": 0.6440677966101694,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        17,
+        17
+      ],
+      "progress": 0.660377358490566,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        19,
+        17
+      ],
+      "progress": 0.6666666666666666,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        17
+      ],
+      "progress": 0.6764705882352942,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        17
+      ],
+      "progress": 0.6862745098039216,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        24,
+        17
+      ],
+      "progress": 0.7314814814814815,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        17
+      ],
+      "progress": 0.7358490566037735,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        18
+      ],
+      "progress": 0.011627906976744186,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        18
+      ],
+      "progress": 0.17,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        18
+      ],
+      "progress": 0.225,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        18
+      ],
+      "progress": 0.6370967741935484,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        15,
+        18
+      ],
+      "progress": 0.646551724137931,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        17,
+        18
+      ],
+      "progress": 0.6574074074074074,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        25,
+        18
+      ],
+      "progress": 0.7314814814814815,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        1,
+        19
+      ],
+      "progress": 0,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        3,
+        19
+      ],
+      "progress": 0.17647058823529413,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        4,
+        19
+      ],
+      "progress": 0.18269230769230768,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        5,
+        19
+      ],
+      "progress": 0.18867924528301888,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        6,
+        19
+      ],
+      "progress": 0.19444444444444445,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        7,
+        19
+      ],
+      "progress": 0.2,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        8,
+        19
+      ],
+      "progress": 0.20535714285714285,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        9,
+        19
+      ],
+      "progress": 0.21052631578947367,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        10,
+        19
+      ],
+      "progress": 0.21551724137931033,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        11,
+        19
+      ],
+      "progress": 0.22033898305084745,
+      "wall": "native"
+    },
+    {
+      "tile": [
+        13,
+        19
+      ],
+      "progress": 0.6349206349206349,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        15,
+        19
+      ],
+      "progress": 0.6491228070175439,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        16,
+        19
+      ],
+      "progress": 0.6517857142857143,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        17,
+        19
+      ],
+      "progress": 0.6545454545454545,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        18,
+        19
+      ],
+      "progress": 0.6636363636363637,
+      "wall": "wall_a"
+    },
+    {
+      "tile": [
+        19,
+        19
+      ],
+      "progress": 0.6727272727272727,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        20,
+        19
+      ],
+      "progress": 0.6818181818181818,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        21,
+        19
+      ],
+      "progress": 0.6909090909090909,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        22,
+        19
+      ],
+      "progress": 0.7,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        23,
+        19
+      ],
+      "progress": 0.7090909090909091,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        24,
+        19
+      ],
+      "progress": 0.7181818181818181,
+      "wall": "wall_b"
+    },
+    {
+      "tile": [
+        25,
+        19
+      ],
+      "progress": 0.7272727272727273,
+      "wall": "wall_b"
+    }
+  ]
+}

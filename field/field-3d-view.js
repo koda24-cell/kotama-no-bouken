@@ -139,7 +139,11 @@ function load(file) {
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
 function applyEnv(area, env) {
-  const E = env || ENV_B1;
+  const review=area===1&&(window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1');
+  const E = review?{...(env||ENV_B1),hemi:{sky:0xbac6b4,ground:0x626f58,high:1.9,low:2.2}}:(env||ENV_B1);
+  if(review&&!g.reviewFill){g.reviewFill=new THREE.AmbientLight(0xbac6ac,.32);g.scene.add(g.reviewFill);}
+  if(g.reviewFill)g.reviewFill.intensity=review?.32:0;
+  g.renderer.toneMappingExposure=review?1.48:1.3;
   g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
   if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
   g.camera.far = area === 5 ? 180 : 48;
@@ -284,7 +288,7 @@ async function buildFloor() {
       const [dx, dy] = DIR_VEC[d]; if (!wallCell(tx + dx, ty + dy)) continue;
       const ex = x + dx * CELL / 2, ez = z + dy * CELL / 2, k = hash(tx * 4 + DIR_ORDER.indexOf(d), ty, 5), ry = FACE_YAW[d] + Math.PI;
       const wall=place(g.world, k < 0.08 ? S.wallCollapsed : k < 0.36 ? S.wallMossy : S.wall, ex, 0, ez, ry);
-      wall.userData.firstStratumNativeWall=area===1;
+      wall.userData.firstStratumNativeWall=area===1;wall.userData.firstStratumNativeTile=[tx,ty];
       const n = def(ch(tx + dx, ty + dy));
       if (n && n.onWall && n.kind === 'switch') {
         const o = a.objects.find((q) => q.tx === tx + dx && q.ty === ty + dy);
@@ -619,7 +623,7 @@ function setPreview(n, on) {
 }
 function gameReviewState() {
   return { builtKey:g.builtKey, buildingKey:g.buildingKey,
-    environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far},
+    environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
     cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
     waterMeshCount:g.world?.children.filter(o=>o.isMesh&&o.geometry===waterGeo).length??0,
