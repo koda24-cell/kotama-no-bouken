@@ -37,6 +37,15 @@ try:
   assert sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')==vertex_count
   target=out/part['id']/'portable_sources'/source.name;target.parent.mkdir(parents=True,exist_ok=True);bpy.context.preferences.filepaths.save_version=0
   bpy.ops.wm.save_as_mainfile(filepath=str(target),compress=True)
+  bpy.ops.wm.open_mainfile(filepath=str(target),use_scripts=False)
+  reopened=set()
+  for obj in bpy.context.scene.objects:
+   if obj.type=='MESH':
+    for slot in obj.material_slots:
+     if slot.material and slot.material.use_nodes:reopened.update(n.image for n in slot.material.node_tree.nodes if n.type=='TEX_IMAGE'and n.image)
+  assert all(image.packed_file for image in reopened)
+  assert {image.name:sha(bytes(image.packed_file.data))for image in reopened}=={r['name']:r['sha256']for r in image_rows}
+  assert sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')==vertex_count
   assert sha(glb.read_bytes())==asset['sha256']
   rows.append({'id':part['id'],'sourceBlend':str(source.relative_to(root)),'sourceBlendSha256':source_sha,'sourceGlbSha256':asset['sha256'],'portableFile':str(target.relative_to(out)),'sha256':sha(target.read_bytes()),'usedImages':image_rows,'preservedVertices':vertex_count,'modelGeometryAndRendersChanged':False})
   print('PORTABLE_AUTHORING_SAVED',part['id'],len(image_rows),flush=True)
