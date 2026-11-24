@@ -3,13 +3,16 @@ import argparse,subprocess,time,json,hashlib,os
 from pathlib import Path
 from advanced_session import run,digest
 from production_visual_quality import evaluate
+from advanced_selection import score,select
 VIEWS=("front","side","back","angle")
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--source",required=True);p.add_argument("--output",required=True);p.add_argument("--minutes",type=int,default=45);p.add_argument("--reference");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--source",required=True);p.add_argument("--output",required=True);p.add_argument("--minutes",type=int,default=45);p.add_argument("--reference");p.add_argument("--rounds",type=int,default=2);a=p.parse_args()
     if not 1<=a.minutes<=360:p.error("minutes 1..360")
     root=Path(a.output).resolve();root.mkdir(parents=True,exist_ok=True);source=Path(a.source).resolve()
     worker=Path(__file__).with_name("advanced_real_worker.py")
     ref=Path(a.reference).resolve() if a.reference else source
+    if not 1<=a.rounds<=4:p.error("rounds 1..4")
+    current=source
     def scan(path,log,deadline):
         subprocess.run(["bash","tools/security/clamav_scan_gate.sh","scan",str(path),str(log)],check=True,timeout=max(1,deadline-time.monotonic()))
     scan(source,root/"input-scan.log",time.monotonic()+120)
@@ -20,7 +23,7 @@ def main():
         log=folder.with_suffix(".log")
         try:
             with log.open("w") as f:
-                r=subprocess.run(["blender","-b","--disable-autoexec","--python-exit-code","1","--python",str(worker),"--",str(source),str(folder),step,str(8 if settings.get("samples_scale")==.5 else 16)],stdout=f,stderr=subprocess.STDOUT,timeout=max(1,deadline-time.monotonic()))
+                r=subprocess.run(["blender","-b","--disable-autoexec","--python-exit-code","1","--python",str(worker),"--",str(ref if step=="reference" else current),str(folder),("baseline" if step=="reference" else step),str(8 if settings.get("samples_scale")==.5 else 16)],stdout=f,stderr=subprocess.STDOUT,timeout=max(1,deadline-time.monotonic()))
         except subprocess.TimeoutExpired:return {"ok":False,"error":"deadline"}
         if r.returncode:return {"ok":False,"error":log.read_text(errors="replace")[-16000:]}
         scan(folder,folder.with_suffix(".scan.log"),deadline)
@@ -29,15 +32,38 @@ def main():
         report={"roundtrip":views,"approval":"NOT_APPROVED","aesthetic":"REVIEW_REQUIRED"}
         (folder/"comparison.json").write_text(json.dumps(report,indent=2))
         return {"ok":True,"scan_pass":True,"files":[x for x in folder.rglob("*") if x.is_file()]}
-    status=run(root,source,ref,["baseline","material","surface","chips","cracks"],work,a.minutes)
-    state=json.loads((root/"session.json").read_text()) if (root/"session.json").exists() else {"done":{}}
-    def folder(step):return Path(next(p for p in state["done"][step] if p.endswith("comparison.json"))).parent
-    if "baseline" in state["done"]:
-        baseline=folder("baseline")
-        scores={}
-        for step in state["done"]:
-            scores[step]={v:evaluate(folder(step)/"reimport"/(v+".png"),baseline/"reimport"/(v+".png")) for v in VIEWS}
-        (root/"review.json").write_text(json.dumps({"status":status,"baseline_similarity":scores,"aesthetic":"HUMAN_REVIEW_REQUIRED","approval":"NOT_APPROVED"},indent=2))
+    deadline=time.monotonic()+a.minutes*60
+    status="COMPLETE"
+    history=[]
+    def checkpoint(roundroot,steps):
+        return run(roundroot,current,ref,steps,work,max(0,(deadline-time.monotonic())/60))
+    def locate(roundroot,step):
+        state=json.loads((roundroot/"session.json").read_text())
+        return Path(next(p for p in state["done"][step] if p.endswith("comparison.json"))).parent
+    if a.reference:
+        scan(ref,root/"reference-scan.log",deadline)
+        status=checkpoint(root,["reference"])
+        if status!="COMPLETE":return 1
+        target=locate(root,"reference")/"reimport"
+    else:target=None
+    for i in range(a.rounds):
+        rr=root/("round-"+str(i))
+        steps=["baseline","material","surface","chips","cracks"]
+        status=checkpoint(rr,steps)
+        if status!="COMPLETE":break
+        base=locate(rr,"baseline")
+        target_view=target or base/"reimport"
+        def assess(step):
+            f=locate(rr,step);v=score(f/"reimport",target_view)
+            v.update(path=str(f),verified=True,preserved=json.loads((f/"geometry.json").read_text())["preserved"])
+            return v
+        baseline=assess("baseline")
+        candidates=[assess(s) for s in steps[1:]]
+        best=select(baseline,candidates) if target else baseline
+        history.append({"round":i,"selected":best,"baseline":baseline,"candidates":candidates,"approval":"NOT_APPROVED"})
+        tmp=root/"selection.tmp";tmp.write_text(json.dumps(history,indent=2));tmp.replace(root/"selection.json")
+        if best is baseline:break
+        current=Path(best["path"])/"model.glb"
     print("ADVANCED_SESSION",status)
     return 0 if status=="COMPLETE" else 1
 if __name__=="__main__":raise SystemExit(main())
