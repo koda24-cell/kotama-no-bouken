@@ -1,5 +1,6 @@
 /* Opt-in, hash-pinned review dressing. Whole source meshes retained near camera. */
 import * as THREE from 'three';
+import {firstLayerTransition} from './f1-transition-v7.js';
 import {grassCutoutMaterialV6} from './f1-grass-cutout-lighting-v6.js';
 import {retainFirstLayerSource} from './field-3d-b1-sacred-trial.js';
 export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
@@ -7,13 +8,16 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
  if(!response.ok)throw Error('V6 nature catalog unavailable');
  const catalog=await response.json(),root=new THREE.Group(),held=[],sources=new Map(),groups=new Map(),batches=[],hidden=[],ownedMaterials=[],materials=new Map(),hardPlacements=[];
  root.name='f1-v6:understory-and-wall-transition';let disposed=false;
- const counts={plants:{sedge:0,trifoliate:0,fern:0},rocks:{schist:0,fractured:0,riverstones:0},walls:{wall_a:0,wall_b:0,wall_c:0}};
+ const counts={plants:{sedge:0,trifoliate:0,fern:0},rocks:{schist:0,fractured:0,riverstones:0},walls:{native:0,wall_a:0,wall_b:0,wall_c:0,wall_f3:0}};
  function dispose(){if(disposed)return;disposed=true;root.removeFromParent();hidden.forEach(o=>o.visible=true);batches.forEach(o=>o.dispose());ownedMaterials.forEach(m=>m.dispose());held.forEach(o=>o.release());root.clear();}
  try{
   for(const name of ['sedge','trifoliate','fern','schist','fractured','riverstones',...(area.f===1?['wall_a','wall_b','wall_c']:[])]){
    const d=catalog.sources.find(s=>s.name===name);if(!d)throw Error('Missing V6 asset '+name);
    const heldSource=await retainFirstLayerSource(d.file,d.sha256);held.push(heldSource);sources.set(name,heldSource.source);
   }
+  let f3Wall;
+  if(area.f===1){const r=await fetch(new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v6.json',import.meta.url));if(!r.ok)throw Error('F3 transition source unavailable');const layout=await r.json();const d=layout.boundaryWallPlacements[0];f3Wall={name:'wall_f3',file:d.file,sha256:d.sourceSha256};const h=await retainFirstLayerSource(d.file,d.sourceSha256);held.push(h);sources.set('wall_f3',h.source);}
+  const transition=firstLayerTransition(area,walkTiles);
   const walk=new Set(walkTiles.map(t=>t.join(','))),opens=new Set(openTiles.map(t=>t.join(',')));
   const add=(id,x,y,z,ry=0,sx=1,sy=sx,sz=sx)=>{
    if(!['sedge','trifoliate','fern'].includes(id))hardPlacements.push({assetId:id,position:[x,y,z],rotationY:ry,scale:[sx,sy,sz]});
@@ -38,11 +42,7 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    add(id,x*4+dx*1.59,0,z*4+dz*1.59,seed,.72);counts.rocks[id]++;
   }
   if(area.f===1){
-   const near=(x,z)=>[[x+1,z],[x-1,z],[x,z+1],[x,z-1]];
-   function distances(origin){const d=new Map([[origin.tx+','+origin.ty,0]]),q=[[origin.tx,origin.ty]];for(let i=0;i<q.length;i++)for(const p of near(...q[i])){const k=p.join(',');if(walk.has(k)&&!d.has(k)){d.set(k,d.get(q[i].join(','))+1);q.push(p);}}return d;}
-   const up=distances(area.up),down=distances(area.down);
-   const distanceAt=(dist,x,z)=>dist.get(x+','+z)??Math.min(...near(x,z).map(p=>(dist.get(p.join(','))??1e6)+1));
-   for(const[x,z]of openTiles){const k=x+','+z,du=distanceAt(up,x,z),dd=distanceAt(down,x,z),t=du/Math.max(1,du+dd),id=t<.34?'wall_a':t<.67?'wall_b':'wall_c';
+   for(const[x,z]of openTiles){const id=transition.wall(x,z);if(id==='native')continue;
     for(const[dx,dz,ry]of [[0,-1,0],[1,0,-Math.PI/2],[0,1,Math.PI],[-1,0,Math.PI/2]])if(!opens.has((x+dx)+','+(z+dz))){add(id,x*4+dx*2,0,z*4+dz*2,ry);counts.walls[id]++;}
    }
   }
@@ -52,7 +52,7 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    if(!grass&&!tintedWall)return original;
    if(!materials.has(original)){
     const m=grass?grassCutoutMaterialV6(original):original.clone();
-    if(tintedWall){const tint={wall_a:[.84,.95,.82],wall_b:[.93,.98,.92],wall_c:[1,1,1]}[id];m.color.multiply(new THREE.Color().setRGB(...tint));}
+    if(tintedWall){const tint={wall_a:[.84,.95,.82],wall_b:[.93,.98,.92],wall_c:[1,1,1],wall_f3:[1,1,1]}[id];m.color.multiply(new THREE.Color().setRGB(...tint));}
     materials.set(original,m);ownedMaterials.push(m);
    }
    return materials.get(original);
@@ -61,8 +61,8 @@ export async function buildFirstLayerNatureV6({world,area,openTiles,walkTiles}){
    const b=new THREE.InstancedMesh(o.geometry,reviewMaterial(id,o.material),matrices.length);matrices.forEach((m,i)=>b.setMatrixAt(i,m));b.computeBoundingBox();b.computeBoundingSphere();b.userData.v6Wall=wall;root.add(b);batches.push(b);
   }
   // Commit only once every asset and batch is ready. Failed loads leave native walls visible.
-  if(area.f===1)world.traverse(o=>{if(o.userData.firstStratumNativeWall&&o.visible){hidden.push(o);o.visible=false;}});
+  if(area.f===1)world.traverse(o=>{if(o.userData.firstStratumNativeWall&&o.visible){const tile=o.userData.firstStratumNativeTile;if(!tile)throw Error('Native transition wall has no tile');if(transition.wall(...tile)==='native')counts.walls.native++;else{hidden.push(o);o.visible=false;}}});
   world.add(root);
-  return{dispose,geometryReview:()=>({version:6,area:area.n,floor:area.f,map:area.floor.map.slice(),walkTiles:walkTiles.map(t=>t.slice()),sources:catalog.sources.filter(s=>sources.has(s.name)).map(s=>({...s})),placements:hardPlacements.map(r=>({...r,position:r.position.slice(),scale:r.scale.slice()}))}),update:(x,z)=>{for(const b of batches){if(b.userData.v6Wall)continue;const s=b.boundingSphere;b.visible=Math.hypot(s.center.x-x,s.center.z-z)<30+s.radius;}},info:()=>({version:6,sourceHashesVerified:true,counts,batches:batches.length,hiddenNativeWalls:hidden.length,distanceCullMeters:30,wholeSourceMeshes:true,disposed})};
+  return{dispose,geometryReview:()=>({version:6,area:area.n,floor:area.f,map:area.floor.map.slice(),walkTiles:walkTiles.map(t=>t.slice()),sources:[...catalog.sources,...(f3Wall?[f3Wall]:[])].filter(s=>sources.has(s.name)).map(s=>({...s})),placements:hardPlacements.map(r=>({...r,position:r.position.slice(),scale:r.scale.slice()}))}),update:(x,z)=>{for(const b of batches){if(b.userData.v6Wall)continue;const s=b.boundingSphere;b.visible=Math.hypot(s.center.x-x,s.center.z-z)<30+s.radius;}},info:()=>({version:6,sourceHashesVerified:true,counts,batches:batches.length,hiddenNativeWalls:hidden.length,wallTransition:area.f===1?{nativeThroughProgress:.5,tiles:openTiles.map(([x,z])=>({tile:[x,z],progress:transition.progress(x,z),blend:transition.blend(x,z),wall:transition.wall(x,z)}))}:null,distanceCullMeters:30,wholeSourceMeshes:true,disposed})};
  }catch(error){dispose();throw error;}
 }
