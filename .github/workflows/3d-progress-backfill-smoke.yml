@@ -1,0 +1,58 @@
+name: Existing render registry validation
+on:
+  push:
+    branches: [feature/3d-progress-gallery-20261124]
+    paths: ['.github/workflows/3d-progress-backfill-smoke.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download selected archives
+        run: |
+          mkdir -p qa/archives qa/source qa/registry
+          for id in 14502612250 14496886140 14491057100; do
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" > "qa/archives/$id.zip"
+            gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$id" > "qa/archives/$id.json"
+          done
+      - name: Scan archives and extract only selected renders
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 bash -ec 'freshclam; clamscan --infected qa/archives'
+          python3 - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          rows=[]
+          specs=[
+            (14502612250,"b4-magma-bank-p1","マグマ岸P1","第4層","V2","blender53-b4/b4-magma-bank-p1-v2-"),
+            (14496886140,"f6-tree-batched","樹木軽量化","第6層","V14","render-output/3d-performance/foliage-batch/"),
+            (14491057100,"f6-tree-mature","成木","第6層","V22","nature/tree_mature_photo_v22/")
+          ]
+          for aid,mid,name,floor,version,prefix in specs:
+              meta=json.loads(Path(f"qa/archives/{aid}.json").read_text())
+              run=meta["workflow_run"]
+              folder=Path("qa/source")/mid
+              folder.mkdir()
+              images=[]
+              with zipfile.ZipFile(f"qa/archives/{aid}.zip") as z:
+                  for view in ("front","side","angle","top"):
+                      info=z.getinfo(prefix+view+".png")
+                      assert 0<info.file_size<=20_000_000
+                      (folder/(view+".png")).write_bytes(z.read(info))
+                      images.append(dict(view=view,file=view+".png"))
+              rows.append(dict(directory=mid,manifest=dict(id=mid,name=name,floor=floor,version=version,status="制作中",publication_cleared=True,run_id=run["id"],source_sha=run["head_sha"],updated_at=meta["created_at"],images=images)))
+          Path("qa/batch.json").write_text(json.dumps(rows,ensure_ascii=False))
+          Path("qa/registry/index.json").write_text('{"schema":1,"models":[]}')
+          PY
+          docker run --rm -v "$PWD:/work" -w /work ghcr.io/koda24-cell/kotama-blender53-clamav@sha256:5ce601f79b1ab09405b3ebc36b1a596be76cb8b105b1524fcbafcb186ebf7e99 bash -ec 'freshclam; clamscan --infected -r qa/source'
+          python3 tools/3d-progress/backfill.py --registry qa/registry --batch qa/batch.json --source qa/source
+          python3 -c 'import json; m=json.load(open("qa/registry/index.json"))["models"]; assert len(m)==3 and sum(len(x["images"]) for x in m)==12'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isolated-existing-render-registry
+          path: qa/registry/
+          retention-days: 14
