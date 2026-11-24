@@ -2,6 +2,9 @@ name: Long production Blender 5.3 recovery worker
 on:
   workflow_call:
     inputs:
+      gallery_spec:
+        type: string
+        default: ''
       stage:
         type: number
         default: 2
@@ -159,6 +162,21 @@ jobs:
         env:
           OUTPUT_DIR: ${{ inputs.output_directory }}
         run: bash tools/security/clamav_scan_gate.sh scan "$OUTPUT_DIR" qa/security/output.log
+      - name: Export verified checkpoint preview
+        if: success() && inputs.gallery_spec != ''
+        env:
+          GALLERY_SPEC: ${{ inputs.gallery_spec }}
+          OUTPUT_DIR: ${{ inputs.output_directory }}
+        run: |
+          python3 tools/3d-progress/export_spec.py
+          bash tools/security/clamav_scan_gate.sh scan gallery-output qa/security/gallery.log
+      - uses: actions/upload-artifact@v4
+        if: success() && inputs.gallery_spec != ''
+        with:
+          name: gallery-${{ github.run_id }}-checkpoint-${{ inputs.stage }}${{ inputs.artifact_suffix }}
+          path: gallery-output/
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: success()
         with:
