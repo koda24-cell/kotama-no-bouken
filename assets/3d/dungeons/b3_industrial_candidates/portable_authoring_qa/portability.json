@@ -1,0 +1,1733 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "workflowRun": "45371292917",
+  "files": [
+    {
+      "id": "retaining_wall",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/retaining_wall/sources/f3_retaining_wall_authoring.blend",
+      "sourceBlendSha256": "54264c6e28556e492fbe0a163d334dc318dd54bebfe2c4a4e6187fb2a4808bc2",
+      "sourceGlbSha256": "00874ce4e02f5cf5a18acd1b953e539006a4738dcc5838a8893f51ed32924a95",
+      "portableFile": "retaining_wall/portable_sources/f3_retaining_wall_authoring.blend",
+      "sha256": "d4a42854e9e6741c067b4c20a3c1955067c8fc98b6630896e08c972af9a51ddd",
+      "usedImages": [
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "wall_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "8926039a992457b03dcf17ce3c774a8fd284c422fe4ee4672a0ab92a58f97fb1"
+        },
+        {
+          "name": "wall_diffuse.jpg",
+          "alreadyPacked": true,
+          "sha256": "e96bc7b0f93cabfa2cf22475e14e157488a5a750037c2ca3524bd36e74d71e49"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": true,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        }
+      ],
+      "preservedVertices": 1312,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "column_joint",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/column_joint/sources/f3_column_joint_authoring.blend",
+      "sourceBlendSha256": "21742f8a191c82d21bd67913bfae1767ec95142a5899bcddbccb228c39cdf2ad",
+      "sourceGlbSha256": "1eb9218405ec1cccc88e1fb1b074f76583b956114b7ed0ed3b313cef6a7130b6",
+      "portableFile": "column_joint/portable_sources/f3_column_joint_authoring.blend",
+      "sha256": "c37d28435cad69b6993d39d4680840e174c956e0bdb35ab5f2248bc551370622",
+      "usedImages": [
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        }
+      ],
+      "preservedVertices": 1770,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "riveted_girder",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/riveted_girder/sources/f3_riveted_girder_authoring.blend",
+      "sourceBlendSha256": "d753a42b2aa51f12c5aa97718725afefe63d23928abfa6de54c912e77628bcc6",
+      "sourceGlbSha256": "54c35d61b5ba9fa07ef18e9450454fb3949fcecf11a47914e82c7c6077517725",
+      "portableFile": "riveted_girder/portable_sources/f3_riveted_girder_authoring.blend",
+      "sha256": "f80cdda752a77109edacf47b4d42064ad7e8ebb4a3bbdb721633f88ee474ff71",
+      "usedImages": [
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        }
+      ],
+      "preservedVertices": 1632,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "buckled_portal",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/buckled_portal/sources/f3_buckled_portal_authoring.blend",
+      "sourceBlendSha256": "147ef75f4480a66ea3aece2b6adca9bb4e26cac207e43b26ae4507069d0af705",
+      "sourceGlbSha256": "551c9e7abfc41598a2d5bdddda6709c36512d2aaf97a9a481d1568edd96d52b5",
+      "portableFile": "buckled_portal/portable_sources/f3_buckled_portal_authoring.blend",
+      "sha256": "8afb4b6f5284d5fa0e7436c7291b2e24a5ee57039a145079de3cf9acec6609b6",
+      "usedImages": [
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        }
+      ],
+      "preservedVertices": 920,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "grating_catwalk",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/grating_catwalk/sources/f3_grating_catwalk_authoring.blend",
+      "sourceBlendSha256": "52e7bb5060deecc6e73b6f8317fc4ca7008327520c8b2ab4348ee38de927fd95",
+      "sourceGlbSha256": "711822cf4194859fed9f87315b77237c4a65b4bdca5cdb2f8840a4a421ffde5b",
+      "portableFile": "grating_catwalk/portable_sources/f3_grating_catwalk_authoring.blend",
+      "sha256": "6ee5169c4237f6768636c0ac85ef07c97566705fcabf7f81338efee6e6ec2263",
+      "usedImages": [
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        }
+      ],
+      "preservedVertices": 2560,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "service_stair",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/service_stair/sources/f3_service_stair_authoring.blend",
+      "sourceBlendSha256": "3fd80c3620cd92d3a5c039b53f4bd267775883bb7c8fbab1c64474993f9d19f9",
+      "sourceGlbSha256": "5f2b838be8631175ed3d637bfcdb92df29ba08a37b345eff2a6ef2190127d605",
+      "portableFile": "service_stair/portable_sources/f3_service_stair_authoring.blend",
+      "sha256": "f84fcc64a5cb8f06901934eb1547d2ef255c006a486f6d7b8aa0d3b3cffb0ce9",
+      "usedImages": [
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        }
+      ],
+      "preservedVertices": 5752,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "landing_railing",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/landing_railing/sources/f3_landing_railing_authoring.blend",
+      "sourceBlendSha256": "709dd5caf08f72ebe2f031f9de5b22d119b0f6f835bf08a3eedb841d932d1b14",
+      "sourceGlbSha256": "aeb03d9fea13b93fb476cc7f2409da836855935693c459cc53f977b71a483f51",
+      "portableFile": "landing_railing/portable_sources/f3_landing_railing_authoring.blend",
+      "sha256": "870a4932ff4b198b016ba4afd73f1b291fafe2870e9094c3ba5fdafd36b5ea0e",
+      "usedImages": [
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        }
+      ],
+      "preservedVertices": 494,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "bridge_abutment",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/bridge_abutment/sources/f3_bridge_abutment_authoring.blend",
+      "sourceBlendSha256": "abc46dbb4e7469f5c8bcbfe9444f8a04d83ac9460e83a8fd338ff6e123d0991a",
+      "sourceGlbSha256": "02d0ebae5ae4553cbba5e747148ab8b04b9732a1dae00b0ac8bd88d5f563f11f",
+      "portableFile": "bridge_abutment/portable_sources/f3_bridge_abutment_authoring.blend",
+      "sha256": "096532d94bd67f4c0e611a863684d6122b0674b464b1bd84190d5a3af79ebfd2",
+      "usedImages": [
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        }
+      ],
+      "preservedVertices": 1020,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "broken_signal",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/broken_signal/sources/f3_broken_signal_authoring.blend",
+      "sourceBlendSha256": "1f1091d156622c8bc4f802a3bb3dbfe33444064affdb5afc047685df9968c917",
+      "sourceGlbSha256": "a3aa28659b5bb18942988cdbebe5b5d0530b9962036214e400abcd0cab714399",
+      "portableFile": "broken_signal/portable_sources/f3_broken_signal_authoring.blend",
+      "sha256": "f631e88067637f2a47274b83ec44d83201629623adf69a6c8e534b98a9e68161",
+      "usedImages": [
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "f3_dead_signal_3.08_845e7c55daec_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "194fe9a54851418b3049b2579a6c86e6597a91c53b9091b06b4431153055eb46"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "c95688534e72d7e38edbd5e987849733b3d433765dab514da8acd5d61b8a207c"
+        },
+        {
+          "name": "f3_dead_signal_2.28_c1c88618439b_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "2c40fee9a8825326bea39fe96e833b33736f1303aeb0ac4d8fd666384a59a940"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "f3_dead_signal_3.08_845e7c55daec_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "4a71ed9580e5cec3236846d7aad75b844723857d9154a3d0fa4ec908e41a33ff"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "788812a860ee712c59ec3fcf9fa9c604d39ece9001f0b8ad6b956bdf5fe471b8"
+        },
+        {
+          "name": "f3_dead_signal_2.28_c1c88618439b_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "e08691cc73a14ee0b67f810fe14119ac61d283b583c8696a611551846f3bd72e"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        },
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_dead_signal_3.08_845e7c55daec_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "a7266891274516b7ca6ffb308b5cb5309589b3efe6175ef2a0b17f31afdc998c"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "cd14eb8b243c78db398f1614046cd71bf35db7f05d2ec13c2d22565c392962aa"
+        },
+        {
+          "name": "f3_dead_signal_2.28_c1c88618439b_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "54e85bbb823c043db365a57646deacfbcb54c49940a003205d709334cea3bfff"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        }
+      ],
+      "preservedVertices": 828,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "broken_streetlamp",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/broken_streetlamp/sources/f3_broken_streetlamp_authoring.blend",
+      "sourceBlendSha256": "b58a055204a2588b5b366863f5d181e97a891a3aaf79e16569fe2877af1fea41",
+      "sourceGlbSha256": "f69e47b610ae005ee19dc41314376a1abde0103e13b930b00cae4eeb566bab39",
+      "portableFile": "broken_streetlamp/portable_sources/f3_broken_streetlamp_authoring.blend",
+      "sha256": "7dc02bef42df0a25d498b173daf5d37a9eacfff2434af126b7229305a9b0e399",
+      "usedImages": [
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        }
+      ],
+      "preservedVertices": 312,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "control_cabinet",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/control_cabinet/sources/f3_control_cabinet_authoring.blend",
+      "sourceBlendSha256": "4fcb9c5341692c9da6b159c874e627cf0cdceb2b8f80dc28420891377606c76e",
+      "sourceGlbSha256": "8f617ab8df0b9b005fd21a4d42da3f42eb5f1f3c37560371c8f249b7c0a91a07",
+      "portableFile": "control_cabinet/portable_sources/f3_control_cabinet_authoring.blend",
+      "sha256": "dcf8f34b11c7aa699ed1150860c7caa6ec1ec564d2004528d30956d2dde75041",
+      "usedImages": [
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "cd14eb8b243c78db398f1614046cd71bf35db7f05d2ec13c2d22565c392962aa"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "c95688534e72d7e38edbd5e987849733b3d433765dab514da8acd5d61b8a207c"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "788812a860ee712c59ec3fcf9fa9c604d39ece9001f0b8ad6b956bdf5fe471b8"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        }
+      ],
+      "preservedVertices": 1640,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "flanged_pipe",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/flanged_pipe/sources/f3_flanged_pipe_authoring.blend",
+      "sourceBlendSha256": "5742aca5d921b1a24baca3a3fd0c8572f77854b84b2c45a081590c46519a8b91",
+      "sourceGlbSha256": "d16e1d17f99042e6372a87009951ca9d582ca42bb926de1402102d98e8fd15d4",
+      "portableFile": "flanged_pipe/portable_sources/f3_flanged_pipe_authoring.blend",
+      "sha256": "d9563574533557aec8f2355e1cab6111ca9a695b3ddfbdc45c23ebf5607c7b3b",
+      "usedImages": [
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        }
+      ],
+      "preservedVertices": 1312,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "pipe_rack",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/pipe_rack/sources/f3_pipe_rack_authoring.blend",
+      "sourceBlendSha256": "d3afb37b7c9ebd3e4c475967444c089e757eebae58c97058e02d08d8a1397310",
+      "sourceGlbSha256": "6936c83b3482f848f4d49fc0e8683aa51510b8c95149d4ed164513a4b36235ee",
+      "portableFile": "pipe_rack/portable_sources/f3_pipe_rack_authoring.blend",
+      "sha256": "13302f66ae1e523a0c7b37a698848216f7f920c3ff747dd6e8fcdc56bc060250",
+      "usedImages": [
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "a5db508d80d42da109de574303d09ff2eb1d9c0b345a34b42810532b9991b9ef"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "1c6eebec9d8705018b69ab63c7f28f7fcdbac2a28fd4a5c489bfb391f922f736"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "f3_aged_rubber_48c34e3e4044_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "030a2a4189395d06bab0dc2bd58a58ed9305479bdcf16f0693432a47e92eb807"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        }
+      ],
+      "preservedVertices": 1072,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "roller_shutter",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/roller_shutter/sources/f3_roller_shutter_authoring.blend",
+      "sourceBlendSha256": "113770432e116fb2bba6459e867113fd8952d3af075b667f091134fbe57ea586",
+      "sourceGlbSha256": "a7c8974ee7fed10c5dc9ac7c45a7bb517e8cc0830d364f0aa36190c27ac03cda",
+      "portableFile": "roller_shutter/portable_sources/f3_roller_shutter_authoring.blend",
+      "sha256": "8106c52b558cbb9aefdb64ee167cbe28090b73999758b9825f31d1298e502413",
+      "usedImages": [
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        }
+      ],
+      "preservedVertices": 2292,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "shattered_window",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/shattered_window/sources/f3_shattered_window_authoring.blend",
+      "sourceBlendSha256": "467d02de9ea90ddbc02212d4559276ee6f2d5c6101845d49b128fb60257d08af",
+      "sourceGlbSha256": "370ef1dc716234d0d8d588a71dc6d361b22d3f985435b10c050caebfb476c0f9",
+      "portableFile": "shattered_window/portable_sources/f3_shattered_window_authoring.blend",
+      "sha256": "ae9895191d1b7f7a427ff434cb328bd449cf741b2ea1923cbfb7ff18d4bca3be",
+      "usedImages": [
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.004",
+          "alreadyPacked": true,
+          "sha256": "c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.007",
+          "alreadyPacked": true,
+          "sha256": "623e2ebed3ec29bdb9894a6daed1229c9c36d5b5ba46214236d653ec631b1d76"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.005",
+          "alreadyPacked": true,
+          "sha256": "623e2ebed3ec29bdb9894a6daed1229c9c36d5b5ba46214236d653ec631b1d76"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.003",
+          "alreadyPacked": true,
+          "sha256": "623e2ebed3ec29bdb9894a6daed1229c9c36d5b5ba46214236d653ec631b1d76"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10",
+          "alreadyPacked": true,
+          "sha256": "c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.002",
+          "alreadyPacked": true,
+          "sha256": "c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.006",
+          "alreadyPacked": true,
+          "sha256": "c215878a23c6bfae3b96a77301c1599addd0566424bf544994cc082af716f185"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "F3_GENERATED_GLASS_DIRT_V10.001",
+          "alreadyPacked": true,
+          "sha256": "623e2ebed3ec29bdb9894a6daed1229c9c36d5b5ba46214236d653ec631b1d76"
+        }
+      ],
+      "preservedVertices": 1024,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "rebar_rubble",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/rebar_rubble/sources/f3_rebar_rubble_authoring.blend",
+      "sourceBlendSha256": "9c653cda5b7f0255217534fefa091ff95b283da810b308b0941e3afd9d7e9d01",
+      "sourceGlbSha256": "f5fff40a8bc57c84c06cdfd098cfe5d0556b883d6f10b69f7424bb9c8500414e",
+      "portableFile": "rebar_rubble/portable_sources/f3_rebar_rubble_authoring.blend",
+      "sha256": "0e5697bf93e1616a625944326c38752b1e76008ea0915b479728a87b5b4a581a",
+      "usedImages": [
+        {
+          "name": "F3_RUBBLE01_V29_GRAIN_NORMAL_512",
+          "alreadyPacked": true,
+          "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9"
+        },
+        {
+          "name": "F3_REBAR_RUST_01",
+          "alreadyPacked": true,
+          "sha256": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_GRAIN_NORMAL_512.001",
+          "alreadyPacked": true,
+          "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9"
+        },
+        {
+          "name": "F3_REBAR_RUST_01.001",
+          "alreadyPacked": true,
+          "sha256": "a8dbebaf09ca7e3d53608d4859088ece9cd460c2fbb38298a02b21c684435c58"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_FRACTURE_ALBEDO_512.001",
+          "alreadyPacked": true,
+          "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_FRACTURE_ALBEDO_512",
+          "alreadyPacked": true,
+          "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_ALBEDO_512",
+          "alreadyPacked": true,
+          "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_ROUGHNESS_512",
+          "alreadyPacked": true,
+          "sha256": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_ALBEDO_512.001",
+          "alreadyPacked": true,
+          "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae"
+        },
+        {
+          "name": "F3_RUBBLE01_V29_ROUGHNESS_512.001",
+          "alreadyPacked": true,
+          "sha256": "b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645"
+        }
+      ],
+      "preservedVertices": 83133,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "heaved_asphalt",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/heaved_asphalt/sources/f3_heaved_asphalt_authoring.blend",
+      "sourceBlendSha256": "137bcdc0547ab98fb9a43cf9f6ae2b5659425978b1159c73c149ef9d9cad7aa2",
+      "sourceGlbSha256": "aee386a64570351de3e2b841410cf063ece5cec85e835e8f04a0de5107f7240d",
+      "portableFile": "heaved_asphalt/portable_sources/f3_heaved_asphalt_authoring.blend",
+      "sha256": "bd2ba634c76f4924873a364172f23edde66df36461b0cd0048edae1d097a22bf",
+      "usedImages": [
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "788812a860ee712c59ec3fcf9fa9c604d39ece9001f0b8ad6b956bdf5fe471b8"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "c95688534e72d7e38edbd5e987849733b3d433765dab514da8acd5d61b8a207c"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "f3_faded_safety_ochre_3b29dc121dbb_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "cd14eb8b243c78db398f1614046cd71bf35db7f05d2ec13c2d22565c392962aa"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "asphalt_02_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712"
+        },
+        {
+          "name": "asphalt_02_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed"
+        },
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        },
+        {
+          "name": "asphalt_02_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        }
+      ],
+      "preservedVertices": 712,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "drain_channel",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/drain_channel/sources/f3_drain_channel_authoring.blend",
+      "sourceBlendSha256": "51479ee4883caac95cbf941d5be13804d6985e27f808e1e825e84329e067722d",
+      "sourceGlbSha256": "377ac85c2826c3d379ba8da6c1a1ee43ae17234ae276ed83342c66e0786122da",
+      "portableFile": "drain_channel/portable_sources/f3_drain_channel_authoring.blend",
+      "sha256": "9ea6919879ac8d8ca1fb674d8f0c3ea61d3d01a5178470b6c494e52c778cb951",
+      "usedImages": [
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        }
+      ],
+      "preservedVertices": 1568,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "factory_door",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/factory_door/sources/f3_factory_door_authoring.blend",
+      "sourceBlendSha256": "0eb2d161bba815b6808f353aad6b90fd52e8b43b7899d151d8611b62546f79cf",
+      "sourceGlbSha256": "be1aeef23f404f49659a544e5983d5bd7d6d4cabaa75fa18b2971d6c375e7594",
+      "portableFile": "factory_door/portable_sources/f3_factory_door_authoring.blend",
+      "sha256": "43ae71035526470fd79e04bb4c5039702416c2a04df518c17e0b1fbf9acd96ee",
+      "usedImages": [
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        }
+      ],
+      "preservedVertices": 1153,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "ivy_pocket",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/ivy_pocket/sources/f3_ivy_pocket_authoring.blend",
+      "sourceBlendSha256": "752a2205f127ac860a7e9145345ed9ddb5bdb90db99d3eb0426972d76ed43aa2",
+      "sourceGlbSha256": "a7617d2957bd1a40633e038a5d11895e6168a570a3b7093d66f42f4099ad459a",
+      "portableFile": "ivy_pocket/portable_sources/f3_ivy_pocket_authoring.blend",
+      "sha256": "ccfe53647cd2ac0d240c30b7d4ad33340a9bd2f917ff6b1c5293a8c46903fb0d",
+      "usedImages": [
+        {
+          "name": "concrete_moss_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+        },
+        {
+          "name": "original_ivy_vein_normal.png",
+          "alreadyPacked": false,
+          "sha256": "44ef24a906346a95e5c47da7df1c41356a38ec1ab1b39e93cf609d6a69688b80"
+        },
+        {
+          "name": "original_ivy_vein_color.png",
+          "alreadyPacked": false,
+          "sha256": "23baec29082a094c8a5a830c2d69d35359dfdc631f048eb4da3fe4f988de95b9"
+        },
+        {
+          "name": "f3_ivy_woody_stem_2f9e94ea1486_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "48f3bdd981eb1b115a34e64432c3982cd25fc3f1aabd3b2ca46261dbf70706c5"
+        },
+        {
+          "name": "concrete_moss_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+        },
+        {
+          "name": "f3_ivy_woody_stem_2f9e94ea1486_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "d0c148eca56955e09d7fcd795e7f6c137be822466b56464095fd522fc932cd3f"
+        },
+        {
+          "name": "f3_ivy_woody_stem_2f9e94ea1486_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "f51c952e994f8473c4de83a6275f2576d874e91b5cb29d46143fbbde1cabc949"
+        },
+        {
+          "name": "concrete_moss_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+        }
+      ],
+      "preservedVertices": 3528,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "native_ruinedBuilding",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/native_ruinedBuilding/sources/f3_native_ruinedBuilding_authoring.blend",
+      "sourceBlendSha256": "2a21dba4d264187a6ec3b80f95491b563b9498cfe99851c08a9afd77f60ee071",
+      "sourceGlbSha256": "113d4a856df6e325efee0cdf65fe582efec1396c2f12fff4c32c470591f690b2",
+      "portableFile": "native_ruinedBuilding/portable_sources/f3_native_ruinedBuilding_authoring.blend",
+      "sha256": "0f0fbe05e4c33a72b87cb9f7febf0f108e39922792f1befa0824fd9df7b90e35",
+      "usedImages": [
+        {
+          "name": "native_veined_leaf_basecolor.png",
+          "alreadyPacked": false,
+          "sha256": "8c94695bbe50c2a8943c348aec2478fcb9faed3e11f9e5e6c16081f750c84a03"
+        },
+        {
+          "name": "native_veined_leaf_normal.png",
+          "alreadyPacked": false,
+          "sha256": "0006551c4b8983ef395fff0093ba4a2b4e50bcdbdd6b3de746f838d5f1f025dd"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "Image_2",
+          "alreadyPacked": true,
+          "sha256": "a40a44e1e3af3a903ff6750d217cc36902dbb38ef09f826a527e5e8f4a534f0e"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+        }
+      ],
+      "preservedVertices": 3544,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "native_collapsedOverpass",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/native_collapsedOverpass/sources/f3_native_collapsedOverpass_authoring.blend",
+      "sourceBlendSha256": "7afd0acf489160e73f3b262e5fa3b79c8427d0a5cd653c16025af1dc7a2eeff6",
+      "sourceGlbSha256": "380e87b401d0a5dd3dd3abbef827f1433dfde85e70ecde21fc55fa950fc3fc3e",
+      "portableFile": "native_collapsedOverpass/portable_sources/f3_native_collapsedOverpass_authoring.blend",
+      "sha256": "c5f12c7fdebb75d68d64af259101d79f9e98915148732e7ed8073e4b084c37cc",
+      "usedImages": [
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        }
+      ],
+      "preservedVertices": 1716,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "native_utilityPole",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/native_utilityPole/sources/f3_native_utilityPole_authoring.blend",
+      "sourceBlendSha256": "b5ec3d7174292afebb7ea209c3b2c0f2703a6d26ae93930a39a61fb1f1f6abb8",
+      "sourceGlbSha256": "e789eda6777b45023ce044c18befd314308e580623b26079bbc7fb9e689101e4",
+      "portableFile": "native_utilityPole/portable_sources/f3_native_utilityPole_authoring.blend",
+      "sha256": "ba5cb17d34e12f0c3cd50b5faf7ee0572339eb5eaff96e7b853d1e7a772f519e",
+      "usedImages": [
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        }
+      ],
+      "preservedVertices": 1632,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "native_steelWreck",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/native_steelWreck/sources/f3_native_steelWreck_authoring.blend",
+      "sourceBlendSha256": "e4ea0cd127fdeb50d71ac38a0930426b6ba04e0a36fed577cc4f9a28b11d3fcd",
+      "sourceGlbSha256": "216086ff416b9481d3e1d10fc6083eb659f31de1728df1e1ae7a586b6fff2853",
+      "portableFile": "native_steelWreck/portable_sources/f3_native_steelWreck_authoring.blend",
+      "sha256": "e92b6b3ef1b73cf3581d2008829ae0f41bc02fcd6ce1750ce2c2acaaf7990b58",
+      "usedImages": [
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+        },
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        }
+      ],
+      "preservedVertices": 958,
+      "modelGeometryAndRendersChanged": false
+    },
+    {
+      "id": "native_abandonedTransitStop",
+      "sourceBlend": "assets/3d/dungeons/b3_industrial_candidates/native_abandonedTransitStop/sources/f3_native_abandonedTransitStop_authoring.blend",
+      "sourceBlendSha256": "dc840e531c193fec9a91f9a7dbdb7ae30d7130d6c9bd05bdef6192c05ba7a280",
+      "sourceGlbSha256": "b370242f869840dd35f191b777e186d30eeeec9a9252566ecbb676190524d3a8",
+      "portableFile": "native_abandonedTransitStop/portable_sources/f3_native_abandonedTransitStop_authoring.blend",
+      "sha256": "06e0aca0eadffe302c99fadb7fa63e3d0d75e86fca7fa8c2b3534f53116b3a79",
+      "usedImages": [
+        {
+          "name": "chipped_concrete_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+        },
+        {
+          "name": "rusty_iron_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+        },
+        {
+          "name": "chipped_concrete_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+        },
+        {
+          "name": "rusty_iron_diffuse.jpg",
+          "alreadyPacked": false,
+          "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+        },
+        {
+          "name": "chipped_concrete_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_normal.jpg",
+          "alreadyPacked": false,
+          "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+        },
+        {
+          "name": "Image_2",
+          "alreadyPacked": true,
+          "sha256": "a40a44e1e3af3a903ff6750d217cc36902dbb38ef09f826a527e5e8f4a534f0e"
+        },
+        {
+          "name": "f3_exposed_aggregate_010b21ab9520_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+        },
+        {
+          "name": "f3_bare_worn_steel_8b421a61ea81_orm.jpg",
+          "alreadyPacked": false,
+          "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+        },
+        {
+          "name": "rusty_iron_roughness.jpg",
+          "alreadyPacked": false,
+          "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+        },
+        {
+          "name": "f3_deep_crack_9d554bcb78e9_basecolor.jpg",
+          "alreadyPacked": false,
+          "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+        }
+      ],
+      "preservedVertices": 1488,
+      "modelGeometryAndRendersChanged": false
+    }
+  ],
+  "note": "Only pack image bytes into separately saved authoring scenes; originals and all GLB/PNG remain unchanged."
+}
