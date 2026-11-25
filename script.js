@@ -2472,7 +2472,22 @@ function openFieldInventory(){
  const rows=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials}))].filter(x=>x.n>0);
  if(inventory["return-scroll"]>0){const use=document.createElement("button");use.type="button";use.textContent="帰還の書を使う";use.onclick=()=>{if(state.screen!=="field"||!(inventory["return-scroll"]>0)||!confirm("帰還の書を1個使ってホームに戻りますか？"))return;inventory["return-scroll"]--;if(!inventory["return-scroll"])delete inventory["return-scroll"];dlg.close();fieldState.lock=false;fieldLeaveToHome("帰還の書を使用しました。");persistAutoSave();};list.prepend(use);}
  list.querySelectorAll("[data-discard]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.discard)];if(x&&confirm("1個捨てますか？")){x.bag[x.id]--;if(!x.bag[x.id])delete x.bag[x.id];persistAutoSave();render();}});
- };$("field-inventory-items-tab").onclick=render;$("field-inventory-status-tab").onclick=renderFieldCharacterStatus;render();dlg.showModal();dlg.onclose=()=>{fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
+ };$("field-inventory-items-tab").onclick=render;$("field-inventory-status-tab").onclick=renderFieldCharacterStatus;$("field-inventory-skills-tab").onclick=renderFieldSkills;render();dlg.showModal();dlg.onclose=()=>{fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
 }
 
 function renderFieldCharacterStatus(){const list=$("field-inventory-list"),party=getParty();list.innerHTML='<label>仲間 <select id="field-status-character">'+party.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")+'</select></label><div id="field-status-detail"></div>';const select=$("field-status-character");const render=()=>{const c=party.find(x=>x.id===select.value);if(!c)return;const v=effectiveStats(c);$("field-status-detail").innerHTML='<div style="display:flex;gap:16px;flex-wrap:wrap"><div style="width:160px">'+getCharacterImage(c).replace("<img ","<img style=\"width:100%;object-fit:contain\" ")+'</div><div><h3>'+esc(c.name)+' Lv.'+(characterLevels[c.id]||1)+'</h3><p>HP '+c.hp+' / '+v.maxHp+'　SP '+c.sp+' / '+v.maxSp+'</p><p>攻撃 '+v.attack+'　SP攻撃 '+v.spAttack+'</p><p>防御 '+v.defense+'　SP防御 '+v.spDefense+'　速度 '+v.speed+'</p><h4>装備</h4>'+equippedItems(c).map(i=>'<div>'+esc(i.name)+'</div>').join("")+'</div></div>';};select.onchange=render;render();}
+
+function renderFieldSkills(){
+ const list=$("field-inventory-list"),party=getParty();
+ list.innerHTML='<label>使用者 <select id="field-skill-actor">'+party.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")+'</select></label><div id="field-skill-options"></div>';
+ const select=$("field-skill-actor"),box=$("field-skill-options");
+ const render=()=>{const actor=party.find(c=>c.id===select.value);if(!actor)return;
+ const skills=getCharacterSkills(actor).filter(s=>["heal","revive"].includes(s.type));
+ box.innerHTML='<p>SP '+actor.sp+' / '+effectiveStats(actor).maxSp+'</p>';
+ if(!skills.length||actor.hp<=0||isSkillRestricted(actor)){box.innerHTML+='<p>探索中に使えるスキルがありません。</p>';return;}
+ for(const skill of skills){const row=document.createElement("div"),targets=party.filter(c=>skill.type==="revive"?c.hp<=0:c.hp>0&&c.hp<effectiveStats(c).maxHp);
+ const target=document.createElement("select");for(const c of targets){const o=document.createElement("option");o.value=c.id;o.textContent=c.name+" HP "+c.hp;target.append(o);}
+ const use=document.createElement("button");use.type="button";use.textContent=skill.name+" SP "+skill.cost;use.disabled=actor.sp<skill.cost||!targets.length;
+ use.onclick=()=>{const c=targets.find(x=>x.id===target.value);if(!c||actor.sp<skill.cost||actor.hp<=0||isSkillRestricted(actor))return;if(skill.type==="revive"){if(c.hp>0)return;c.hp=Math.min(effectiveStats(c).maxHp,50+Math.floor(50*treeBonus(actor.id,"revive")));}else{if(c.hp<=0||c.hp>=effectiveStats(c).maxHp)return;const power=effectiveStats(actor).spAttack*(actor.id==="healer"?BATTLE_RULES.classBonuses.healer.healing*BATTLE_RULES.passives.healer.healing:1)*(1+Math.min(.5,uniqueEquippedItems(actor).reduce((n,i)=>n+(i.healingRate||0),0))+treeBonus(actor.id,"heal"));c.hp=Math.min(effectiveStats(c).maxHp,c.hp+Math.max(1,Math.floor(power)));}actor.sp-=skill.cost;persistAutoSave();render();};row.append(use,target);box.append(row);}
+ };select.onchange=render;render();
+}
