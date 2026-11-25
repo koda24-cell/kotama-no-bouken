@@ -294,7 +294,7 @@ body[data-screen="field"] #field .field-hud{flex:none}
 
       <!-- [FIELD] フィールド探索（見下ろし型の自由移動・ランダムエンカウント・会話）。仕様：docs/field-and-story/FIELD_SPEC.md -->
       <section id="field" class="screen field-screen" data-area="1" data-theme="forest" aria-label="フィールド">
-        <div class="field-hud">
+        <div class="field-hud"><button type="button" id="field-inventory-button" onclick="document.getElementById('field-inventory-panel').showModal()">インベントリ</button>
           <strong id="field-area-name">はじまりの樹海</strong>
           <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド（1マスずつ）　調べる：Z/Enter・A</span>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
@@ -461,5 +461,5 @@ body[data-screen="field"] #field .field-hud{flex:none}
 
   </div>
   <script src="./battle-water-map.js?v=20261112-04" defer></script>
-</body>
+<dialog id="field-inventory-panel" style="width:min(92vw,760px);max-height:85vh;background:#18252e;color:#eee;border:1px solid #a4b4ba;border-radius:6px;padding:20px" aria-label="探索インベントリ"><form method="dialog"><button style="float:right">探索へ戻る</button></form><h2>インベントリ</h2><p>探索メニュー（準備中）</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px"><button type="button" disabled>所持アイテム</button><button type="button" disabled>スキル</button><button type="button" disabled>ステータス</button><button type="button" disabled>編成</button><button type="button" disabled>強化</button><button type="button" disabled>ミッション</button><button type="button" disabled>設定</button><button type="button" disabled>一時中断</button></div></dialog></body>
 </html>
