@@ -12,10 +12,8 @@ function fieldEnsureExtraDom() {
     const lab = document.createElement("span"); lab.id = "field-floor-label"; lab.className = "field-floor-label";
     $("field-area-name")?.after(lab);
     const danger = document.createElement("span"); danger.id = "field-danger"; danger.className = "field-danger"; danger.dataset.level = "0"; danger.title = "エンカウントの危険度"; danger.setAttribute("aria-label", "エンカウントの危険度");
-    lab.after(danger);
-    const mapBtn = document.createElement("button"); mapBtn.id = "field-map-button"; mapBtn.className = "field-map-button"; mapBtn.type = "button"; mapBtn.textContent = "MAP";
-    $("field-home-button")?.before(mapBtn);
-    mapBtn.addEventListener("click", () => fieldToggleFullMap());
+    danger.innerHTML = '<span class="danger-label">敵エンカウント</span><strong class="danger-state">安全</strong><span class="danger-meter" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i><i></i></span>';
+    hud.appendChild(danger);
   }
   if (!$("field-minimap")) {
     const mini = document.createElement("canvas"); mini.id = "field-minimap"; mini.className = "field-minimap"; mini.setAttribute("aria-label", "ミニマップ（タップで全体マップ）");
