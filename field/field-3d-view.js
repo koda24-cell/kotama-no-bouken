@@ -57,7 +57,7 @@ const g = {
   cache: new Map(), lights: [], pool: [], entries: [], foes: new Map(), texCache: new Map(),
   cam: { pos: new THREE.Vector3(), yaw: 0, ready: false, bump: 0, bumpDir: [0, 0] },
   lastT: 0, lastRender: 0, lastLightKey: '', size: [0, 0], high: readQuality(), near: null, maxFps: readMaxFps(),
-  hemi: null, envArea: 1, theme: null, themePromise: null, themeFailed: false, preview: readPreview(),
+  hemi: null, envArea: 1, theme: null, themePromise: null, themeFailed: false, floorFailures: new Map(), preview: readPreview(),
 };
 
 function readPref() { try { return localStorage.getItem(PREF_KEY) !== 'off'; } catch (_) { return true; } }
@@ -72,7 +72,7 @@ function readPreview() {
   return set;
 }
 // 3D表示できる階層：第1階層と、試験表示を有効にした第2階層
-const areaOn = (n) => AREAS_3D.has(n) && (n !== 2 || !g.themeFailed);
+const areaOn = (n) => AREAS_3D.has(n) && !g.floorFailures.has(curKey());
 function writePref(on) { try { localStorage.setItem(PREF_KEY, on ? 'on' : 'off'); } catch (_) {} }
 const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
@@ -133,8 +133,9 @@ function updatePool(center, force) {
    素材の読み込みと配置
    ------------------------------------------------------------ */
 const loader = new GLTFLoader();
+async function retryLoad(job){let last;for(let i=0;i<3;i++){try{return await job(i);}catch(e){last=e;if(i<2)await new Promise(resolve=>setTimeout(resolve,350*(i+1)));}}throw last;}
 function load(file) {
-  if (!g.cache.has(file)) g.cache.set(file, loader.loadAsync(BASE + file).then((x) => x.scene));
+  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>loader.loadAsync(BASE + file)).then(x=>x.scene).catch(e=>{g.cache.delete(file);throw e;}));
   return g.cache.get(file);
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
@@ -220,16 +221,17 @@ async function buildFloor() {
   const area = Number(fieldState.area);
   let th = null;
   if (area === 2 || area === 3 || area === 4 || area === 5) {
-    try { th = area === 2 ? await loadTheme2() : area === 3 ? await loadTheme3() : await loadTheme45(area); }
-    catch (e) { console.warn('[field-3d] 3Dテーマの読み込みに失敗しました:', area, e); if (area === 2) g.themeFailed = true; else g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
+    try { th = await retryLoad(()=>area === 2 ? loadTheme2() : area === 3 ? loadTheme3() : loadTheme45(area)); }
+    catch (e) { throw e; }
   }
   try {
     const list = Object.values(FILES); let done = 0;
     report(20,'共通素材読み込み');
-    await Promise.all(list.map((f) => load(f).then(() => { done++; report(20+50*done/list.length,`素材 ${done}/${list.length}`); showBadge(`3D表示を準備中… ${done}/${list.length}`); })));
+    const concurrency=g.high?6:2;
+    for(let i=0;i<list.length;i+=concurrency)await Promise.all(list.slice(i,i+concurrency).map(f=>load(f).then(()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);})));
     for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
   } catch (e) {
-    console.warn('[field-3d] 素材を読めなかったため2D表示に戻します:', e); g.failed = true; showBadge(''); applyMode(); return;
+    if(th&&th!==g.theme)try{th.dispose({final:true});}catch(_){} throw e;
   }
   if (token !== g.buildToken || curKey() !== key) {
     if (th && th !== g.theme) th.dispose({ final: true });
@@ -258,7 +260,7 @@ async function buildFloor() {
     }
     catch (e) {
       console.error('[field-3d] 3Dマップの組み立てに失敗:', area, e);
-      g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return;
+      throw e;
     }
   }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
@@ -561,30 +563,41 @@ function ensureToggle() {
   const can = fieldOk() && areaOn(area) && g.webgl && !g.failed;
   // 第1〜第5階層では3D表示を固定し、2D/3D切り替えボタンを出さない。
   // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
-  btn.hidden = !can || AREAS_3D.has(area);
-  btn.textContent = g.pref ? '2D表示' : '3D表示';
+  const failedHere=g.floorFailures.has(curKey());
+  btn.hidden = !failedHere && (!can || AREAS_3D.has(area));
+  btn.textContent = failedHere?'3D再試行':g.pref ? '2D表示' : '3D表示';
   btn.title = g.pref ? '見下ろしの2D表示に切り替える' : '一人称の3D表示に切り替える';
 }
 function toggle(force) {
-  if (fieldOk() && AREAS_3D.has(Number(fieldState.area))) { g.pref = true; build(); return; }
+  if (fieldOk() && AREAS_3D.has(Number(fieldState.area))) { g.floorFailures.delete(curKey()); g.pref = true; window.Kotama3DLoading?.show(); build(); return; }
   g.pref = typeof force === 'boolean' ? force : !g.pref; writePref(g.pref);
   if (typeof fieldInput !== 'undefined') { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.tap = null; }
   if (g.pref) build(); else applyMode();
 }
 function showBadge(text) { if (!g.badge) return; g.badge.textContent = text; g.badge.hidden = !text; }
 
+function recoverFloor(key,error){
+ console.error('[field-3d] floor failed:',key,error);
+ if(g.buildingKey===key)g.buildingKey='';
+ g.floorFailures.set(key,String(error?.message||error));
+ g.builtKey='';
+ try{g.theme?.dispose({final:true});}catch(_){} g.theme=null;
+ showBadge('');applyMode();
+ if(curKey()===key){window.Kotama3DLoading?.hide();showBadge('3D読み込み失敗：2D表示で探索できます');}
+}
+function startFloorBuild(){const key=curKey();buildFloor().catch(e=>recoverFloor(key,e)).finally(()=>{if(g.buildingKey===key)g.buildingKey='';});}
 function build() {
   if (!fieldOk()) return;
-  if (!eligible()) { applyMode(); return; }
-  if (!ensureRenderer()) { applyMode(); return; }
+  if (!eligible()) { applyMode(); window.Kotama3DLoading?.hide(); return; }
+  if (!ensureRenderer()) { applyMode(); window.Kotama3DLoading?.hide(); return; }
   mount();
   const key = curKey();
-  if (g.builtKey === key && doorSig(fieldArea()) === g.sig) { g.cam.ready = false; applyMode(); return; }
+  if (g.builtKey === key && doorSig(fieldArea()) === g.sig) { g.cam.ready = false; applyMode(); window.Kotama3DLoading?.hide(); return; }
   // Serialize async builds: a floor change is picked up by frame() afterwards.
   if (g.buildingKey) return;
   g.builtKey = '';
   applyMode();
-  buildFloor();
+  startFloorBuild();
 }
 
 function frame() {
@@ -596,7 +609,7 @@ function frame() {
   const dt = g.lastT ? Math.min(g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
   mount();
   const a = fieldArea();
-  if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; buildFloor(); return; }
+  if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; startFloorBuild(); return; }
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
@@ -611,7 +624,7 @@ function frame() {
   if (ne) { g.near.visible = true; g.near.position.set(ne.at.x, ne.at.y + 0.9 + Math.sin(now / 300) * 0.08, ne.at.z); g.near.rotation.y = now / 600; }
   else g.near.visible = false;
   g.renderer.info.reset();   // 後処理（ブルーム）の分も含めて1フレームの描画数を数える
-  if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);
+  try{if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);}catch(e){recoverFloor(curKey(),e);return;}
   // Only dismiss the full-screen loading state after the first actual 3D frame.
   window.Kotama3DLoading?.ready();
 
@@ -627,7 +640,7 @@ function setPreview(n, on) {
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
 function gameReviewState() {
-  return { builtKey:g.builtKey, buildingKey:g.buildingKey,
+  return { builtKey:g.builtKey, buildingKey:g.buildingKey, floorFailures:Object.fromEntries(g.floorFailures),
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
     cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
