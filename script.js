@@ -344,24 +344,7 @@ function renderEnemyAnalysis(){
   box.classList.toggle("is-analyzed",known);
   if(typeof renderAnalyzePanel==="function")renderAnalyzePanel();// [ANALYZE]
 }
-function renderImperialStatus(){
-  const panel=$("imperial-status-panel");if(!panel)return;
-  // Gemini側の戦闘ロジックとの接続用。キャラクターIDは imperial、熱量は heatGauge を標準名とする。
-  const imperial=characters.find(c=>c.id==="imperial"||c.name==="インペリアル");
-  if(!imperial||!state.party.includes(imperial.id)){panel.hidden=true;return;}
-  const raw=imperial.heatGauge!==undefined?imperial.heatGauge:(imperial.heat!==undefined?imperial.heat:(imperial.overheatGauge||0));
-  const heat=Math.max(0,Math.min(6,Math.floor(Number(typeof raw==="object"?raw.value:raw)||0)));
-  const overheated=imperial.overheated===true||imperial.isOverheated===true||imperial.overheatWarning===true||heat>=6;
-  const exposed=imperial.exposed===true||imperial.isExposed===true||imperial.defenseless===true||imperial.isDefenseless===true||imperial.unprotected===true;
-  const segments=Array.from({length:6},(_,i)=>"<i class=\""+(i<heat?"filled":"")+"\"></i>").join("");
-  const alerts=(overheated?"<span class=\"imperial-alert overheat\">⚠ OVERHEAT／オーバーヒート</span>":"")+
-    (exposed?"<span class=\"imperial-alert exposed\">⚠ 無防備状態／被ダメージに注意</span>":"")+
-    (!overheated&&!exposed?"<span class=\"imperial-safe\">稼働状態：正常</span>":"");
-  panel.hidden=false;
-  panel.innerHTML="<div class=\"imperial-status-head\"><strong>インペリアル専用ステータス</strong><span>HEAT "+heat+" / 6</span></div>"+
-    "<div class=\"imperial-heat-meter\" role=\"meter\" aria-label=\"熱ゲージ\" aria-valuemin=\"0\" aria-valuemax=\"6\" aria-valuenow=\""+heat+"\">"+segments+"</div>"+
-    "<div class=\"imperial-alerts\">"+alerts+"</div>";
-}
+function renderImperialStatus(){const panel=$("imperial-status-panel");if(panel){panel.hidden=true;panel.replaceChildren();}}
 
 function formationBaseStats(c){
   const g=growth[c.id]?.spent||{},bonus=BATTLE_RULES.classBonuses[c.id]||{},items=uniqueEquippedItems(c);
