@@ -14,3 +14,5 @@ const unionSkills = {
   mage:{id:"meteor-union",name:"メテオ",requiredHits:5,type:"meteor",damage:666},
   samurai:{id:"samurai-union",name:"一刀両断",requiredHits:4,type:"samurai-slash",damage:420}
 };
+
+Object.assign(unionSkills,{assassin:{id:"assassin-union",name:"絶影",requiredHits:4,type:"samurai-slash"},gunner:{id:"gunner-union",name:"フルバースト",requiredHits:5,type:"meteor",damage:550},highlander:{id:"highlander-union",name:"不屈の槍",requiredHits:4,type:"samurai-slash"},princess:{id:"princess-union",name:"ロイヤルオーダー",requiredHits:5,type:"aegis"},reaper:{id:"reaper-union",name:"死神の宣告",requiredHits:4,type:"stun",damage:350},imperial:{id:"imperial-union",name:"オーバードライブ",requiredHits:5,type:"meteor",damage:850}});
