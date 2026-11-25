@@ -374,9 +374,11 @@ function fieldLootGrant(r, source = "chest") {
 }
 async function fieldAskReturnHome() {
   if (fieldState.lock) return;
-  const choice = await fieldAsk("迷宮を出て、ふもとの村（ホーム）へ戻りますか？", ["戻る", "やめる"]);
+  const p=fieldPlayerTile();if(fieldTileAt(fieldArea(),p.tx,p.ty)!=="E")return;
+  const choice = await fieldAsk("転移門：どうしますか？", ["ホームへ帰還", "迷宮内セーブ", "やめる"]);
+  if(choice===1){fieldState.checkpoint={area:fieldState.area,floor:fieldState.floor,x:fieldState.x,y:fieldState.y};persistAutoSave();openSaveDialog();return;}
   if (choice !== 0) return;
-  fieldLeaveToHome("ホームに戻りました。STARTから、行ったことのあるフロアへ出発できます。");
+  fieldLeaveToHome("転移門からホームに戻りました。");
 }
 function fieldLeaveToHome(message) {
   fieldEmit("leave", { area: fieldState.area, floor: fieldState.floor, reason: "home" });
