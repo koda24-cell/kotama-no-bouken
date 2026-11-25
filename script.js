@@ -118,6 +118,7 @@ function currentBgmTrack(){
   return "normal";
 }
 function startBgm(){
+  if(state.screen==="opening"||state.screen==="start-select"){stopBgm();return;}
   if(soundtrackPreviewActive)return;
   if((activeEvent&&activeEvent.id!=="maou-intro")||(stageIntroStoryPending&&activeEvent?.id!=="maou-intro"&&!maouIntroBgmPersistent)){stopBgm();return;}
   const toggle=$("bgm-toggle");
@@ -1031,7 +1032,7 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
 }
 function createSaveData(){return {saveVersion:12,formationRows:window.kotamaBattleExportRows?.(),/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
-function persistAutoSave(){try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
+function persistAutoSave(){if(state.screen==="opening"||state.screen==="start-select")return false;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
 function createBattleStartSnapshot(){return {game:createSaveData(),battle:{encounterMode:!!battleState.encounterMode,fieldEnemyId:battleState.fieldEnemyId||null,fieldFoeKey:battleState.fieldFoeKey||null,/* [FIELD] */stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges},formationRows:(typeof window.kotamaBattleExportRows==="function"?window.kotamaBattleExportRows():undefined)}};}
 function migrateLegacySlot(){if(localStorage.getItem("kotamaSaveSlot1"))return;const old=localStorage.getItem("fantasyRpgSave");if(!old)return;try{const game=JSON.parse(old);localStorage.setItem("kotamaSaveSlot1",JSON.stringify({savedAt:new Date().toISOString(),game,battle:null}));}catch(e){}}
 function openSaveDialog(){migrateLegacySlot();renderSaveSlots("save");$("save-dialog").hidden=false;$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");}
@@ -1081,8 +1082,8 @@ function loadGame(){try{
   if(typeof levelDeserialize==="function")levelDeserialize(d.levelExp);// [LEVEL]
   if(typeof fieldDeserialize==="function")fieldDeserialize(d.field);// [FIELD] フィールド位置・既読フラグ（旧セーブは初期値で補う）
   if(repairedStageProgress)persistAutoSave();
-  if($("bgm-toggle")?.checked)startBgm();else stopBgm();renderAll();setSystemMessage(Number(d.saveVersion)>=2?"ロードしました。":"旧セーブデータを新しい装備形式に変換してロードしました。");sound("select");
-}catch(e){setSystemMessage("セーブデータが不正か、存在しません。");sound("error");}}
+  if($("bgm-toggle")?.checked)startBgm();else stopBgm();renderAll();setSystemMessage(Number(d.saveVersion)>=2?"ロードしました。":"旧セーブデータを新しい装備形式に変換してロードしました。");sound("select");return true;
+}catch(e){setSystemMessage("セーブデータが不正か、存在しません。");sound("error");return false;}}
 function createEnemy(stage){
   if(battleState.hiddenBossMode){const h=JSON.parse(JSON.stringify(hiddenBossData));return {...h,maxHp:h.hp,_breakMax:260,_breakCurrent:260};}
   const d=enemyData[stage-1];
@@ -2417,8 +2418,10 @@ document.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(!b.dataset.silentSound&&!b.matches("[data-action],[data-skill],[data-item],[data-target],[data-partner],[data-union]"))sound("select");if($("bgm-toggle")?.checked)startBgm();});
 
 document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigation();setupBattleButtons();$("stage-select-close")?.addEventListener("click",()=>$("stage-select-dialog").hidden=true);
-  migrateLegacySlot();
   const forceNewGame=localStorage.getItem("kotamaStartNewGameNow")==="1";
+  if(!forceNewGame&&!new URLSearchParams(location.search).has("skipOpening")&&window.KotamaSacredPlaytest!==true){
+    state.screen="opening";document.body.dataset.screen="opening";document.querySelectorAll(".screen").forEach(el=>el.classList.toggle("active",el.id==="opening"));setupOpening();return;
+  }
   if(forceNewGame){
     localStorage.removeItem("kotamaStartNewGameNow");localStorage.removeItem("fantasyRpgSave");
     tutorialState={started:true,completed:false,phase:"intro",battlePhase:"tutorial-intro",heroSwordGranted:false,heroSwordEquipped:false,armorBought:false,potionBought:false,healerRemoved:false,healerReadded:false,accessoryExplained:false};
@@ -2454,6 +2457,51 @@ document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigati
     tutorialSave();
   }
   syncBattleSpeedUI();showScreen("home");renderAll();if(tutorialState.started&&!tutorialState.completed){document.body.classList.add("tutorial-home-focus");$("start-button").textContent="チュートリアル開始";showTutorialWelcome();}syncTutorialActive();});
+
+
+function openingRead(key){
+ try{const raw=localStorage.getItem(key);if(!raw)return null;const data=JSON.parse(raw),g=data?.game||data;return g?.state&&Array.isArray(g.state.party)&&Number.isFinite(g.state.gold)?{game:g,savedAt:data.savedAt||null,battle:data.battle||null}:null;}catch(_){return null;}
+}
+function openingHome(){
+ showScreen("home");
+ if(tutorialState.started&&!tutorialState.completed){
+  tutorialState.phase="intro";tutorialState.battlePhase="tutorial-intro";battleState.tutorialMode=false;
+  document.body.classList.add("tutorial-home-focus");$("start-button").textContent="チュートリアル開始";showTutorialWelcome();
+ }else document.body.classList.remove("tutorial-home-focus");
+ syncTutorialActive();
+}
+function setupOpening(){
+ const status=msg=>{$("opening-status").textContent=msg;};
+ const showSelection=()=>{
+  showScreen("start-select");
+  const list=$("opening-save-list");
+  const slots=[["fantasyRpgSave","オートセーブ"],["kotamaSaveSlot1","セーブデータ 1"],["kotamaSaveSlot2","セーブデータ 2"]];
+  list.innerHTML=slots.map(([key,label],i)=>{const d=openingRead(key);return '<button type="button" class="opening-save-card" data-opening-slot="'+i+'" '+(d?"":"disabled")+'><strong>'+label+'</strong><span>'+(d?esc(saveProgressLabel(d)):"データなし")+'</span><small>'+(d?.savedAt?esc(new Date(d.savedAt).toLocaleString("ja-JP")):d?"続きから":"空きスロット")+'</small></button>';}).join("");
+  list.querySelectorAll("[data-opening-slot]").forEach(b=>b.onclick=()=>{
+   const [key]=slots[Number(b.dataset.openingSlot)],d=openingRead(key);if(!d)return;
+   try{
+    if(key!=="fantasyRpgSave"){
+     const previous=localStorage.getItem("fantasyRpgSave");
+     if(previous&&previous!==JSON.stringify(d.game)&&!confirm("選択したデータをロードしますか？現在のオートセーブは上書きされます。"))return;
+     localStorage.setItem("fantasyRpgSave",JSON.stringify(d.game));
+    }
+    if(!loadGame()){status("セーブデータを読み込めませんでした。");return;}
+    openingHome();
+   }catch(e){status("セーブデータを読み込めませんでした。");}
+  });
+ };
+ $("opening-start").onclick=showSelection;
+ $("opening-back").onclick=()=>showScreen("opening");
+ $("opening-new").onclick=()=>{
+  const hasAuto=!!localStorage.getItem("fantasyRpgSave");
+  if(hasAuto&&!confirm("新規作成しますか？現在のオートセーブは初期化されます。手動セーブデータは残ります。"))return;
+  try{
+   if(hasAuto){const auto=localStorage.getItem("fantasyRpgSave");const free=[1,2].find(n=>!localStorage.getItem("kotamaSaveSlot"+n));if(free&&openingRead("fantasyRpgSave"))localStorage.setItem("kotamaSaveSlot"+free,JSON.stringify({game:JSON.parse(auto),savedAt:new Date().toISOString(),battle:null}));else if(!confirm("現在のオートセーブを置き換えてよいですか？"))return;}
+   localStorage.setItem("kotamaStartNewGameNow","1");
+   location.reload();
+  }catch(e){status("新規作成できませんでした。保存領域を確認してください。");}
+ };
+}
 
 function carriedCount(){return [inventory,materials].reduce((sum,bag)=>sum+Object.values(bag).reduce((n,v)=>n+Math.max(0,Number(v)||0),0),0);}
 function carriedRoom(){return Math.max(0,60-carriedCount());}
