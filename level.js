@@ -31,21 +31,22 @@ function levelEnemyExp(e) {
 function levelAwardBattleExp(e) {
   if (battleState.tutorialMode) return null;
   const exp = levelEnemyExp(e); if (!exp) return null;
-  const ups = [];
+  const ups = [], members = [];
   // 現在の編成メンバーだけでなく、解放済みの控えメンバーにも同じ経験値を配る。
   // 戦闘不能の現役メンバーは従来どおり経験値対象外。控えの戦闘不能者は経験値を得るが、HPは0のままにする。
   const activeIds = new Set((state.party || []).filter(Boolean));
   for (const c of characters) {
     const active = activeIds.has(c.id);
-    if (active && c.hp <= 0) continue;
+    if (active && c.hp <= 0) { members.push({id:c.id, name:c.name, active, from:levelOf(c), to:levelOf(c), before:levelExpNow(c), after:levelExpNow(c), gained:0, ko:true}); continue; }
     if (!active && typeof extIsJobAvailable === "function" && !extIsJobAvailable(c)) continue;
     const wasAlive = c.hp > 0;
-    const from = levelOf(c); let lv = from, cur = levelExpNow(c) + exp;
+    const from = levelOf(c), beforeExp = levelExpNow(c); let lv = from, cur = beforeExp + exp;
     while (lv < LEVEL_CAP && cur >= levelExpToNext(lv)) { cur -= levelExpToNext(lv); lv++; }
     if (lv >= LEVEL_CAP) cur = 0;
     // レベルアップで最大HPが伸びた分だけ、HPが残っている仲間の現在HPも増やす。
     const before = effectiveStats(c).maxHp;
     characterLevels[c.id] = lv; levelExp[c.id] = cur;
+    members.push({id:c.id, name:c.name, active, from, to:lv, before:beforeExp, after:cur, gained:from >= LEVEL_CAP ? 0 : exp, ko:false});
     if (lv > from) {
       if (wasAlive) c.hp = Math.min(effectiveStats(c).maxHp, c.hp + Math.max(0, effectiveStats(c).maxHp - before));
       trainingPoints[c.id] = (trainingPoints[c.id] || 0) + LEVEL_SKILL_POINTS * (lv - from);
@@ -59,7 +60,7 @@ function levelAwardBattleExp(e) {
     if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .8);
   }
   pushLog(text.replace("\n", " "));
-  return { exp, ups, text };
+  return { exp, ups, text, members };
 }
 
 // 表示用
