@@ -50,7 +50,7 @@
   <script src="./field/field-interactions.js?v=20261126-victory" defer></script>
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261116-rm1" defer></script>
-  <script src="./field/field-persistence.js?v=20261126-hud" defer></script>
+  <script src="./field/field-persistence.js?v=20261126-am-pm" defer></script>
   <script type="module" src="./field/field-3d-view.js?v=20261124-v6"></script>
 
   <script src="./monster-compendium.js?v=20261109-01" defer></script>
@@ -482,7 +482,7 @@ body[data-screen="field"] #field-minimap-legend{font-size:10px;gap:5px}
       <!-- [FIELD] フィールド探索（見下ろし型の自由移動・ランダムエンカウント・会話）。仕様：docs/field-and-story/FIELD_SPEC.md -->
       <section id="field" class="screen field-screen" data-area="1" data-theme="forest" aria-label="フィールド">
         <div class="field-hud"><button id="field-inventory-open" type="button" onclick="openFieldInventory()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v13H3z M3 8l2-4h14l2 4 M3 13h18 M10 11h4v5h-4z"/></svg><span><small>INVENTORY</small>インベントリ</span></button>
-          <span id="field-clock">08時</span><div id="field-location"><strong id="field-area-name">はじまりの樹海</strong></div>
+          <span id="field-clock">8 AM</span><div id="field-location"><strong id="field-area-name">はじまりの樹海</strong></div>
           <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド（1マスずつ）　調べる：Z/Enter・A</span>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
         </div>
