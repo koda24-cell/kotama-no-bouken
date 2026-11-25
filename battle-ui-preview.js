@@ -10,7 +10,8 @@
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
   sheet.href = "./css/15-battle-ui-refresh.css?v=20261126-floor-art";
-  document.head.appendChild(sheet);
+  const mobileSheet=document.getElementById("mobile-landscape-css");
+  if(mobileSheet)document.head.insertBefore(sheet,mobileSheet);else document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
     const party = document.getElementById("battle-party");
