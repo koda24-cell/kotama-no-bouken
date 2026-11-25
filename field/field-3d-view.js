@@ -28,6 +28,10 @@ const AREAS_3D = new Set([1, 2, 3, 4, 5]); // 第1〜第5階層の探索は3Dを
 const PREVIEW_KEY = 'kotama.field3d.preview';   // 試験表示する階層（例 "2"）。セーブデータには入れない
 // 第1階層の空気（ensureRenderer で使っている値と同じ。第2階層から戻ったときに戻す）
 const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 }, hemi: { sky: 0x7aa8c4, ground: 0x1c241c, high: 1.25, low: 1.7 } };
+// Phone-only view budget. Desktop retains its per-theme far plane.
+const PHONE_VIEW = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(navigator.userAgent) || (navigator.maxTouchPoints>0 && matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<=600);
+const PHONE_FAR = 24, PHONE_LIGHT_RANGE = 16;
+function viewFar(distance){return PHONE_VIEW?Math.min(distance,PHONE_FAR):distance;}
 const CELL = 4, EYE = 1.6, BACK = 1.1;    // 1マス4m、目の高さ、マスの後ろ寄りに立つ距離
 const STEP_MS = 230, TURN_MS = 210;       // 3D表示中の1歩・1回の旋回にかける時間
 const PREF_KEY = 'kotama.field3d', QUALITY_KEY = 'kotama.field3d.quality';
@@ -94,9 +98,9 @@ function ensureRenderer() {
     g.scene = new THREE.Scene();
     g.scene.background = new THREE.Color(0x070d11); g.scene.fog = new THREE.FogExp2(0x0c1a20, 0.042);
     g.hemi = new THREE.HemisphereLight(0x7aa8c4, 0x1c241c, g.high ? 1.25 : 1.7); g.scene.add(g.hemi);   // 暗所でも形が読める明るさ（点光源の少ない低画質では強め）
-    g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, 48);
+    g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, viewFar(48));
     g.world = new THREE.Group(); g.dyn = new THREE.Group(); g.scene.add(g.world, g.dyn);
-    setPool(g.high ? 14 : 6);   // 点光源は多いほど重い（1画素ごとに全部を計算する）ため、近いものだけ
+    setPool(PHONE_VIEW ? 4 : g.high ? 14 : 6);   // 点光源は多いほど重い（1画素ごとに全部を計算する）ため、近いものだけ
     if (g.high) {
       g.composer = new EffectComposer(r); g.composer.addPass(new RenderPass(g.scene, g.camera));
       g.composer.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.45, 0.5, 0.84)); g.composer.addPass(new OutputPass());
@@ -125,7 +129,7 @@ function setPool(n) {
 function updatePool(center, force) {
   const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`;
   if (!force && key === g.lastLightKey) return; g.lastLightKey = key;
-  const list = g.lights.filter((L) => !L.off).map((L) => ({ L, d: L.world.distanceToSquared(center) })).sort((a, b) => a.d - b.d);
+  const list = g.lights.filter((L) => !L.off).map((L) => ({ L, d: L.world.distanceToSquared(center) })).filter(e=>!PHONE_VIEW||e.d<=PHONE_LIGHT_RANGE**2).sort((a, b) => a.d - b.d);
   g.pool.forEach((p, i) => { const e = list[i]; if (!e) { p.intensity = 0; return; } p.position.copy(e.L.world); p.color.setHex(e.L.color); p.intensity = e.L.intensity * 2.4; p.distance = e.L.range * 2.0; });
 }
 
@@ -146,9 +150,9 @@ function applyEnv(area, env) {
   if(review&&!g.reviewFill){g.reviewFill=new THREE.AmbientLight(0xbac6ac,.32);g.scene.add(g.reviewFill);}
   if(g.reviewFill)g.reviewFill.intensity=review?.32:0;
   g.renderer.toneMappingExposure=review?1.48:1.3;
-  g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
+  g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = PHONE_VIEW ? Math.max(E.fog.density,0.085) : E.fog.density;
   if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
-  g.camera.far = area === 5 ? 180 : 48;
+  g.camera.far = viewFar(area === 5 ? 180 : 48);
   g.camera.updateProjectionMatrix();
   g.envArea = area;
 }
@@ -276,7 +280,7 @@ async function buildFloor() {
         layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v6.json', import.meta.url).href });
       if (token !== g.buildToken || curKey() !== key) { trial.dispose(); if (token === g.buildToken) g.buildingKey = ''; return; }
       g.sacredTrial = trial; sacred = true;
-      applyEnv(area, trial.env); g.camera.far = trial.far; g.camera.updateProjectionMatrix();
+      applyEnv(area, trial.env); g.camera.far = viewFar(trial.far); g.camera.updateProjectionMatrix();
     } catch (error) {
       if (token !== g.buildToken || curKey() !== key) return;
       g.sacredTrialError = String(error.message || error);
@@ -363,7 +367,7 @@ async function buildFloor() {
   }   // 第1階層の組み立てここまで
   report(95,'初回描画待ち');
   g.sig = doorSig(a);
-  g.builtKey = key; g.buildingKey = ''; g.cam.ready = false; g.lastLightKey = '';
+  g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';
   for (const e of g.entries) syncEntry(e, S);
   showBadge('');
   applyMode();
@@ -619,9 +623,13 @@ function frame() {
   updateCamera(dt);
   g.natureV6?.update(g.camera.position.x,g.camera.position.z);
   g.sacredTrial?.update?.(now / 1000);
-  if (g.theme?.area === 4 && g.envArea === 4) g.theme.tick(dt, now, g.camera.position);
+  // The camera frustum excludes remote geometry without changing movement, collision or asset data.
+  const themeStep=!PHONE_VIEW||!g.lastThemeTick||now-g.lastThemeTick>=1000/20;
+  const themeDt=PHONE_VIEW?Math.min(.15,g.lastThemeTick?(now-g.lastThemeTick)/1000:dt):dt;
+  if(themeStep)g.lastThemeTick=now;
+  if (themeStep && g.theme?.area === 4 && g.envArea === 4) g.theme.tick(themeDt, now, g.camera.position);
   updatePool(g.camera.position, g.envArea === 4);
-  if (g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(dt, now, g.camera.position);
+  if (themeStep && g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(themeDt, now, g.camera.position);
   // 正面の調べられる物に目印
   const nk = fieldState.lock ? '' : fieldState.nearKey;
   const ne = nk && g.entries.find((e) => e.o.key === nk);
@@ -644,7 +652,7 @@ function setPreview(n, on) {
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
 function gameReviewState() {
-  return { builtKey:g.builtKey, buildingKey:g.buildingKey, floorFailures:Object.fromEntries(g.floorFailures),
+  return { builtKey:g.builtKey, buildingKey:g.buildingKey, phoneView:PHONE_VIEW, drawDistance:g.camera?.far, floorFailures:Object.fromEntries(g.floorFailures),
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
     cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
