@@ -41,3 +41,20 @@ GPT・Claudeは3D制作前に `AGENTS.md`、`docs/3d/BLENDER_DOCKER_HANDOFF.md`�
 2. インストールだけでなく、最小テスト→実レンダ→GLB→ブラウザ表示まで検証。
 3. 有用なものだけ独立したツール基盤に取り込み、ゲーム本体へ無断で混ぜない。
 4. 既存の未承認PRを勝手にdevelopment/mainへマージしない。
+
+
+## 今後の追加候補：ArtCraft・フォント制作（2026-11-26）
+状態：候補のみ。導入・接続・実行は未検証。
+
+| 候補 | 用途 |
+|---|---|
+| ArtCraft / PhotoCraft | 画像加工・レイヤー・UIの質感 |
+| VectorCraft | UI枠・アイコン・文字輪郭 |
+| AniCraft / EffectCraft | 2Dアニメーション・戦闘演出 |
+| TextureCraft / MaterialCraft | 3Dテクスチャ・質感 |
+| FilmCraft / FigCraft / SoundCraft / LightCraft | 映像・UI設計・音声・色調補正の候補 |
+| FontForge | オリジナルフォントの生成・検査・TTF/OTF出力。必要に応じてWOFF2変換 |
+
+優先検証：公式配布元・各ライセンス・CLI/MCPの実在と操作範囲を確認し、追加課金なしでGitHub Actions上の実行を試す。PC MCPは明示指示時のみ。外部有料AI/APIは使わない。ArtCraftの各アプリ名・対応状況は導入時に再確認する。
+
+UI制作：透過PNG/SVG、9-slice、文字・数値はHTML/CSS、PC/スマホ横画面のレスポンシブ対応。実スクリーンショットで重なり・視認性・操作性を確認し、修正を反復。フォントは数字・英字・タイトルから始め、必要な日本語字形へ拡張。既存フォントを改変する場合は改変・再配布条件を確認する。ゲーム反映はユーザー承認後。Blenderや既存制作環境は維持する。
