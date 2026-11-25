@@ -402,7 +402,9 @@ function shopDisplayCategory(item){
 }
 function renderShop(){
   const box=$("shop-items");if(!box)return;
-  const buyer=getCharacter(shopBuyerId)||characters[0];
+  const buyers=getParty().filter(Boolean);if(!buyers.length)return;
+  if(!buyers.some(c=>c.id===shopBuyerId))shopBuyerId=buyers[0].id;
+  const buyer=getCharacter(shopBuyerId)||buyers[0];
   const categoryNames={weapon:"武器",frontArmor:"前衛防具",backArmor:"後衛防具",armor:"防具",shield:"盾",staff:"杖",knuckle:"ナックル",accessory:"アクセサリ",other:"その他"};
   const availableCategories=[...new Set(shopItems.filter(i=>!i.craftedOnly).map(shopDisplayCategory))];
   const orderedCategories=["weapon","frontArmor","backArmor","armor","shield","staff","knuckle","accessory","other"].filter(c=>availableCategories.includes(c));
@@ -423,8 +425,8 @@ function renderShop(){
   }).join("")||'<p class="empty-note">この職業に対応する商品はありません。</p>';
   box.querySelectorAll("[data-buy-item]").forEach(b=>b.onclick=()=>buyItem(b.dataset.buyItem,b.dataset.buyMode||"store"));
   tabs?.querySelectorAll("[data-category]").forEach(b=>b.onclick=()=>{currentCategory=b.dataset.category;renderShop();sound("select");});
-  buyerBox?.querySelector("[data-buyer-prev]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+list.length-1)%list.length].id;}renderShop();});
-  buyerBox?.querySelector("[data-buyer-next]")?.addEventListener("click",()=>{{const list=extAvailableCharacters();shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+1)%list.length].id;}renderShop();});
+  buyerBox?.querySelector("[data-buyer-prev]")?.addEventListener("click",()=>{{const list=buyers;shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+list.length-1)%list.length].id;}renderShop();});
+  buyerBox?.querySelector("[data-buyer-next]")?.addEventListener("click",()=>{{const list=buyers;shopBuyerId=list[(Math.max(0,list.findIndex(c=>c.id===shopBuyerId))+1)%list.length].id;}renderShop();});
 }
 // スキルツリー定義は data/skill-trees.js に分離。
 const skillLevels={};characters.forEach(c=>skillLevels[c.id]={});
