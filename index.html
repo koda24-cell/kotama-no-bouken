@@ -125,6 +125,20 @@ body[data-screen="field"] #field{position:fixed!important;inset:0!important;z-in
 body[data-screen="field"] #field-viewport{flex:1;min-height:0!important;height:auto!important;width:100%!important;max-width:none!important}
 body[data-screen="field"] #field .field-hud{flex:none}
 </style>
+<style id="field-inventory-ui">
+#field-inventory-dialog{box-sizing:border-box;width:min(94vw,900px)!important;max-height:90dvh!important;border:1px solid #a5b7ad!important;border-radius:8px;background:linear-gradient(145deg,#243b39,#101d25)!important;color:#f5f2df!important;box-shadow:0 18px 60px #0009}
+#field-inventory-dialog::backdrop{background:#081319b8}
+#field-inventory-dialog h2{display:flex;justify-content:space-between;border-bottom:1px solid #a5b7ad;padding-bottom:10px}
+#field-inventory-dialog nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:5px;margin-bottom:14px}
+#field-inventory-dialog button{border:1px solid #91a99d;background:#263d40;color:#f5f2df;padding:8px 12px;border-radius:4px;cursor:pointer}
+#field-inventory-dialog button:focus-visible,#field-inventory-dialog button:hover{outline:2px solid #e1c78d}
+#field-inventory-dialog button:disabled{opacity:.4;cursor:default}
+#field-inventory-list{min-height:180px;max-height:55dvh;overflow:auto;padding:8px}
+#field-inventory-list>div{padding:8px;border-bottom:1px solid #8ba69b40}
+#field-inventory-list select{max-width:100%;padding:6px}
+#field-inventory-dialog>button:last-child{margin-top:12px;width:100%}
+#field-clock{font-variant-numeric:tabular-nums;white-space:nowrap}
+</style>
 </head>
 <body>
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
