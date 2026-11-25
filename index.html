@@ -36,7 +36,7 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261126-menu-v2" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-opening" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261110-01" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
@@ -325,8 +325,34 @@ body[data-screen="field"] #field-minimap-legend{font-size:10px;gap:5px}
 }
 </style>
   <link id="mobile-landscape-css" rel="stylesheet" href="./css/16-mobile-landscape.css?v=20261126-map-close">
+<style id="opening-layout">
+body:is([data-screen="opening"],[data-screen="start-select"]){margin:0;padding:0!important;background:#071019}
+body:is([data-screen="opening"],[data-screen="start-select"]) .game{width:100%;max-width:none;min-height:100dvh;margin:0;padding:0}
+body:is([data-screen="opening"],[data-screen="start-select"]) .game>.topbar,body:is([data-screen="opening"],[data-screen="start-select"]) .game>.footer-controls{display:none!important}
+body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:100%;max-width:none;margin:0;padding:0}
+#opening.active,#start-select.active{display:grid!important;place-items:center;min-height:100dvh;width:100%;max-width:none;margin:0;padding:clamp(14px,4vw,48px);box-sizing:border-box;border:0;background:radial-gradient(ellipse at 50% 35%,#29433a,#0e2029 50%,#050c14 90%);color:#e5ebdf}
+#opening .opening-panel{display:grid;justify-items:center;gap:clamp(14px,4vh,35px);text-align:center;width:min(100%,850px)}
+#opening h1{font-size:clamp(34px,7vw,92px);font-weight:800;letter-spacing:.08em;margin:0;color:#e8e8d3;text-shadow:0 4px 22px #000}
+.opening-kicker{color:#b7c6ac;font-size:clamp(11px,1.5vw,16px);letter-spacing:.22em;margin:0}
+.opening-rule{width:min(65%,360px);height:1px;background:linear-gradient(90deg,transparent,#d5c391,transparent)}
+#opening-start,#opening-new{min-height:52px;padding:10px 35px;border:1px solid #d0c49a;background:#203f46;color:#f1f4df;font-size:clamp(16px,2vw,22px);font-weight:700;letter-spacing:.08em}
+.opening-select-panel{width:min(100%,900px);display:grid;gap:15px}
+.opening-select-panel header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #7e9388;padding-bottom:10px}
+.opening-select-panel h2{font-size:clamp(24px,4vw,42px);margin:0}
+.opening-select-panel p{font-size:15px;color:#b9d0cb;margin:0}
+#opening-back{min-height:40px;padding:8px 14px;font-size:14px}
+#opening-save-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#opening-save-list .opening-save-card{display:grid;gap:9px;text-align:left;padding:16px;min-height:110px;background:#152c38;border:1px solid #718c92;color:#e6f1ef;white-space:normal;overflow-wrap:anywhere}
+#opening-save-list .opening-save-card strong{font-size:18px}
+#opening-save-list .opening-save-card span{font-size:15px}
+#opening-save-list .opening-save-card small{font-size:12px;color:#bdd3db}
+#opening-save-list .opening-save-card:disabled{opacity:.45}
+#opening-new{justify-self:end}
+#opening-status{min-height:1em;color:#e7bd9d}
+@media(orientation:landscape) and (pointer:coarse) and (max-height:600px){#opening.active,#start-select.active{padding:10px max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}#opening .opening-panel{gap:10px}#opening h1{font-size:clamp(32px,6vw,60px)}.opening-select-panel{gap:8px}.opening-select-panel header{padding-bottom:4px}.opening-select-panel h2{font-size:24px}#opening-save-list .opening-save-card{min-height:75px;padding:8px;gap:4px}#opening-save-list .opening-save-card strong{font-size:15px}#opening-save-list .opening-save-card span{font-size:13px}#opening-start,#opening-new{min-height:42px;font-size:16px;padding:6px 24px}}
+</style>
 </head>
-<body>
+<body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
     <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><div data-loading-recovery hidden><button type="button" data-loading-retry>3D読み込みを再試行</button><button type="button" data-loading-home>ホームへ戻る</button></div></div>
   </div>
@@ -361,7 +387,13 @@ body[data-screen="field"] #field-minimap-legend{font-size:10px;gap:5px}
 
     <main>
       <!-- ホーム -->
-      <section id="home" class="screen active">
+      <section id="opening" class="screen active" aria-label="オープニング">
+ <div class="opening-panel"><p class="opening-kicker">A LABYRINTH ADVENTURE</p><h1>コタマのぼうけん</h1><div class="opening-rule"></div><button id="opening-start" type="button">冒険を始める　›</button></div>
+</section>
+<section id="start-select" class="screen" aria-label="セーブデータ選択">
+ <div class="opening-select-panel"><header><h2>セーブデータ</h2><button id="opening-back" type="button">タイトルに戻る</button></header><p>続きから冒険を再開するデータを選択してください。</p><div id="opening-save-list"></div><button id="opening-new" type="button">＋ 新規作成</button><p id="opening-status" role="status"></p></div>
+</section>
+<section id="home" class="screen">
         <div class="page-heading">
 
 
