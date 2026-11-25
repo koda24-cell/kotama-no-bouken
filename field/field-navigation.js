@@ -14,7 +14,7 @@ function fieldShow({ returning = false } = {}) {
   fieldState.lock = false; fieldState.mapOpen = false; if ($("field-fullmap")) $("field-fullmap").hidden = true;
   const pt = fieldPlayerTile(); fieldState.triggerTile = `${pt.tx},${pt.ty}`;
   fieldInput.keys.clear(); fieldInput.pad.clear();
-  showScreen("field");
+  showScreen("field"); fieldRenderClock();
   fieldUpdateVision(true);
   fieldRender();
   fieldStartLoop();

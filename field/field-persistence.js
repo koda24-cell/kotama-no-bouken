@@ -20,12 +20,13 @@ function fieldSerialize() {
   for (const [name, count] of Object.entries(enemyEncounterCounts)) if (fieldNames.has(name)) enemyEncounters[name] = count;
   const maps = {};
   for (const [key, arr] of Object.entries(fieldState.explored)) if (arr && arr.some(v => v)) maps[key] = fieldEncodeBits(arr);
-  return { area: fieldState.area, floor: fieldState.floor, x: Math.round(fieldState.x), y: Math.round(fieldState.y), positioned: !!fieldState.positioned,
+  return { elapsedMinutes: fieldState.elapsedMinutes||0, area: fieldState.area, floor: fieldState.floor, x: Math.round(fieldState.x), y: Math.round(fieldState.y), positioned: !!fieldState.positioned,
     checkpoint: fieldState.checkpoint ? { ...fieldState.checkpoint, x: Math.round(fieldState.checkpoint.x), y: Math.round(fieldState.checkpoint.y) } : null,
     flags: Object.fromEntries(Object.entries(fieldState.flags).filter(([k, v]) => v === true && !k.startsWith("__"))), enemyEncounters, maps,
     ...fieldLootSerialize() };   // [LOOT] saveVersion 11：gatherUsed・discovered・expedition
 }
 function fieldDeserialize(d) {
+  fieldState.elapsedMinutes=Math.max(0,Math.floor(Number(d?.elapsedMinutes)||0));
   fieldState.flags = {}; fieldState.checkpoint = null; fieldState.area = 1; fieldState.floor = 0; fieldState.positioned = false; fieldState.built = "";
   fieldState.explored = {}; fieldState.gatherUsed = {}; fieldState.foeDefeated = {}; fieldState.discovered = {}; fieldState.expedition = 0;   // [LOOT]
   if (!d || typeof d !== "object") {
@@ -91,3 +92,6 @@ function fieldLootDeserialize(d) {
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fieldSetupInput); else fieldSetupInput();
+
+function fieldAdvanceClock(){fieldState.elapsedMinutes=(fieldState.elapsedMinutes||0)+1;fieldRenderClock();}
+function fieldRenderClock(){const el=$("field-clock");if(el){const m=(480+(fieldState.elapsedMinutes||0))%1440;el.textContent='Day '+(1+Math.floor((480+(fieldState.elapsedMinutes||0))/1440))+' '+String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}}

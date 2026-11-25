@@ -135,6 +135,7 @@ function fieldAnimateView(dt) {
   for (const f of fieldState.foes) f.view = lerp(f.view, f);
 }
 function fieldAfterMove(a, moved) {
+  if(moved>0)fieldAdvanceClock();
   const { tx, ty } = fieldPlayerTile(), c = fieldTileAt(a, tx, ty);
   const key = `${tx},${ty}`;
   if (key !== fieldState.triggerTile) {
