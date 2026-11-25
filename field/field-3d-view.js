@@ -225,11 +225,14 @@ async function buildFloor() {
     catch (e) { throw e; }
   }
   try {
-    const list = Object.values(FILES); let done = 0;
+    // Later strata own their terrain kit; only load shared props actually used by their builders.
+    const sharedKeys=area===1?Object.keys(FILES):area===2?[]:area===3?['stairsDown','stairsUp','seal','torch','sign','lever','runeDoor']:['sign','stairsDown','stairsUp','seal','torch','runeDoor','rootArch','npcTraveler'];
+    const list=sharedKeys.map(k=>FILES[k]); let done=0;
+    g.requiredSharedKeys=sharedKeys;
     report(20,'共通素材読み込み');
-    const concurrency=g.high?6:2;
+    const concurrency=g.high?6:1;
     for(let i=0;i<list.length;i+=concurrency)await Promise.all(list.slice(i,i+concurrency).map(f=>load(f).then(()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);})));
-    for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
+    if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
   } catch (e) {
     if(th&&th!==g.theme)try{th.dispose({final:true});}catch(_){} throw e;
   }
@@ -239,7 +242,7 @@ async function buildFloor() {
     return;
   }   // 待っている間にフロアが変わった
   report(75,'マップ組み立て');
-  const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
+  const S = {}; for (const k of g.requiredSharedKeys) S[k] = await load(FILES[k]);
   // The URL-only sacred trial owns no save or interaction state.
   g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null;g.cameraPortals=[]; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
