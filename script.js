@@ -1765,7 +1765,7 @@ async function executeTurn(){
   if(useRound){battleState._roundActive=false;await extEndOfTurnStatuses();}
   battleState._roundActive=false;
   if(livingParty().length===0){finishDefeat();return;}
-  battleState.turnCount++;
+  battleState.turnCount++;if(battleState.encounterMode&&typeof fieldAdvanceClock==='function')fieldAdvanceClock();
   if(typeof waterBattleMapAdvanceTurn==="function")waterBattleMapAdvanceTurn();
   battleEmit("turn:end",{turn:resolvedTurn});// [EVT]
   refreshBattleLog();
