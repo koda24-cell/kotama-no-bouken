@@ -2249,8 +2249,8 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
 
 /* Per-floor artwork, inherited by arena and surrounding battle frame. */
 #battle:has(.battle-arena[data-environment="forest"]){--battle-floor-art:url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")}
-#battle:has(.battle-arena[data-environment="water"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-02-water.png")}
-#battle:has(.battle-arena[data-environment="ruins"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-03-ruins.png")}
-#battle:has(.battle-arena[data-environment="lava"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-04-volcano.png")}
-#battle:has(.battle-arena[data-environment="castle"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-05-castle.png")}
+#battle:has(.battle-arena[data-environment="water"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-02-water.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-02-water.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-02-water.png") type("image/png"))}
+#battle:has(.battle-arena[data-environment="ruins"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-03-ruins.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-03-ruins.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-03-ruins.png") type("image/png"))}
+#battle:has(.battle-arena[data-environment="lava"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-04-volcano.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-04-volcano.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-04-volcano.png") type("image/png"))}
+#battle:has(.battle-arena[data-environment="castle"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-05-castle.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-05-castle.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-05-castle.png") type("image/png"))}
 #battle:not(.battle-ui-preview) .battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"]){background-image:linear-gradient(180deg,#00101b40,#00101b60),var(--battle-floor-art);background-position:center;background-size:cover;background-repeat:no-repeat}
