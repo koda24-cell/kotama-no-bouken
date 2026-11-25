@@ -101,4 +101,4 @@ function fieldLootDeserialize(d) {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fieldSetupInput); else fieldSetupInput();
 
 function fieldAdvanceClock(){fieldState.elapsedMinutes=(fieldState.elapsedMinutes||0)+1;fieldRenderClock();}
-function fieldRenderClock(){const el=$("field-clock");if(el){const m=(480+(fieldState.elapsedMinutes||0))%1440;el.textContent=String(Math.floor(m/60)).padStart(2,'0')+'時';}}
+function fieldRenderClock(){const el=$("field-clock");if(el){const m=(480+(fieldState.elapsedMinutes||0))%1440;const h=Math.floor(m/60);el.textContent=String(h%12||12)+(h<12?' AM':' PM');}}
