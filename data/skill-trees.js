@@ -32,3 +32,169 @@ const skillTreeDerivedSkills={
  warrior:{id:"warrior-overdrive",name:"頭封じの拳",cost:26,target:"enemy",type:"xj",bodyPart:"arm",xj:{kind:"sp",mult:1.35,element:"壊",fx:"slash",status:{type:"bindHead",chance:.55,turns:3}}},
  samurai:{id:"samurai-mugen",name:"秘剣・無双",cost:50,target:"enemy",type:"multiSlash"}
 };
+
+// Additional jobs: reuse existing training and combat bonus mechanisms.
+Object.assign(skillTreeDefinitions,{
+  "assassin": {
+    "passive": {
+      "id": "assassin-passive",
+      "name": "暗殺者の基礎",
+      "desc": "攻撃力が2%上昇する。",
+      "effect": "stats",
+      "stat": "attack"
+    },
+    "a": {
+      "id": "assassin-branch-a",
+      "name": "通常攻撃威力強化",
+      "desc": "レベルごとに通常攻撃威力を3%強化する。",
+      "effect": "normal"
+    },
+    "b": {
+      "id": "assassin-branch-b",
+      "name": "SP攻撃威力強化",
+      "desc": "レベルごとにSP攻撃威力を3%強化する。",
+      "effect": "sp"
+    },
+    "derived": {
+      "id": "assassin-derived",
+      "name": "ブレイク蓄積量強化・極意",
+      "desc": "レベルごとにブレイク蓄積量を3%強化する。",
+      "effect": "break"
+    }
+  },
+  "gunner": {
+    "passive": {
+      "id": "gunner-passive",
+      "name": "ガンナーの基礎",
+      "desc": "攻撃力が2%上昇する。",
+      "effect": "stats",
+      "stat": "attack"
+    },
+    "a": {
+      "id": "gunner-branch-a",
+      "name": "通常攻撃威力強化",
+      "desc": "レベルごとに通常攻撃威力を3%強化する。",
+      "effect": "normal"
+    },
+    "b": {
+      "id": "gunner-branch-b",
+      "name": "SP攻撃威力強化",
+      "desc": "レベルごとにSP攻撃威力を3%強化する。",
+      "effect": "sp"
+    },
+    "derived": {
+      "id": "gunner-derived",
+      "name": "ブレイク蓄積量強化・極意",
+      "desc": "レベルごとにブレイク蓄積量を3%強化する。",
+      "effect": "break"
+    }
+  },
+  "highlander": {
+    "passive": {
+      "id": "highlander-passive",
+      "name": "ハイランダーの基礎",
+      "desc": "最大HP・攻撃力・防御力が2%上昇する。",
+      "effect": "stats",
+      "stat": "warrior"
+    },
+    "a": {
+      "id": "highlander-branch-a",
+      "name": "通常攻撃威力強化",
+      "desc": "レベルごとに通常攻撃威力を3%強化する。",
+      "effect": "normal"
+    },
+    "b": {
+      "id": "highlander-branch-b",
+      "name": "SP攻撃威力強化",
+      "desc": "レベルごとにSP攻撃威力を3%強化する。",
+      "effect": "sp"
+    },
+    "derived": {
+      "id": "highlander-derived",
+      "name": "ブレイク蓄積量強化・極意",
+      "desc": "レベルごとにブレイク蓄積量を3%強化する。",
+      "effect": "break"
+    }
+  },
+  "princess": {
+    "passive": {
+      "id": "princess-passive",
+      "name": "プリンセスの基礎",
+      "desc": "最大HP・SP攻撃力・SP防御力が2%上昇する。",
+      "effect": "stats",
+      "stat": "healer"
+    },
+    "a": {
+      "id": "princess-branch-a",
+      "name": "対応回復技の回復量強化",
+      "desc": "レベルごとに対応回復技の回復量を3%強化する。",
+      "effect": "heal"
+    },
+    "b": {
+      "id": "princess-branch-b",
+      "name": "防御時の軽減率強化",
+      "desc": "レベルごとに防御時の軽減率を3%強化する。",
+      "effect": "guard"
+    },
+    "derived": {
+      "id": "princess-derived",
+      "name": "SP攻撃威力強化・極意",
+      "desc": "レベルごとにSP攻撃威力を3%強化する。",
+      "effect": "sp"
+    }
+  },
+  "reaper": {
+    "passive": {
+      "id": "reaper-passive",
+      "name": "リーパーの基礎",
+      "desc": "SP攻撃力が2%上昇する。",
+      "effect": "stats",
+      "stat": "mage"
+    },
+    "a": {
+      "id": "reaper-branch-a",
+      "name": "通常攻撃威力強化",
+      "desc": "レベルごとに通常攻撃威力を3%強化する。",
+      "effect": "normal"
+    },
+    "b": {
+      "id": "reaper-branch-b",
+      "name": "SP攻撃威力強化",
+      "desc": "レベルごとにSP攻撃威力を3%強化する。",
+      "effect": "sp"
+    },
+    "derived": {
+      "id": "reaper-derived",
+      "name": "ブレイク蓄積量強化・極意",
+      "desc": "レベルごとにブレイク蓄積量を3%強化する。",
+      "effect": "break"
+    }
+  },
+  "imperial": {
+    "passive": {
+      "id": "imperial-passive",
+      "name": "インペリアルの基礎",
+      "desc": "最大HP・攻撃力・SP攻撃力が2%上昇する。",
+      "effect": "stats",
+      "stat": "balanced"
+    },
+    "a": {
+      "id": "imperial-branch-a",
+      "name": "通常攻撃威力強化",
+      "desc": "レベルごとに通常攻撃威力を3%強化する。",
+      "effect": "normal"
+    },
+    "b": {
+      "id": "imperial-branch-b",
+      "name": "SP攻撃威力強化",
+      "desc": "レベルごとにSP攻撃威力を3%強化する。",
+      "effect": "sp"
+    },
+    "derived": {
+      "id": "imperial-derived",
+      "name": "ブレイク蓄積量強化・極意",
+      "desc": "レベルごとにブレイク蓄積量を3%強化する。",
+      "effect": "break"
+    }
+  }
+});
