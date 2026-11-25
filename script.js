@@ -384,7 +384,7 @@ function renderFormation(){const selected=$("selected-party"),roster=$("characte
   selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));selected.querySelectorAll("[data-select-slot]").forEach(b=>b.onclick=()=>{formationTargetSlot=Number(b.dataset.selectSlot);setSystemMessage(`空き枠${formationTargetSlot+1}を選択しました。仲間候補を選んでください。`);});roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));}
 function equipmentSlots(c){return c.id==="samurai"?[["katana1","刀1"],["katana2","刀2"],["accessory1","装飾品1"],["accessory2","装飾品2"]]:[["weapon","武器"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]];}
 function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const armorRole=EXT_REAR_IDS.includes(charId)?"back":"front";const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((i.classes||[]).includes(charId))&&(slot!=="armor"||i.armorRole===armorRole)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
-function equipItem(charId,slot,newId){const c=getCharacter(charId);if(!c||!equipment[c.id]||!(slot in equipment[c.id]))return;const item=itemById(newId);if(newId&&(!item||!(inventory[newId]>0))){setSystemMessage("所持していない装備です。");sound("error");renderFormation();return;}if(newId&&item.category==="armor"&&(item.armorRole!==(EXT_REAR_IDS.includes(charId)?"back":"front")||!(item.classes||[]).includes(charId))){setSystemMessage("この職業の前衛・後衛区分では装備できない防具です。");sound("error");renderFormation();return;}if(newId&&!(item.classes||[]).includes(charId)&&!window.confirm(`${item.name}は${c.name}の適性装備ではありません。装備するとSPスキルとユニオンスキルが使用できなくなります。装備しますか？`)){renderFormation();return;}const old=equipment[charId][slot];if(old===newId)return;if(old)inventory[old]=(inventory[old]||0)+1;if(newId){inventory[newId]--;if(inventory[newId]<=0)delete inventory[newId];}equipment[charId][slot]=newId||null;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword"&&charId==="kotama"&&slot==="weapon"&&equipment.kotama?.weapon==="hero-sword"){tutorialState.heroSwordEquipped=true;tutorialState.phase="shop-nav";tutorialOverlay("SHOPへ移動しよう","装備できたね！装備品はSHOPで購入できるよ。画面上部のショップを押して移動しよう。");tutorialHighlight('.main-nav [data-screen="shop"]');tutorialSave();}
+function equipItem(charId,slot,newId){const c=getCharacter(charId);if(!c||!equipment[c.id]||!(slot in equipment[c.id]))return;const item=itemById(newId);if(newId&&(!item||!(inventory[newId]>0))){setSystemMessage("所持していない装備です。");sound("error");renderFormation();return;}if(newId&&item.category==="armor"&&(item.armorRole!==(EXT_REAR_IDS.includes(charId)?"back":"front")||!(item.classes||[]).includes(charId))){setSystemMessage("この職業の前衛・後衛区分では装備できない防具です。");sound("error");renderFormation();return;}if(newId&&!(item.classes||[]).includes(charId)&&!window.confirm(`${item.name}は${c.name}の適性装備ではありません。装備するとSPスキルとユニオンスキルが使用できなくなります。装備しますか？`)){renderFormation();return;}const old=equipment[charId][slot];if(old===newId)return;if(old&&!newId&&!carriedRoom()){setSystemMessage("所持品がいっぱいです。");renderFormation();return;}if(old)inventory[old]=(inventory[old]||0)+1;if(newId){inventory[newId]--;if(inventory[newId]<=0)delete inventory[newId];}equipment[charId][slot]=newId||null;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword"&&charId==="kotama"&&slot==="weapon"&&equipment.kotama?.weapon==="hero-sword"){tutorialState.heroSwordEquipped=true;tutorialState.phase="shop-nav";tutorialOverlay("SHOPへ移動しよう","装備できたね！装備品はSHOPで購入できるよ。画面上部のショップを押して移動しよう。");tutorialHighlight('.main-nav [data-screen="shop"]');tutorialSave();}
   // 勇者の剣を装備するまでは、武器欄の発光を保つ（再描画で対象が作り直されるため付け直す）。
   else if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword")tutorialHighlight('#selected-party select[data-character="kotama"][data-equip="weapon"]');}
 function toggleCharacter(id){if(state.party.includes(id)){removeCharacter(id);return;}const used=state.party.filter(Boolean).length;if(used>=PARTY_LIMIT){sound("error");return;}let slot=Number.isInteger(formationTargetSlot)?formationTargetSlot:state.party.findIndex(x=>!x);if(slot<0||slot>=PARTY_LIMIT||state.party[slot])slot=state.party.findIndex(x=>!x);if(slot<0)slot=used;state.party[slot]=id;formationTargetSlot=state.party.findIndex(x=>!x);if(formationTargetSlot<0)formationTargetSlot=0;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="formation-add"&&id==="healer"&&state.party.includes("healer")){tutorialState.healerReadded=true;tutorialState.phase="equipment-intro";tutorialOverlay("装備を確認しよう","キャラクターごとに武器・防具・アクセサリを管理できるよ。");tutorialHighlight("#selected-party");tutorialSave();}}
@@ -752,7 +752,7 @@ function renderProgressionPanel(){
 }
 
 function adminInfiniteResources(){return !!window.kotamaAdminBattleSettings?.infiniteResources;}
-function craftRecipe(id){const r=recipes.find(x=>x.id===id);if(!r||(!adminInfiniteResources()&&state.gold<r.cost)||(!adminInfiniteResources()&&!Object.entries(r.needs).every(([m,n])=>(materials[m]||0)>=n)))return;if(!adminInfiniteResources()){state.gold-=r.cost;for(const [m,n] of Object.entries(r.needs))materials[m]-=n;}inventory[r.id]=(inventory[r.id]||0)+1;unlockAchievement("weapon_smith");renderAll();setSystemMessage(`${r.name}を製作しました。`);}
+function craftRecipe(id){const r=recipes.find(x=>x.id===id);if(!r||(!adminInfiniteResources()&&state.gold<r.cost)||(!adminInfiniteResources()&&!Object.entries(r.needs).every(([m,n])=>(materials[m]||0)>=n)))return;if(!carriedRoom()&&(adminInfiniteResources()||!Object.values(r.needs).some(n=>n>0))){setSystemMessage("所持品がいっぱいです。");return;}if(!adminInfiniteResources()){state.gold-=r.cost;for(const [m,n] of Object.entries(r.needs))materials[m]-=n;}inventory[r.id]=(inventory[r.id]||0)+1;unlockAchievement("weapon_smith");renderAll();setSystemMessage(`${r.name}を製作しました。`);}
 function enhanceWeapon(id){const item=itemById(id),lv=weaponLevels[id]||0,cost=enhancementCosts[lv+1];const equippedNow=Object.values(equipment[shopBuyerId]||{}).includes(id);if(!item||item.category!=="weapon"||!equippedNow||lv>=5||(!adminInfiniteResources()&&state.gold<cost))return;const material=enhancementMaterials[id]||"slime_jelly";if(!adminInfiniteResources()&&(materials[material]||0)<lv+1){setSystemMessage(`${materialNames[material]}が不足しています。`);return;}if(!adminInfiniteResources()){state.gold-=cost;materials[material]-=lv+1;}weaponLevels[id]=lv+1;playSe("assets/se/bukikyouka/決定ボタンを押す10");if(lv+1>=5)unlockAchievement("enhancement_master");renderAll();setSystemMessage(`${item.name}を+${lv+1}に強化しました（${materialNames[material]}×${lv+1}消費）。`);}
 // 経験値・必要経験値が決まった際、この関数をレベルアップ処理から呼び出す。
 // 現在レベルより大きい値だけを受け付けるため、同じレベル通知の重複付与を防止する。
@@ -773,9 +773,9 @@ function awardMaterials(enemy){
   const drops=[];const name=enemy?.dropAs||enemy?.name;
   const table={"スライム":[["slime_jelly",.5]],"オオカミ":[["monster_fang",.4],["monster_hide",.2]],"ゴブリン":[["goblin_cloth",.4]],"ドラゴン":[["dragon_scale",1],["dragon_claw",.5]],"魔王":[["maou_crystal",1],["maou_horn",.5]]}[name]||[];
   const attempts=name==="ゴブリン"&&Array.isArray(enemy.members)?enemy.members.length:1;
-  for(let n=0;n<attempts;n++)for(const [id,chance] of table){if(Math.random()<chance){materials[id]=(materials[id]||0)+1;const existing=drops.find(x=>x.id===id);if(existing)existing.count++;else drops.push({id,name:materialNames[id],count:1});}}
+  for(let n=0;n<attempts;n++)for(const [id,chance] of table){if(Math.random()<chance&&carriedRoom()){materials[id]=(materials[id]||0)+1;const existing=drops.find(x=>x.id===id);if(existing)existing.count++;else drops.push({id,name:materialNames[id],count:1});}}
   // 状態異常が残ったまま撃破した場合の条件付き素材。通常ドロップと別枠。
-  if(battleState._ailmentKill){
+  if(battleState._ailmentKill&&carriedRoom()){
     const id="ailment_essence";
     materialNames[id]="異常の残滓";
     materials[id]=(materials[id]||0)+1;
@@ -826,7 +826,7 @@ function buyItem(id,mode="store"){
   const buyer=getCharacter(shopBuyerId),compatible=(i.classes||[]).includes(shopBuyerId);
   let slot=mode==="equip"?getShopItemSlot(i,shopBuyerId):null;
   if(mode==="equip"&&(!slot||!compatible)){setSystemMessage("この仲間には装備できません。");sound("error");return;}
-  if(!adminInfiniteResources())state.gold-=i.price;inventory[id]=(inventory[id]||0)+1;
+  if((mode!=="equip"||equipment[shopBuyerId]?.[slot])&&!carriedRoom()){setSystemMessage("所持品がいっぱいです。");return;}if(!adminInfiniteResources())state.gold-=i.price;inventory[id]=(inventory[id]||0)+1;
   if(mode==="equip"&&slot){
     const old=equipment[shopBuyerId][slot];
     if(old){inventory[old]=(inventory[old]||0)+1;}
@@ -2460,3 +2460,16 @@ document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigati
     tutorialSave();
   }
   syncBattleSpeedUI();showScreen("home");renderAll();if(tutorialState.started&&!tutorialState.completed){document.body.classList.add("tutorial-home-focus");$("start-button").textContent="チュートリアル開始";showTutorialWelcome();}syncTutorialActive();});
+
+function carriedCount(){return [inventory,materials].reduce((sum,bag)=>sum+Object.values(bag).reduce((n,v)=>n+Math.max(0,Number(v)||0),0),0);}
+function carriedRoom(){return Math.max(0,60-carriedCount());}
+function openFieldInventory(){
+ if(state.screen!=="field"||fieldState.lock)return;
+ const dlg=$("field-inventory-dialog"),list=$("field-inventory-list");
+ fieldInput.keys.clear();fieldInput.pad.clear();fieldState.lock=true;
+ const render=()=>{ $("field-inventory-count").textContent=carriedCount()+" / 60";
+ list.innerHTML=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory,name:itemById(id)?.name||id})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials,name:materialNames[id]||id}))].filter(x=>x.n>0).map((x,i)=>'<div>'+esc(x.name)+' ×'+x.n+' <button type="button" data-discard="'+i+'">捨てる</button></div>').join("")||"所持品なし";
+ const rows=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials}))].filter(x=>x.n>0);
+ list.querySelectorAll("[data-discard]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.discard)];if(x&&confirm("1個捨てますか？")){x.bag[x.id]--;if(!x.bag[x.id])delete x.bag[x.id];persistAutoSave();render();}});
+ };render();dlg.showModal();dlg.onclose=()=>{fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
+}

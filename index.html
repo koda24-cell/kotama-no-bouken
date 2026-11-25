@@ -294,7 +294,7 @@ body[data-screen="field"] #field .field-hud{flex:none}
 
       <!-- [FIELD] フィールド探索（見下ろし型の自由移動・ランダムエンカウント・会話）。仕様：docs/field-and-story/FIELD_SPEC.md -->
       <section id="field" class="screen field-screen" data-area="1" data-theme="forest" aria-label="フィールド">
-        <div class="field-hud">
+        <div class="field-hud"><button type="button" onclick="openFieldInventory()">インベントリ</button>
           <strong id="field-area-name">はじまりの樹海</strong>
           <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド（1マスずつ）　調べる：Z/Enter・A</span>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
@@ -461,5 +461,6 @@ body[data-screen="field"] #field .field-hud{flex:none}
 
   </div>
   <script src="./battle-water-map.js?v=20261112-04" defer></script>
+<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><div id="field-inventory-list"></div><button type="button" onclick="this.closest('dialog').close()">探索に戻る</button></dialog>
 </body>
 </html>
