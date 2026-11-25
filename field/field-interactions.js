@@ -511,7 +511,6 @@ async function fieldFinishEncounter(e) {
   const drops=defeatedUnits.flatMap(m=>awardMaterials(m));
   const levelResult=typeof levelAwardBattleExp==="function"?levelAwardBattleExp({...e,exp:defeatedUnits.reduce((n,m)=>n+(Number(m.exp)||0),0)}):null;
   if (battleState.fieldFoeKey) fieldState.foeDefeated[battleState.fieldFoeKey] = true;
-  await showItemDropAnimation(drops);
   persistAutoSave();
   renderGold();
   if ($("bgm-toggle")?.checked) startBgm();
@@ -525,6 +524,7 @@ async function fieldFinishEncounter(e) {
   $("next-stage-button").hidden = false; $("next-stage-button").textContent = "迷宮へ戻る";
   $("return-home-button").hidden = false;
   pushLog(`${e.name}を倒した！ ${rewardGold}G獲得。`);
+  if(typeof showVictoryResult==="function") showVictoryResult(levelResult,drops);
 }
 // 雑魚戦・FOE戦の敗北（script.js の finishDefeat() から：// [FIELD]）
 function fieldOnDefeat() {

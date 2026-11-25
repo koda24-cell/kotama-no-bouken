@@ -36,18 +36,18 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261124-tutorial2" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-victory" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261110-01" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
-  <script src="./level.js?v=20261109-16" defer></script>
+  <script src="./level.js?v=20261126-victory" defer></script>
   <script src="./field/field-random-maze.js?v=20261116-01" defer></script>
   <script src="./field/f1-review-layout-v6.js" defer></script>
   <script src="./field.js?v=20261124-v6" defer></script>
   <script src="./field/field-render.js?v=20261126-hud" defer></script>
   <script src="./field/field-movement-foe.js?v=20261126-hud" defer></script>
   <script src="./field/field-dialog.js?v=20261107-01" defer></script>
-  <script src="./field/field-interactions.js?v=20261116-rm1" defer></script>
+  <script src="./field/field-interactions.js?v=20261126-victory" defer></script>
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261116-rm1" defer></script>
   <script src="./field/field-persistence.js?v=20261126-hud" defer></script>
@@ -198,6 +198,8 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 .battle-member[data-party-id="imperial"] .imperial-inline-warning{color:#ff9a89}
 .imperial-inline-warning .imperial-inline-segments i.filled{background:#ff6957}
 </style>
+  <link rel="stylesheet" href="./css/15-victory-result.css?v=20261126-1">
+  <script src="./victory-result.js?v=20261126-1" defer></script>
 </head>
 <body>
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
