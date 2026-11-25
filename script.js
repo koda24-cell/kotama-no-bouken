@@ -517,7 +517,7 @@ function closeSkillUpgradeDialog(options={}){
   }
 }
 function activateSkillUpgradeDialogEnvironment(dialog){
-  const background=[...document.body.children].filter(element=>element!==dialog);
+  const background=[...dialog.parentElement.children].filter(element=>element!==dialog);
   const previousInert=background.map(element=>({element,inert:element.inert}));
   const bodyOverflow=document.body.style.overflow;
   const rootOverflow=document.documentElement.style.overflow;
@@ -568,7 +568,7 @@ function installSkillUpgradeCommitShield(){
   const shield=document.createElement("div");
   shield.setAttribute("aria-hidden","true");
   Object.assign(shield.style,{position:"fixed",inset:"0",zIndex:"10000",background:"transparent",pointerEvents:"auto",cursor:"default"});
-  document.body.appendChild(shield);
+  ($("field-inventory-dialog")?.open ? $("field-inventory-dialog") : document.body).appendChild(shield);
   const blockKeys=event=>{event.preventDefault();event.stopImmediatePropagation();};
   const blockClicks=event=>{event.preventDefault();event.stopImmediatePropagation();};
   document.addEventListener("keydown",blockKeys,true);
@@ -618,7 +618,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
  '<p class="skill-upgrade-note">確定するまでスキルレベルとSPポイントは変更されません。</p>'+
  '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>習得・強化する</button></div></div>';
  dialog._returnFocus=returnFocus||null;
- document.body.appendChild(dialog);
+ ($("field-inventory-dialog")?.open ? $("field-inventory-dialog") : document.body).appendChild(dialog);
  skillUpgradeDialogCleanup=activateSkillUpgradeDialogEnvironment(dialog);
  const cancel=dialog.querySelector("[data-upgrade-cancel]"),confirm=dialog.querySelector("[data-upgrade-confirm]"),quantity=dialog.querySelector("[data-upgrade-count]");
  const refreshPreview=()=>{
@@ -645,7 +645,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
   trainingPoints[charId]=latest.points-selected.cost;
   setTreeLevel(charId,nodeId,selected.level);
   unlockedSkills[charId]=treeNodes(charId).filter(n=>getTreeLevel(charId,n.id)>0).map(n=>n.id);
-  selectedTrainingSkill=nodeId;renderAll();
+  selectedTrainingSkill=nodeId;renderAll();persistAutoSave();
   closeSkillUpgradeDialog({focusTarget:focusAfterRender});
   installSkillUpgradeCommitShield();
   setSystemMessage(c.name+"の「"+node.name+"」をLv."+selected.level+"まで"+(eligibility.level?"強化":"習得")+"しました（"+selected.cost+" SP）。");
@@ -671,6 +671,10 @@ function respecCharacterSkillTree(charId){
 }
 function renderProgressionPanelUnsafe(){
  const box=$("progression-panel");if(!box)return;
+ const fieldTraining=!!box.closest("#field-inventory-dialog");
+ const trainingRoster=(fieldTraining?getParty():characters).filter(ch=>skillTreeDefinitions[ch.id]);
+ if(fieldTraining&&!trainingRoster.length){box.textContent="強化できる仲間がいません。";return;}
+ if(fieldTraining&&!trainingRoster.some(ch=>ch.id===trainingCharacterId)){trainingCharacterId=trainingRoster[0].id;selectedTrainingSkill=null;}
  const c=(skillTreeDefinitions[(getCharacter(trainingCharacterId)||characters[0]).id]?(getCharacter(trainingCharacterId)||characters[0]):characters[0]),stats=effectiveStats(c),tree=skillTreeDefinitions[c.id],points=trainingPoints[c.id]||0;
  const passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
  const isNewTree=newTreeCharacterIds.includes(c.id);
@@ -689,7 +693,7 @@ function renderProgressionPanelUnsafe(){
  const mat=Object.entries(materials).map(([id,n])=>`${materialNames[id]||id} ×${n||0}`).join("　／　")||"素材なし";
  const selectedLevel=getTreeLevel(c.id,selectedNode.id),selectedExpansion=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===selectedNode.id),selectedMax=selectedExpansion?(selectedExpansion.kind==="root"?3:1):(isNewTree?10:selectedNode===a||selectedNode===b?5:1);
  const selectedNext=selectedExpansion?`「${selectedExpansion.skill.name}」を習得`:(isNewTree?(selectedNode===passive?`レベルごとに${c.id==="healer"?"回復量3%":"対応能力2%"}上昇`:selectedNode===derived?`派生スキル「${skillTreeDerivedSkills[c.id].name}」の効果が強化`:`「${(selectedNode===a?skillTreeExtraSkills[c.id].skill:skillTreeBranchBSkills[c.id]).name}」の効果がレベルに応じて上昇`):(selectedNode===passive?"最大HP・攻撃力などの基礎能力が2%上昇":selectedNode===derived?`派生SPスキル「${skillTreeDerivedSkills[c.id].name}」を習得`:`対応する${selectedNode.effect}効果が3%上昇`));
- box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${characters.filter(ch=>skillTreeDefinitions[ch.id]).map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
+ box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${trainingRoster.map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
  <section class="training-tree training-showcase">
  <aside class="training-character-showcase">
   <div class="training-character-art"><img src="${esc(c.image||"")}" alt="${esc(c.name)}" loading="lazy" onerror="this.hidden=true"></div>
@@ -724,6 +728,7 @@ function renderProgressionPanelUnsafe(){
  </section>
  <section class="training-stats"><h3>${esc(c.name)}のステータス</h3><p>Lv.${characterLevels[c.id]||1}　／　取得スキル：${treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).length}系統</p><div class="training-stat-grid"><span>HP <b>${stats.maxHp}</b></span><span>ATK <b>${stats.attack}</b></span><span>DEF <b>${stats.defense}</b></span><span>最大SP <b>${stats.maxSp}</b></span><span>SP攻撃力 <b>${stats.spAttack}</b></span><span>SP防御力 <b>${stats.spDefense}</b></span></div><p>装備補正：${equippedItems(c).map(i=>`${esc(i.name)}（${esc(i.effect||"装備効果")}）`).join("、")||"なし"}</p><p>取得済み：${treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>`${esc(n.name)} Lv.${getTreeLevel(c.id,n.id)}`).join("、")||"なし"}</p></section>
  <p class="material-line">所持素材：${esc(mat)}</p><div class="progression-grid"><section><h3>武器製作</h3>${recipes.map(r=>{const ok=adminInfiniteResources()||(Object.entries(r.needs).every(([id,n])=>(materials[id]||0)>=n)&&state.gold>=r.cost);return `<article><strong>${esc(r.name)}</strong><small>${r.attackBonus?`ATK +${r.attackBonus}`:`SP攻撃 +${r.spAttackBonus}`} ／ ${r.classes.map(id=>getCharacter(id)?.name).join("・")}</small><small>${Object.entries(r.needs).map(([id,n])=>`${materialNames[id]}×${n}（${materials[id]||0}）`).join("、")} ／ ${r.cost}G</small><button data-craft="${r.id}" ${ok?"":"disabled"}>製作</button></article>`;}).join("")}</section><section><h3>装備中の武器強化</h3><p>${esc(c.name)}が現在装備している武器のみ対象です。最大+5。</p>${[...new Set(Object.values(equipment[c.id]||{}).filter(Boolean))].filter(id=>itemById(id)?.category==="weapon").map(id=>{const lv=weaponLevels[id]||0,cost=enhancementCosts[lv+1]||0,material=enhancementMaterials[id]||"slime_jelly",need=lv+1;return `<article><strong>${esc(itemById(id).name)} +${lv}</strong><small>強化後：${itemById(id).attackBonus?"攻撃力":"SP攻撃力"}補正 +${Math.floor((itemById(id).attackBonus||itemById(id).spAttackBonus||0)*(1+(lv+1)*.1))}</small><small>必要：${lv<5?`${cost}G・${materialNames[material]}×${need}（所持 ${materials[material]||0}）`:"最大強化"}</small><button data-enhance="${id}" ${lv>=5||(!adminInfiniteResources()&&(state.gold<cost||(materials[material]||0)<need))?"disabled":""}>${lv>=5?"強化上限":"強化する"}</button></article>`;}).join("")||"<p>装備中の武器がありません。</p>"}</section></div>`;
+ if(fieldTraining){box.querySelector(".progression-grid")?.remove();box.querySelector(".material-line")?.remove();box.querySelector(".skill-respec-button")?.remove();}
  box.querySelectorAll("[data-training-character]").forEach(btn=>btn.onclick=()=>{trainingCharacterId=btn.dataset.trainingCharacter;selectedTrainingSkill=null;renderProgressionPanel();});
  box.querySelectorAll("[data-select-skill]").forEach(btn=>btn.onclick=()=>{selectedTrainingSkill=btn.dataset.selectSkill;renderProgressionPanel();});
  box.querySelectorAll("[data-upgrade-skill]").forEach(btn=>btn.onclick=()=>{const node=treeNodes(c.id).find(n=>n.id===btn.dataset.upgradeSkill);if(!node)return;openSkillUpgradeDialog(c.id,node.id,btn);});
@@ -1024,7 +1029,7 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
   for(const cid of EXT_REAR_IDS){if(!clean[cid]?.armor)clean[cid].armor="linen-robe";}
   return clean;
 }
-function createSaveData(){return {saveVersion:12,/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
+function createSaveData(){return {saveVersion:12,formationRows:window.kotamaBattleExportRows?.(),/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
 function persistAutoSave(){try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
 function createBattleStartSnapshot(){return {game:createSaveData(),battle:{encounterMode:!!battleState.encounterMode,fieldEnemyId:battleState.fieldEnemyId||null,fieldFoeKey:battleState.fieldFoeKey||null,/* [FIELD] */stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges},formationRows:(typeof window.kotamaBattleExportRows==="function"?window.kotamaBattleExportRows():undefined)}};}
@@ -1041,7 +1046,7 @@ function loadGame(){try{
   const d=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");
   let repairedStageProgress=false;
   if(!d||!d.state||!Number.isFinite(d.state.gold)||!Array.isArray(d.state.party)||d.state.party.some(id=>id!==null&&!characters.some(c=>c.id===id))||d.state.party.length>PARTY_LIMIT)throw new Error("invalid save");
-  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
+  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);window.kotamaBattleImportRows?.(d.formationRows);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
   if(d.tutorial&&typeof d.tutorial==="object"){tutorialState={...tutorialState,...d.tutorial};}else{tutorialState={...tutorialState,started:false,completed:true,phase:"complete"};}
   Object.keys(inventory).forEach(k=>delete inventory[k]);
   if(d.inventory&&typeof d.inventory==="object")for(const [id,count] of Object.entries(d.inventory)){if(shopItems.some(i=>i.id===id)&&Number.isFinite(count)&&count>0)inventory[id]=Math.floor(count);}
@@ -2417,7 +2422,7 @@ document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigati
   if(forceNewGame){
     localStorage.removeItem("kotamaStartNewGameNow");localStorage.removeItem("fantasyRpgSave");
     tutorialState={started:true,completed:false,phase:"intro",battlePhase:"tutorial-intro",heroSwordGranted:false,heroSwordEquipped:false,armorBought:false,potionBought:false,healerRemoved:false,healerReadded:false,accessoryExplained:false};
-    state.gold=50;state.party=["kotama","knight","mage","healer"];state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
+    state.gold=50;state.party=["kotama","knight","mage","healer"];window.kotamaBattleImportRows?.(null);state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
     for(const id of Object.keys(equipment))equipment[id]={weapon:null,armor:null,accessory1:null,accessory2:null,katana1:null,katana2:null};
     equipment.kotama.weapon=null;equipment.kotama.armor=null;ensureStarterGear();
     for(const id of Object.keys(inventory))delete inventory[id];
@@ -2459,11 +2464,11 @@ function openFieldInventory(){
  const render=()=>{ $("field-inventory-count").textContent=carriedCount()+" / 60";
  const rows=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory,name:itemById(id)?.name||id,item:itemById(id)})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials,name:materialNames[id]||id}))].filter(x=>x.n>0);
  list.innerHTML=rows.map((x,i)=>'<div><button type="button" data-item-detail="'+i+'">'+esc(x.name)+'</button><span>×'+x.n+'</span><button type="button" data-discard="'+i+'">捨てる</button></div>').join("")||"所持品なし";
- list.querySelectorAll("[data-item-detail]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.itemDetail)];$("field-menu-detail").innerHTML="<h3>"+esc(x.name)+"</h3><p>所持数："+x.n+"</p><p>"+esc(x.item?.description||x.item?.effect||(x.bag===materials?"迷宮で入手した素材":"所持アイテム"))+"</p>";});
+ list.querySelectorAll("[data-item-detail]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.itemDetail)],row=b.parentElement,previous=row.querySelector(".field-item-inline-detail");list.querySelectorAll(".field-item-inline-detail").forEach(el=>el.remove());if(previous)return;const info=document.createElement("p");info.className="field-item-inline-detail";info.textContent=x.item?.description||x.item?.effect||(x.bag===materials?"迷宮で入手した素材":"所持アイテム");row.append(info);});
 
  if(inventory["return-scroll"]>0){const use=document.createElement("button");use.type="button";use.textContent="帰還の書を使う";use.onclick=()=>{if(state.screen!=="field"||!(inventory["return-scroll"]>0)||!confirm("帰還の書を1個使ってホームに戻りますか？"))return;inventory["return-scroll"]--;if(!inventory["return-scroll"])delete inventory["return-scroll"];dlg.close();fieldState.lock=false;fieldLeaveToHome("帰還の書を使用しました。");persistAutoSave();};list.prepend(use);}
  list.querySelectorAll("[data-discard]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.discard)];if(x&&confirm("1個捨てますか？")){x.bag[x.id]--;if(!x.bag[x.id])delete x.bag[x.id];persistAutoSave();render();}});
- };$("field-inventory-items-tab").onclick=render;$("field-inventory-status-tab").onclick=renderFieldCharacterStatus;$("field-inventory-skills-tab").onclick=renderFieldSkills;$("field-inventory-formation-tab").onclick=renderFieldFormation;$("field-inventory-training-tab").onclick=renderFieldTraining;$("field-inventory-mission-tab").onclick=renderFieldMission;$("field-inventory-settings-tab").onclick=renderFieldSettings;$("field-inventory-suspend-tab").onclick=suspendFieldGame;dlg.querySelectorAll("nav button").forEach(b=>{const action=b.onclick;b.onclick=()=>{dlg.dataset.menuTab=b.id; $("field-inventory-count").textContent=carriedCount()+" / 60";dlg.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-current",String(x===b)));dlg.querySelector("h2").firstChild.textContent=b.textContent+" ";$("field-menu-detail").innerHTML="<h3>"+esc(b.textContent)+"</h3><p>探索中の仲間と所持品を管理できます。</p>";action();};});$("field-inventory-items-tab").click();dlg.showModal();dlg.onclose=()=>{fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
+ };$("field-inventory-items-tab").onclick=render;$("field-inventory-status-tab").onclick=renderFieldCharacterStatus;$("field-inventory-skills-tab").onclick=renderFieldSkills;$("field-inventory-formation-tab").onclick=renderFieldFormation;$("field-inventory-training-tab").onclick=renderFieldTraining;$("field-inventory-mission-tab").onclick=renderFieldMission;$("field-inventory-settings-tab").onclick=renderFieldSettings;$("field-inventory-suspend-tab").onclick=suspendFieldGame;dlg.querySelectorAll("nav button").forEach(b=>{const action=b.onclick;b.onclick=()=>{restoreFieldTrainingPanel();dlg.dataset.menuTab=b.id; $("field-inventory-count").textContent=carriedCount()+" / 60";dlg.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-current",String(x===b)));dlg.querySelector("h2").firstChild.textContent=b.textContent+" ";action();};});$("field-inventory-items-tab").click();dlg.showModal();dlg.onclose=()=>{restoreFieldTrainingPanel();fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
 }
 
 function renderFieldCharacterStatus(){
@@ -2477,8 +2482,10 @@ function renderFieldCharacterStatus(){
   const v=effectiveStats(c),lv=levelOf(c);
   const meter=(name,now,max,kind)=>'<div class="field-status-meter '+kind+'"><div><strong>'+name+'</strong><b>'+Math.max(0,now)+' <small>/ '+max+'</small></b></div><progress max="'+Math.max(1,max)+'" value="'+Math.max(0,Math.min(now,max))+'" aria-label="'+name+'"></progress></div>';
   const stats=[["攻撃","ATK",v.attack],["SP攻撃","SP ATK",v.spAttack],["防御","DEF",v.defense],["SP防御","SP DEF",v.spDefense],["速度","SPD",v.speed]];
+  const statKeys=["attack","spAttack","defense","spDefense","speed"],allStats=party.map(effectiveStatsSafe=>effectiveStats(effectiveStatsSafe));
+  const statMax=key=>Math.max(100,Math.ceil(Math.max(...allStats.map(x=>Number(x[key])||0))/50)*50);
   const gear=equipmentSlots(c).map(([slot,label])=>'<div class="field-status-gear-row"><span>'+esc(label)+'</span><strong>'+esc(getEquippedName(c,slot))+'</strong></div>').join("");
-  detail.innerHTML='<div class="field-status-art">'+getCharacterImage(c)+'</div><div class="field-status-info"><header class="field-status-name"><div><small>CHARACTER STATUS</small><h3>'+esc(c.name)+'</h3></div><b>Lv. <strong>'+lv+'</strong></b></header><div class="field-status-resources">'+meter("HP",c.hp,v.maxHp,"hp")+meter("SP",c.sp,v.maxSp,"sp")+(lv>=LEVEL_CAP?'<div class="field-status-meter"><strong>EXP MAX</strong></div>':meter("EXP",levelExpNow(c),levelExpToNext(lv),"exp"))+'</div><h4>能力値 <small>ATTRIBUTES</small></h4><div class="field-status-stats">'+stats.map(([label,abbr,value])=>'<div><span>'+esc(label)+' <small>'+abbr+'</small></span><strong>'+value+'</strong></div>').join("")+'</div><h4>装備 <small>EQUIPMENT</small></h4><div class="field-status-gear">'+gear+'</div></div>';
+  detail.innerHTML='<div class="field-status-art">'+getCharacterImage(c)+'</div><div class="field-status-info"><header class="field-status-name"><div><small>CHARACTER STATUS</small><h3>'+esc(c.name)+'</h3></div><b>Lv. <strong>'+lv+'</strong></b></header><div class="field-status-resources">'+meter("HP",c.hp,v.maxHp,"hp")+meter("SP",c.sp,v.maxSp,"sp")+(lv>=LEVEL_CAP?'<div class="field-status-meter"><strong>EXP MAX</strong></div>':meter("EXP",levelExpNow(c),levelExpToNext(lv),"exp"))+'</div><h4>能力値 <small>ATTRIBUTES</small></h4><div class="field-status-stats">'+stats.map(([label,abbr,value],i)=>'<div><span>'+esc(label)+' <small>'+abbr+'</small></span><strong>'+value+'</strong><progress max="'+statMax(statKeys[i])+'" value="'+Math.max(0,value)+'" aria-label="'+esc(label)+'"></progress></div>').join("")+'</div><h4>装備 <small>EQUIPMENT</small></h4><div class="field-status-gear">'+gear+'</div></div>';
   list.querySelectorAll("[data-status-id]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.statusId===c.id)));
  };
  select.onchange=render;list.querySelectorAll("[data-status-id]").forEach(b=>b.onclick=()=>{select.value=b.dataset.statusId;render();});render();
@@ -2499,11 +2506,48 @@ function renderFieldSkills(){
  };select.onchange=render;render();
 }
 
-function renderFieldFormation(){const box=$("field-inventory-list");box.innerHTML='<h3>編成順</h3>';state.party.forEach((id,i)=>{const c=getCharacter(id);if(!c)return;const row=document.createElement("div");row.textContent=(i+1)+" "+c.name+" ";for(const d of [-1,1]){const b=document.createElement("button");b.textContent=d<0?"↑":"↓";b.disabled=i+d<0||i+d>=state.party.length;b.onclick=()=>{[state.party[i],state.party[i+d]]=[state.party[i+d],state.party[i]];persistAutoSave();renderFieldFormation();};row.append(b);}box.append(row);});}
-function renderFieldTraining(){const box=$("field-inventory-list"),party=getParty().filter(c=>skillTreeDefinitions[c.id]);box.innerHTML='<label>仲間 <select id="field-training-character">'+party.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")+'</select></label><div id="field-training-nodes"></div>';const select=$("field-training-character"),nodes=$("field-training-nodes");const render=()=>{const c=party.find(x=>x.id===select.value);if(!c)return;nodes.innerHTML='<p>SPポイント '+(trainingPoints[c.id]||0)+'</p>';for(const n of treeNodes(c.id)){const e=getTrainingUpgradeEligibility(c.id,n.id),row=document.createElement("div"),b=document.createElement("button");row.textContent=n.name+" Lv."+getTreeLevel(c.id,n.id)+" ";b.textContent="強化 "+e.cost+"pt";b.disabled=!e.allowed;b.title=e.reasons.join(" ");b.onclick=()=>{const v=getTrainingUpgradeEligibility(c.id,n.id);if(!v.allowed||!confirm(n.name+"を強化しますか？"))return;setTreeLevel(c.id,n.id,v.nextLevel);trainingPoints[c.id]=v.points-v.cost;persistAutoSave();render();};row.append(b);nodes.append(row);}};select.onchange=render;render();}
+function renderFieldFormation(selectedId=null){
+ const box=$("field-inventory-list"),party=getParty();
+ const supported=typeof window.kotamaBattleExportRows==="function"&&typeof window.kotamaBattleImportRows==="function";
+ const positions=supported?window.kotamaBattleExportRows():Object.fromEntries(party.map((c,i)=>[c.id,{row:i<3?"front":"rear",slot:i%3}]));
+ const member=(row,slot)=>party.find(c=>positions[c.id]?.row===row&&positions[c.id]?.slot===slot);
+ box.innerHTML='<section class="field-formation-board"><h3>戦闘編成 <small>'+party.length+' / '+PARTY_LIMIT+'人</small></h3><p>'+(supported?"仲間を選択し、移動先の枠をクリックすると移動・交代できます。":"現在の表示モードでは配置変更はできません。")+'</p>'+["front","rear"].map(row=>'<section class="field-formation-row"><h4>'+(row==="front"?"前衛 FRONT":"後衛 REAR")+'</h4><div class="field-formation-slots">'+[0,1,2].map(slot=>{const c=member(row,slot);return '<button type="button" data-field-row="'+row+'" data-field-slot="'+slot+'" aria-pressed="'+Boolean(c&&c.id===selectedId)+'" '+(!supported?"disabled":"")+'><small>'+(slot+1)+'</small>'+(c?'<div class="field-formation-art">'+getCharacterImage(c)+'</div><strong>'+esc(c.name)+'</strong><span>Lv.'+levelOf(c)+'</span>':'<div class="field-formation-art field-formation-empty">＋</div><strong>空き枠</strong>')+'</button>';}).join("")+'</div></section>').join("")+'</section>';
+ box.querySelectorAll("[data-field-slot]").forEach(b=>b.onclick=()=>{
+  const row=b.dataset.fieldRow,slot=Number(b.dataset.fieldSlot),target=member(row,slot);
+  if(!selectedId){if(target)renderFieldFormation(target.id);return;}
+  if(target?.id===selectedId){renderFieldFormation();return;}
+  const source=positions[selectedId];if(!source)return;
+  if(target)positions[target.id]={...source};
+  positions[selectedId]={row,slot};window.kotamaBattleImportRows(positions);persistAutoSave();renderFieldFormation();
+ });
+}
+function restoreFieldTrainingPanel(){
+ const panel=$("progression-panel"),host=$("training");
+ if(panel&&host&&panel.closest("#field-inventory-dialog")){
+  closeSkillUpgradeDialog();host.insertBefore(panel,host.querySelector(".page-actions"));renderProgressionPanel();
+ }
+}
+function renderFieldTraining(){
+ const box=$("field-inventory-list"),panel=$("progression-panel");
+ if(!panel)return;
+ box.replaceChildren(panel);renderProgressionPanel();
+}
 
 function renderFieldMission(){const box=$("field-inventory-list");box.innerHTML="<h3>現在の目的</h3><p>"+esc($("field-area-name").textContent)+" "+esc(fieldFloorLabel(fieldState.area,fieldState.floor))+" を探索する</p><p>階層の奥へ進み、ボスを撃破する。</p><h4>攻略状況</h4>"+Object.entries(stageCleared).filter(([id,v])=>v).map(([id])=>"<p>第"+esc(id)+"ステージ 攻略済み</p>").join("");}
-function renderFieldSettings(){const box=$("field-inventory-list");box.innerHTML='<h3>設定</h3>';for(const [id,name] of [["bgm-toggle","BGM"],["se-toggle","効果音"]]){const source=$(id);if(!source)continue;const label=document.createElement("label"),b=document.createElement("input");b.type="checkbox";b.checked=source.checked;b.onchange=()=>{source.checked=b.checked;source.dispatchEvent(new Event("change"));persistAutoSave();};label.append(b,name);box.append(label,document.createElement("div"));}for(const [id,name] of [["bgm-volume","BGM音量"],["se-volume","効果音量"]]){const source=$(id);if(!source)continue;const label=document.createElement("label"),b=document.createElement("input");b.type="range";b.min=source.min;b.max=source.max;b.value=source.value;b.oninput=()=>{source.value=b.value;source.dispatchEvent(new Event("input"));};b.onchange=()=>persistAutoSave();label.append(name,b);box.append(label,document.createElement("div"));}}
+function renderFieldSettings(){
+ const box=$("field-inventory-list");box.innerHTML='<section class="field-audio-settings"><h3>サウンド設定</h3></section>';
+ const panel=box.firstElementChild;
+ for(const [toggleId,volumeId,name] of [["bgm-toggle","bgm-volume","BGM"],["se-toggle","se-volume","SE・効果音"]]){
+  const source=$(toggleId),volume=$(volumeId);if(!source||!volume)continue;
+  const card=document.createElement("section");card.className="field-audio-card";
+  card.innerHTML='<h4>'+name+'</h4><label class="field-audio-toggle"><input type="checkbox">有効</label><label class="field-audio-volume"><span>音量 <output></output></span><input type="range"></label>';
+  const toggle=card.querySelector('input[type="checkbox"]'),range=card.querySelector('input[type="range"]'),out=card.querySelector("output");
+  toggle.checked=source.checked;range.min=volume.min;range.max=volume.max;range.step=volume.step||"1";range.value=volume.value;out.textContent=range.value+"%";
+  toggle.onchange=()=>{source.checked=toggle.checked;source.dispatchEvent(new Event("change"));persistAutoSave();};
+  range.oninput=()=>{volume.value=range.value;out.textContent=range.value+"%";volume.dispatchEvent(new Event("input"));};range.onchange=()=>persistAutoSave();
+  panel.append(card);
+ }
+}
 
 function suspendFieldGame(){if(state.screen!=="field"||!confirm("現在の探索を一時中断しますか？"))return;try{localStorage.setItem("kotamaFieldSuspend",JSON.stringify(createSaveData()));}catch(e){alert("中断データを保存できませんでした。");return;}$("field-inventory-dialog").close();fieldState.lock=false;showScreen("home");}
 function resumeFieldGame(){try{const raw=localStorage.getItem("kotamaFieldSuspend");if(!raw)return;const data=JSON.parse(raw);if(!data.field||!data.state)return;if(!confirm("中断した探索を再開しますか？ 中断データは消費されます。"))return;localStorage.setItem("fantasyRpgSave",raw);localStorage.removeItem("kotamaFieldSuspend");loadGame();fieldShow({returning:true});persistAutoSave();}catch(e){alert("中断データを再開できませんでした。");}}
