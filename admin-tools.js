@@ -120,7 +120,7 @@ function adminPanelMarkup(){
 function adminRenderPlayer(){
   const members=characters.map(c=>{const st=effectiveStats(c),slots=equipment[c.id]||{};return `<article class="admin-card"><h3>${esc(c.name)} <small>Lv.${characterLevels[c.id]||1}</small></h3>${adminRow("HP",`${c.hp} / ${st.maxHp}`)}${adminRow("SP",`${c.sp} / ${c.maxSp}`)}${adminRow("攻撃 / 防御",`${st.attack} / ${st.defense}`)}${adminRow("SP攻撃 / SP防御",`${st.spAttack} / ${st.spDefense}`)}${adminRow("武器",getEquippedName(c,"weapon"))}${adminRow("防具",getEquippedName(c,"armor"))}${adminRow("アクセサリ",[slots.accessory1,slots.accessory2].filter(Boolean).map(id=>itemById(id)?.name||id).join(" / ")||"なし")}${adminRow("習得スキル",treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>`${n.name} Lv.${getTreeLevel(c.id,n.id)}`).join("、")||"なし")}</article>`;}).join("");
   const items=Object.entries(inventory).filter(([,n])=>Number(n)>0).map(([id,n])=>`${itemById(id)?.name||id} ×${n}`);const mats=Object.entries(materials).filter(([,n])=>Number(n)>0).map(([id,n])=>`${materialNames[id]||id} ×${adminBattleSettings().infiniteResources?"∞":n}`);
-  return `<div class="admin-section"><h3>プレイヤー情報</h3>${adminRow("所持ゴールド",adminBattleSettings().infiniteResources?"∞（無限モード）":`${state.gold} G`)}${adminRow("編成",getParty().map(c=>c.name).join(" / "))}<h3>所持品</h3>${adminRow("アイテム・装備",items.join("、")||"なし")}${adminRow("素材",mats.join("、")||"なし")}</div><div class="admin-grid">${members}</div>`;
+  return `<div class="admin-section"><h3>プレイヤー情報</h3>${adminRow("所持ゴールド",adminBattleSettings().infiniteResources?"∞（無限モード）":`${state.gold} G`)}${adminRow("編成",getParty().map(c=>c.name).join(" / "))}<div class="admin-actions"><button type="button" id="admin-unlock-all-jobs" ${state.screen==="battle"||characters.every(extIsJobAvailable)?"disabled":""}>未解放キャラを一括解放（${characters.filter(c=>!extIsJobAvailable(c)).length}人）</button></div><p class="admin-note">編成の解放のみ変更します。ステージ・討伐記録は変更しません。オートセーブに反映します。</p><h3>所持品</h3>${adminRow("アイテム・装備",items.join("、")||"なし")}${adminRow("素材",mats.join("、")||"なし")}</div><div class="admin-grid">${members}</div>`;
 }
 function adminRenderProgress(){
   const names=["樹海の入り口","ゴブリンの森","霧の森","炎竜の巣","魔王の城"];
@@ -142,6 +142,7 @@ function renderAdminPanel(){
   const renderers={player:adminRenderPlayer,progress:adminRenderProgress,battle:adminRenderBattle,encounter:adminRenderEncounter,save:adminRenderSave};
   content.innerHTML=(renderers[adminActiveTab]||adminRenderPlayer)();
   $("kotama-admin-panel")?.querySelectorAll("[data-admin-tab]").forEach(b=>b.classList.toggle("active",b.dataset.adminTab===adminActiveTab));
+  if(adminActiveTab==="player")$("admin-unlock-all-jobs")?.addEventListener("click",()=>{if(state.screen==="battle")return;const locked=characters.filter(c=>!extIsJobAvailable(c));if(!locked.length||!window.confirm("未解放キャラを全員解放しますか？"))return;const count=locked.filter(c=>extUnlockJob(c.id)).length;const saved=persistAutoSave();renderAll();renderAdminPanel();setSystemMessage(count+"人を解放しました。"+(saved?"":" オートセーブに失敗しました。"));});
   if(adminActiveTab==="encounter")adminBindEncounterControls();
   if(adminActiveTab==="battle")adminBindBattleControls();
   if(adminActiveTab==="save"){
