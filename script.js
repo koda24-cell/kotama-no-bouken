@@ -2212,7 +2212,7 @@ async function finishStage(){
   let hiddenBossWasFirstClear=false;if(e.name==="混沌の幻影"){if(!hiddenBossFirstClear){hiddenBossWasFirstClear=true;state.gold+=1000;materials.chaos_crystal=(materials.chaos_crystal||0)+3;inventory["acc-chaos-charm"]=(inventory["acc-chaos-charm"]||0)+1;hiddenBossFirstClear=true;}else state.gold+=100;}
   const droppedItems=awardMaterials(e);
   const levelResult=typeof levelAwardBattleExp==="function"?levelAwardBattleExp(e):null;// [LEVEL]
-  if(e.name==="混沌の幻影"&&hiddenBossWasFirstClear)droppedItems.push({id:"chaos_crystal",name:"混沌の結晶",count:3});
+  if(e.name==="混沌の幻影"&&hiddenBossWasFirstClear)droppedItems.push({id:"chaos_crystal",name:"混沌の結晶",count:3},{id:"acc-chaos-charm",name:"混沌の護符",count:1});
   if(battleState.tutorialMode) await showItemDropAnimation(droppedItems);
   if(!battleState.hiddenBossMode){stageCleared[battleState.stage]=true;state.maxUnlockedStage=Math.max(state.maxUnlockedStage||1,Math.min(battleState.maxStage,battleState.stage+1));stageSkillPointAwarded[battleState.stage]=stageSkillPointAwarded[battleState.stage]||{};if(battleState.stage>=battleState.maxStage)unlockBgm("ending");}
   const newJobs=extUnlockForClear(battleState.stage,!!battleState.hiddenBossMode);// [EXT] 新しい仲間の解放
