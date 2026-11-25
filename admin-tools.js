@@ -108,11 +108,17 @@ function adminPanelMarkup(){
   if($("kotama-admin-panel"))return;
   const launcher=document.createElement("button");launcher.id="kotama-admin-launcher";launcher.type="button";launcher.textContent="DEV";launcher.title="開発者用管理パネル";launcher.setAttribute("aria-label","開発者用管理パネルを開く");
   const panel=document.createElement("section");panel.id="kotama-admin-panel";panel.hidden=true;panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");panel.setAttribute("aria-labelledby","kotama-admin-title");
-  panel.innerHTML=`<div class="kotama-admin-window"><header class="kotama-admin-header"><div><small>DEVELOPER TOOLS</small><h2 id="kotama-admin-title">管理者パネル</h2></div><button type="button" id="kotama-admin-close" aria-label="閉じる">×</button></header><nav class="kotama-admin-tabs" aria-label="管理者パネルのタブ"><button type="button" data-admin-tab="player">プレイヤー</button><button type="button" data-admin-tab="progress">ステージ進行</button><button type="button" data-admin-tab="battle">戦闘テスト</button><button type="button" data-admin-tab="encounter">エンカウント管理</button><button type="button" data-admin-tab="save">セーブ管理</button></nav><div id="kotama-admin-content" class="kotama-admin-content"></div><footer class="kotama-admin-footer"><span>開発者専用・通常プレイのデータ変更は行いません</span><button type="button" id="kotama-admin-close-bottom">閉じる</button></footer></div>`;
+  panel.innerHTML=`<div class="kotama-admin-window"><header class="kotama-admin-header"><div><small>DEVELOPER TOOLS</small><h2 id="kotama-admin-title">管理者パネル</h2></div><button type="button" id="kotama-admin-close" aria-label="閉じる">×</button></header><nav class="kotama-admin-tabs" aria-label="管理者パネルのタブ"><button type="button" data-admin-tab="player">プレイヤー</button><button type="button" data-admin-tab="progress">ステージ進行</button><button type="button" data-admin-tab="battle">戦闘テスト</button><button type="button" data-admin-tab="encounter">エンカウント管理</button><button type="button" data-admin-tab="save">セーブ管理</button></nav><div id="kotama-admin-content" class="kotama-admin-content"></div><footer class="kotama-admin-footer"><span>開発者専用・通常プレイのデータ変更は行いません</span><button type="button" id="admin-return-home">ホームに戻る</button><button type="button" id="kotama-admin-close-bottom">閉じる</button></footer></div>`;
   document.body.append(launcher,panel);
   launcher.addEventListener("click",()=>{renderAdminPanel();panel.hidden=false;document.body.classList.add("admin-panel-open");$("kotama-admin-close")?.focus();});
   const close=()=>{panel.hidden=true;document.body.classList.remove("admin-panel-open");launcher.focus();};
   $("kotama-admin-close").addEventListener("click",close);$("kotama-admin-close-bottom").addEventListener("click",close);
+  $("admin-return-home").addEventListener("click",()=>{
+    if(state.screen!=="field"||fieldState.lock){window.alert("探索中の操作可能な状態で使用してください。");return;}
+    if(!window.confirm("管理者機能でホームに戻りますか？ 帰還の書は消費しません。"))return;
+    close();fieldInput.keys.clear();fieldInput.pad.clear();
+    fieldLeaveToHome("管理者機能でホームに戻りました。");
+  });
   panel.addEventListener("click",e=>{if(e.target===panel)close();});
   panel.querySelectorAll("[data-admin-tab]").forEach(b=>b.addEventListener("click",()=>{adminActiveTab=b.dataset.adminTab;renderAdminPanel();}));
   document.addEventListener("keydown",e=>{if(!panel.hidden&&e.key==="Escape"){e.preventDefault();close();}});
