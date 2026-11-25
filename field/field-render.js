@@ -23,9 +23,10 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><canvas id="field-fullmap-canvas"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><div id="field-map-tools" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><label>地図アイコン <select id="field-map-tool"></select></label><span>マスをクリック・タップして配置／消去</span></div><canvas id="field-fullmap-canvas" style="cursor:crosshair;touch-action:manipulation"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
     vp.appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
+    fieldBindManualMap();
   }
   if (!$("field-map-rail")) {
     const rail = document.createElement("aside");
@@ -103,8 +104,7 @@ function fieldMapColor(a, c) {
   if (c === "~") return a.def.theme === "lava" ? FIELD_MAP_COLORS.lava : FIELD_MAP_COLORS.water;
   if (c === ",") return FIELD_MAP_COLORS.path;
   if (c === "*") return FIELD_MAP_COLORS.grass;
-  if (c === "B") return FIELD_MAP_COLORS.gate;
-  if ("_PE<>S".includes(c)) return FIELD_MAP_COLORS.safe;
+  // Object locations must not be revealed by special tile colors.
   return FIELD_MAP_COLORS.floor;
 }
 function fieldDrawMap(canvas, cell, full) {
@@ -187,37 +187,9 @@ function fieldDrawMap(canvas, cell, full) {
     } else if(shape==="diamond"){g.beginPath();g.moveTo(cx,cy-rad);g.lineTo(cx+rad,cy);g.lineTo(cx,cy+rad);g.lineTo(cx-rad,cy);g.closePath();g.fill()}
     else{g.beginPath();g.arc(cx,cy,rad,0,Math.PI*2);g.fill()}
   };
-  for(const o of a.objects){
-    if(!inWindow(o.tx,o.ty)||!exp[o.ty*a.w+o.tx]) continue;
-    if(o.kind==="stairs") dot(o.tx,o.ty,"#ffd84a",.84,o.dir==="up"?"triangle":"triangle-down",o.dir==="up"?"stairs_up":"stairs_down");
-    else if(o.kind==="save") dot(o.tx,o.ty,"#ffe27a",.8,"circle","save");
-    else if(o.kind==="chest") dot(o.tx,o.ty,fieldState.flags[o.key]?"#7a6a55":"#ff9a3c",.76,"square",fieldState.flags[o.key]?"chest_open":"chest");
-    else if(o.kind==="gather") dot(o.tx,o.ty,(fieldState.gatherUsed[o.key]||0)>=FIELD_GATHER_USES?"#5d7a5d":"#3ee07a",.76,"circle",/ore|mine|鉱/i.test(String(o.name||o.key))?"gather_ore":/wood|log|木/i.test(String(o.name||o.key))?"gather_wood":"gather_herb");
-    else if(o.kind==="npc"||o.kind==="sign") dot(o.tx,o.ty,"#c7a3ff",.72,"square",o.kind==="sign"?"inspect":"event");
-    else if(o.kind==="event"){
-      const done=typeof fieldSideDone==="function"&&fieldSideDone(o.event);
-      if(!o.hidden||done) dot(o.tx,o.ty,done?"#5f7f8f":"#7fd6ff",.72,"square","event");
-    }
-    else if(o.kind==="switch"){
-      const solved=typeof fieldPuzzleSolved==="function"&&fieldPuzzleSolved(o.puzzle);
-      dot(o.tx,o.ty,solved?"#7a6a8a":"#ff8ad8",.72,"square","inspect");
-    }
-    else if(o.kind==="cache"){
-      const opened=!!fieldState.flags["puzzle:"+o.puzzle+":reward"];
-      dot(o.tx,o.ty,opened?"#7a6a55":"#ff9a3c",.76,"square",opened?"chest_open":"chest");
-    }
-    else if(o.kind==="gate") dot(o.tx,o.ty,"#ff3030",.9,"circle","boss");
-    else if(o.kind==="exit") dot(o.tx,o.ty,"#fff4c2",.9,"square","stairs_down");
-    else if(o.kind==="door"){
-      const opened=typeof fieldDoorOpen==="function"?fieldDoorOpen(o):!!fieldState.flags["door:"+o.id+":open"];
-      if(!o.hidden||opened) dot(o.tx,o.ty,opened?"#63d6dc":"#f0c36a",.82,o.hidden?"diamond":"square",opened?"door":"locked_door");
-    }
-    else if(o.kind==="hiddenPassage"||o.kind==="hidden-passage") dot(o.tx,o.ty,"#c68cff",.82,"diamond","marker");
-  }
-  for(const foe of fieldState.foes){
-    if(foe.defeated) continue;
-    const fx=Math.floor(foe.x/FIELD_TILE),fy=Math.floor(foe.y/FIELD_TILE);
-    if(inWindow(fx,fy)&&exp[fy*a.w+fx]) dot(fx,fy,foe.mode==="chase"?"#ff3030":"#ffad45",.94,foe.mode==="chase"?"triangle":"circle",foe.mode==="chase"?"strong_enemy":"foe");
+  for(const [pos,name] of Object.entries(fieldManualMap(a))){
+    const [x,y]=pos.split(",").map(Number);
+    if(Number.isInteger(x)&&Number.isInteger(y)&&x>=0&&y>=0&&x<a.w&&y<a.h&&Object.hasOwn(FIELD_MANUAL_ICONS,name))dot(x,y,"#e5c66c",.85,"square",name);
   }
   g.save();g.translate((fieldState.x/FIELD_TILE-originX)*cell,(fieldState.y/FIELD_TILE-originY)*cell);
   g.rotate({up:0,right:Math.PI/2,down:Math.PI,left:-Math.PI/2}[fieldState.dir]||0);
@@ -235,11 +207,11 @@ function fieldDrawMinimap() {
     return fieldState.visible?.has(`${fx},${fy}`);
   });
   const chasing=visible.filter(f=>f.mode==="chase").length;
-  status.textContent=`座標 ${tx+1}, ${ty+1}　/　視界内FOE ${visible.length}（追跡 ${chasing}）`;
+  status.textContent=`座標 ${tx+1}, ${ty+1}`;
 }
 function fieldDrawFullMap() {
   const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
-  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 92) / a.h)));
+  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 150) / a.h)));
   fieldDrawMap($("field-fullmap-canvas"), cell, true);
   $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
   $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;
@@ -254,3 +226,12 @@ function fieldToggleFullMap(force) {
   if (typeof sound === "function") sound(open ? "select" : "back");
 }
 
+
+const FIELD_MANUAL_ICONS=Object.freeze({stairs_up:"上り階段",stairs_down:"下り階段",chest:"宝箱",chest_open:"開封済み宝箱",save:"セーブ・導きの灯",gather_herb:"採取",gather_ore:"採掘",gather_wood:"伐採",event:"イベント・NPC",inspect:"仕掛け・調査",door:"扉",locked_door:"鍵付き扉",marker:"隠し通路・目印",foe:"FOE",strong_enemy:"強敵",boss:"ボス"});
+function fieldManualMap(a){const key=a.n+"-"+a.f+((a.f>=4)?":"+String(fieldState.expedition||0):"");fieldState.manualIcons??={};return fieldState.manualIcons[key]??={};}
+function fieldBindManualMap(){
+ const select=$("field-map-tool"),canvas=$("field-fullmap-canvas");
+ select.replaceChildren();
+ for(const [id,label] of [...Object.entries(FIELD_MANUAL_ICONS),["erase","消しゴム"]]){const o=document.createElement("option");o.value=id;o.textContent=label;select.append(o);}
+ canvas.addEventListener("click",e=>{if(!fieldState.mapOpen)return;const a=fieldArea(),r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const x=Math.floor((e.clientX-r.left)*a.w/r.width),y=Math.floor((e.clientY-r.top)*a.h/r.height);if(x<0||y<0||x>=a.w||y>=a.h)return;const marks=fieldManualMap(a),key=x+","+y;if(select.value==="erase")delete marks[key];else if(Object.hasOwn(FIELD_MANUAL_ICONS,select.value))marks[key]=select.value;fieldDrawFullMap();fieldDrawMinimap();persistAutoSave();});
+}
