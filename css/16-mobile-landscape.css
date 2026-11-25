@@ -157,3 +157,14 @@
  #battle:not(.battle-ui-preview) .battle-bottom{gap:4px}
  #battle:not(.battle-ui-preview) .command-option{min-height:38px;font-size:13px}
 }
+
+/* Keep the map exit outside the scrollable map and palette on short screens. */
+@media (orientation:landscape) and (pointer:coarse) and (max-height:600px){
+ #field #field-fullmap:not([hidden]){position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;max-height:100dvh!important;z-index:1000!important;overflow:hidden!important;grid-template-rows:46px minmax(0,1fr)!important;padding:6px max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important}
+ #field-fullmap .field-fullmap-head{position:relative;display:flex!important;flex-wrap:nowrap;align-items:center;min-width:0;gap:8px;padding:0;overflow:visible}
+ #field-fullmap #field-fullmap-title{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+ #field-fullmap #field-fullmap-rate{flex:0 0 auto;margin:0;white-space:nowrap;font-size:12px}
+ #field-fullmap #field-fullmap-close{position:relative!important;flex:0 0 auto!important;min-height:44px!important;min-width:120px!important;max-width:none!important;white-space:nowrap!important;display:inline-flex!important;align-items:center;justify-content:center;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:2;background:#28617b!important;border:2px solid #b7e7f5!important;color:white!important;font-size:15px!important;font-weight:700;padding:5px 10px!important;touch-action:manipulation}
+ #field-fullmap #field-map-workspace{min-height:0;min-width:0;overflow:hidden}
+ #field-fullmap #field-map-canvas-wrap,#field-fullmap #field-map-tools{min-height:0;overflow:auto}
+}
