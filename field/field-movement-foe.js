@@ -163,7 +163,13 @@ function fieldUpdateDanger() {
   const el = $("field-danger"); if (!el) return;
   const r = fieldState.nextEncounter ? fieldState.steps / fieldState.nextEncounter : 0;
   const lv = r < .35 ? 0 : r < .6 ? 1 : r < .8 ? 2 : r < .92 ? 3 : 4;
-  if (el.dataset.level !== String(lv)) { el.dataset.level = String(lv); el.title = ["安全", "注意", "警戒", "危険", "非常に危険"][lv]; }
+  const label = ["安全", "注意", "警戒", "危険", "非常に危険"][lv];
+  if (el.dataset.level !== String(lv) || el.title !== label) {
+    el.dataset.level = String(lv); el.title = label;
+    el.setAttribute("aria-label", "敵エンカウント危険度：" + label);
+    const state = el.querySelector(".danger-state"); if (state) state.textContent = label;
+    el.querySelectorAll(".danger-meter i").forEach((bar, i) => bar.classList.toggle("active", i <= lv));
+  }
 }
 function fieldFacingObject() {
   const a = fieldArea(); if (!a) return null;
