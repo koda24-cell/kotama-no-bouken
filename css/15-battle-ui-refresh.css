@@ -826,12 +826,12 @@
 /* B1F–B3F forest battle artwork (provided in development/assets).
    Keep separate backgrounds for lava, castle and hidden-boss encounters.
    The translucent shading preserves button, enemy and portrait contrast. */
-#battle.battle-ui-preview .battle-arena[data-environment="forest"] {
+#battle.battle-ui-preview .battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"]) {
   background-color:#092d31;
   background-image:
     linear-gradient(90deg,rgba(2,18,31,.47) 0%,rgba(2,22,35,.19) 32%,rgba(2,23,33,.08) 55%,rgba(3,20,30,.30) 100%),
     linear-gradient(0deg,rgba(2,15,26,.42) 0%,transparent 38%,rgba(1,20,32,.10) 100%),
-    url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png");
+    var(--battle-floor-art);
   background-position:center,center,center;
   background-repeat:no-repeat;
   background-size:cover;
@@ -839,7 +839,7 @@
 }
 /* Make the image fill ultrawide/portrait arena shapes without stretching. */
 @media(max-width:899px) {
-  #battle.battle-ui-preview .battle-arena[data-environment="forest"] {
+  #battle.battle-ui-preview .battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"]) {
     background-position:center,center,53% center;
   }
 }
@@ -951,11 +951,11 @@
 }
 
 /* Continue the same forest environment behind the party portrait strip. */
-#battle.battle-ui-preview .battle-arena[data-environment="forest"] ~ #battle-party,
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) #battle-party {
+#battle.battle-ui-preview .battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"]) ~ #battle-party,
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) #battle-party {
   background-image:
     linear-gradient(180deg,#05253de0,#032b42d7 55%,#02192fe8),
-    url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+    var(--battle-floor-art)!important;
   background-position:center,center 88%!important;
   background-size:cover!important;
   background-repeat:no-repeat!important;
@@ -1088,14 +1088,14 @@
  display:none!important;
 }
 /* Unified battle scenery behind both the arena and the two party rows. */
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) #battle-party {
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) #battle-party {
  margin-top:-12px!important;
  border:2px solid #6ad9ee!important;
  border-top:0!important;
  border-radius:0 0 16px 16px!important;
  background-image:
    linear-gradient(180deg,rgba(2,24,39,.22),rgba(2,24,39,.65)),
-   url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+   var(--battle-floor-art)!important;
  background-size:cover!important;
  background-position:center,center 88%!important;
 }
@@ -1242,30 +1242,30 @@ body:has(#battle.battle-ui-preview.active) .topbar {
 
 
 /* Scene continuity: one outer frame from forest arena through COMMAND INFO. */
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) {
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) {
  position:relative;
  isolation:isolate;
  border:2px solid #74d7e8!important;
  border-radius:16px!important;
  background-image:
    linear-gradient(180deg,rgba(3,20,32,.04) 0%,rgba(3,24,39,.20) 57%,rgba(2,17,30,.78) 100%),
-   url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+   var(--battle-floor-art)!important;
  background-size:cover!important;
  background-position:center top!important;
  background-repeat:no-repeat!important;
  box-shadow:0 0 20px #3bcbe933,inset 0 0 16px #001b2d!important;
 }
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) .battle-arena {
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) .battle-arena {
  border-bottom:0!important;
  border-radius:14px 14px 0 0!important;
 }
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) #battle-party {
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) #battle-party {
  border-left:0!important;border-right:0!important;border-bottom:0!important;
  border-radius:0!important;
  background-image:linear-gradient(180deg,#02243b36,#03233c94)!important;
  box-shadow:none!important;
 }
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) .battle-preview-bottom {
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) .battle-preview-bottom {
  position:relative;
  padding:12px!important;
  margin:0!important;
@@ -1384,16 +1384,16 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
  line-height:1.2!important;
  text-shadow:0 1px 4px #00111c,0 0 8px #00111ccc!important;
 }
-#battle.battle-ui-preview .battle-arena[data-environment="forest"] {
+#battle.battle-ui-preview .battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"]) {
  background-image:
   linear-gradient(90deg,rgba(0,11,21,.64),rgba(0,15,26,.45) 48%,rgba(0,11,21,.58)),
   linear-gradient(0deg,rgba(0,9,19,.54),rgba(0,12,23,.34)),
-  url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+  var(--battle-floor-art)!important;
 }
-#battle.battle-ui-preview:has(.battle-arena[data-environment="forest"]) {
+#battle.battle-ui-preview:has(.battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"])) {
  background-image:
   linear-gradient(180deg,rgba(0,12,23,.34),rgba(0,12,23,.52) 52%,rgba(0,11,22,.82)),
-  url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")!important;
+  var(--battle-floor-art)!important;
 }
 
 
@@ -2246,3 +2246,11 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
 #battle.battle-ui-preview .battle-field-map-dock #battle-field-map-toggle{position:static!important;inset:auto!important;transform:none!important;margin:0!important;}
 #battle.battle-ui-preview .battle-field-map-dock #battle-field-map{position:absolute!important;top:100%!important;right:12px!important;left:auto!important;bottom:auto!important;transform:none!important;z-index:30!important;max-width:min(360px,90vw)!important;}
 #battle.battle-ui-preview .battle-field-map-dock #battle-field-map[hidden],#battle.battle-ui-preview .battle-field-map-dock #battle-field-map-toggle[hidden]{display:none!important;}
+
+/* Per-floor artwork, inherited by arena and surrounding battle frame. */
+#battle:has(.battle-arena[data-environment="forest"]){--battle-floor-art:url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")}
+#battle:has(.battle-arena[data-environment="water"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-02-water.png")}
+#battle:has(.battle-arena[data-environment="ruins"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-03-ruins.png")}
+#battle:has(.battle-arena[data-environment="lava"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-04-volcano.png")}
+#battle:has(.battle-arena[data-environment="castle"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-05-castle.png")}
+#battle:not(.battle-ui-preview) .battle-arena:is([data-environment="forest"],[data-environment="water"],[data-environment="ruins"],[data-environment="lava"],[data-environment="castle"]){background-image:linear-gradient(180deg,#00101b40,#00101b60),var(--battle-floor-art);background-position:center;background-size:cover;background-repeat:no-repeat}
