@@ -315,11 +315,15 @@ function renderBgmUnlocks(){
 function renderStageEnvironment(stage){
   const arena=document.querySelector(".battle-arena"),banner=$("stage-environment");
   if(!arena||!banner)return;
-  // 現行5ステージの敵・ストーリー配置を維持し、3つの背景エリアにまとめる。
+  // 各階層の戦闘背景を分離。隠しボスは従来の混沌領域を維持する。
   const env=battleState.hiddenBossMode
     ?{key:"chaos",name:"混沌の領域",description:"現実と闇が溶け合う、異形の力に満ちた空間。"}
-    :stage<=3
+    :stage===1
       ?{key:"forest",name:"はじまりの樹海",description:"木漏れ日が差し込む穏やかながらも、魔物の気配が漂い始めた最初の修練の森。"}
+      :stage===2
+        ?{key:"water",name:"凍てつく水源",description:"氷と水が織りなす静かな迷宮。"}
+      :stage===3
+        ?{key:"ruins",name:"遺跡都市",description:"かつての都市の面影が残る迷宮。"}
       :stage===4
         ?{key:"lava",name:"焦土の溶岩洞窟",description:"地表の割れ目からマグマが吹き出す、熱気と硫黄に満ちた危険な地底通路。"}
         :{key:"castle",name:"魔王城・回廊",description:"冷たく冷え切った石畳の回廊。その先では魔王が待ち構える。"};
