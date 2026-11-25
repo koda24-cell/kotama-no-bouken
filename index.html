@@ -36,7 +36,7 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261126-status-large" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-menu-v2" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261110-01" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
@@ -232,6 +232,48 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 #field-status-detail .field-status-gear-row strong{font-size:clamp(16px,1.3vw,23px);color:#eef2e7}
 @media(max-width:1050px){#field-status-detail{grid-template-columns:minmax(140px,36%) minmax(0,1fr);gap:16px}#field-status-detail .field-status-art{height:min(50dvh,450px);min-height:220px}}
 @media(max-width:700px){#field-status-detail{grid-template-columns:1fr}#field-status-detail .field-status-art{height:34dvh;min-height:140px}#field-status-detail .field-status-info{gap:10px}#field-inventory-dialog .field-status-party{display:none}#field-status-detail .field-status-stats{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}#field-status-detail .field-status-gear{grid-template-columns:1fr}}
+</style>
+
+<style id="field-menu-expanded-v2">
+#field-inventory-dialog[open]{grid-template-columns:clamp(150px,17vw,260px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
+#field-inventory-dialog #field-inventory-list{grid-column:2/-1;padding:clamp(12px,2vw,30px)!important}
+#field-inventory-dialog #field-menu-detail{display:none!important}
+#field-inventory-dialog .field-item-inline-detail{flex-basis:100%;font-size:16px;color:#c7dce7;margin:4px 0;padding:10px;background:#1a3040}
+#field-inventory-dialog #field-return-to-exploration{justify-self:end;width:min(100%,320px);min-height:58px;background:linear-gradient(120deg,#367b95,#23576c);color:#fff;border:2px solid #bce9f4;font-size:20px;font-weight:800;letter-spacing:.1em;box-shadow:0 0 18px #6ac8e433;border-radius:4px}
+#field-inventory-dialog #field-return-to-exploration:hover,#field-inventory-dialog #field-return-to-exploration:focus-visible{background:#437f95;outline:2px solid #fff}
+#field-status-detail .field-status-stats{grid-template-columns:1fr;gap:6px}
+#field-status-detail .field-status-stats>div{grid-template-columns:minmax(80px,1fr) minmax(60px,2fr) 65px;align-items:center;padding:6px 10px;gap:10px}
+#field-status-detail .field-status-stats strong{grid-column:3;grid-row:1;text-align:right;font-size:clamp(20px,2vw,32px)}
+#field-status-detail .field-status-stats progress{grid-column:2;grid-row:1;margin:0;height:12px;accent-color:#9cb9e7}
+#field-status-detail .field-status-stats progress::-webkit-progress-value{background:linear-gradient(90deg,#5479af,#aed4ee)}
+#field-inventory-dialog .field-formation-board{max-width:1160px;margin:auto;display:grid;gap:18px}
+#field-inventory-dialog .field-formation-board h3{font-size:26px;margin:0}
+#field-inventory-dialog .field-formation-board h3 small{font-size:16px;color:#abc4d3;margin-left:12px}
+#field-inventory-dialog .field-formation-board p{font-size:16px;margin:0;color:#b6ccd8}
+#field-inventory-dialog .field-formation-row h4{font-size:18px;letter-spacing:.1em;color:#a8d7e7;margin:0 0 8px}
+#field-inventory-dialog .field-formation-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#field-inventory-dialog .field-formation-slots button{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;justify-items:center;gap:6px;min-width:0;min-height:190px;padding:10px;background:radial-gradient(ellipse at center,#27475b,#0e1e2b);border:1px solid #648b9f;font-size:19px;overflow:hidden}
+#field-inventory-dialog .field-formation-slots button[aria-pressed="true"]{border:2px solid #f4d99a;background:#304e5b;box-shadow:inset 0 0 25px #dbb85a33}
+#field-inventory-dialog .field-formation-art{height:clamp(95px,20vh,210px);width:100%;display:grid;place-items:center;overflow:hidden}
+#field-inventory-dialog .field-formation-art img{width:100%;height:100%;object-fit:contain}
+#field-inventory-dialog .field-formation-empty{font-size:44px;color:#7693a6}
+#field-inventory-dialog .field-formation-slots button small,#field-inventory-dialog .field-formation-slots button span{font-size:13px;color:#afc5d1}
+#field-inventory-dialog .field-audio-settings{display:grid;gap:24px;max-width:1050px;margin:0 auto}
+#field-inventory-dialog .field-audio-settings h3{font-size:28px;margin:0}
+#field-inventory-dialog .field-audio-card{padding:clamp(18px,3vw,34px);background:#162a39;border:1px solid #608194;display:grid;gap:18px;font-size:20px}
+#field-inventory-dialog .field-audio-card h4{font-size:24px;margin:0}
+#field-inventory-dialog .field-audio-toggle{display:flex;gap:10px;align-items:center}
+#field-inventory-dialog .field-audio-toggle input{width:22px;height:22px;accent-color:#82d1e5}
+#field-inventory-dialog .field-audio-volume{display:grid;gap:16px;width:100%}
+#field-inventory-dialog .field-audio-volume span{display:flex;justify-content:space-between;align-items:center}
+#field-inventory-dialog .field-audio-volume output{font-size:28px;color:#b3e5f4;font-weight:bold}
+#field-inventory-dialog .field-audio-volume input[type=range]{width:100%;max-width:none;min-width:0;height:30px;accent-color:#8ad5eb;margin:0;cursor:pointer}
+#field-inventory-dialog #progression-panel{width:100%;max-width:none;margin:0;box-sizing:border-box;font-size:16px}
+#field-inventory-dialog #progression-panel .training-character-select h2{display:block;font-size:25px}
+#field-inventory-dialog #progression-panel .skill-node-select{min-height:48px}
+#field-inventory-dialog #progression-panel .training-character-tabs button{font-size:15px}
+#field-inventory-dialog #skill-upgrade-dialog{position:fixed;inset:0;z-index:10001}
+@media(max-width:700px){#field-inventory-dialog[open]{grid-template-columns:100px minmax(0,1fr);gap:8px}#field-inventory-dialog #field-return-to-exploration{min-height:48px;font-size:16px}#field-inventory-dialog .field-formation-slots{gap:4px}#field-inventory-dialog .field-formation-slots button{min-height:120px;font-size:12px;padding:4px}#field-inventory-dialog .field-formation-art{height:80px}#field-status-detail .field-status-stats>div{grid-template-columns:minmax(55px,1fr) minmax(35px,1fr) 42px;gap:5px}#field-status-detail .field-status-stats small{display:none}#field-inventory-dialog .field-audio-card{padding:12px}}
 </style>
 <style id="imperial-inline-style">
 #imperial-status-panel{display:none!important}
@@ -580,6 +622,6 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 
   </div>
   <script src="./battle-water-map.js?v=20261112-04" defer></script>
-<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><nav><button type="button" id="field-inventory-items-tab">所持品</button><button type="button" id="field-inventory-status-tab">ステータス</button><button type="button" id="field-inventory-skills-tab">スキル</button><button id="field-inventory-formation-tab" type="button">編成</button><button id="field-inventory-training-tab" type="button">強化</button><button id="field-inventory-mission-tab" type="button">ミッション</button><button id="field-inventory-settings-tab" type="button">その他</button><button id="field-inventory-suspend-tab" type="button">一時中断</button></nav><div id="field-inventory-list"></div><aside id="field-menu-detail"><h3>探索メニュー</h3><p>項目を選択してください。</p></aside><button type="button" onclick="this.closest('dialog').close()">探索に戻る</button></dialog>
+<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><nav><button type="button" id="field-inventory-items-tab">所持品</button><button type="button" id="field-inventory-status-tab">ステータス</button><button type="button" id="field-inventory-skills-tab">スキル</button><button id="field-inventory-formation-tab" type="button">編成</button><button id="field-inventory-training-tab" type="button">強化</button><button id="field-inventory-mission-tab" type="button">ミッション</button><button id="field-inventory-settings-tab" type="button">その他</button><button id="field-inventory-suspend-tab" type="button">一時中断</button></nav><div id="field-inventory-list"></div><aside id="field-menu-detail"><h3>探索メニュー</h3><p>項目を選択してください。</p></aside><button id="field-return-to-exploration" type="button" onclick="this.closest('dialog').close()">探索に戻る　›</button></dialog>
 </body>
 </html>
