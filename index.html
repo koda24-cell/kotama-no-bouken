@@ -40,11 +40,11 @@
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261110-01" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
-  <script src="./level.js?v=20261126-victory" defer></script>
+  <script src="./level.js?v=20261126-party-only" defer></script>
   <script src="./field/field-random-maze.js?v=20261116-01" defer></script>
   <script src="./field/f1-review-layout-v6.js" defer></script>
   <script src="./field.js?v=20261124-v6" defer></script>
-  <script src="./field/field-render.js?v=20261126-hud" defer></script>
+  <script src="./field/field-render.js?v=20261126-map-palette" defer></script>
   <script src="./field/field-movement-foe.js?v=20261126-hud" defer></script>
   <script src="./field/field-dialog.js?v=20261107-01" defer></script>
   <script src="./field/field-interactions.js?v=20261126-victory" defer></script>
@@ -275,6 +275,32 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 #field-inventory-dialog #skill-upgrade-dialog{position:fixed;inset:0;z-index:10001}
 @media(max-width:700px){#field-inventory-dialog[open]{grid-template-columns:100px minmax(0,1fr);gap:8px}#field-inventory-dialog #field-return-to-exploration{min-height:48px;font-size:16px}#field-inventory-dialog .field-formation-slots{gap:4px}#field-inventory-dialog .field-formation-slots button{min-height:120px;font-size:12px;padding:4px}#field-inventory-dialog .field-formation-art{height:80px}#field-status-detail .field-status-stats>div{grid-template-columns:minmax(55px,1fr) minmax(35px,1fr) 42px;gap:5px}#field-status-detail .field-status-stats small{display:none}#field-inventory-dialog .field-audio-card{padding:12px}}
 </style>
+
+<style id="field-map-palette-layout">
+body[data-screen="field"] #field-map-rail{display:flex!important;flex-direction:column;align-items:stretch;gap:6px;background:#09141f!important;border:1px solid #8ab5c8;opacity:1!important;box-shadow:0 4px 16px #000a}
+body[data-screen="field"] #field-map-rail .field-minimap{flex:none;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:1;padding:0;border:1px solid #a6c4d1;background:#07111c;opacity:1!important}
+body[data-screen="field"] #field-map-rail>strong{text-align:center;color:#d6e9ef}
+body[data-screen="field"] #field-minimap-status{text-align:center;font-size:12px;color:#dceaf0}
+body[data-screen="field"] #field-minimap-legend{font-size:10px;gap:5px}
+#field #field-fullmap:not([hidden]){position:absolute;inset:0;z-index:80;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:clamp(10px,2vw,28px);border:0;border-radius:0;background:#0b1622;box-sizing:border-box}
+#field-fullmap .field-fullmap-head strong{font-size:clamp(16px,2vw,26px);color:#e5f2f7}
+#field-fullmap .field-fullmap-head span{font-size:16px}
+#field-fullmap .field-fullmap-head button{font-size:16px;padding:10px 22px;background:#245369;border-color:#91c8da}
+#field-map-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,28%);gap:16px;min-height:0;min-width:0}
+#field-map-canvas-wrap{display:grid;place-items:center;min-width:0;min-height:0;overflow:auto;background:#060e17;border:1px solid #56778c}
+#field-fullmap #field-fullmap-canvas{display:block;max-width:none;max-height:none;padding:0;border:0;cursor:crosshair;touch-action:manipulation;background:#07111c;opacity:1}
+#field-map-tools{min-height:0;overflow:auto;background:#122331;padding:14px;border:1px solid #55778a}
+#field-map-tools>strong{font-size:19px;color:#d9eaf2}
+#field-map-tools>p{font-size:13px;color:#a9c2d1;margin:8px 0 12px}
+#field-map-palette{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px}
+#field-map-palette button{display:grid;justify-items:center;align-content:center;gap:5px;min-height:82px;padding:6px;background:#d3e1e9;border:2px solid #6c8597;border-radius:3px;color:#132533;cursor:pointer}
+#field-map-palette button img{width:44px;height:44px;object-fit:contain}
+#field-map-palette button small{font-size:11px;line-height:1.25;text-align:center}
+#field-map-palette button[aria-pressed="true"]{background:#f5df9e;border-color:#ffb938;box-shadow:0 0 9px #f5c65c88}
+#field-map-palette .field-map-erase{font-size:38px;line-height:44px;font-weight:bold;color:#823737}
+#field-fullmap .field-fullmap-legend{display:none}
+@media(max-width:700px){#field-map-workspace{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(110px,35%);gap:8px}#field-map-tools{padding:8px}#field-map-palette{grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:4px}#field-map-palette button{min-height:64px}#field-map-palette button img{width:32px;height:32px}}
+</style>
 <style id="imperial-inline-style">
 #imperial-status-panel{display:none!important}
 .battle-member[data-party-id="imperial"] .imperial-inline-heat{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;font-size:10px;color:#ffd18a;vertical-align:middle}
@@ -285,7 +311,7 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 .imperial-inline-warning .imperial-inline-segments i.filled{background:#ff6957}
 </style>
   <link rel="stylesheet" href="./css/15-victory-result.css?v=20261126-1">
-  <script src="./victory-result.js?v=20261126-1" defer></script>
+  <script src="./victory-result.js?v=20261126-party-only" defer></script>
 </head>
 <body>
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
