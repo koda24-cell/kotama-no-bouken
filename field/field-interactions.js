@@ -343,6 +343,7 @@ function fieldLootAddMaterial(id, n, source) {
   n = Math.max(0, Math.floor(Number(n) || 0)); if (!id || !n) return false;
   const names = typeof materialNames !== "undefined" ? materialNames : FIELD_MATERIAL_FALLBACK;
   if (!names[id]) { console.warn("[field] 未定義の素材IDのため付与しません:", id); return false; }
+  if(n>carriedRoom()){setSystemMessage("所持品がいっぱいです。");return false;}
   materials[id] = (materials[id] || 0) + n;
   if (typeof itemCompendiumRecord === "function") itemCompendiumRecord(id, source);
   fieldEmit("material", { area: fieldState.area, floor: fieldState.floor, materialId: id, count: n, source });
@@ -351,6 +352,7 @@ function fieldLootAddMaterial(id, n, source) {
 function fieldLootAddItem(id, n, source) {
   n = Math.max(0, Math.floor(Number(n) || 0)); if (!id || !n) return false;
   if (!fieldItemName(id)) { console.warn("[field] 未定義のアイテムIDのため付与しません:", id); return false; }
+  if(n>carriedRoom()){setSystemMessage("所持品がいっぱいです。");return false;}
   inventory[id] = (inventory[id] || 0) + n;
   if (typeof itemCompendiumRecord === "function") itemCompendiumRecord(id, source);
   return true;
