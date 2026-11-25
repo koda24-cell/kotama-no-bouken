@@ -36,7 +36,7 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261126-victory" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-status-large" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261110-01" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
@@ -188,6 +188,50 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 #field-inventory-list,#field-menu-detail{background:#101c29!important;border-color:#58768a77!important}
 @media(max-width:700px){body[data-screen="field"] #field{--map-w:120px;--hud-edge:8px}body[data-screen="field"] #field-danger{padding:7px;gap:5px;right:calc(var(--hud-edge) + var(--map-w) + 6px)}body[data-screen="field"] #field-inventory-open{padding:8px;gap:5px;font-size:11px}body[data-screen="field"] #field-location{max-width:65%;padding:8px}body[data-screen="field"] #field-clock{font-size:13px}}
 @media(max-width:380px){body[data-screen="field"] #field-inventory-open{bottom:150px}}
+</style>
+
+<style id="field-status-expanded">
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-inventory-list{grid-column:2/-1;padding:clamp(12px,2.3vw,32px)!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-menu-detail{display:none}
+#field-inventory-dialog .field-status-switch{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:0 0 18px!important;margin-bottom:20px;border-bottom:1px solid #7398ad66;font-size:16px}
+#field-status-character{background:#172b3a;color:#eef8ff;border:1px solid #7195a9;font-size:16px;padding:8px!important}
+#field-inventory-dialog .field-status-party{display:flex;flex:1;gap:6px;flex-wrap:wrap}
+#field-inventory-dialog .field-status-party button{font-size:15px;background:#122331;color:#cbdce6;border-color:#456579}
+#field-inventory-dialog .field-status-party button[aria-pressed="true"]{background:#2b4b5e;border-color:#a9dce9;color:#fff;box-shadow:inset 0 -2px #b4e9ef}
+#field-status-detail{display:grid;grid-template-columns:minmax(220px,42%) minmax(0,1fr);gap:clamp(18px,3vw,48px);align-items:start;min-height:calc(100% - 90px)}
+#field-status-detail .field-status-art{display:grid;place-items:center;position:relative;min-height:340px;height:min(65dvh,680px);background:radial-gradient(ellipse at center,#284656 0%,#142633 45%,#0d1721 80%);border:1px solid #57788b66;overflow:hidden}
+#field-status-detail .field-status-art img{width:100%;height:100%;max-height:100%;object-fit:contain;display:block;filter:drop-shadow(0 8px 14px #0008)}
+#field-status-detail .field-status-art .image-fallback{font-size:clamp(20px,5vw,72px)}
+#field-status-detail .field-status-info{min-width:0;display:grid;gap:16px;font-size:clamp(16px,1.25vw,22px)}
+#field-status-detail .field-status-name{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #83adbe80;padding:0 0 12px}
+#field-status-detail .field-status-name small{color:#94b9c9;font-size:12px;letter-spacing:.2em}
+#field-status-detail .field-status-name h3{font-size:clamp(28px,3vw,52px);line-height:1.1;color:#f4f8fb;margin:8px 0 0}
+#field-status-detail .field-status-name>b{color:#e8c991;white-space:nowrap;font-size:20px}
+#field-status-detail .field-status-name>b strong{font-size:clamp(28px,3vw,50px)}
+#field-status-detail .field-status-resources{display:grid;gap:14px}
+#field-status-detail .field-status-meter>div{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+#field-status-detail .field-status-meter b{font-size:clamp(21px,2vw,34px);font-variant-numeric:tabular-nums}
+#field-status-detail .field-status-meter b small{font-size:.65em;color:#a9bdca}
+#field-status-detail progress{display:block;width:100%;height:12px;appearance:none;border:1px solid #557283;background:#09141d;margin-top:6px;accent-color:#80d8ba}
+#field-status-detail progress::-webkit-progress-bar{background:#09141d}
+#field-status-detail progress::-webkit-progress-value{background:#80d8ba}
+#field-status-detail .sp progress::-webkit-progress-value{background:#76b6f2}
+#field-status-detail .exp progress::-webkit-progress-value{background:#e7c477}
+#field-status-detail .sp progress{accent-color:#76b6f2}
+#field-status-detail .exp progress{accent-color:#e7c477}
+#field-status-detail h4{font-size:18px;letter-spacing:.06em;margin:4px 0 0;padding-bottom:6px;color:#e4edf3;border-bottom:1px solid #52738788}
+#field-status-detail h4 small{font-size:11px;color:#93adbc;letter-spacing:.14em;margin-left:8px}
+#field-status-detail .field-status-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(116px,1fr));gap:8px}
+#field-status-detail .field-status-stats>div{padding:10px 12px;background:#192d3c;border:1px solid #54778a77;display:grid;gap:5px}
+#field-status-detail .field-status-stats span{font-size:15px;color:#d1e3ec}
+#field-status-detail .field-status-stats small{font-size:10px;color:#94b4c4}
+#field-status-detail .field-status-stats strong{font-size:clamp(24px,2.4vw,40px);font-variant-numeric:tabular-nums;line-height:1.2}
+#field-status-detail .field-status-gear{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#field-status-detail .field-status-gear-row{display:grid;gap:6px;padding:10px 12px;border:1px solid #52738766;background:#132331;overflow-wrap:anywhere}
+#field-status-detail .field-status-gear-row span{color:#a8bdca;font-size:13px}
+#field-status-detail .field-status-gear-row strong{font-size:clamp(16px,1.3vw,23px);color:#eef2e7}
+@media(max-width:1050px){#field-status-detail{grid-template-columns:minmax(140px,36%) minmax(0,1fr);gap:16px}#field-status-detail .field-status-art{height:min(50dvh,450px);min-height:220px}}
+@media(max-width:700px){#field-status-detail{grid-template-columns:1fr}#field-status-detail .field-status-art{height:34dvh;min-height:140px}#field-status-detail .field-status-info{gap:10px}#field-inventory-dialog .field-status-party{display:none}#field-status-detail .field-status-stats{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}#field-status-detail .field-status-gear{grid-template-columns:1fr}}
 </style>
 <style id="imperial-inline-style">
 #imperial-status-panel{display:none!important}
