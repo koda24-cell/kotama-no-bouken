@@ -53,7 +53,7 @@ const FILES = {
 const g = {
   pref: readPref(), failed: false, webgl: true,
   renderer: null, composer: null, scene: null, camera: null, world: null, dyn: null, canvas: null, badge: null,
-  builtKey: '', buildingKey: '', buildToken: 0, sig: '',
+  builtKey: '', buildingKey: '', buildToken: 0, sig: '', retryRequested:false,
   cache: new Map(), lights: [], pool: [], entries: [], foes: new Map(), texCache: new Map(),
   cam: { pos: new THREE.Vector3(), yaw: 0, ready: false, bump: 0, bumpDir: [0, 0] },
   lastT: 0, lastRender: 0, lastLightKey: '', size: [0, 0], high: readQuality(), near: null, maxFps: readMaxFps(),
@@ -134,8 +134,9 @@ function updatePool(center, force) {
    ------------------------------------------------------------ */
 const loader = new GLTFLoader();
 async function retryLoad(job){let last;for(let i=0;i<3;i++){try{return await job(i);}catch(e){last=e;if(i<2)await new Promise(resolve=>setTimeout(resolve,350*(i+1)));}}throw last;}
+async function boundedAsset(file){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const url=new URL(BASE+file,document.baseURI);const response=await fetch(url,{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status+' '+file);const data=await response.arrayBuffer();return await loader.parseAsync(data,new URL('.',url).href);}finally{clearTimeout(timer);}}
 function load(file) {
-  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>loader.loadAsync(BASE + file)).then(x=>x.scene).catch(e=>{g.cache.delete(file);throw e;}));
+  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>boundedAsset(file)).then(x=>x.scene).catch(e=>{g.cache.delete(file);throw e;}));
   return g.cache.get(file);
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
@@ -588,7 +589,7 @@ function recoverFloor(key,error){
  showBadge('');applyMode();
  if(curKey()===key&&document.body.dataset.screen==='field'){window.Kotama3DLoading?.fail('3Dマップの読み込みに失敗しました');showBadge('');}
 }
-function startFloorBuild(){const key=curKey();buildFloor().catch(e=>recoverFloor(key,e)).finally(()=>{if(g.buildingKey===key)g.buildingKey='';});}
+function startFloorBuild(){const key=curKey();buildFloor().catch(e=>recoverFloor(key,e)).finally(()=>{if(g.buildingKey===key)g.buildingKey='';if(g.retryRequested){g.retryRequested=false;if(document.body.dataset.screen==='field'&&curKey()===key&&!active()){g.floorFailures.delete(key);g.failed=false;window.Kotama3DLoading?.show();build();}}});}
 function build() {
   if (!fieldOk() || document.body.dataset.screen!=='field') return;
   if (!eligible()) { applyMode(); if(document.body.dataset.screen==='field')window.Kotama3DLoading?.fail('3D表示を利用できません。再試行してください'); return; }
@@ -651,7 +652,7 @@ function gameReviewState() {
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
     natureV6Info:g.natureV6?.info()||null,natureV6Error:g.natureV6Error||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
-window.KotamaField3D = { active, input, build, frame, toggle, retryLoad:()=>{if(g.buildingKey||!g.webgl){location.reload();return;}g.floorFailures.delete(curKey());g.failed=false;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+window.KotamaField3D = { active, input, build, frame, toggle, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
   stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
