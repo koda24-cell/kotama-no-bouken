@@ -89,3 +89,9 @@ Build a separately versioned original rear cranium first, then own temporal/ear/
 
 ## 全3D制作の進捗サイト共有（2026-11-24）
 全AI・全チャット・全作業ブランチの3Dモデル、壁・天井・小部品、設計図を [独立進捗リポジトリ](https://github.com/koda24-cell/kotama-3d-progress) に集約する。作業前に同Repoの AGENTS.md を確認。未マージ・未承認も公開許可と安全検査を満たす場合は状態を明示して掲載する。各正常レンダリング・設計出力・途中チェックポイントごとに安定ID、版、run ID、元commit、日時、公開許可を添えて登録し、失敗時は前回正常画像を保持する。自動登録未対応の場合は手動登録または未登録の引継ぎを行い、実行未確認を完了と報告しない。正式素材承認は別。ゲーム本体に旧ギャラリー・公開台帳を再設置しない。
+
+## GitHub connector recovery (PR #794, 2026-11-26)
+- Work on one feature at a time. After a write error, verify the actual remote commit/PR state before retrying; never report success without evidence.
+- Observed: ordinary PR creation repeatedly returned `The tool failed internally` despite a valid one-commit diff and repository push permission. Draft PR creation followed by mark-ready succeeded. Use this fallback when normal creation fails; check for duplicate PRs first.
+- Observed: normal merge returned `ReadTimeout`, then HTTP 405 `Merge already in progress`, although PR #794 remained open, clean and checks passed. After checking state and expected head SHA, squash merge succeeded (18b0008339ae0e5ea395187dacfdcd0137e4dc24). For an isolated feature, use squash as a fallback when checks and permissions allow; preserve required checks and branch policy. Do not repeatedly submit identical failing requests.
+- Root cause and exact connector timeout remain unknown. Do not claim authentication failure or GitHub outage without evidence. Distinguish runtime testing from code integration; user performs game UI testing when requested. Keep main untouched.
