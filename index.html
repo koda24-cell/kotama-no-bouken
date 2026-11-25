@@ -51,7 +51,7 @@
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261116-rm1" defer></script>
   <script src="./field/field-persistence.js?v=20261126-am-pm" defer></script>
-  <script type="module" src="./field/field-3d-view.js?v=20261126-3d-only"></script>
+  <script type="module" src="./field/field-3d-view.js?v=20261126-retry-in-place"></script>
 
   <script src="./monster-compendium.js?v=20261109-01" defer></script>
   <script src="./battle-formation-ext.js?v=20261109-01" defer></script>
@@ -85,7 +85,7 @@
     #kotama-3d-loading .loading-progress::-webkit-progress-value{background:#fff}
     #kotama-3d-loading .loading-progress::-moz-progress-bar{background:#fff}
     #kotama-3d-loading [data-loading-stage]{grid-column:1/-1;font-size:11px;color:#bbb;text-align:right}
-    #kotama-3d-loading [data-loading-recovery]{grid-column:1/-1;margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end} #kotama-3d-loading [data-loading-recovery][hidden]{display:none!important} #kotama-3d-loading [data-loading-recovery] button{min-height:40px;padding:8px 12px;font-size:14px}
+    #kotama-3d-loading [data-loading-recovery]{grid-column:1/-1;grid-row:1;margin:0 0 12px;display:flex;gap:8px;flex-wrap:nowrap;justify-content:flex-end} #kotama-3d-loading [data-loading-recovery][hidden]{display:none!important} #kotama-3d-loading [data-loading-recovery] button{margin:0;min-height:44px;padding:6px 10px;font-size:13px;white-space:nowrap} #kotama-3d-loading .loading-inner{width:min(350px,100%)!important;grid-template-columns:19px minmax(0,1fr)!important}
     @media(prefers-reduced-motion:reduce){#kotama-3d-loading .loading-spinner{animation:none!important}#kotama-3d-loading .loading-dots::after{animation:none!important;content:'...'!important}}
   </style>
   <script>
@@ -110,9 +110,9 @@
       const label=el.querySelector('[data-loading-stage]');if(label)label.textContent=message||'3Dマップの読み込みに失敗しました';
       const actions=el.querySelector('[data-loading-recovery]');if(actions)actions.hidden=false;
     }
-    window.Kotama3DLoading={show,hide,progress,fail,ready:()=>{failed=false;progress(100,'描画完了');if(document.body.dataset.screen==='field')hide();}};
+    window.Kotama3DLoading={show,hide,progress,fail,waiting:(message)=>{const label=get()?.querySelector('[data-loading-stage]');if(label)label.textContent=message;},ready:()=>{failed=false;progress(100,'描画完了');if(document.body.dataset.screen==='field')hide();}};
     document.addEventListener('DOMContentLoaded',()=>{
-      get()?.querySelector('[data-loading-retry]')?.addEventListener('click',()=>{if(window.KotamaField3D?.retryLoad)window.KotamaField3D.retryLoad();else location.reload();});
+      get()?.querySelector('[data-loading-retry]')?.addEventListener('click',()=>{if(window.KotamaField3D?.retryLoad)window.KotamaField3D.retryLoad();else fail('3Dプログラムの読み込みが完了していません');});
       get()?.querySelector('[data-loading-home]')?.addEventListener('click',()=>{if(typeof showScreen==='function'){showScreen('home');hide();}});
     });
   })();
@@ -354,7 +354,7 @@ body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:1
 </head>
 <body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
-    <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><div data-loading-recovery hidden><button type="button" data-loading-retry>3D読み込みを再試行</button><button type="button" data-loading-home>ホームへ戻る</button></div></div>
+    <div class="loading-inner"><div data-loading-recovery hidden><button type="button" data-loading-retry>3D読み込みを再試行</button><button type="button" data-loading-home>ホームへ戻る</button></div><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p></div>
   </div>
   <div class="game">
 
