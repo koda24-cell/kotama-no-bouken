@@ -174,7 +174,7 @@ body[data-screen="field"] #field .field-hud{flex:none}
         <div class="home-actions">
           <button id="start-button" class="primary-button">
             START
-          </button>
+          </button><button id="field-resume-button" type="button" hidden onclick="resumeFieldGame()">探索を再開</button>
           <p id="start-warning" class="warning" role="alert"></p>
           <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
           <section id="event-gallery" class="event-gallery" hidden></section>
@@ -461,6 +461,6 @@ body[data-screen="field"] #field .field-hud{flex:none}
 
   </div>
   <script src="./battle-water-map.js?v=20261112-04" defer></script>
-<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><nav><button type="button" id="field-inventory-items-tab">所持品</button><button type="button" id="field-inventory-status-tab">ステータス</button><button type="button" id="field-inventory-skills-tab">スキル</button><button id="field-inventory-formation-tab" type="button">編成</button><button id="field-inventory-training-tab" type="button">強化</button><button id="field-inventory-mission-tab" type="button">ミッション</button><button id="field-inventory-settings-tab" type="button">その他</button></nav><div id="field-inventory-list"></div><button type="button" onclick="this.closest('dialog').close()">探索に戻る</button></dialog>
+<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><nav><button type="button" id="field-inventory-items-tab">所持品</button><button type="button" id="field-inventory-status-tab">ステータス</button><button type="button" id="field-inventory-skills-tab">スキル</button><button id="field-inventory-formation-tab" type="button">編成</button><button id="field-inventory-training-tab" type="button">強化</button><button id="field-inventory-mission-tab" type="button">ミッション</button><button id="field-inventory-settings-tab" type="button">その他</button><button id="field-inventory-suspend-tab" type="button">一時中断</button></nav><div id="field-inventory-list"></div><button type="button" onclick="this.closest('dialog').close()">探索に戻る</button></dialog>
 </body>
 </html>
