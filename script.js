@@ -1966,7 +1966,7 @@ async function showUnionCutin(skill, participants){
   const isSamurai=skill.type==="samurai-slash";
   const cards=participants.map((c,i)=>{
     const file=unionPortraitFiles[c.id];
-    const portrait=c.id==="samurai"?`<span class="union-cutin-samurai-mark" aria-label="武士">武</span>`:file?`<img class="union-cutin-portrait" src="assets/characters/${file}" alt="">`:"";
+    const portrait=c.image?`<img class="union-cutin-portrait" src="${esc(c.image)}" alt="">`:file?`<img class="union-cutin-portrait" src="assets/characters/${file}" alt="">`:c.id==="samurai"?`<span class="union-cutin-samurai-mark" aria-label="武士">武</span>`:"";
     return `<div class="union-cutin-member" style="--member-index:${i}">${portrait}<span>${esc(c.name)}</span></div>`;
   }).join("");
   layer.innerHTML=`<div class="union-cutin-swipe union-cutin-count-${Math.min(5,participants.length)} ${isSamurai?"samurai-cutin":""} union-v5"><div class="union-cutin-topline"></div><div class="union-cutin-label">${isSamurai?"SPECIAL UNION ATTACK":"UNION SKILL"}</div><div class="union-cutin-members">${cards}</div><div class="union-cutin-skill">${esc(skill.name)}</div><div class="union-v5-charge" aria-hidden="true"><i></i><i></i><i></i></div>${isSamurai?'<div class="samurai-cut-line" aria-hidden="true"></div>':""}<div class="union-cutin-bottomline"></div></div>`;
