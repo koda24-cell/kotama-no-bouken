@@ -86,18 +86,27 @@
     #kotama-3d-loading .loading-progress::-moz-progress-bar{background:#fff}
     #kotama-3d-loading [data-loading-stage]{grid-column:1/-1;font-size:11px;color:#bbb;text-align:right}
     #kotama-3d-loading [data-loading-recovery]{grid-column:1/-1;grid-row:1;margin:0 0 12px;display:flex;gap:8px;flex-wrap:nowrap;justify-content:flex-end} #kotama-3d-loading [data-loading-recovery][hidden]{display:none!important} #kotama-3d-loading [data-loading-recovery] button{margin:0;min-height:44px;padding:6px 10px;font-size:13px;white-space:nowrap} #kotama-3d-loading .loading-inner{width:min(350px,100%)!important;grid-template-columns:19px minmax(0,1fr)!important}
+    #kotama-loading-tip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(76vw,720px);text-align:center;pointer-events:none;display:grid;justify-items:center;gap:12px;color:#fff} #kotama-loading-tip .tip-heading{font-size:clamp(13px,1.8vw,19px);letter-spacing:.16em;color:#c6b78c} #kotama-loading-tip .tip-rule{height:1px;width:64px;background:#9b8c68} #kotama-loading-tip-text{font-size:clamp(16px,2.4vw,25px);line-height:1.7;min-height:2.6em;overflow-wrap:anywhere} #kotama-loading-tip-text.tip-appear{animation:kotama-tip-in .35s ease-out} @keyframes kotama-tip-in{from{opacity:0}to{opacity:1}} @media(orientation:landscape) and (max-height:420px){#kotama-loading-tip{top:46%;width:min(70vw,640px);gap:6px}#kotama-loading-tip-text{font-size:16px;line-height:1.5;min-height:0}#kotama-3d-loading:has([data-loading-recovery]:not([hidden])) #kotama-loading-tip{top:30%}} @media(prefers-reduced-motion:reduce){#kotama-loading-tip-text.tip-appear{animation:none}}
     @media(prefers-reduced-motion:reduce){#kotama-3d-loading .loading-spinner{animation:none!important}#kotama-3d-loading .loading-dots::after{animation:none!important;content:'...'!important}}
   </style>
   <script>
   (function(){
-    let timeout, failed=false;
+    let timeout, failed=false, tipTimer=null, lastTip=-1, tipBag=[];
+    const tips=["迷宮の地図には、見つけた宝箱や階段の位置を自分で記録できます。","敵エンカウントの危険度は、探索画面のゲージで確認できます。","FOEは戦わずに避けて進むこともできます。","ホームから迷宮へ出発すると、仲間のHPとSPが全回復します。","一度訪れたフロアには、ホームの磁軸から移動できます。","スキルポイントは強化画面のスキルツリーで使用できます。","前衛と後衛の配置は、編成画面で変更できます。","探索中もインベントリから仲間のステータスを確認できます。","地図に置いたアイコンは消しゴムで削除できます。","BGMと効果音の音量は個別に調整できます。","装備を変更すると、仲間の能力値も変化します。","探索中の採取ポイントから、素材を入手できます。","セーブデータは手動セーブ枠にも保存できます。","敵の種類に応じて、攻撃やスキルを使い分けましょう。","戦闘に備えて、仲間のHPとSPを確認しておきましょう。","迷宮で見つけた看板や人物は、調べる操作で確認できます。"];
+    function nextTip(){
+      const el=document.getElementById('kotama-loading-tip-text');if(!el)return;
+      if(!tipBag.length){tipBag=tips.map((_,i)=>i);for(let i=tipBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[tipBag[i],tipBag[j]]=[tipBag[j],tipBag[i]];}if(tipBag[tipBag.length-1]===lastTip&&tipBag.length>1){[tipBag[0],tipBag[tipBag.length-1]]=[tipBag[tipBag.length-1],tipBag[0]];}}
+      lastTip=tipBag.pop();el.textContent=tips[lastTip];el.classList.remove('tip-appear');void el.offsetWidth;el.classList.add('tip-appear');
+    }
+    function startTips(){if(tipTimer!==null)return;nextTip();tipTimer=setInterval(nextTip,6000);}
+    function stopTips(){if(tipTimer!==null){clearInterval(tipTimer);tipTimer=null;}}
     const get=()=>document.getElementById('kotama-3d-loading');
-    function hide(){clearTimeout(timeout);const el=get();if(el)el.hidden=true;}
+    function hide(){stopTips();clearTimeout(timeout);const el=get();if(el)el.hidden=true;}
     function progress(value,stage){const el=get();if(!el||failed)return;const bar=el.querySelector('progress');const label=el.querySelector('[data-loading-stage]');const n=Math.max(0,Math.min(100,Math.round(value)));if(bar)bar.value=n;if(label)label.textContent=n+'% · '+stage;}
     function show(){
       const el=get();if(!el)return;
       if(el.hidden){failed=false;progress(0,'初期化');}
-      el.hidden=false;
+      el.hidden=false;startTips();
       const actions=el.querySelector('[data-loading-recovery]');
       if(actions)actions.hidden=true;
       failed=false;
@@ -106,7 +115,7 @@
     }
     function fail(message){
       clearTimeout(timeout);failed=true;
-      const el=get();if(!el)return;el.hidden=false;
+      const el=get();if(!el)return;el.hidden=false;startTips();
       const label=el.querySelector('[data-loading-stage]');if(label)label.textContent=message||'3Dマップの読み込みに失敗しました';
       const actions=el.querySelector('[data-loading-recovery]');if(actions)actions.hidden=false;
     }
@@ -354,7 +363,7 @@ body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:1
 </head>
 <body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
-    <div class="loading-inner"><div data-loading-recovery hidden><button type="button" data-loading-retry>3D読み込みを再試行</button><button type="button" data-loading-home>ホームへ戻る</button></div><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p></div>
+    <div id="kotama-loading-tip" aria-live="off"><div class="tip-heading">冒険の豆知識</div><div class="tip-rule"></div><div id="kotama-loading-tip-text"></div></div><div class="loading-inner"><div data-loading-recovery hidden><button type="button" data-loading-retry>3D読み込みを再試行</button><button type="button" data-loading-home>ホームへ戻る</button></div><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p></div>
   </div>
   <div class="game">
 
