@@ -383,8 +383,9 @@ function extStatusBadges(c) {
 function extJobBadges(c) {
   let html = "";
   if (c.id === "imperial") {
-    html += c._overheat ? ' <span class="status-ext status-ext-bad">🔥OVERHEAT</span>' : ` <span class="status-ext status-heat" title="熱が${EXT_HEAT_LIMIT}たまるとオーバーヒート">熱 ${c._heat || 0}/${EXT_HEAT_LIMIT}</span>`;
-    if (c._xjCharge) html += ' <span class="status-ext status-ext-bad" title="チャージ中は無防備。受けるダメージが増える">⚠無防備</span>';
+    const heat=Math.max(0,Math.min(EXT_HEAT_LIMIT,Number(c._heat)||0));
+    const warning=c._overheat?"過熱":c._xjCharge?"無防備":"";
+    html += ` <span class="status-ext imperial-inline-heat ${warning?"imperial-inline-warning":""}" title="熱量 ${heat}/${EXT_HEAT_LIMIT}${warning?"・"+warning:""}"><span>熱 ${heat}/${EXT_HEAT_LIMIT}</span><span class="imperial-inline-segments" role="meter" aria-label="熱量" aria-valuemin="0" aria-valuemax="${EXT_HEAT_LIMIT}" aria-valuenow="${heat}">${Array.from({length:EXT_HEAT_LIMIT},(_,i)=>`<i class="${i<heat?"filled":""}"></i>`).join("")}</span>${warning?" "+warning:""}</span>`;
   }
   return html;
 }
