@@ -9,7 +9,7 @@
   if (disabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261112-01";
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261126-floor-art";
   document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
