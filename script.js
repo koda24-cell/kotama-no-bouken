@@ -2470,6 +2470,7 @@ function openFieldInventory(){
  const render=()=>{ $("field-inventory-count").textContent=carriedCount()+" / 60";
  list.innerHTML=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory,name:itemById(id)?.name||id})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials,name:materialNames[id]||id}))].filter(x=>x.n>0).map((x,i)=>'<div>'+esc(x.name)+' ×'+x.n+' <button type="button" data-discard="'+i+'">捨てる</button></div>').join("")||"所持品なし";
  const rows=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials}))].filter(x=>x.n>0);
+ if(inventory["return-scroll"]>0){const use=document.createElement("button");use.type="button";use.textContent="帰還の書を使う";use.onclick=()=>{if(state.screen!=="field"||!(inventory["return-scroll"]>0)||!confirm("帰還の書を1個使ってホームに戻りますか？"))return;inventory["return-scroll"]--;if(!inventory["return-scroll"])delete inventory["return-scroll"];dlg.close();fieldState.lock=false;fieldLeaveToHome("帰還の書を使用しました。");persistAutoSave();};list.prepend(use);}
  list.querySelectorAll("[data-discard]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.discard)];if(x&&confirm("1個捨てますか？")){x.bag[x.id]--;if(!x.bag[x.id])delete x.bag[x.id];persistAutoSave();render();}});
  };render();dlg.showModal();dlg.onclose=()=>{fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
 }

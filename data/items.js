@@ -1,5 +1,6 @@
 // 物理武器にはphysicalElementを設定する（斬撃／打撃／壊／突）。魔法スキルはこの値を参照しない。
 const shopItems=[
+  {id:"return-scroll",name:"帰還の書",category:"healing",icon:"SCROLL",description:"探索中に使用するとホームへ帰還する。",price:30,effect:"迷宮から帰還",classes:[],unlock:1},
   {id:"hero-sword",name:"勇者の剣",category:"weapon",icon:"SWORD",description:"チュートリアルで入手する特別な剣。",price:0,effect:"攻撃力 +25",attackBonus:25,physicalElement:"斬撃",classes:["kotama"],unlock:1,tutorialOnly:true},
   {id:"sword",name:"冒険者の剣",category:"weapon",icon:"SWORD",description:"扱いやすい基本の剣。",price:20,effect:"攻撃力 +15",attackBonus:15,physicalElement:"斬撃",classes:["kotama","warrior","knight"],unlock:1},
   {id:"great-sword",name:"炎の大剣",category:"weapon",icon:"SWORD",description:"炎の力を宿した大剣。",price:90,effect:"攻撃力 +30",attackBonus:30,physicalElement:"斬撃",classes:["warrior"],unlock:3},
