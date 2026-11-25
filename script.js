@@ -402,13 +402,14 @@ function shopDisplayCategory(item){
 }
 function renderShop(){
   const box=$("shop-items");if(!box)return;
+  if(currentCategory==="sell"){renderShopSell(box);return;}
   const buyers=getParty();if(!buyers.length){box.textContent="編成中の仲間がいません。";if($("shop-buyer"))$("shop-buyer").textContent="";return;}if(!buyers.some(c=>c.id===shopBuyerId))shopBuyerId=buyers[0].id;const buyer=getCharacter(shopBuyerId);
   const categoryNames={weapon:"武器",frontArmor:"前衛防具",backArmor:"後衛防具",armor:"防具",shield:"盾",staff:"杖",knuckle:"ナックル",accessory:"アクセサリ",other:"その他"};
   const availableCategories=[...new Set(shopItems.filter(i=>!i.craftedOnly).map(shopDisplayCategory))];
   const orderedCategories=["weapon","frontArmor","backArmor","armor","shield","staff","knuckle","accessory","other"].filter(c=>availableCategories.includes(c));
   if(!orderedCategories.includes(currentCategory))currentCategory=orderedCategories[0]||"weapon";
   const tabs=$("shop-category-tabs");
-  if(tabs)tabs.innerHTML=orderedCategories.map(c=>`<button data-category="${c}" class="${currentCategory===c?"active":""}">${categoryNames[c]}</button>`).join("");
+  if(tabs)tabs.innerHTML=orderedCategories.map(c=>`<button data-category="${c}" class="${currentCategory===c?"active":""}">${categoryNames[c]}</button>`).join("")+`<button data-category="sell">売却</button>`;
   const buyerBox=$("shop-buyer");
   const before=effectiveStats(buyer);
   const jobNames={kotama:"冒険者",knight:"騎士",healer:"治癒士",warrior:"モンク",mage:"魔術師",samurai:"武士"};
@@ -2502,3 +2503,11 @@ function renderFieldSettings(){const box=$("field-inventory-list");box.innerHTML
 
 function suspendFieldGame(){if(state.screen!=="field"||!confirm("現在の探索を一時中断しますか？"))return;try{localStorage.setItem("kotamaFieldSuspend",JSON.stringify(createSaveData()));}catch(e){alert("中断データを保存できませんでした。");return;}$("field-inventory-dialog").close();fieldState.lock=false;showScreen("home");}
 function resumeFieldGame(){try{const raw=localStorage.getItem("kotamaFieldSuspend");if(!raw)return;const data=JSON.parse(raw);if(!data.field||!data.state)return;if(!confirm("中断した探索を再開しますか？ 中断データは消費されます。"))return;localStorage.setItem("fantasyRpgSave",raw);localStorage.removeItem("kotamaFieldSuspend");loadGame();fieldShow({returning:true});persistAutoSave();}catch(e){alert("中断データを再開できませんでした。");}}
+
+function renderShopSell(box){
+ const tabs=$("shop-category-tabs");if(tabs){tabs.innerHTML='<button type="button" id="shop-buy-back">購入に戻る</button><button type="button" class="active">売却</button>';$("shop-buy-back").onclick=()=>{currentCategory="weapon";renderShop();};}
+ if($("shop-buyer"))$("shop-buyer").textContent="所持品の売却（装備中の品は対象外）";
+ const rows=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory,name:itemById(id)?.name||id,price:Math.max(1,Math.floor((itemById(id)?.price||0)/2))})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials,name:materialNames[id]||id,price:5}))].filter(x=>Number.isInteger(x.n)&&x.n>0);
+ box.innerHTML=rows.map((x,i)=>'<article class="shop-item"><h3>'+esc(x.name)+'</h3><p>所持数：'+x.n+'</p><p class="price">'+x.price+' G / 個</p><label>売却数 <input type="number" min="1" max="'+x.n+'" value="1" style="width:5em"></label><button class="primary-button" type="button" data-sell-row="'+i+'">売却する</button></article>').join("")||'<p class="empty-note">売却できる所持品がありません。</p>';
+ box.querySelectorAll("[data-sell-row]").forEach(b=>b.onclick=()=>{if(state.screen!=="shop")return;const x=rows[Number(b.dataset.sellRow)],n=Number(b.closest("article").querySelector("input").value);if(!Number.isInteger(n)||n<1||n>(x.bag[x.id]||0)){alert("所持数以内で指定してください。");return;}const total=n*x.price;if(!confirm(x.name+" ×"+n+" を "+total+" Gで売却しますか？"))return;x.bag[x.id]-=n;if(!x.bag[x.id])delete x.bag[x.id];state.gold+=total;persistAutoSave();renderAll();setSystemMessage(x.name+"を売却しました。 "+total+" G獲得");});
+}
