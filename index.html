@@ -119,6 +119,12 @@
     });
   })();
   </script>
+<style id="field-fullscreen-layout">
+body[data-screen="field"] .main-nav,body[data-screen="field"] #field-pad,body[data-screen="field"] #field-hint,body[data-screen="field"] #field-home-button{display:none!important}
+body[data-screen="field"] #field{position:fixed!important;inset:0!important;z-index:100;display:flex!important;flex-direction:column;max-width:none!important;width:100vw!important;height:100dvh!important;margin:0!important;padding:0!important;background:#101820}
+body[data-screen="field"] #field-viewport{flex:1;min-height:0!important;height:auto!important;width:100%!important;max-width:none!important}
+body[data-screen="field"] #field .field-hud{flex:none}
+</style>
 </head>
 <body>
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
