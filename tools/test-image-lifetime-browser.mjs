@@ -149,10 +149,10 @@ try{
       const rect=id=>{const r=document.getElementById(id).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width};};
       fieldRenderPartyHud();
       const party=rect('field-party-hud'),inventory=rect('field-inventory-open'),danger=rect('field-danger');
-      const partyCount=document.querySelectorAll('#field-party-hud .field-party-member').length;
-      const first=getParty()[0],hp=first.hp;
+      const partyCount=document.querySelectorAll('#field-party-hud .kph-member').length;
+      const first=window.kotamaPartyHudLayout(getParty())[0].c,hp=first.hp;
       first.hp=Math.max(0,hp-1);fieldRenderPartyHud();
-      const hpUpdated=document.querySelector('#field-party-hud .field-party-gauge b').textContent.startsWith(first.hp+'/');
+      const hpUpdated=document.querySelector('#field-party-hud .kph-hp-label b')?.textContent===first.hp+'/'+effectiveStats(first).maxHp;
       first.hp=hp;fieldRenderPartyHud();
       fieldToggleFullMap(true);
       const workspace=rect('field-map-workspace'),wrap=rect('field-map-canvas-wrap'),header=document.querySelector('.field-fullmap-head').getBoundingClientRect();
@@ -255,6 +255,15 @@ try{
     }finally{battleState.enemy=oldEnemy;battleState.encounterMode=oldMode;adminCompendiumReveal=oldReveal;renderBattle();renderMonsterCompendium();}
   });
   assert.equal(enemyPortraits.length,8);
+  const salamanderLegacy=await page.evaluate(()=>{
+    const snapshot={monsterRecords:compendiumSerialize(),adminCompendiumReveal};
+    try{
+      compendiumDeserialize({field:{enemyEncounters:{"火トカゲ":4}},monsterRecords:{"field:fire-lizard":{encountered:true,defeated:true,encounters:2,defeats:1}}});
+      const old=monsterRecords["field:fire-lizard"];
+      return {encounters:old.encounters,defeats:old.defeats,defeated:old.defeated,name:monsterEntryById("field:fire-lizard").name};
+    }finally{compendiumDeserialize(snapshot);}
+  });
+  assert.deepEqual(salamanderLegacy,{encounters:4,defeats:1,defeated:true,name:'サラマンダー'});
   assert.ok(enemyPortraits.every(x=>x.width>0&&x.height>0));
   results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,enemyPortraits,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);

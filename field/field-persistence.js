@@ -57,7 +57,10 @@ function fieldDeserialize(d) {
   const a = fieldArea();
   const posOk = typeof fieldRandomMazePosOk !== "function" || fieldRandomMazePosOk(a, Number(d.x), Number(d.y));   // [RANDOM-MAZE] 壁の中・門の奥なら開始位置へ
   if (d.positioned && d.floor !== undefined && Number.isFinite(Number(d.x)) && !fieldBoxBlocked(a, Number(d.x), Number(d.y)) && posOk) { fieldState.x = Number(d.x); fieldState.y = Number(d.y); fieldState.positioned = true; }
-  if (d.enemyEncounters && typeof d.enemyEncounters === "object") for (const [name, count] of Object.entries(d.enemyEncounters)) { const key = name === "火トカゲ" ? "サラマンダー" : name; enemyEncounterCounts[key] = Math.max(enemyEncounterCounts[key] || 0, Math.floor(Number(count) || 0), 0); }
+  if (d.enemyEncounters && typeof d.enemyEncounters === "object") {
+    for (const [name, count] of Object.entries(d.enemyEncounters)) if (name !== "火トカゲ") enemyEncounterCounts[name] = Math.max(0, Math.floor(Number(count) || 0));
+    if (Object.hasOwn(d.enemyEncounters, "火トカゲ")) enemyEncounterCounts["サラマンダー"] = Math.max(0, enemyEncounterCounts["サラマンダー"] || 0, Math.floor(Number(d.enemyEncounters["火トカゲ"]) || 0));
+  }
   fieldLootDeserialize(d);   // [LOOT] フラグ・踏破ビットを読み込んだ後に行う
 }
 
