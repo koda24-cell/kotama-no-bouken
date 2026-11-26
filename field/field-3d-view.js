@@ -745,12 +745,12 @@ function frame() {
   syncFoes(now);
   updateCamera(dt);
   updateWallOcclusion(a);
-  g.natureV6?.update(g.camera.position.x,g.camera.position.z);
-  g.sacredTrial?.update?.(now / 1000);
+
   // The camera frustum excludes remote geometry without changing movement, collision or asset data.
-  const themeStep=!PHONE_VIEW||!g.lastThemeTick||now-g.lastThemeTick>=1000/20;
-  const themeDt=PHONE_VIEW?Math.min(.15,g.lastThemeTick?(now-g.lastThemeTick)/1000:dt):dt;
-  if(themeStep)g.lastThemeTick=now;
+  const effectHz=PHONE_VIEW?20:30;
+  const themeStep=!g.lastThemeTick||now-g.lastThemeTick>=1000/effectHz;
+  const themeDt=Math.min(.15,g.lastThemeTick?(now-g.lastThemeTick)/1000:dt);
+  if(themeStep){g.lastThemeTick=now;g.natureV6?.update(g.camera.position.x,g.camera.position.z);g.sacredTrial?.update?.(now / 1000);}
   if (themeStep && g.theme?.area === 4 && g.envArea === 4) g.theme.tick(themeDt, now, g.camera.position);
   updatePool(g.camera.position, g.envArea === 4);
   if (themeStep && g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(themeDt, now, g.camera.position);
