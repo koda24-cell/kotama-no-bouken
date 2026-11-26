@@ -141,7 +141,7 @@ function setPool(n) {
 // Two consecutive solid cells and all target samples must be blocked. Fail open.
 function wallOccluded(a, from, to, radius=1.5) {
   if(Number(fieldState.area)!==1||g.sacredTrial||g.firstLayerDress||!a||!from||!to)return false;
-  if(new URLSearchParams(location.search).get('wallCull')!=='1')return false;
+  if(!wallCullEnabled)return false;
   const dx=to.x-from.x,dz=to.z-from.z,dist=Math.hypot(dx,dz);
   if(dist<CELL*3)return false;
   const blocked=(x,z)=>{
@@ -156,13 +156,28 @@ function wallOccluded(a, from, to, radius=1.5) {
   };
   return [-radius,0,radius].every(x=>[-radius,0,radius].every(z=>blocked(to.x+x,to.z+z)));
 }
+const wallCullEnabled=new URLSearchParams(location.search).get('wallCull')==='1';
+let wallCullCacheKey='', wallCullCache=new Map();
 function updateWallOcclusion(a){
-  let hidden=0;
+  if(!wallCullEnabled)return;
+  const camera=g.camera.position;
+  const key=[g.builtKey,g.sig,camera.x,camera.z].join(':');
+  if(key!==wallCullCacheKey){wallCullCacheKey=key;wallCullCache.clear();}
+  let hidden=0,terrain=0;
   for(const v of g.foes.values()){
-    const occluded=wallOccluded(a,g.camera.position,v.grp.position,Math.max(2,v.sp.scale.x/2));
-    if(occluded){v.grp.visible=false;hidden++;}
+    if(wallOccluded(a,camera,v.grp.position,Math.max(2,v.sp.scale.x/2))){v.grp.visible=false;hidden++;}
   }
-  g.wallCullStats={hiddenFoes:hidden,enabled:new URLSearchParams(location.search).get('wallCull')==='1'};
+  for(const o of g.world.children){
+    const tile=o.userData.wallCullTile;
+    if(!tile)continue;
+    const k=tile.join(',');
+    if(!wallCullCache.has(k))wallCullCache.set(k,wallOccluded(a,camera,{x:tile[0]*CELL,z:tile[1]*CELL},CELL*1.5));
+    const hide=wallCullCache.get(k);
+    if(hide&&!o.userData.wallCullHidden&&o.visible){o.visible=false;o.userData.wallCullHidden=true;}
+    else if(!hide&&o.userData.wallCullHidden){o.visible=true;delete o.userData.wallCullHidden;}
+    if(o.userData.wallCullHidden)terrain++;
+  }
+  g.wallCullStats={hiddenFoes:hidden,hiddenTerrain:terrain,cachedTiles:wallCullCache.size,enabled:true};
 }
 function updatePool(center, force) {
   const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`;
@@ -375,6 +390,7 @@ async function buildFloor() {
   // 床・天井・壁
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
     if (wallCell(tx, ty)) continue;
+    const tileStart=g.world.children.length;
     const c = ch(tx, ty), r = hash(tx, ty), rot = Math.floor(hash(tx, ty, 1) * 4) * Math.PI / 2, x = X(tx), z = Z(ty);
     if (c === '~') addWater(x, z);
     else if (c === '>') { /* 階段のマスは階段の素材が床を兼ねる */ }
@@ -402,6 +418,12 @@ async function buildFloor() {
       const k = hash(tx, ty, 9);
       if (k > 0.95) place(g.world, S.mushrooms, x + (hash(tx, ty, 7) > 0.5 ? 1.4 : -1.4), 0, z + (hash(tx, ty, 8) - 0.5) * 2, k * 6, 0.6);
       else if (k > 0.91) place(g.world, S.mossPatch, x, 0.01, z, k * 6, 0.8);
+    }
+    // Exclude interactive tiles and unusual terrain; keep original object ownership.
+    if(c==='.'&&!objAt.has(`${tx},${ty}`)){
+      for(const o of g.world.children.slice(tileStart)){
+        if(!g.entries.some(e=>e.obj===o))o.userData.wallCullTile=[tx,ty];
+      }
     }
   }
   } else {
