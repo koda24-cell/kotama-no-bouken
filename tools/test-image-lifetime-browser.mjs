@@ -20,14 +20,37 @@ try{
     return loc.count();
   };
   const home=await inspect('#home-party img');
+  const homePoster=await page.evaluate(()=>{
+    const nav=document.querySelector('.main-nav'),stage=document.getElementById('home-party');
+    const menu=document.querySelector('.home-menu');
+    const old=window.kotamaBattleExportRows();
+    const party=getParty();
+    const slots=[5,0,4,2,1,3];
+    try{
+      window.kotamaBattleImportRows(Object.fromEntries(party.map((c,i)=>[c.id,{row:slots[i]>=3?'rear':'front',slot:slots[i]%3}])));
+      renderHome();
+      const members=[...stage.querySelectorAll('[data-home-slot]')].map(e=>({id:e.dataset.partyId,slot:Number(e.dataset.homeSlot),shadow:getComputedStyle(e.querySelector('img')||e.querySelector('.character-art')).filter}));
+      const expected=party.map((c,i)=>({id:c.id,slot:slots[i]})).sort((a,b)=>a.slot-b.slot);
+      return {members,expected,navMoved:nav.parentElement.id==='home-nav-slot',vertical:getComputedStyle(nav).flexDirection==='column',menuRight:menu.getBoundingClientRect().right,artLeft:stage.getBoundingClientRect().left};
+    }finally{window.kotamaBattleImportRows(old);renderHome();}
+  });
+  assert.equal(homePoster.navMoved,true);
+  assert.equal(homePoster.vertical,true);
+  assert.ok(homePoster.menuRight<=homePoster.artLeft+12,'menu overlaps stage');
+  assert.deepEqual(homePoster.members.map(({id,slot})=>({id,slot})),homePoster.expected);
+  assert.ok(homePoster.members.some(m=>m.shadow.includes('drop-shadow')));
+  await page.screenshot({path:'home-poster-'+viewport.width+'.png'});
+
   for(let cycle=0;cycle<3;cycle++){
     await navigate('formation');
+    assert.equal(await page.locator('.topbar > .main-nav').count(),1);
     assert.equal(await page.locator('#home-party img').count(),0);
     await inspect('#selected-party img');
     await navigate('shop');
     assert.equal(await page.locator('#selected-party img,#character-roster img').count(),0);
     await inspect('#shop-buyer img');
     await navigate('home');
+    assert.equal(await page.locator('#home-nav-slot > .main-nav').count(),1);
     assert.equal(await page.locator('#shop-buyer img').count(),0);
     assert.equal(await inspect('#home-party img'),home);
   }
@@ -117,7 +140,7 @@ try{
   await page.screenshot({path:'status-profile-'+viewport.width+'.png'});
   await page.evaluate(()=>document.getElementById('field-inventory-dialog').close());
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
