@@ -191,5 +191,23 @@
     "finalPCVisual": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
     "finalActualCDN": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
     "note": "Final difference is opaque terrain and foundations restricted to solid cells; navigation, input and event code unchanged."
-  }
+  },
+  "sceneImagesCommit": "8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d",
+  "sourcePR": {
+    "number": 785,
+    "state": "OPEN_DRAFT_NOT_APPROVED"
+  },
+  "documentationPR": {
+    "number": 848,
+    "state": "MERGED_DEVELOPMENT_DOCS_ONLY",
+    "commit": "4e13d9dcf6e597d3a60c0ecd97d827fcc95b752c"
+  },
+  "galleryPR": {
+    "repository": "koda24-cell/kotama-3d-progress",
+    "number": 21,
+    "state": "MERGED",
+    "commit": "8522467ef2c8c6b71973dd06b4e011cecdd13726",
+    "browserWorkflow": 45801370261
+  },
+  "workspaceNote": "Reversible sparse checkout omits older V1 lod_reviews working files to fit workspace disk; all original tracked blobs and remote history retained. Current V2 statue LOD is checked out. No asset deletion."
 }

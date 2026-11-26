@@ -1,8 +1,9 @@
 [
   {
-    "stage": "public",
+    "stage": "public-before-foundation-closure",
     "exitCode": 0,
-    "completedAt": "2026-11-26T10:08:34Z"
+    "completedAt": "2026-11-26T10:08:34Z",
+    "source": "7654a1c8332c9027c5ae5b115db39cee73becf52"
   },
   {
     "stage": "mobile-controls",
@@ -28,5 +29,23 @@
     "stage": "live-delivery",
     "exitCode": 0,
     "completedAt": "2026-11-26T10:18:29Z"
+  },
+  {
+    "stage": "final-grounded-PC-all-floors",
+    "passed": true,
+    "evidence": "docs/reviews/f3-city-v2-final-pc-grounded/pc-results.json",
+    "recordedAt": "2026-11-26T10:31:38.862427+00:00"
+  },
+  {
+    "stage": "final-public-game",
+    "passed": true,
+    "evidence": "docs/reviews/f3-city-v2-public/public-verification.json",
+    "recordedAt": "2026-11-26T10:31:38.867840+00:00"
+  },
+  {
+    "stage": "published-gallery",
+    "passed": true,
+    "evidence": "docs/reviews/f3-city-v2-final/gallery-public.json",
+    "recordedAt": "2026-11-26T10:31:38.868036+00:00"
   }
 ]
