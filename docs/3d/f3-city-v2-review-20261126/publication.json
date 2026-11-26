@@ -1,0 +1,54 @@
+{
+  "status": "NOT_APPROVED",
+  "public_review": true,
+  "author": "Codex",
+  "runtime_source": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
+  "wrapper_source": "dad994710c9ed1068680d730241a38771ad8cc14",
+  "provenance": "Actual game/browser PNGs; own game and documented CC0 derivatives. No Pinterest/reference-image pixels redistributed. Public review allowed by project AGENTS; not formal game promotion.",
+  "images": [
+    {
+      "path": "docs/3d/f3-city-v2-review-20261126/7f-residential-street.png",
+      "label": "7F 廃住居と支持付き連絡橋",
+      "source": "docs/reviews/f3-city-v2-final-pc-grounded/pc-floor0.png",
+      "sha256": "72ba39ac2a9b5b76bd0d5b897aea1d16ef74b300ce6ab82e80b8d2237ae63560",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "png_crc_verified": true
+    },
+    {
+      "path": "docs/3d/f3-city-v2-review-20261126/8f-factory-street.png",
+      "label": "8F 工場窓・鉄骨・路面と下草",
+      "source": "docs/reviews/f3-city-v2-final-pc-grounded/pc-floor1.png",
+      "sha256": "6a83f84f98e6c896bb4971dd464152176a117e68de42e830135329756d6f6993",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "png_crc_verified": true
+    },
+    {
+      "path": "docs/3d/f3-city-v2-review-20261126/9f-reclaimed-plaza.png",
+      "label": "9F 植生の戻る遺跡と風化した石像",
+      "source": "docs/reviews/f3-city-v2-final-pc-grounded/pc-floor2.png",
+      "sha256": "3c4ece04622ad3ba4eccaac650523b7eb267deedf30392d3ffe0488773609895",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "png_crc_verified": true
+    },
+    {
+      "path": "docs/3d/f3-city-v2-review-20261126/public-entry.png",
+      "label": "実公開URLからの開始地点・地盤補修後",
+      "source": "docs/reviews/f3-city-v2-public/public.png",
+      "sha256": "1210ad104a6a1b38773a404c48cfc71f2fcc2c0ed75ada18266ba9b2b453eaf2",
+      "dimensions": [
+        1280,
+        900
+      ],
+      "png_crc_verified": true
+    }
+  ]
+}
