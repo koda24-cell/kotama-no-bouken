@@ -89,6 +89,29 @@ try{
     }finally{window.confirm=oldConfirm;}
   });
   assert.deepEqual(levelTest,{set:10,up:11,down:10,confirmations:0,restored:true});
+  const adminTest=await page.evaluate(()=>{
+    const before=JSON.stringify({compendium,records:compendiumSerialize(),stageCleared,stageEntered,gold:state.gold,limit:state.maxUnlockedStage,hidden:hiddenBossUnlocked()});
+    const entries=monsterCompendiumEntries();
+    adminActiveTab='progress';renderAdminPanel();
+    document.getElementById('admin-compendium-reveal').click();
+    renderMonsterCompendium();
+    const cards=document.querySelectorAll('#compendium-list .compendium-card.unlocked').length;
+    const saved=JSON.parse(localStorage.getItem('fantasyRpgSave')).adminCompendiumReveal;
+    const unchanged=before===JSON.stringify({compendium,records:compendiumSerialize(),stageCleared,stageEntered,gold:state.gold,limit:state.maxUnlockedStage,hidden:hiddenBossUnlocked()});
+    document.getElementById('admin-compendium-restore').click();
+    const restored=!adminCompendiumReveal;
+    adminActiveTab='encounter';renderAdminPanel();
+    const bosses=[...document.querySelectorAll('#admin-boss-select option')].map(o=>o.value);
+    const old=battleState.adminBossId;
+    battleState.adminBossId='variant:snowdrift-boss';const snow=createEnemy(1);
+    battleState.adminBossId='boss-3';const wolf=createEnemy(3);
+    battleState.adminBossId=old;
+    return {cards,expected:entries.length,saved,unchanged,restored,bosses,snow:snow.name,wolf:wolf.name};
+  });
+  assert.equal(adminTest.cards,adminTest.expected);
+  assert.ok(adminTest.saved&&adminTest.unchanged&&adminTest.restored);
+  assert.ok(adminTest.bosses.includes('variant:snowdrift-boss')&&adminTest.bosses.includes('hidden-boss')&&adminTest.bosses.includes('boss-5'));
+  assert.equal(adminTest.snow,'スノードリフト');assert.equal(adminTest.wolf,'オオカミ');
   const fieldLayout=await page.evaluate(()=>{
     fieldEnsureExtraDom();
     const field=document.getElementById('field'),home=document.getElementById('home');
@@ -152,7 +175,7 @@ try{
   await page.screenshot({path:'status-profile-'+viewport.width+'.png'});
   await page.evaluate(()=>document.getElementById('field-inventory-dialog').close());
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
