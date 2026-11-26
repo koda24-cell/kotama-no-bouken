@@ -210,7 +210,7 @@ function load(file) {
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
 function applyEnv(area, env) {
-  const review=area===1&&(a.f===2||window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1');
+  const review=area===1&&(g.sacredTrial!=null||window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1');
   const E = review?{...(env||ENV_B1),hemi:{sky:0xbac6b4,ground:0x626f58,high:1.9,low:2.2}}:(env||ENV_B1);
   if(review&&!g.reviewFill){g.reviewFill=new THREE.AmbientLight(0xbac6ac,.32);g.scene.add(g.reviewFill);}
   if(g.reviewFill)g.reviewFill.intensity=review?.32:0;
