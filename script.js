@@ -182,7 +182,7 @@ function statWithBonus(base,bonus){return `${base}${bonus?` <b class="stat-bonus
 // Remove only images from panels that are rebuilt on entry. Keep layout, controls and save state.
 function releaseInactiveScreenImages(previous,next){
   if(previous===next)return;
-  const selectors={home:"#home-party img",formation:"#selected-party img,#character-roster img",shop:"#shop-buyer img",training:"#progression-panel img",compendium:"#compendium-list img",battle:"#battle-enemy img,#battle-party img,#battle .battle-preview-hero-hud img"};
+  const selectors={home:"#home-party img",formation:"#selected-party img,#character-roster img",shop:"#shop-buyer img",training:"#progression-panel img",compendium:"#compendium-list img",battle:"#battle-enemy img,#battle-party img,#battle .battle-preview-portrait img"};
   if(selectors[previous])document.querySelectorAll(selectors[previous]).forEach(img=>img.remove());
   if(previous==="field")window.KotamaField3D?.releaseFoeImages?.();
 }
