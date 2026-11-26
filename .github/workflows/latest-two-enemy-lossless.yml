@@ -1,0 +1,48 @@
+name: Latest two enemy illustration lossless optimization
+on:
+  push:
+    branches: [feature/two-latest-enemy-lossless-20261126]
+    paths:
+      - tools/optimize-latest-two-enemy-images.py
+      - .github/workflows/latest-two-enemy-lossless.yml
+permissions:
+  contents: write
+jobs:
+  optimize:
+    if: github.ref == 'refs/heads/feature/two-latest-enemy-lossless-20261126'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/optimize-latest-two-enemy-images.py
+      - name: Verify unchanged originals and save smaller variants
+        run: |
+          git diff --exit-code -- 'assets/monsters/*.png'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('assets/monsters/latest-enemy-lossless-report.json').read_text())
+          assert len(d['images'])==2
+          assert d['total_display_bytes']<d['total_png_bytes']
+          assert not d['changed_files'], 'Unexpected runtime path change: requires separate review'
+          for row in d['images']:
+              if row['selected']:
+                  assert row['rgba_exact'] and row['icc_exact']
+                  assert Path(row['path']).with_suffix('.webp').is_file()
+          PY
+          git add assets/monsters/latest-enemy-lossless-report.json
+          find assets/monsters -maxdepth 1 -name '*.webp' -print0 | xargs -0 -r git add --
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "Save two latest verified lossless image variants"
+          git push origin HEAD:refs/heads/feature/two-latest-enemy-lossless-20261126
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: latest-enemy-lossless-proof
+          path: assets/monsters/latest-enemy-lossless-report.json
+          retention-days: 14
