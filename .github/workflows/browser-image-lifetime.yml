@@ -30,4 +30,5 @@ jobs:
           path: |
             browser-image-lifetime-report.json
             image-lifetime-*.png
+            status-profile-*.png
           retention-days: 14
