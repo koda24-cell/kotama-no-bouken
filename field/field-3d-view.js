@@ -140,7 +140,11 @@ function setPool(n) {
 // Conservative experimental occlusion: only ordinary B1 props/FOEs, never terrain or portals.
 // Two consecutive solid cells and all target samples must be blocked. Fail open.
 function wallOccluded(a, from, to, radius=1.5) {
-  if(Number(fieldState.area)!==1||g.sacredTrial||g.firstLayerDress||!a||!from||!to)return false;
+  if(g.sacredTrial||g.firstLayerDress||!a||!from||!to)return false;
+  const area=Number(fieldState.area);
+  if(area<1||area>6)return false;
+  // Later strata have open vistas: only explicitly opt in to logical-wall trials.
+  if(area!==1 && !wallCullAllStrata)return false;
   if(!wallCullEnabled)return false;
   const dx=to.x-from.x,dz=to.z-from.z,dist=Math.hypot(dx,dz);
   if(dist<CELL*3)return false;
@@ -156,7 +160,9 @@ function wallOccluded(a, from, to, radius=1.5) {
   };
   return [-radius,0,radius].every(x=>[-radius,0,radius].every(z=>blocked(to.x+x,to.z+z)));
 }
-const wallCullEnabled=new URLSearchParams(location.search).get('wallCull')==='1';
+const wallCullMode=new URLSearchParams(location.search).get('wallCull');
+const wallCullAllStrata=wallCullMode==='all';
+const wallCullEnabled=wallCullMode==='1'||wallCullAllStrata;
 let wallCullCacheKey='', wallCullCache=new Map(), wallCullObjects=[];
 function updateWallOcclusion(a){
   if(!wallCullEnabled)return;
@@ -165,19 +171,19 @@ function updateWallOcclusion(a){
   if(key!==wallCullCacheKey){wallCullCacheKey=key;wallCullCache.clear();}
   let hidden=0,terrain=0;
   for(const v of g.foes.values()){
-    if(wallOccluded(a,camera,v.grp.position,Math.max(2,v.sp.scale.x/2))){v.grp.visible=false;hidden++;}
+    if(v.grp.visible&&wallOccluded(a,camera,v.grp.position,Math.max(2,v.sp.scale.x/2))){v.grp.visible=false;hidden++;}
   }
   for(const o of wallCullObjects){
     const tile=o.userData.wallCullTile;
     if(!tile)continue;
     const k=tile.join(',');
     if(!wallCullCache.has(k))wallCullCache.set(k,wallOccluded(a,camera,{x:tile[0]*CELL,z:tile[1]*CELL},CELL*1.5));
-    const hide=wallCullCache.get(k);
+    const hide=Number(fieldState.area)===1&&wallCullCache.get(k);
     if(hide&&!o.userData.wallCullHidden&&o.visible){o.visible=false;o.userData.wallCullHidden=true;}
     else if(!hide&&o.userData.wallCullHidden){o.visible=true;delete o.userData.wallCullHidden;}
     if(o.userData.wallCullHidden)terrain++;
   }
-  g.wallCullStats={hiddenFoes:hidden,hiddenTerrain:terrain,cachedTiles:wallCullCache.size,trackedObjects:wallCullObjects.length,enabled:true};
+  g.wallCullStats={hiddenFoes:hidden,hiddenTerrain:terrain,cachedTiles:wallCullCache.size,trackedObjects:wallCullObjects.length,area:Number(fieldState.area),allStrata:wallCullAllStrata,enabled:true};
 }
 function updatePool(center, force) {
   const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`+(wallCullEnabled?`:${wallCullCacheKey}`:'');
