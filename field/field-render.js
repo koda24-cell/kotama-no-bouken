@@ -21,10 +21,11 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close" aria-label="地図を閉じて探索に戻る">× 地図を閉じる</button></div><div id="field-map-workspace"><div id="field-map-canvas-wrap"><canvas id="field-fullmap-canvas" aria-label="探索地図"></canvas></div><aside id="field-map-tools"><strong>地図アイコン</strong><p>アイコンを選び、地図のマスをクリック</p><div id="field-map-palette" role="group" aria-label="地図アイコン選択"></div></aside></div><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><div class="field-map-zoom-controls"><button type="button" id="field-map-zoom-out" aria-label="縮小">−</button><button type="button" id="field-map-zoom-fit" aria-label="全体表示">全体</button><button type="button" id="field-map-zoom-in" aria-label="拡大">＋</button><button type="button" id="field-map-zoom-center" aria-label="現在地へ">現在地</button><output id="field-map-zoom-value">100%</output></div><button type="button" id="field-fullmap-close" aria-label="地図を閉じて探索に戻る">× 地図を閉じる</button></div><div id="field-map-workspace"><div id="field-map-canvas-wrap"><canvas id="field-fullmap-canvas" aria-label="探索地図"></canvas></div><aside id="field-map-tools"><strong>地図アイコン</strong><p>アイコンを選び、地図のマスをクリック</p><div id="field-map-palette" role="group" aria-label="地図アイコン選択"></div></aside></div><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
     $("field").appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
     fieldBindManualMap();
+    fieldBindMapZoom();
   }
   if (!$("field-map-rail")) {
     const rail = document.createElement("aside");
@@ -88,6 +89,7 @@ function fieldRender() {
     fog.style.background = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${Math.round(r * .55)}px, rgba(0,0,0,.5) ${Math.round(r * .95)}px, rgba(0,0,0,.66) ${Math.round(r * 1.25)}px)`;
   }
   fieldRenderFoes();
+  fieldRenderPartyHud();
   const now = performance.now();
   if (fieldMiniDirty || now - fieldMiniTimer > 250) { fieldMiniTimer = now; fieldMiniDirty = false; fieldDrawMinimap(); if (fieldState.mapOpen) fieldDrawFullMap(); }
   if (window.KotamaField3D) window.KotamaField3D.frame();   // [FIELD-3D]
@@ -207,13 +209,59 @@ function fieldDrawMinimap() {
   const chasing=visible.filter(f=>f.mode==="chase").length;
   status.textContent=`座標 ${tx+1}, ${ty+1}`;
 }
+let fieldMapZoom=1,fieldMapZoomKey='';
+function fieldMapFitCell(a,wrap){return Math.max(2,Math.floor(Math.min((wrap.clientWidth-20)/a.w,(wrap.clientHeight-20)/a.h)));}
 function fieldDrawFullMap() {
-  const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
+  const a=fieldArea(),wrap=$("field-map-canvas-wrap"),canvas=$("field-fullmap-canvas");
+  if(!a||!wrap||!canvas||!wrap.clientWidth||!wrap.clientHeight)return;
+  const key=a.buildKey||a.key||a.n+"-"+a.f;
+  if(key!==fieldMapZoomKey){fieldMapZoomKey=key;fieldMapZoom=1;}
+  const fit=fieldMapFitCell(a,wrap);
+  // Limit canvas backing store even at high zoom on large generated floors.
+  const maxCell=Math.max(2,Math.floor(Math.min(4096/a.w,4096/a.h,Math.sqrt(8000000/(a.w*a.h)))/Math.min(2,devicePixelRatio||1)));
+  const cell=Math.min(maxCell,Math.max(2,Math.round(fit*fieldMapZoom)));
+  fieldDrawMap(canvas,cell,true);
+  const actual=cell/fit;
+  $("field-map-zoom-value").textContent=Math.round(actual*100)+"%";
+  $("field-map-zoom-in").disabled=cell>=maxCell;
+  $("field-map-zoom-out").disabled=fieldMapZoom<=.5;
+  $("field-fullmap-title").textContent=`${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n,a.f)}`;
+  $("field-fullmap-rate").textContent=`踏破率 ${fieldExploredRate(a)}%`;
+}
+function fieldMapCenter(x,y){
+  const a=fieldArea(),wrap=$("field-map-canvas-wrap"),canvas=$("field-fullmap-canvas");if(!a||!wrap||!canvas)return;
+  const w=canvas.offsetWidth,h=canvas.offsetHeight;
+  wrap.scrollLeft=canvas.offsetLeft+x/a.w*w-wrap.clientWidth/2;
+  wrap.scrollTop=canvas.offsetTop+y/a.h*h-wrap.clientHeight/2;
+}
+function fieldMapSetZoom(next,clientX,clientY){
+  const wrap=$("field-map-canvas-wrap"),canvas=$("field-fullmap-canvas");
+  if(!wrap||!canvas||!fieldState.mapOpen)return;
+  const r=canvas.getBoundingClientRect(),wr=wrap.getBoundingClientRect();
+  const px=clientX??(wr.left+wrap.clientWidth/2),py=clientY??(wr.top+wrap.clientHeight/2);
+  const fx=Math.max(0,Math.min(1,(px-r.left)/Math.max(1,r.width))),fy=Math.max(0,Math.min(1,(py-r.top)/Math.max(1,r.height)));
+  fieldMapZoom=Math.max(.5,Math.min(4,next));fieldDrawFullMap();
+  const after=canvas.getBoundingClientRect();
+  wrap.scrollLeft+=after.left+fx*after.width-px;
+  wrap.scrollTop+=after.top+fy*after.height-py;
+}
+function fieldBindMapZoom(){
   const wrap=$("field-map-canvas-wrap");
-  const cell=Math.max(6,Math.floor(Math.min(((wrap?.clientWidth||vp.clientWidth)-16)/a.w,((wrap?.clientHeight||vp.clientHeight)-16)/a.h)));
-  fieldDrawMap($("field-fullmap-canvas"), cell, true);
-  $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
-  $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;
+  $("field-map-zoom-in").onclick=()=>fieldMapSetZoom(fieldMapZoom*1.25);
+  $("field-map-zoom-out").onclick=()=>fieldMapSetZoom(fieldMapZoom/1.25);
+  $("field-map-zoom-fit").onclick=()=>fieldMapSetZoom(1);
+  $("field-map-zoom-center").onclick=()=>{const p=fieldPlayerTile();fieldMapCenter(p.tx+.5,p.ty+.5);};
+  wrap.addEventListener("wheel",e=>{if(!fieldState.mapOpen)return;e.preventDefault();fieldMapSetZoom(fieldMapZoom*(e.deltaY<0?1.2:1/1.2),e.clientX,e.clientY);},{passive:false});
+  // Native scrolling works for touch and scrollbars; click coordinates stay relative to canvas.
+  window.addEventListener("resize",()=>{if(fieldState.mapOpen)fieldDrawFullMap();});
+}
+function fieldRenderPartyHud(){
+  const box=$("field-party-hud");if(!box)return;
+  const members=getParty().map(c=>({id:c.id,name:c.name,lv:typeof characterLevels!=="undefined"?characterLevels[c.id]||1:1,hp:Math.max(0,c.hp),maxHp:effectiveStats(c).maxHp,sp:Math.max(0,c.sp),maxSp:c.maxSp}));
+  const key=JSON.stringify(members);if(box.dataset.renderKey===key)return;box.dataset.renderKey=key;
+  box.style.setProperty("--party-count",Math.max(1,members.length));
+  const gauge=(label,value,max,cls)=>`<div class="field-party-gauge"><span>${label}</span><div class="${cls}-track"><div class="${cls}-fill" style="width:${Math.min(100,Math.max(0,value/Math.max(1,max)*100))}%"></div></div><b>${value}/${max}</b></div>`;
+  box.innerHTML=members.map(c=>`<article class="field-party-member${c.hp<=0?" field-party-dead":""}"><div class="field-party-name"><strong>${esc(c.name)}</strong><small>Lv.${c.lv}</small></div>${gauge("HP",c.hp,c.maxHp,"hp")}${gauge("SP",c.sp,c.maxSp,"sp")}</article>`).join("");
 }
 function fieldToggleFullMap(force) {
   const full = $("field-fullmap"); if (!full) return;
@@ -221,7 +269,7 @@ function fieldToggleFullMap(force) {
   if (open && (fieldState.lock && !fieldState.mapOpen)) return;
   full.hidden = !open; fieldState.mapOpen = open;
   fieldInput.keys.clear(); fieldInput.pad.clear();
-  if (open) fieldDrawFullMap();
+  if (open) {fieldDrawFullMap();requestAnimationFrame(()=>{if(fieldState.mapOpen)fieldDrawFullMap();});}
   if (typeof sound === "function") sound(open ? "select" : "back");
 }
 
