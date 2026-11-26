@@ -1,0 +1,131 @@
+{
+  "images": [
+    {
+      "path": "assets/monsters/13964637-9c62-4394-a172-31b721771096.png",
+      "png_bytes": 2474412,
+      "original_sha256": "e0e286417a9e17af77c4a6f431ffdf4ef4616a51ad2f1f82b8e0f4f6c92ce63a",
+      "selected": true,
+      "width": 1312,
+      "height": 1199,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1845298,
+      "webp_sha256": "79b47a3d81140267cea37e919ffbb6d18a197955441e86840d606a93bc35b7ac"
+    },
+    {
+      "path": "assets/monsters/33710b53-8af8-4ef3-b69b-a204696db496.png",
+      "png_bytes": 2063537,
+      "original_sha256": "0b9a9af1f32490725126fb7a917795eaaaded3477ec084770c1dd0ef6d06af75",
+      "selected": true,
+      "width": 1536,
+      "height": 1024,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1247140,
+      "webp_sha256": "141f8339a9d50fb9e1fb6475d2bce90e8326e4bdec2b9e24d101b97148fb4401"
+    },
+    {
+      "path": "assets/monsters/62ee5c0e-50b9-41c6-90f2-618d52d120a0.png",
+      "png_bytes": 2172991,
+      "original_sha256": "dfbdf1d1b6bebbd20e6dd30713068ffa84b9dc063933cb30e4570dd624177512",
+      "selected": true,
+      "width": 1536,
+      "height": 1024,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1464450,
+      "webp_sha256": "4831260bb6c4721cc7ad9760c6beda607ebb5fbaba024fd343a08e427096a018"
+    },
+    {
+      "path": "assets/monsters/64bb1648-e941-4a0f-b475-0e8b1a0c1181.png",
+      "png_bytes": 2406182,
+      "original_sha256": "c32eb135a64978fb7ab16226d3b0b2f3d39a7b8e7b5197decfb610cacd10a6d7",
+      "selected": true,
+      "width": 1199,
+      "height": 1312,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1519084,
+      "webp_sha256": "33d957318e13df2d97c67abd4bfec479ae65f516fdd54b0a5ef641df9588a632"
+    },
+    {
+      "path": "assets/monsters/7a6e64a3-1704-4d0e-b46f-006befd1801d.png",
+      "png_bytes": 2274321,
+      "original_sha256": "e7fb4cca5cf14a1559944a8ec61d16ad7b3a7a96e38dd20f8017297878bf40c5",
+      "selected": true,
+      "width": 1199,
+      "height": 1312,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1551658,
+      "webp_sha256": "fc0c5c2aec963385449e8e8dd6e82e4eb6327048fc952e84395e4d9416c0bbb0"
+    },
+    {
+      "path": "assets/monsters/a7ceca83-c5cc-4b88-a19c-259865aa9347.png",
+      "png_bytes": 1989912,
+      "original_sha256": "4167ab79f29beb208e47f14ee0453d287d39119852c0f05dc63724006499572c",
+      "selected": true,
+      "width": 1199,
+      "height": 1312,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1226892,
+      "webp_sha256": "0da29b5b33067dfbb6d138e1de049dd5513a2e5deef587bcdf9e18b94ed1a556"
+    },
+    {
+      "path": "assets/monsters/dcebcee7-80cb-4260-8ded-3680ee605f6b.png",
+      "png_bytes": 1582610,
+      "original_sha256": "e6fb3c4d62adf97d348b690882252b6939460319a3eaddaf6e5b943d65bfb124",
+      "selected": true,
+      "width": 1199,
+      "height": 1312,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1023652,
+      "webp_sha256": "db8ff36f3837f38f50a304f38277029ff307ca93f982dee54abf12f4f47823b9"
+    },
+    {
+      "path": "assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png",
+      "png_bytes": 1318233,
+      "original_sha256": "250ee3f90d49b0ff694c79713b32648e7a8bdb2e8f6e7712330756ab8042aec1",
+      "selected": true,
+      "width": 1312,
+      "height": 1199,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 838644,
+      "webp_sha256": "a70e8f5f3b999f47441dcac92adc660e9599b76d53e44e24daf9614abd5a64b8"
+    },
+    {
+      "path": "assets/monsters/毒胞子を放つキノコもどき.png",
+      "png_bytes": 2235836,
+      "original_sha256": "da460d502d98679a9cede379cb469b5fd196d3f89911f89b445fe8d59b2925da",
+      "selected": true,
+      "width": 1312,
+      "height": 1199,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1439976,
+      "webp_sha256": "afd80ddc7673f0804d3f6dce6df0ebf48503788cc6999117429199763d093ccf"
+    },
+    {
+      "path": "assets/monsters/氷晶をまとった鉱石ガニ.png",
+      "png_bytes": 2527068,
+      "original_sha256": "55c128783498d579ffdbe79349f3f43ccc47c20602e582f381e349e32fe08d74",
+      "selected": true,
+      "width": 1536,
+      "height": 1024,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1604868,
+      "webp_sha256": "166cb2b3d623e5294ab228add2f01afae5395e9c629406f87d0b261190fad2d5"
+    }
+  ],
+  "changed_files": [
+    "data/enemies.js",
+    "data/field-enemies.js",
+    "tools/test-image-lifetime-browser.mjs"
+  ],
+  "total_png_bytes": 21045102,
+  "total_display_bytes": 13761662
+}

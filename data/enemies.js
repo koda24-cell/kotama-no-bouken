@@ -1,5 +1,5 @@
 const enemyData=[
-  {name:"スライム",element:"無属性",weaknesses:["炎","氷","雷","聖"],resistances:[],physicalResistances:["斬撃","打撃","壊","突"],hp:180,attack:12,defense:4,spDefense:35,physicalDamageRate:.18,gold:7,sprite:"slime",actionName:"粘液攻撃",image:"assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png",variantImage:"assets/monsters/青いスライムのジャンプアニメーション.gif"},
+  {name:"スライム",element:"無属性",weaknesses:["炎","氷","雷","聖"],resistances:[],physicalResistances:["斬撃","打撃","壊","突"],hp:180,attack:12,defense:4,spDefense:35,physicalDamageRate:.18,gold:7,sprite:"slime",actionName:"粘液攻撃",image:"assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.webp",variantImage:"assets/monsters/青いスライムのジャンプアニメーション.gif"},
   {name:"ゴブリン",element:"無属性",weaknesses:["炎","斬撃"],resistances:[],hp:360,attack:32,defense:10,gold:10,sprite:"goblin",actionName:"棍棒の一撃",image:"assets/monsters/goburinn.webp"},
   {name:"オオカミ",element:"無属性",weaknesses:["雷","打撃","壊"],resistances:[],hp:660,attack:38,defense:20,gold:25,sprite:"wolf",actionName:"鋭い牙",image:"assets/monsters/唸る青灰狼のアニメーション.gif"},
   {name:"ドラゴン",element:"炎",weaknesses:["氷","斬撃"],resistances:["炎"],hp:1600,attack:65,defense:40,spAttack:90,spDefense:20,gold:60,sprite:"dragon",actionName:"鋭い爪",image:"assets/monsters/炎の翼竜、咆哮する姿.gif"},
