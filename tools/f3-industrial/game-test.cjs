@@ -39,9 +39,11 @@ await page.evaluate(()=>{
  g.renderer.render=(scene,camera)=>{const start=performance.now();render(scene,camera);if(scene===g.scene)window.__perf.push({time:performance.now(),ms:performance.now()-start,calls:g.renderer.info.render.calls,triangles:g.renderer.info.render.triangles});};
 });
 
+let firstFloor=true;
 for(const floor of (process.env.F3_TEST_FLOORS?process.env.F3_TEST_FLOORS.split(',').map(Number):(process.argv.includes('--visual-only') ? [0,1,2] : [0,1,2,0]))){
 console.log('floor '+floor);
-if(!process.env.F3_INSPECT_VIEW||floor!==0)await page.evaluate(f=>fieldEnterArea(3,{floor:f,adminSkip:true}),floor);
+if(!process.env.F3_INSPECT_VIEW||!firstFloor||floor!==0)await page.evaluate(f=>fieldEnterArea(3,{floor:f,adminSkip:true}),floor);
+firstFloor=false;
 await page.waitForFunction(f=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor===`3-${f}`,floor,{timeout:120000});
 await page.waitForTimeout(600);
 const info=await page.evaluate(()=>{const {placements,edgePlacements,...x}=KotamaField3D.themeInfo();const a=fieldArea();const overlaps=[];
