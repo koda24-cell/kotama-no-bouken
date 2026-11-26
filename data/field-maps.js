@@ -31,7 +31,7 @@ const FIELD_AREAS = {
       e: { kind: "switch", id: "a1-lever", name: "古いレバー", sprite: "pz-lever", puzzle: "a1-lever-gate", onWall: true },
       f: { kind: "door", id: "a1-gate", name: "鉄格子の扉", sprite: "pz-door", puzzle: "a1-lever-gate" },
       g: { kind: "cache", id: "a1-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a1-lever-gate" },
-      h: {"kind":"npc","id":"a1-trial-guard","name":"試験担当衛兵","sprite":"npc-woodcutter","scene":"a1-trial-guard"},
+      h: {"kind":"npc","id":"a1-trial-guard","name":"試験担当衛兵","sprite":"npc-woodcutter","scene":"a1-trial-start"},
       i: {"kind":"npc","id":"a1-resting","name":"休憩中の冒険者","sprite":"npc-woodcutter","scene":"a1-resting"},
       j: {"kind":"npc","id":"a1-gatherer","name":"採取中の冒険者","sprite":"npc-girl","scene":"a1-gatherer"},
       k: {"kind":"npc","id":"a1-lost","name":"道に迷った新人","sprite":"npc-girl","scene":"a1-lost"},
