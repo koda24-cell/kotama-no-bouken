@@ -49,6 +49,7 @@ try{
   assert.ok(homePoster.menuRight<=homePoster.artLeft+12,'menu overlaps stage');
   assert.deepEqual(homePoster.members.map(({id,slot})=>({id,slot})),homePoster.expected);
   assert.ok(homePoster.members.some(m=>m.shadow.includes('drop-shadow')));
+  assert.ok(homePoster.members.filter(m=>m.shadow.includes('drop-shadow')).every(m=>m.shadow.includes('brightness(0)')),'home portraits must be silhouettes');
   await page.screenshot({path:'home-poster-'+viewport.width+'.png'});
 
   for(let cycle=0;cycle<3;cycle++){
@@ -56,6 +57,7 @@ try{
     assert.equal(await page.locator('.topbar > .main-nav').count(),1);
     assert.equal(await page.locator('#home-party img').count(),0);
     await inspect('#selected-party img');
+    assert.ok(await page.locator('#selected-party img').first().evaluate(img=>!getComputedStyle(img).filter.includes('brightness(0)')),'formation portraits must remain visible');
     await navigate('shop');
     assert.equal(await page.locator('#selected-party img,#character-roster img').count(),0);
     await inspect('#shop-buyer img');
