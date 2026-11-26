@@ -446,7 +446,7 @@ function renderShop(){
 // スキルツリー定義は data/skill-trees.js に分離。
 const skillLevels={};characters.forEach(c=>skillLevels[c.id]={});
 const legacyTreeBonuses={};characters.forEach(c=>legacyTreeBonuses[c.id]={});
-function treeNodes(charId){const t=skillTreeDefinitions[charId];return t?[t.passive,t.a,t.b,t.derived,...(skillTreeExpansionDefinitions[charId]||[])]:[];}
+function treeNodes(charId){const t=skillTreeDefinitions[charId];return t?[t.passive,t.a,t.b,t.derived,...(skillTreeExpansionDefinitions[charId]||[])].filter(Boolean):[];}
 function getTreeLevel(charId,nodeId){const expansion=(skillTreeExpansionDefinitions[charId]||[]).some(n=>n.id===nodeId);const max=expansion?(expansion.kind==="root"?3:1):(["kotama","knight","healer","mage"].includes(charId)?10:5);return Math.max(0,Math.min(max,Math.floor(Number(skillLevels[charId]?.[nodeId])||0)));}
 function setTreeLevel(charId,nodeId,level){if(!skillLevels[charId])skillLevels[charId]={};const expansion=(skillTreeExpansionDefinitions[charId]||[]).some(n=>n.id===nodeId);const max=expansion?(expansion.kind==="root"?3:1):(["kotama","knight","healer","mage"].includes(charId)?10:5);skillLevels[charId][nodeId]=Math.max(0,Math.min(max,Math.floor(level)));}
 function hasTreeSkill(charId,id){const node=treeNodes(charId).find(n=>n.id===id);if(node)return getTreeLevel(charId,id)>0;return (unlockedSkills[charId]||[]).includes(id);}
@@ -524,7 +524,7 @@ function getTrainingEffectPreview(charId,nodeId,level,nextLevel){
   if(charId==="mage"&&node.id==="mage-flare")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.12*level),after:pct(.90+.12*nextLevel)}];
   if(charId==="mage"&&node.id==="mage-magic-bomb")return [{label:"SP攻撃の基礎倍率",before:pct(.90+.10*level),after:pct(.90+.10*nextLevel)}];
   if(charId==="mage"&&node.id==="mage-compression")return [{label:"次の魔法攻撃の回数",before:level?"2倍（重ねがけ可能）":"未習得",after:"2倍（重ねがけ可能）／このノードのLvによる倍率差なし"}];
-  if(isNew&&node===derived&&level===0)return [{label:"派生スキル",before:"未習得",after:skillTreeDerivedSkills[charId].name+"を習得"}];
+  if(isNew&&node===derived&&level===0)return [{label:"派生スキル",before:"未習得",after:(skillTreeDerivedSkills[charId]?.name||node.name)+"を習得"}];
   if(!isNew){
     const effects=[node.effect,...(node.effects||[])].filter((v,i,a)=>v&&a.indexOf(v)===i);
     const rows=effects.map(effect=>({label:effect==="normal"?"通常攻撃補正":effect==="sp"?"SP攻撃補正":effect==="break"?"ブレイク補正":effect==="element"?"属性攻撃補正":effect==="guard"?"防御補正":effect==="taunt"?"挑発補正":effect==="heal"?"回復補正":effect==="revive"?"蘇生補正":effect==="union"?"ユニオン補正":effect+"補正",before:pct(level*.03),after:pct(nextLevel*.03)}));
@@ -702,8 +702,8 @@ function renderProgressionPanelUnsafe(){
  const box=$("progression-panel");if(!box)return;
  const fieldTraining=!!box.closest("#field-inventory-dialog");
  const trainingRoster=(fieldTraining?getParty():characters).filter(ch=>skillTreeDefinitions[ch.id]);
- if(fieldTraining&&!trainingRoster.length){box.textContent="強化できる仲間がいません。";return;}
- if(fieldTraining&&!trainingRoster.some(ch=>ch.id===trainingCharacterId)){trainingCharacterId=trainingRoster[0].id;selectedTrainingSkill=null;}
+ if(!trainingRoster.length){box.textContent="強化できる仲間がいません。";return;}
+ if(!trainingRoster.some(ch=>ch.id===trainingCharacterId)){trainingCharacterId=trainingRoster[0].id;selectedTrainingSkill=null;}
  const c=(skillTreeDefinitions[(getCharacter(trainingCharacterId)||characters[0]).id]?(getCharacter(trainingCharacterId)||characters[0]):characters[0]),stats=effectiveStats(c),tree=skillTreeDefinitions[c.id],points=trainingPoints[c.id]||0;
  const passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
  const isNewTree=newTreeCharacterIds.includes(c.id);
@@ -721,7 +721,7 @@ function renderProgressionPanelUnsafe(){
  };
  const mat=Object.entries(materials).map(([id,n])=>`${materialNames[id]||id} ×${n||0}`).join("　／　")||"素材なし";
  const selectedLevel=getTreeLevel(c.id,selectedNode.id),selectedExpansion=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===selectedNode.id),selectedMax=selectedExpansion?(selectedExpansion.kind==="root"?3:1):(isNewTree?10:selectedNode===a||selectedNode===b?5:1);
- const selectedNext=selectedExpansion?`「${selectedExpansion.skill.name}」を習得`:(isNewTree?(selectedNode===passive?`レベルごとに${c.id==="healer"?"回復量3%":"対応能力2%"}上昇`:selectedNode===derived?`派生スキル「${skillTreeDerivedSkills[c.id].name}」の効果が強化`:`「${(selectedNode===a?skillTreeExtraSkills[c.id].skill:skillTreeBranchBSkills[c.id]).name}」の効果がレベルに応じて上昇`):(selectedNode===passive?"最大HP・攻撃力などの基礎能力が2%上昇":selectedNode===derived?`派生SPスキル「${skillTreeDerivedSkills[c.id].name}」を習得`:`対応する${selectedNode.effect}効果が3%上昇`));
+
  box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${trainingRoster.map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
  <section class="training-tree training-showcase">
  <aside class="training-character-showcase">
