@@ -12,3 +12,13 @@
 | `steel_*` | https://ambientcg.com/view?id=Metal021 | CC0 1.0 (https://docs.ambientcg.com/license/) | 色補正（彩度0.55・青紫寄り・暗め）。法線・ARM は原本のまま |
 | `iron_*` | https://ambientcg.com/view?id=Metal013 | CC0 1.0 (https://docs.ambientcg.com/license/) | 色補正（彩度0.55・青紫寄り・暗め）。法線・ARM は原本のまま |
 | `fabric_*` | https://ambientcg.com/view?id=Fabric024 | CC0 1.0 (https://docs.ambientcg.com/license/) | 色補正（彩度0.0・青紫寄り・暗め）。法線・ARM は原本のまま |
+
+## 遠景ビル（field/assets/b5v6/city/）
+| ファイル | 出典 | ライセンス | 加工 |
+|---|---|---|---|
+| sj_a〜sj_f | https://commons.wikimedia.org/wiki/File:Skyscrapers_in_Nishi-Shinjuku_at_night_-_Shinjuku_Mitsui_Building,_Shinjuku_Sumitomo_Building_-_view_from_Hyatt_Regency_Tokyo_Building_(2016-05-18_by_panayota_@Pixabay_2190035).jpg | CC0（作者: panayota） | 切り抜き・黒レベル調整・色補正。ClamAV 検査済み（3d-asset-studio run 45734660627） |
+| hk_skyline | https://commons.wikimedia.org/wiki/File:Hong_Kong_skyscrapers_in_a_night_of_typhoon.jpg | CC0（作者: Wilfredor） | 切り抜き・黒レベル調整・色補正。ClamAV 検査済み（3d-asset-studio run 45734660627） |
+| mh_fogcity | https://commons.wikimedia.org/wiki/File:Clouds_over_Lower_Manhattan_skyscrapers_at_night.jpg | CC0（作者: Alfred Twu） | 切り抜き・黒レベル調整・色補正。ClamAV 検査済み（3d-asset-studio run 45734660627） |
+| win_a | https://ambientcg.com/view?id=Facade010 | CC0 1.0 | Emission マップを 1024 に縮小 |
+| win_b | https://ambientcg.com/view?id=Facade009 | CC0 1.0 | Emission マップを 1024 に縮小 |
+| win_c | https://ambientcg.com/view?id=Facade020C | CC0 1.0 | Emission マップを 1024 に縮小 |

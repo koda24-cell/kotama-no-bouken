@@ -4,6 +4,12 @@ import * as THREE from 'three';
 import { createB5V6Materials } from './b5v6-materials.js';
 import { Bucket } from './b5v6-geom.js';
 import { buildB5V6Architecture } from './b5v6-architecture.js';
+import { createB5V6DistantCity } from './b5v6-distant-city.js';
+import { FlameSystem, EmberSystem, GroundMist, LightShafts } from './b5v6-vfx.js';
+import { BannerSystem } from './b5v6-banners.js';
+import { layoutB5V6 } from './b5v6-layout.js';
+import { knightStatue } from './b5v6-knight-statue.js';
+import { placeAsset, trs } from './b5v6-place.js';
 
 let SHARED = null;   // 素材はページ全体で 1 組（フロア移動のたびに読み直さない）
 export function getB5V6Materials(high) { return (SHARED ||= createB5V6Materials({ high })); }
@@ -41,6 +47,7 @@ export async function createB5V6Scene({ root, a, ch, wallCell, hash, CELL = 4, g
   const high = !!g?.high;
   const M = getB5V6Materials(high);
   await M.ready;
+  M.setEnv(g?.renderer);
   const group = new THREE.Group(); group.name = 'b5v6'; root.add(group);
   const ownedGeo = [], ownedObj = [], updaters = [], myLights = [];
   const heights = b5v6Heights(a, ch);
@@ -54,19 +61,32 @@ export async function createB5V6Scene({ root, a, ch, wallCell, hash, CELL = 4, g
   const arch = buildB5V6Architecture({ a, ch, wallCell, hash, CELL, M, bucket, heights, breachFaces, collapse: a.f === 2 ? 0.06 : 0.1, high });
   const addLight = (x, y, z, color, intensity, range) => { const L = { world: new THREE.Vector3(x, y, z), color, intensity, range, off: false }; g?.lights?.push(L); lights.push(L); myLights.push(L); return L; };
 
-  // 仮の灯り（後で篝火・燭台に置き換える）
-  arch.faces.forEach((f, i) => {
-    if (hash(f.tx * 3 + f.dx, f.ty * 3 + f.dz, 481) < 0.22) {
-      const p = f.world.clone().addScaledVector(f.normal, 0.6); addLight(p.x, 2.2, p.z, 0x8f5cff, 1.6, 4.5);
-    }
-  });
-
+  // 小物・灯り・VFX
+  const flames = new FlameSystem(), embers = new EmberSystem(), mist = new GroundMist(), shafts = new LightShafts(), banners = new BannerSystem(M);
+  const ctx = { bucket, flames, embers, mist, shafts, addLight };
+  const stats = layoutB5V6({ a, ch, wallCell, hash, CELL, M, arch, heights, ctx, banners, high, breaches });
+  banners.build(group, bucket);
+  flames.build(group); embers.build(group); mist.build(group, CELL); shafts.build(group);
+  ownedObj.push(flames, embers, mist, shafts, banners);
+  updaters.push((t) => { flames.update(t); embers.update(t, g?.renderer?.getPixelRatio?.() || 1); mist.update(t); shafts.update(t); banners.update(t); });
   for (const m of bucket.build(group, 'b5v6')) ownedGeo.push(m.geometry);
+
+  // 遠景：奈落とビル群（破れ目と崩れた天井からだけ見える）
+  const center = new THREE.Vector3((a.w - 1) * CELL / 2, 0, (a.h - 1) * CELL / 2);
+  const city = createB5V6DistantCity({ center, seed: 11 + a.f * 7, high, radius: [Math.max(a.w, a.h) * CELL * 0.5 + 18, Math.max(a.w, a.h) * CELL * 0.5 + 80] });
+  group.add(city.group); ownedObj.push(city); updaters.push(t => city.update(t));
 
   let disposed = false;
   return {
     group,
-    info: () => ({ faces: arch.faces.length, piers: arch.piers.length, collapsed: arch.collapsed.length, breaches: breaches.length, lights: myLights.length, meshes: ownedGeo.length }),
+    info: () => ({ stats, faces: arch.faces.length, piers: arch.piers.length, collapsed: arch.collapsed.length, breaches: breaches.length, lights: myLights.length, meshes: ownedGeo.length }),
+    // 壁に付いた謎解きの騎士像（14F）。既存のエントリ（調べる・状態）はそのまま使い、見た目だけこの像にする
+    switchStatue(seed = 1) {
+      const b = new Bucket(64), gr = new THREE.Group(); gr.name = 'b5v6:switch-knight';
+      placeAsset({ bucket: b }, knightStatue(M, seed, { damage: 'none' }), trs(0, 0, 0, 0, 0.78));
+      for (const m of b.build(gr, 'knight')) ownedGeo.push(m.geometry);
+      return gr;
+    },
     update(now, camera) { for (const u of updaters) u(now * 0.001, camera); },
     dispose() {
       if (disposed) return; disposed = true;

@@ -493,7 +493,13 @@ export function createTheme(api, area) {
       const x = o.tx * CELL + dx * 1.55, z = o.ty * CELL + dz * 1.55;
       const ry = FACE_YAW[f];
       const src = o.kind === 'switch' ? S.guardian : S.sign;
-      const obj = place(g.world, (o.kind === 'sign' && K?.sign) || src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : K ? 1 : 0.8);
+      let obj;
+      if (b5v6 && o.kind === 'switch') {
+        // V6：騎士像（壁面から半分ほど張り出す）。状態の光は従来どおり userData.lights で扱う
+        obj = b5v6.switchStatue(o.tx * 31 + o.ty);
+        obj.position.set(o.tx * CELL + dx * 1.75, 0, o.ty * CELL + dz * 1.75); obj.rotation.y = ry; obj.userData.lights = [];
+        g.world.add(obj);
+      } else obj = place(g.world, (o.kind === 'sign' && K?.sign) || src || S.sign, x, 0, z, ry, o.kind === 'switch' ? 0.55 : K ? 1 : 0.8);
       g.entries.push({ o, kind: o.kind, obj, state: null, at: new THREE.Vector3(x, 1.5, z), ry });
     }
     for (const o of a.objects) {

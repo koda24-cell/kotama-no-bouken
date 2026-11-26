@@ -72,7 +72,7 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
       let variant = 'plain';
       if (breach) {
         variant = 'breach';
-        const ol = breachOutline(2.7, 0.85, Math.min(spring + 0.6, 7.2), R);
+        const ol = breachOutline(3.25, 0.8, Math.min(spring + 1.4, 8.0), R);
         holes.push(ol);
       } else {
         const k = R();
@@ -142,8 +142,26 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
           bucket.add(sc, M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.5, moss: 0.05, seed: 14 }) });
         }
       }
+      // 大聖堂（高い身廊）の壁：上部に光るステンドグラスの尖頭窓
+      let win = null;
+      if (!breach && apex > 12) {
+        const w = 2.3, y0 = 6.6, y1 = Math.min(apex - 1.6, 14.0);
+        const ol = archOutline(w, 5.2, y1 - y0, 18, 0.6);
+        const sh = new THREE.Shape(ol); const pg = new THREE.ShapeGeometry(sh, 12);
+        const uv = pg.attributes.uv, pp = pg.attributes.position; for (let i = 0; i < pp.count; i++) uv.setXY(i, pp.getX(i) / w + 0.5, pp.getY(i) / (y1 - y0));
+        pg.translate(0, y0, 0.035);
+        bucket.add(pg, M.glass, { matrix: mat, uv: 'keep', wx: false });
+        // 枠・方立て（2 本）・円の狭間飾り
+        const frame = archOutline(w + 0.04, 5.2, y1 - y0, 20, 0.6).slice(2).map(v => new THREE.Vector3(v.x, v.y + y0, 0.04));
+        frame.unshift(new THREE.Vector3(w / 2 + 0.02, y0, 0.04)); frame.push(new THREE.Vector3(-w / 2 - 0.02, y0, 0.04));
+        bucket.add(sweep(frame, [[-0.06, 0], [-0.06, 0.12], [0.02, 0.2], [0.14, 0.2], [0.2, 0.1], [0.2, 0]], { up: new THREE.Vector3(0, 0, 1), closed: false, caps: false }), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.6, moss: 0.05, floorY: y0 - 6, seed: 15 }) });
+        for (const mx of [-w / 6, w / 6]) bucket.add(new THREE.BoxGeometry(0.07, 5.0, 0.09).translate(mx, y0 + 2.5, 0.06), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.6, floorY: y0 - 6, seed: 16 }) });
+        bucket.add(new THREE.TorusGeometry(0.42, 0.045, 6, 24).translate(0, y1 - 1.05, 0.07), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.6, floorY: y0 - 6, seed: 17 }) });
+        bucket.add(new THREE.BoxGeometry(w + 0.4, 0.16, 0.36, 4, 1, 1).translate(0, y0 - 0.08, 0.12), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.4, floorY: y0 - 6, seed: 18 }) });
+        win = { center: new THREE.Vector3(0, (y0 + y1) / 2, 0.1).applyMatrix4(mat), y0, y1 };
+      }
       const world = new THREE.Vector3(x + dx * 2, 0, z + dz * 2);
-      faces.push({ tx, ty, dx, dz, key, variant, world, normal: new THREE.Vector3(-dx, 0, -dz), matrix: mat, spring, apex,
+      faces.push({ win, tx, ty, dx, dz, key, variant, world, normal: new THREE.Vector3(-dx, 0, -dz), matrix: mat, spring, apex,
         plinthGap: plinthGap ? new THREE.Vector3(plinthGap.c, 0, 0.2).applyMatrix4(mat) : null, seed: R() });
     });
   }
