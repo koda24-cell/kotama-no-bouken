@@ -546,11 +546,11 @@
     "existingUpgrade": true,
     "revisionOf": "regular nine-square runtime paving",
     "phase": "V2 ground surface revision",
-    "workflowRun": "45422753105",
-    "sourceCommit": "d8052bf022724d20104b5ce848118fa63172b4ea",
+    "workflowRun": "45426982715",
+    "sourceCommit": "f9d88e4c3f61b261819ee90d817279e04bf5879e",
     "actualGltfSizeMeters": [
       4.0,
-      0.1378,
+      0.1218,
       4.0
     ]
   },
@@ -582,10 +582,17 @@
       0.8,
       0.8
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "sparse ground flowers / reclaimed pockets",
-    "phase": "V2 individual licensed foliage source"
+    "phase": "V2 individual licensed foliage source",
+    "workflowRun": "45432034546",
+    "sourceCommit": "69c2c50ca46bd06fb61afa2aaaa33af0e51ad559",
+    "actualGltfSizeMeters": [
+      1.4112,
+      0.423,
+      0.6623
+    ]
   },
   {
     "id": "v2_memory_statue",
@@ -595,9 +602,16 @@
       1.43,
       2.02
     ],
-    "status": "DESIGNED_NOT_APPROVED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
     "revisionOf": "Existing area3 magical statue NPC appearance",
-    "phase": "V2 licensed original sculpt, original city interaction retained"
+    "phase": "V2 licensed original sculpt, original city interaction retained",
+    "workflowRun": "45429934515",
+    "sourceCommit": "ddb958e0d5128f2d151c029a11c90488dff4dcd9",
+    "actualGltfSizeMeters": [
+      1.53,
+      1.7421,
+      1.443
+    ]
   }
 ]

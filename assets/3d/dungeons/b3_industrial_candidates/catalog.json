@@ -10,6 +10,7 @@
       "id": "retaining_wall",
       "name": "剥落した鉄筋コンクリート壁",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "retaining_wall/runtime/f3_retaining_wall.glb",
       "sha256": "f023e9857f2cdd1b194bec30a1a2047099c6a9480dcadde8aa28c6ee7ff6c804",
       "bytes": 310632,
@@ -30,6 +31,7 @@
       "id": "column_joint",
       "name": "露出した梁柱接合部",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "column_joint/runtime/f3_column_joint.glb",
       "sha256": "e24aaa5f2b5809a19ae06728250814b5c2b6726ec26ceee28d9d78f130564bce",
       "bytes": 378856,
@@ -50,6 +52,7 @@
       "id": "riveted_girder",
       "name": "リベット付き腐食I桁",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "riveted_girder/runtime/f3_riveted_girder.glb",
       "sha256": "13ea16f6338dc381e4e7ea08b6951c9474a7efa6d99c5ff93642c5200b6584a0",
       "bytes": 296616,
@@ -70,6 +73,7 @@
       "id": "buckled_portal",
       "name": "座屈した鉄骨門型フレーム",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "buckled_portal/runtime/f3_buckled_portal.glb",
       "sha256": "40c41fddcc1531a93a47f39f81923b87c5a7fa68f925c7c089129219a06ac0ab",
       "bytes": 168408,
@@ -90,6 +94,7 @@
       "id": "grating_catwalk",
       "name": "欠損グレーチング歩廊",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "grating_catwalk/runtime/f3_grating_catwalk.glb",
       "sha256": "03f100ee0cefe9f387edc5aa7a8e41b02c6197e9a6b4cd0164cb3339da002936",
       "bytes": 568444,
@@ -110,6 +115,7 @@
       "id": "service_stair",
       "name": "崩れた工場保守階段",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "service_stair/runtime/f3_service_stair.glb",
       "sha256": "33476a62264a867dea81dcb15ea20c7e28fec03935a4cdefd3b394a6ed75344e",
       "bytes": 1389196,
@@ -130,6 +136,7 @@
       "id": "landing_railing",
       "name": "踊り場と曲がった手摺",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "landing_railing/runtime/f3_landing_railing.glb",
       "sha256": "65b784afbd88f6ffd622ca9912c005c71d1db0a762ecdc92736d0fa6b45d9726",
       "bytes": 93240,
@@ -150,6 +157,7 @@
       "id": "bridge_abutment",
       "name": "崩壊橋台と露出支承",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "bridge_abutment/runtime/f3_bridge_abutment.glb",
       "sha256": "a54903860e2f31fe852eb766da12e54980c944eac2dd106ba11e2b956e72e4a7",
       "bytes": 222292,
@@ -170,6 +178,7 @@
       "id": "broken_signal",
       "name": "破損三灯式信号機",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "broken_signal/runtime/f3_broken_signal.glb",
       "sha256": "52757c4dcf615416c9508c8bdb5b597723abe0a0655b2aca8a9454b500287914",
       "bytes": 145120,
@@ -190,6 +199,7 @@
       "id": "broken_streetlamp",
       "name": "折れた街路灯と垂下配線",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "broken_streetlamp/runtime/f3_broken_streetlamp.glb",
       "sha256": "41163b7c168cc0dcfdb892075ce6945e76f1510e00048926e5ce447bb6adb9b9",
       "bytes": 64592,
@@ -210,6 +220,7 @@
       "id": "control_cabinet",
       "name": "扉が開いた腐食制御盤",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "control_cabinet/runtime/f3_control_cabinet.glb",
       "sha256": "9e17924e7e4e1cd745d9db4d98c5ece8ef7ebad93950e84654c5f5e8eac00586",
       "bytes": 338164,
@@ -230,6 +241,7 @@
       "id": "flanged_pipe",
       "name": "フランジ付き破断配管",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "flanged_pipe/runtime/f3_flanged_pipe.glb",
       "sha256": "39eb514c7b3dfafeb01678def8537b046432a72e9207a7f03da344776d503908",
       "bytes": 172512,
@@ -250,6 +262,7 @@
       "id": "pipe_rack",
       "name": "垂れ下がる配管ラック",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "pipe_rack/runtime/f3_pipe_rack.glb",
       "sha256": "70a8f5e168e0f35659253f9bab7685d2dadaf1daf25ec6d2d57dd417a6fb9233",
       "bytes": 170032,
@@ -270,6 +283,7 @@
       "id": "roller_shutter",
       "name": "破れた工場シャッター",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "roller_shutter/runtime/f3_roller_shutter.glb",
       "sha256": "e0b79f8b76df958d82909d53301ea268ff7b984bc387fa39d611ed3aafeea71b",
       "bytes": 542700,
@@ -290,6 +304,7 @@
       "id": "shattered_window",
       "name": "割れた鉄製窓と腰壁",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "shattered_window/runtime/f3_shattered_window.glb",
       "sha256": "558f281136a9a15569e272bfa70c3cacb8ddf7df1a1dce279bb13adb30786db4",
       "bytes": 172592,
@@ -310,6 +325,7 @@
       "id": "rebar_rubble",
       "name": "鉄筋入り剥落コンクリート群",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "rebar_rubble/runtime/f3_rebar_rubble.glb",
       "sha256": "9f809cb5681b4bcfc544fe0b0ae6077db5b4e46191e924b20a5e88ba67b8a6c2",
       "bytes": 4308676,
@@ -330,6 +346,7 @@
       "id": "heaved_asphalt",
       "name": "根で持ち上がった舗装と縁石",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "heaved_asphalt/runtime/f3_heaved_asphalt.glb",
       "sha256": "59d0f4b79181be9f700b988da81ab07b1202d867e668ddd178d6ca54e3a741a8",
       "bytes": 171024,
@@ -350,6 +367,7 @@
       "id": "drain_channel",
       "name": "土砂の詰まった排水溝",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "drain_channel/runtime/f3_drain_channel.glb",
       "sha256": "0cae38caf61782b0418685758b640bec7dc07b1e9bac5297f87dd7d96f5e2e6b",
       "bytes": 380628,
@@ -370,6 +388,7 @@
       "id": "factory_door",
       "name": "欠けた工場入口と歪んだ扉",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "factory_door/runtime/f3_factory_door.glb",
       "sha256": "e34e159d0db146dd429abc82e2d66ac16dce835b2897bf4317b2806a37904298",
       "bytes": 280876,
@@ -390,6 +409,7 @@
       "id": "ivy_pocket",
       "name": "鉄と石を覆う蔦・シダの群落",
       "existingUpgrade": false,
+      "revisionOf": null,
       "file": "ivy_pocket/runtime/f3_ivy_pocket.glb",
       "sha256": "b4f269587e9c82f9f1212aec164f768d79c0dbbe9d5b47d00de44d76d6ef8749",
       "bytes": 470544,
@@ -410,6 +430,7 @@
       "id": "native_ruinedBuilding",
       "name": "既存・崩壊した集合建築の質感強化",
       "existingUpgrade": true,
+      "revisionOf": null,
       "file": "native_ruinedBuilding/runtime/f3_native_ruinedBuilding.glb",
       "sha256": "61d39493fccc1744abc4939d85c3c1659b271a47c57f5ad7db5bf68751cbeb56",
       "bytes": 267068,
@@ -430,6 +451,7 @@
       "id": "native_collapsedOverpass",
       "name": "既存・崩落高架の表面と接合部強化",
       "existingUpgrade": true,
+      "revisionOf": null,
       "file": "native_collapsedOverpass/runtime/f3_native_collapsedOverpass.glb",
       "sha256": "e34e2c4f474f8b38fd3c3e4b90464b83589c6610d17d6cf91be26712631c1f62",
       "bytes": 148740,
@@ -450,6 +472,7 @@
       "id": "native_utilityPole",
       "name": "既存・風化電柱の配線と金具強化",
       "existingUpgrade": true,
+      "revisionOf": null,
       "file": "native_utilityPole/runtime/f3_native_utilityPole.glb",
       "sha256": "b54761aa760843d1f2ff6947764d0f7a66fbe03aaa923464ea03e3d070be7e23",
       "bytes": 170912,
@@ -470,6 +493,7 @@
       "id": "native_steelWreck",
       "name": "既存・鉄骨残骸の腐食強化",
       "existingUpgrade": true,
+      "revisionOf": null,
       "file": "native_steelWreck/runtime/f3_native_steelWreck.glb",
       "sha256": "7c7865eb9cc4ab7cf16fd091d409e78821c7f036f53129d38822c4945e7e6565",
       "bytes": 74584,
@@ -490,6 +514,7 @@
       "id": "native_abandonedTransitStop",
       "name": "既存・廃バス停の屋根接合部強化",
       "existingUpgrade": true,
+      "revisionOf": null,
       "file": "native_abandonedTransitStop/runtime/f3_native_abandonedTransitStop.glb",
       "sha256": "cd7e5bd5cf11112a94a6fe371f37882fd47b80aaed144f5ce8a3b0de34ac7d81",
       "bytes": 143216,
@@ -505,6 +530,174 @@
       ],
       "portableAuthoring": "native_abandonedTransitStop/portable_sources/f3_native_abandonedTransitStop_authoring.blend",
       "portableSha256": "06e0aca0eadffe302c99fadb7fa63e3d0d75e86fca7fa8c2b3534f53116b3a79"
+    },
+    {
+      "id": "v2_courtyard_facade",
+      "name": "崩落した集合住宅の立体ファサードV2",
+      "existingUpgrade": true,
+      "revisionOf": "retaining_wall",
+      "file": "v2_courtyard_facade/runtime/f3_v2_courtyard_facade.glb",
+      "sha256": "9ad401ffb7eb3128b5a2135f8f133b7549cafb8d60c8621fa198a076f8acb401",
+      "bytes": 3984120,
+      "triangles": 29106,
+      "sourceCommit": "7f50b334d1c62f0213dbfd7010fc70e1712aee7d",
+      "workflowRun": "45425172072",
+      "embeddedOriginal": "v2_courtyard_facade/props/f3_v2_courtyard_facade.glb",
+      "embeddedOriginalBytes": 22379900,
+      "sizeMeters": [
+        4.12,
+        16.2053,
+        4.1106
+      ],
+      "portableAuthoring": "v2_courtyard_facade/sources/f3_v2_courtyard_facade_authoring.blend",
+      "portableSha256": "d9dcde52788fff2167587b5db6a9835fd477559e945a8cd98fb210feff08f936"
+    },
+    {
+      "id": "v2_service_tower",
+      "name": "配管と作業床を持つ工業機械塔V2",
+      "existingUpgrade": true,
+      "revisionOf": "native_utilityPole / pipe_rack / column_joint composition",
+      "file": "v2_service_tower/runtime/f3_v2_service_tower.glb",
+      "sha256": "b8b5205f16b9b54d7dda809aeadafa3dee6394e917f022c7f8dc36bc5241709e",
+      "bytes": 5253084,
+      "triangles": 43208,
+      "sourceCommit": "4149167e8e7153d0a9354075c5e2eb32ee1eed00",
+      "workflowRun": "45415404490",
+      "embeddedOriginal": "v2_service_tower/props/f3_v2_service_tower.glb",
+      "embeddedOriginalBytes": 13698052,
+      "sizeMeters": [
+        3.3623,
+        15.451,
+        3.535
+      ],
+      "portableAuthoring": "v2_service_tower/sources/f3_v2_service_tower_authoring.blend",
+      "portableSha256": "33057d7fea6fe7cc32e6e8ac03c5a83dbb349b354cfa8ffed3afdde1a86642e5"
+    },
+    {
+      "id": "v2_fern_colony",
+      "name": "写真由来の葉と立体シルエットを持つシダ群落V2",
+      "existingUpgrade": true,
+      "revisionOf": "low grass and ledge ecology",
+      "file": "v2_fern_colony/runtime/f3_v2_fern_colony.glb",
+      "sha256": "3973c1632a0ad3e2abc923d1b5ccc787022e26a8b066ae513b18533428e8ee5e",
+      "bytes": 251072,
+      "triangles": 6232,
+      "sourceCommit": "3d4b00119ab06a34a0377402dda1f8f97550cb2d",
+      "workflowRun": "45416559718",
+      "embeddedOriginal": "v2_fern_colony/props/f3_v2_fern_colony.glb",
+      "embeddedOriginalBytes": 2093244,
+      "sizeMeters": [
+        2.0283,
+        0.4405,
+        0.9205
+      ],
+      "portableAuthoring": "v2_fern_colony/sources/f3_v2_fern_colony_authoring.blend",
+      "portableSha256": "b0aa4bdebb761c90736e1d9b083bc7df46331329cdef4be32aec3e812cf8efe2"
+    },
+    {
+      "id": "v2_truss_bridge",
+      "name": "支持脚と崩落グレーチングを持つ鉄骨連絡橋V2",
+      "existingUpgrade": true,
+      "revisionOf": "grating_catwalk / riveted_girder / column_joint",
+      "file": "v2_truss_bridge/runtime/f3_v2_truss_bridge.glb",
+      "sha256": "67d1ee87ad8148f652db1bc03c7495291cecc8bf2c2872fc7356704af4b7c828",
+      "bytes": 2462484,
+      "triangles": 20988,
+      "sourceCommit": "015c86c2e188c2d62a7851ebd723430313c8c8ab",
+      "workflowRun": "45419450512",
+      "embeddedOriginal": "v2_truss_bridge/props/f3_v2_truss_bridge.glb",
+      "embeddedOriginalBytes": 8429488,
+      "sizeMeters": [
+        8.94,
+        8.7843,
+        2.46
+      ],
+      "portableAuthoring": "v2_truss_bridge/sources/f3_v2_truss_bridge_authoring.blend",
+      "portableSha256": "7da5d279af588047b693b99bd6332963e66a81d94537f87a858a7d1e0a8955fa"
+    },
+    {
+      "id": "v2_fractured_road",
+      "name": "不規則に割れ沈下したアスファルト路面V2",
+      "existingUpgrade": true,
+      "revisionOf": "regular nine-square runtime paving",
+      "file": "v2_fractured_road/runtime/f3_v2_fractured_road.glb",
+      "sha256": "4c4b7c07d4dc4252b3cbc7b7b51064c8245366c108e60618afc4b22e48118c3b",
+      "bytes": 84472,
+      "triangles": 900,
+      "sourceCommit": "f9d88e4c3f61b261819ee90d817279e04bf5879e",
+      "workflowRun": "45426982715",
+      "embeddedOriginal": "v2_fractured_road/props/f3_v2_fractured_road.glb",
+      "embeddedOriginalBytes": 3291484,
+      "sizeMeters": [
+        4.0,
+        0.1218,
+        4.0
+      ],
+      "portableAuthoring": "v2_fractured_road/sources/f3_v2_fractured_road_authoring.blend",
+      "portableSha256": "e5ced1a4dc0e8a97eb8098929db30e60023df164c3bed9e6fd660ae4abb7b3e7"
+    },
+    {
+      "id": "v2_factory_bay",
+      "name": "CC0工場窓枠を活かした崩落工業棟V2",
+      "existingUpgrade": true,
+      "revisionOf": "industrial street facade composition",
+      "file": "v2_factory_bay/runtime/f3_v2_factory_bay.glb",
+      "sha256": "a96f179e693b824196c4fb4b937f2ec8e27e004bcc31d86e6e13b9c41fd40738",
+      "bytes": 2684236,
+      "triangles": 33700,
+      "sourceCommit": "81e69a86713c15ce38074c2e21f2b63dd04ca24c",
+      "workflowRun": "45423622575",
+      "embeddedOriginal": "v2_factory_bay/props/f3_v2_factory_bay.glb",
+      "embeddedOriginalBytes": 20366044,
+      "sizeMeters": [
+        3.465,
+        12.43,
+        3.449
+      ],
+      "portableAuthoring": "v2_factory_bay/sources/f3_v2_factory_bay_authoring.blend",
+      "portableSha256": "c40b9a24043c78e756341d97a883fdc4d6a3c9162670cc24c96f0179fa099793"
+    },
+    {
+      "id": "v2_wildflower_colony",
+      "name": "風化した路肩に根付く写真由来の野草花V2",
+      "existingUpgrade": true,
+      "revisionOf": "sparse ground flowers / reclaimed pockets",
+      "file": "v2_wildflower_colony/runtime/f3_v2_wildflower_colony.glb",
+      "sha256": "c0a529bbca406ad3629dcf4189f839f2f764c22cb049cffa5ec7dd6f21ef07e4",
+      "bytes": 2170356,
+      "triangles": 34350,
+      "sourceCommit": "69c2c50ca46bd06fb61afa2aaaa33af0e51ad559",
+      "workflowRun": "45432034546",
+      "embeddedOriginal": "v2_wildflower_colony/props/f3_v2_wildflower_colony.glb",
+      "embeddedOriginalBytes": 4110712,
+      "sizeMeters": [
+        1.4112,
+        0.423,
+        0.6623
+      ],
+      "portableAuthoring": "v2_wildflower_colony/sources/f3_v2_wildflower_colony_authoring.blend",
+      "portableSha256": "e5f81b22dff6761a3c1c8acb1868ba14de7484a0ed4dee471190c536d85f62a5"
+    },
+    {
+      "id": "v2_memory_statue",
+      "name": "風化した彫像と欠けた記憶の台座V2",
+      "existingUpgrade": true,
+      "revisionOf": "Existing area3 magical statue NPC appearance",
+      "file": "v2_memory_statue/runtime/f3_v2_memory_statue.glb",
+      "sha256": "c19228ae3a8b69a50ad01d505cdad36bac4b7ca11ad6865662e8e95e3b2c42d5",
+      "bytes": 1367580,
+      "triangles": 28007,
+      "sourceCommit": "ddb958e0d5128f2d151c029a11c90488dff4dcd9",
+      "workflowRun": "45429934515",
+      "embeddedOriginal": "v2_memory_statue/props/f3_v2_memory_statue.glb",
+      "embeddedOriginalBytes": 16858208,
+      "sizeMeters": [
+        1.53,
+        1.7421,
+        1.443
+      ],
+      "portableAuthoring": "v2_memory_statue/sources/f3_v2_memory_statue_authoring.blend",
+      "portableSha256": "c6d3b0cfcffa9bfaffbc46ef401fbfd4b1eddf48541b2b0931d3d79e882635e8"
     },
     {
       "id": "reused_stairs_v8",
@@ -779,14 +972,249 @@
       "file": "shared_textures/8c94695bbe50c2a8943c348aec2478fcb9faed3e11f9e5e6c16081f750c84a03.png",
       "sha256": "8c94695bbe50c2a8943c348aec2478fcb9faed3e11f9e5e6c16081f750c84a03",
       "bytes": 80771
+    },
+    {
+      "file": "shared_textures/0a7749ef18c1f9d24b987596df211d454fd83e7745b85b2b4a8733f93afca137.png",
+      "sha256": "0a7749ef18c1f9d24b987596df211d454fd83e7745b85b2b4a8733f93afca137",
+      "bytes": 372102
+    },
+    {
+      "file": "shared_textures/dbf00fff81edb14a61e70063c44a142831241bc81ebba7a5494380abe104f933.jpg",
+      "sha256": "dbf00fff81edb14a61e70063c44a142831241bc81ebba7a5494380abe104f933",
+      "bytes": 1108130
+    },
+    {
+      "file": "shared_textures/591fdb2b3ba4d4c534c82e7ba669c272216306e21095f29ea1dd0fc889f651bf.jpg",
+      "sha256": "591fdb2b3ba4d4c534c82e7ba669c272216306e21095f29ea1dd0fc889f651bf",
+      "bytes": 1674798
+    },
+    {
+      "file": "shared_textures/fc0935df59b336e6c41ee759689388df8ba83241f84042305d0addfea737779b.png",
+      "sha256": "fc0935df59b336e6c41ee759689388df8ba83241f84042305d0addfea737779b",
+      "bytes": 1734460
+    },
+    {
+      "file": "shared_textures/59bfc3e6a4b710608f9c8713a45831b932aeac12c7872e879c6f5d88f7d44e0f.jpg",
+      "sha256": "59bfc3e6a4b710608f9c8713a45831b932aeac12c7872e879c6f5d88f7d44e0f",
+      "bytes": 1675589
+    },
+    {
+      "file": "shared_textures/9244b15bc863b1aea82af7e26805cecdf838033e4e4dbac1563d0cfa77803d1a.jpg",
+      "sha256": "9244b15bc863b1aea82af7e26805cecdf838033e4e4dbac1563d0cfa77803d1a",
+      "bytes": 1062998
+    },
+    {
+      "file": "shared_textures/6aaab161f0e5022d641ab6646d47e8fa28760c463fa41e029f18ceec4a6f620c.png",
+      "sha256": "6aaab161f0e5022d641ab6646d47e8fa28760c463fa41e029f18ceec4a6f620c",
+      "bytes": 1510538
+    },
+    {
+      "file": "shared_textures/39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb.jpg",
+      "sha256": "39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb",
+      "bytes": 1462829
+    },
+    {
+      "file": "shared_textures/5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9.jpg",
+      "sha256": "5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9",
+      "bytes": 811730
+    },
+    {
+      "file": "shared_textures/702b3c4abeccafb8b20d19b79297c9058bbfa386ba21278134cb71c34b9aa13a.png",
+      "sha256": "702b3c4abeccafb8b20d19b79297c9058bbfa386ba21278134cb71c34b9aa13a",
+      "bytes": 940660
+    },
+    {
+      "file": "shared_textures/0ae0197567385fef299f88979eadce59976a777d9c29ebbc92adce83e9af2eaf.jpg",
+      "sha256": "0ae0197567385fef299f88979eadce59976a777d9c29ebbc92adce83e9af2eaf",
+      "bytes": 4006
+    },
+    {
+      "file": "shared_textures/89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374.jpg",
+      "sha256": "89ca1aaf1c130d22d59c4dc7b42438a684ce500667d8a030fcb441acc7c44374",
+      "bytes": 4947
+    },
+    {
+      "file": "shared_textures/a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a.jpg",
+      "sha256": "a7c63631f4b79c2d083b4f1156e37f0b937f227ebbf398d7f2047256b81fc12a",
+      "bytes": 4825
+    },
+    {
+      "file": "shared_textures/d9f232f0e53090b7fab24c74f9ff3f927edc0683d354a31fac65af4dde9b7b94.jpg",
+      "sha256": "d9f232f0e53090b7fab24c74f9ff3f927edc0683d354a31fac65af4dde9b7b94",
+      "bytes": 6778
+    },
+    {
+      "file": "shared_textures/f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73.jpg",
+      "sha256": "f1db263e3f889524d1877894e9ae887b8a0637ee6e954bc72eefeb644ec8cc73",
+      "bytes": 7595
+    },
+    {
+      "file": "shared_textures/2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca.jpg",
+      "sha256": "2c8f3068acec37eee8a2566d22df7c4e36ea62138ee6ad1e1ade612deeabe7ca",
+      "bytes": 6251
+    },
+    {
+      "file": "shared_textures/44b6149bc492c43f8c0d7e596858c7b63ffe57267a9cea320ad72329009f4619.jpg",
+      "sha256": "44b6149bc492c43f8c0d7e596858c7b63ffe57267a9cea320ad72329009f4619",
+      "bytes": 6763
+    },
+    {
+      "file": "shared_textures/35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551.jpg",
+      "sha256": "35c9dcb991610f45e9bf8b74eb06c7c0c1a1dad960aa898716e581cc7d04d551",
+      "bytes": 7308
+    },
+    {
+      "file": "shared_textures/6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09.jpg",
+      "sha256": "6eeeb03e45bdc8540d70afe43fd8f70cd60e66291064260214a07868b8788b09",
+      "bytes": 5884
+    },
+    {
+      "file": "shared_textures/5a695b9d5e34266f11c9bc1e8db25bde360b4748ad9ffcc510816059398c6dc0.jpg",
+      "sha256": "5a695b9d5e34266f11c9bc1e8db25bde360b4748ad9ffcc510816059398c6dc0",
+      "bytes": 6772
+    },
+    {
+      "file": "shared_textures/30591224acf1f96a5a12a341ddac91fddbbd5488abdfdb290333aa6646573082.jpg",
+      "sha256": "30591224acf1f96a5a12a341ddac91fddbbd5488abdfdb290333aa6646573082",
+      "bytes": 6202
+    },
+    {
+      "file": "shared_textures/96b949b430a456bdf3d14a44f70c5199a906cef15f5ea8d1cb09400abecd544d.jpg",
+      "sha256": "96b949b430a456bdf3d14a44f70c5199a906cef15f5ea8d1cb09400abecd544d",
+      "bytes": 7914
+    },
+    {
+      "file": "shared_textures/45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621",
+      "bytes": 367222
+    },
+    {
+      "file": "shared_textures/caa6f93c35228f8b9f5124907aad45d6e1e9644fb8048292e002ffc2b752668c.png",
+      "sha256": "caa6f93c35228f8b9f5124907aad45d6e1e9644fb8048292e002ffc2b752668c",
+      "bytes": 1146583
+    },
+    {
+      "file": "shared_textures/c50d6c139ccb5d13ba91e8192d2bab5c7cb00210742ca7c58573cb14788b6eea.png",
+      "sha256": "c50d6c139ccb5d13ba91e8192d2bab5c7cb00210742ca7c58573cb14788b6eea",
+      "bytes": 328451
+    },
+    {
+      "file": "shared_textures/2c6e3a084005b63c6d03dd8ae9f7bc53056b1425fb72ad50319f0817b84ea066.jpg",
+      "sha256": "2c6e3a084005b63c6d03dd8ae9f7bc53056b1425fb72ad50319f0817b84ea066",
+      "bytes": 6716
+    },
+    {
+      "file": "shared_textures/f0ef2d0e23dd431d45eaf417e6d7aacdc4b252b5373f6f4552f50c81ae0cebff.jpg",
+      "sha256": "f0ef2d0e23dd431d45eaf417e6d7aacdc4b252b5373f6f4552f50c81ae0cebff",
+      "bytes": 4406
+    },
+    {
+      "file": "shared_textures/9dc51ae8da3d6b92a8230f3554fae86af813a2a326d643a40d2789a20924be37.jpg",
+      "sha256": "9dc51ae8da3d6b92a8230f3554fae86af813a2a326d643a40d2789a20924be37",
+      "bytes": 5682
+    },
+    {
+      "file": "shared_textures/1168796e949c5ce3957142e86bce1d09531466aaea90dc46cbc3f3225cbdd78e.jpg",
+      "sha256": "1168796e949c5ce3957142e86bce1d09531466aaea90dc46cbc3f3225cbdd78e",
+      "bytes": 1052229
+    },
+    {
+      "file": "shared_textures/852b01c61efc07fd8e60e59767657ef51112bf65f5eaf184f02c27ea5170582d.jpg",
+      "sha256": "852b01c61efc07fd8e60e59767657ef51112bf65f5eaf184f02c27ea5170582d",
+      "bytes": 1115986
+    },
+    {
+      "file": "shared_textures/8cf70f8625f24b3898d0beb7d9f8d7785e95c52055687070349c496df51af18a.png",
+      "sha256": "8cf70f8625f24b3898d0beb7d9f8d7785e95c52055687070349c496df51af18a",
+      "bytes": 823693
+    },
+    {
+      "file": "shared_textures/05441cf545c9d5f6786cd191e9b3b627668b1176e155d1fae7fbe28f6a8d3802.jpg",
+      "sha256": "05441cf545c9d5f6786cd191e9b3b627668b1176e155d1fae7fbe28f6a8d3802",
+      "bytes": 827556
+    },
+    {
+      "file": "shared_textures/beff49832938c5493a4b5bbb82eeabd138c29c6523e5228e006f702859bbc87f.jpg",
+      "sha256": "beff49832938c5493a4b5bbb82eeabd138c29c6523e5228e006f702859bbc87f",
+      "bytes": 617348
+    },
+    {
+      "file": "shared_textures/fbd6a4f60cc6613d80bda95afb674a7b71da0f810d6bc4f693c575714137864f.png",
+      "sha256": "fbd6a4f60cc6613d80bda95afb674a7b71da0f810d6bc4f693c575714137864f",
+      "bytes": 956429
+    },
+    {
+      "file": "shared_textures/4dc9e4a6b97d5384849faeebca87eae9f6736664971c6c10a41fc19bd01fc106.jpg",
+      "sha256": "4dc9e4a6b97d5384849faeebca87eae9f6736664971c6c10a41fc19bd01fc106",
+      "bytes": 612643
+    },
+    {
+      "file": "shared_textures/ebd0ad64580fa6ca7601b99ebe892b453a91af00b5fb53967beeac6e27161720.png",
+      "sha256": "ebd0ad64580fa6ca7601b99ebe892b453a91af00b5fb53967beeac6e27161720",
+      "bytes": 1737173
+    },
+    {
+      "file": "shared_textures/2f83d24c3e8f79d9df4e6ec63e99da3bbfe06148f4f70b1d8407e6377b372b82.png",
+      "sha256": "2f83d24c3e8f79d9df4e6ec63e99da3bbfe06148f4f70b1d8407e6377b372b82",
+      "bytes": 957808
+    },
+    {
+      "file": "shared_textures/d361dacbd23095dacf1d82eb5a509a305c44b007f8adfb221dc2e5efe56180e0.jpg",
+      "sha256": "d361dacbd23095dacf1d82eb5a509a305c44b007f8adfb221dc2e5efe56180e0",
+      "bytes": 619613
+    },
+    {
+      "file": "shared_textures/5d83de90532a6ea8818b6df211c48a60bcdbbbac0cc67eb1bc245d6077545cbc.jpg",
+      "sha256": "5d83de90532a6ea8818b6df211c48a60bcdbbbac0cc67eb1bc245d6077545cbc",
+      "bytes": 6827
+    },
+    {
+      "file": "shared_textures/ca3a164bf753862b1dda6aa7fc3727a66e6ae3a93b69895a36aac52a480c3191.jpg",
+      "sha256": "ca3a164bf753862b1dda6aa7fc3727a66e6ae3a93b69895a36aac52a480c3191",
+      "bytes": 5348
+    },
+    {
+      "file": "shared_textures/1af8108b39a7f858f40f7143eb2abdd028e26dd15af532065448192f3d10fe65.jpg",
+      "sha256": "1af8108b39a7f858f40f7143eb2abdd028e26dd15af532065448192f3d10fe65",
+      "bytes": 5150
+    },
+    {
+      "file": "shared_textures/36d2464e7500f741500228b955c1fb0f26d954e869bd26f93dd25c0fafc5087d.jpg",
+      "sha256": "36d2464e7500f741500228b955c1fb0f26d954e869bd26f93dd25c0fafc5087d",
+      "bytes": 418428
+    },
+    {
+      "file": "shared_textures/becc3ee3a0d548699b0965310b10bd73169d32a74afdf1c21c8da80e72438a13.png",
+      "sha256": "becc3ee3a0d548699b0965310b10bd73169d32a74afdf1c21c8da80e72438a13",
+      "bytes": 992282
+    },
+    {
+      "file": "shared_textures/f06b1008397641e5973cd1065c5c1dbe62b6b10622f936bebc2b00e9ba07139e.png",
+      "sha256": "f06b1008397641e5973cd1065c5c1dbe62b6b10622f936bebc2b00e9ba07139e",
+      "bytes": 529732
+    },
+    {
+      "file": "shared_textures/e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a.jpg",
+      "sha256": "e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a",
+      "bytes": 3282839
+    },
+    {
+      "file": "shared_textures/afdc45a14314f4f51e690e974d7ac5918f8509e50da3df2b8aef2b7020b3b959.jpg",
+      "sha256": "afdc45a14314f4f51e690e974d7ac5918f8509e50da3df2b8aef2b7020b3b959",
+      "bytes": 3663305
+    },
+    {
+      "file": "shared_textures/df56b97655114d1d94a8cb33877677754eda42864340e44d22e10eefcea4de08.png",
+      "sha256": "df56b97655114d1d94a8cb33877677754eda42864340e44d22e10eefcea4de08",
+      "bytes": 3772620
     }
   ],
   "totals": {
     "individualParts": 20,
-    "existingUpgrades": 5,
+    "existingUpgrades": 13,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 19332796,
-    "sharedImageBytes": 14669664,
-    "embeddedOriginalBytes": 134270964
+    "runtimeGeometryBytes": 37590200,
+    "sharedImageBytes": 50954812,
+    "embeddedOriginalBytes": 225498096
   }
 }
