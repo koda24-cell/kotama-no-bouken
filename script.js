@@ -1115,6 +1115,12 @@ async function beginStageCore(){
   const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyGroup||battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
   pendingBattleResumeEnemy=null;
+  // Preserve image display when resuming battle snapshots saved before asset organization.
+  if(resumedBattle){
+    const legacyMonsterImages=new Set(["assets/唸る青灰狼のアニメーション.gif","assets/氷狼の咆哮アニメーション.gif","assets/炎の翼竜、咆哮する姿.gif","assets/紫煙を纏う影の亡霊アニメーション.gif","assets/赤き魔炎を纏う魔王の舞.gif","assets/青いスライムのジャンプアニメーション.gif"]);
+    const restoredUnits=[battleState.enemy,...(Array.isArray(battleState.enemy.members)?battleState.enemy.members:[])];
+    for(const unit of restoredUnits){if(unit&&legacyMonsterImages.has(unit.image))unit.image="assets/monsters/"+unit.image.slice("assets/".length);}
+  }
   const encounterUnits=battleState.enemy._mixedEncounter?battleState.enemy.members:[battleState.enemy];
   for(const unit of encounterUnits){registerEncounter(unit.compendiumAs||unit.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(unit,resumedBattle);}
   // [COMPENDIUM] 混成編成は敵個体ごとに図鑑へ記録
