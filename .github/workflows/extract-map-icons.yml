@@ -3,7 +3,7 @@ on:
   push:
     branches: [development]
     paths:
-      - 'assets/kotama_map_icons_png.zip'
+      - 'assets/map-icons/source/kotama_map_icons_png.zip'
       - '.github/workflows/extract-map-icons.yml'
 permissions:
   contents: write
@@ -19,7 +19,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import zipfile, pathlib, json
-          archive=pathlib.Path("assets/kotama_map_icons_png.zip")
+          archive=pathlib.Path("assets/map-icons/source/kotama_map_icons_png.zip")
           dest=pathlib.Path("assets/map-icons")
           dest.mkdir(parents=True,exist_ok=True)
           with zipfile.ZipFile(archive) as z:
@@ -31,7 +31,7 @@ jobs:
                   data=z.read(m)
                   assert data.startswith(bytes.fromhex("89504e470d0a1a0a")), name
                   (dest/name).write_bytes(data)
-          (dest/"README.md").write_text("# 手描きマップアイコン\n\n元データ: `assets/kotama_map_icons_png.zip`。45種類の透過PNGを展開したもの。\nマップ描画: `field/field-render.js`。未読み込み時は既存マーカーにフォールバック。\n",encoding="utf-8")
+          (dest/"README.md").write_text("# 手描きマップアイコン\n\n元データ: `assets/map-icons/source/kotama_map_icons_png.zip`。45種類の透過PNGを展開したもの。\nマップ描画: `field/field-render.js`。未読み込み時は既存マーカーにフォールバック。\n",encoding="utf-8")
           PY
       - name: Commit extracted icons
         run: |

@@ -2,16 +2,16 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <!-- ゴブリン画像は初回戦闘前に先読みし、遭遇時の表示待ちを抑える -->
-  <link rel="preload" as="image" href="./assets/monsters/goburinn.png" fetchpriority="high">
+
   <title>Fantasy RPG</title>
   <link rel="stylesheet" href="./css/01-battle-base.css?v=20261106-11">
   <link rel="stylesheet" href="./css/02-screens-and-shell.css?v=20261106-19">
   <link rel="stylesheet" href="./css/03-responsive-layout.css?v=20261106-11">
   <link rel="stylesheet" href="./css/04-nav-and-battle-panels.css?v=20261106-16">
   <link rel="stylesheet" href="./css/05-progression-and-boss.css?v=20261109-22">
-  <link rel="stylesheet" href="./css/06-field.css?v=20261109-01">
+  <link rel="stylesheet" href="./css/06-field.css?v=20261126-image-release">
   <link rel="stylesheet" href="./css/07-labyrinth.css?v=20261107-10">
   <link rel="stylesheet" href="./style.css?v=20261124-execution1">
   <link rel="stylesheet" href="./css/08-cartography-ui.css?v=20261107-02">
@@ -23,40 +23,42 @@
   <script src="./data/progression.js?v=20261106-11" defer></script>
   <script src="./data/skill-trees.js?v=20261106-11" defer></script>
 <script src="./data/skill-tree-expansions.js?v=20261109-03" defer></script>
-  <script src="./data/characters.js?v=20261109-13" defer></script>
+  <script src="./data/characters.js?v=20261126-asset-organized" defer></script>
   <script src="./data/items.js?v=20261110-01" defer></script>
-  <script src="./data/enemies.js?v=20261109-01" defer></script>
-  <script src="./data/jobs.js?v=20261110-01" defer></script>
+  <script src="./data/enemies.js?v=20261126-asset-organized" defer></script>
+  <script src="./data/jobs.js?v=20261126-image-release" defer></script>
   <script src="./data/status-effects.js?v=20261109-01" defer></script>
   <script src="./data/enemy-variants.js?v=20261109-01" defer></script>
   <script src="./data/boss-phases.js?v=20261106-11" defer></script>
   <script src="./data/field-maps.js?v=20261122-b4-12f3" defer></script>
   <script src="./data/field-gathering.js?v=20261107-21" defer></script>
-  <script src="./data/field-enemies.js?v=20261109-02" defer></script>
+  <script src="./data/field-enemies.js?v=20261126-image-release" defer></script>
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261126-victory" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-home-poster-asset-organized" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <link rel="stylesheet" href="./css/15-formation-gallery.css?v=20261126-1">
+  <script src="./formation-gallery.js?v=20261126-1" defer></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
-  <script src="./admin-tools.js?v=20261110-01" defer></script>
+  <script src="./admin-tools.js?v=20261126-level-instant" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
-  <script src="./level.js?v=20261126-victory" defer></script>
+  <script src="./level.js?v=20261126-party-only" defer></script>
   <script src="./field/field-random-maze.js?v=20261116-01" defer></script>
   <script src="./field/f1-review-layout-v6.js" defer></script>
   <script src="./field.js?v=20261124-v6" defer></script>
-  <script src="./field/field-render.js?v=20261126-hud" defer></script>
+  <script src="./field/field-render.js?v=20261126-mapzoom-party" defer></script>
   <script src="./field/field-movement-foe.js?v=20261126-hud" defer></script>
   <script src="./field/field-dialog.js?v=20261107-01" defer></script>
   <script src="./field/field-interactions.js?v=20261126-victory" defer></script>
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261116-rm1" defer></script>
-  <script src="./field/field-persistence.js?v=20261126-hud" defer></script>
-  <script type="module" src="./field/field-3d-view.js?v=20261124-v6"></script>
+  <script src="./field/field-persistence.js?v=20261126-am-pm" defer></script>
+  <script type="module" src="./field/field-3d-view.js?v=20261126-asset-organized"></script>
 
-  <script src="./monster-compendium.js?v=20261109-01" defer></script>
+  <script src="./monster-compendium.js?v=20261126-image-release" defer></script>
   <script src="./battle-formation-ext.js?v=20261109-01" defer></script>
   <script src="./battle-formation-move-preview.js?v=20261112-02" defer></script>
-  <script src="./battle-ui-preview.js?v=20261126-floor-art" defer></script>
+  <script src="./battle-ui-preview.js?v=20261126-asset-organized" defer></script>
   <link rel="stylesheet" href="./css/09-battle-effects.css?v=20261109-04">
   <style>
     #kotama-3d-loading{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#041522,#0a3040 65%,#06121d);color:#f4f5e9;text-align:center;padding:24px;box-sizing:border-box}
@@ -85,37 +87,44 @@
     #kotama-3d-loading .loading-progress::-webkit-progress-value{background:#fff}
     #kotama-3d-loading .loading-progress::-moz-progress-bar{background:#fff}
     #kotama-3d-loading [data-loading-stage]{grid-column:1/-1;font-size:11px;color:#bbb;text-align:right}
-    #kotama-3d-loading [data-loading-dismiss]{grid-column:1/-1;margin-top:4px}
+    #kotama-3d-loading [data-loading-recovery]{grid-column:1/-1;grid-row:1;margin:0 0 12px;display:flex;gap:8px;flex-wrap:nowrap;justify-content:flex-end} #kotama-3d-loading [data-loading-recovery][hidden]{display:none!important} #kotama-3d-loading [data-loading-recovery] button{margin:0;min-height:44px;padding:6px 10px;font-size:13px;white-space:nowrap} #kotama-3d-loading .loading-inner{width:min(350px,100%)!important;grid-template-columns:19px minmax(0,1fr)!important}
+    #kotama-loading-tip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(76vw,720px);text-align:center;pointer-events:none;display:grid;justify-items:center;gap:12px;color:#fff} #kotama-loading-tip .tip-heading{font-size:clamp(13px,1.8vw,19px);letter-spacing:.16em;color:#c6b78c} #kotama-loading-tip .tip-rule{height:1px;width:64px;background:#9b8c68} #kotama-loading-tip-text{font-size:clamp(16px,2.4vw,25px);line-height:1.7;min-height:2.6em;overflow-wrap:anywhere} #kotama-loading-tip-text.tip-appear{animation:kotama-tip-in .35s ease-out} @keyframes kotama-tip-in{from{opacity:0}to{opacity:1}} @media(orientation:landscape) and (max-height:420px){#kotama-loading-tip{top:46%;width:min(70vw,640px);gap:6px}#kotama-loading-tip-text{font-size:16px;line-height:1.5;min-height:0}#kotama-3d-loading:has([data-loading-recovery]:not([hidden])) #kotama-loading-tip{top:30%}} @media(prefers-reduced-motion:reduce){#kotama-loading-tip-text.tip-appear{animation:none}}
     @media(prefers-reduced-motion:reduce){#kotama-3d-loading .loading-spinner{animation:none!important}#kotama-3d-loading .loading-dots::after{animation:none!important;content:'...'!important}}
   </style>
   <script>
   (function(){
-    let timeout;
+    let timeout, failed=false, tipTimer=null, lastTip=-1, tipBag=[];
+    const tips=["迷宮の地図には、見つけた宝箱や階段の位置を自分で記録できます。","敵エンカウントの危険度は、探索画面のゲージで確認できます。","FOEは戦わずに避けて進むこともできます。","ホームから迷宮へ出発すると、仲間のHPとSPが全回復します。","一度訪れたフロアには、ホームの磁軸から移動できます。","スキルポイントは強化画面のスキルツリーで使用できます。","前衛と後衛の配置は、編成画面で変更できます。","探索中もインベントリから仲間のステータスを確認できます。","地図に置いたアイコンは消しゴムで削除できます。","BGMと効果音の音量は個別に調整できます。","装備を変更すると、仲間の能力値も変化します。","探索中の採取ポイントから、素材を入手できます。","セーブデータは手動セーブ枠にも保存できます。","敵の種類に応じて、攻撃やスキルを使い分けましょう。","戦闘に備えて、仲間のHPとSPを確認しておきましょう。","迷宮で見つけた看板や人物は、調べる操作で確認できます。"];
+    function nextTip(){
+      const el=document.getElementById('kotama-loading-tip-text');if(!el)return;
+      if(!tipBag.length){tipBag=tips.map((_,i)=>i);for(let i=tipBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[tipBag[i],tipBag[j]]=[tipBag[j],tipBag[i]];}if(tipBag[tipBag.length-1]===lastTip&&tipBag.length>1){[tipBag[0],tipBag[tipBag.length-1]]=[tipBag[tipBag.length-1],tipBag[0]];}}
+      lastTip=tipBag.pop();el.textContent=tips[lastTip];el.classList.remove('tip-appear');void el.offsetWidth;el.classList.add('tip-appear');
+    }
+    function startTips(){if(tipTimer!==null)return;nextTip();tipTimer=setInterval(nextTip,6000);}
+    function stopTips(){if(tipTimer!==null){clearInterval(tipTimer);tipTimer=null;}}
     const get=()=>document.getElementById('kotama-3d-loading');
-    function hide(){clearTimeout(timeout);const el=get();if(el)el.hidden=true;}
-    function progress(value,stage){const el=get();if(!el)return;const bar=el.querySelector('progress');const label=el.querySelector('[data-loading-stage]');const n=Math.max(0,Math.min(100,Math.round(value)));if(bar)bar.value=n;if(label)label.textContent=n+'% · '+stage;}
+    function hide(){stopTips();clearTimeout(timeout);const el=get();if(el)el.hidden=true;}
+    function progress(value,stage){const el=get();if(!el||failed)return;const bar=el.querySelector('progress');const label=el.querySelector('[data-loading-stage]');const n=Math.max(0,Math.min(100,Math.round(value)));if(bar)bar.value=n;if(label)label.textContent=n+'% · '+stage;}
     function show(){
       const el=get();if(!el)return;
-      if(el.hidden)progress(0,'初期化');
-      el.hidden=false;
-      const message=el.querySelector('[data-loading-message]');
-      const retry=el.querySelector('[data-loading-dismiss]');
-      if(message)message.textContent='3Dマップを準備しています。しばらくお待ちください。';
-      if(retry)retry.hidden=true;
+      if(el.hidden){failed=false;progress(0,'初期化');}
+      el.hidden=false;startTips();
+      const actions=el.querySelector('[data-loading-recovery]');
+      if(actions)actions.hidden=true;
+      failed=false;
       clearTimeout(timeout);
-      timeout=setTimeout(()=>{
-        if(el.hidden)return;
-        if(message)message.textContent='読み込みに時間がかかっています。通信環境を確認してください。';
-        if(retry)retry.hidden=false;
-        const label=el.querySelector('[data-loading-stage]');if(label)label.textContent+=' · 読み込み待機中';
-      },30000);
+      timeout=setTimeout(()=>{if(el.hidden||failed)return;const label=el.querySelector('[data-loading-stage]');if(label)label.textContent+=' · 読み込み待機中';if(actions)actions.hidden=false;},30000);
     }
-    window.Kotama3DLoading={show,hide,progress,ready:()=>{
-      progress(100,'描画完了');
-      if(document.body.dataset.screen==='field')hide();
-    }};
+    function fail(message){
+      clearTimeout(timeout);failed=true;
+      const el=get();if(!el)return;el.hidden=false;startTips();
+      const label=el.querySelector('[data-loading-stage]');if(label)label.textContent=message||'3Dマップの読み込みに失敗しました';
+      const actions=el.querySelector('[data-loading-recovery]');if(actions)actions.hidden=false;
+    }
+    window.Kotama3DLoading={show,hide,progress,fail,waiting:(message)=>{const label=get()?.querySelector('[data-loading-stage]');if(label)label.textContent=message;},ready:()=>{failed=false;progress(100,'描画完了');if(document.body.dataset.screen==='field')hide();}};
     document.addEventListener('DOMContentLoaded',()=>{
-      get()?.querySelector('[data-loading-dismiss]')?.addEventListener('click',hide);
+      get()?.querySelector('[data-loading-retry]')?.addEventListener('click',()=>{if(window.KotamaField3D?.retryLoad)window.KotamaField3D.retryLoad();else fail('3Dプログラムの読み込みが完了していません');});
+      get()?.querySelector('[data-loading-home]')?.addEventListener('click',()=>{if(typeof showScreen==='function'){showScreen('home');hide();}});
     });
   })();
   </script>
@@ -157,25 +166,25 @@ body[data-screen="field"] #field .field-hud{flex:none}
 body[data-screen="field"] #field{display:block!important;overflow:hidden!important;box-sizing:border-box}
 body[data-screen="field"] #field-viewport{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;aspect-ratio:auto!important}
 body[data-screen="field"] #field .field-hud{position:absolute!important;top:12px;left:12px;right:auto;z-index:35;max-width:calc(100% - 24px);width:max-content;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0;padding:8px 12px;background:rgba(9,22,31,.83);border:1px solid #a5b7ad66;border-radius:6px;box-sizing:border-box}
-body[data-screen="field"] #field-map-rail{position:absolute!important;inset:auto 16px 16px auto!important;z-index:20;width:clamp(145px,15vw,220px)!important;max-width:40vw;margin:0!important;box-sizing:border-box;background:rgba(9,22,31,.83);padding:8px;border-radius:6px}
+body[data-screen="field"] #field-map-rail{position:absolute!important;inset:16px 16px auto auto!important;z-index:20;width:clamp(145px,15vw,220px)!important;max-width:40vw;margin:0!important;box-sizing:border-box;background:rgba(9,22,31,.83);padding:8px;border-radius:6px}
 body[data-screen="field"] #field-map-rail .field-minimap{width:100%!important;height:auto!important;aspect-ratio:1;display:block}
 body[data-screen="field"] #field-map-rail .field-map-hint{display:none}
-@media(max-width:700px){body[data-screen="field"] #field-map-rail{right:8px!important;bottom:8px!important;width:120px!important}body[data-screen="field"] #field-minimap-legend{display:none}body[data-screen="field"] #field .field-hud{top:8px;left:8px;font-size:12px}}
+@media(max-width:700px){body[data-screen="field"] #field-map-rail{right:8px!important;top:8px!important;bottom:auto!important;width:120px!important}body[data-screen="field"] #field-minimap-legend{display:none}body[data-screen="field"] #field .field-hud{top:8px;left:8px;font-size:12px}}
 </style>
 
 <style id="field-independent-hud">
 body[data-screen="field"] #field .field-hud{display:contents!important}
 body[data-screen="field"] #field{--map-w:clamp(145px,15vw,220px);--hud-edge:16px}
-body[data-screen="field"] #field-location{position:absolute;top:var(--hud-edge);left:var(--hud-edge);z-index:35;display:grid;justify-items:start;gap:5px;padding:12px 16px;border-left:2px solid #9acbd4;background:linear-gradient(90deg,#08151ee6,#08151e66,transparent);pointer-events:none}
+body[data-screen="field"] #field-location{position:absolute;top:var(--hud-edge);left:var(--hud-edge);z-index:35;display:grid;grid-template-columns:minmax(0,auto) auto;align-items:center;justify-items:start;gap:5px 12px;max-width:calc(100% - var(--map-w) - 3 * var(--hud-edge));padding:12px 16px;border-left:2px solid #9acbd4;background:linear-gradient(90deg,#08151ee6,#08151e66,transparent);pointer-events:none}
 body[data-screen="field"] #field-location strong{font-size:clamp(15px,1.6vw,23px);color:#eef8fc;letter-spacing:.08em;white-space:normal}
-body[data-screen="field"] #field-floor-label{border:0;background:none;padding:0;color:#a8c7d5;letter-spacing:.15em}
-body[data-screen="field"] #field-clock{position:absolute;top:var(--hud-edge);right:var(--hud-edge);z-index:35;padding:8px 12px;background:#0a1724d9;border-bottom:1px solid #79a9bd;color:#e5f2fa;font-size:18px;letter-spacing:.08em}
+body[data-screen="field"] #field-floor-label{grid-column:1;grid-row:2;border:0;background:none;padding:0;color:#a8c7d5;letter-spacing:.15em}
+body[data-screen="field"] #field-clock{position:static;grid-column:2;grid-row:1;justify-self:start;padding:5px 8px;background:#0a1724d9;border-bottom:1px solid #79a9bd;color:#e5f2fa;font-size:18px;letter-spacing:.08em}
 body[data-screen="field"] #field-inventory-open{position:absolute;bottom:var(--hud-edge);left:var(--hud-edge);z-index:35;display:flex;align-items:center;gap:12px;padding:12px 18px;background:linear-gradient(120deg,#203747,#101923);color:#eef7ff;border:1px solid #7ba6b9;border-radius:3px;box-shadow:0 4px 18px #0008;font-weight:700;letter-spacing:.08em;cursor:pointer}
 #field-inventory-open svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.5}
 #field-inventory-open small{display:block;color:#9ebdcd;font-size:9px;letter-spacing:.2em;text-align:left}
 #field-inventory-open:hover,#field-inventory-open:focus-visible{background:#294659;outline:2px solid #d0f1ff}
-body[data-screen="field"] #field-map-rail{width:var(--map-w)!important;right:var(--hud-edge)!important;bottom:var(--hud-edge)!important}
-body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-edge) + var(--map-w) + 12px);bottom:var(--hud-edge);z-index:35;width:clamp(100px,12vw,164px);height:auto;box-sizing:border-box;padding:12px;border:1px solid currentColor;border-radius:4px;background:#08151eea;box-shadow:0 3px 18px #0009;animation:none;display:grid;gap:8px;text-align:center}
+body[data-screen="field"] #field-map-rail{width:var(--map-w)!important;right:var(--hud-edge)!important;top:var(--hud-edge)!important;bottom:auto!important}
+body[data-screen="field"] #field-danger{position:absolute;right:var(--hud-edge);bottom:var(--hud-edge);z-index:35;width:clamp(100px,12vw,164px);height:auto;box-sizing:border-box;padding:12px;border:1px solid currentColor;border-radius:4px;background:#08151eea;box-shadow:0 3px 18px #0009;animation:none;display:grid;gap:8px;text-align:center}
 #field-danger .danger-label{font-size:11px;letter-spacing:.08em;color:#d9e5ed}
 #field-danger .danger-state{font-size:clamp(14px,1.6vw,22px);font-weight:800;color:inherit}
 #field-danger .danger-meter{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
@@ -186,8 +195,120 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 #field-inventory-dialog nav button{background:#142330;border:1px solid #496579;color:#dbeaf5;border-radius:2px;letter-spacing:.06em}
 #field-inventory-dialog nav button[aria-current=true]{background:#29485c;color:#f2fbff;border-color:#9acbd4;box-shadow:inset 3px 0 #b2e5f4}
 #field-inventory-list,#field-menu-detail{background:#101c29!important;border-color:#58768a77!important}
-@media(max-width:700px){body[data-screen="field"] #field{--map-w:120px;--hud-edge:8px}body[data-screen="field"] #field-danger{padding:7px;gap:5px;right:calc(var(--hud-edge) + var(--map-w) + 6px)}body[data-screen="field"] #field-inventory-open{padding:8px;gap:5px;font-size:11px}body[data-screen="field"] #field-location{max-width:65%;padding:8px}body[data-screen="field"] #field-clock{font-size:13px}}
+@media(max-width:700px){body[data-screen="field"] #field{--map-w:120px;--hud-edge:8px}body[data-screen="field"] #field-danger{padding:7px;gap:5px;right:var(--hud-edge)}body[data-screen="field"] #field-inventory-open{padding:8px;gap:5px;font-size:11px}body[data-screen="field"] #field-location{padding:8px;gap:3px 6px}body[data-screen="field"] #field-clock{font-size:13px}}
 @media(max-width:380px){body[data-screen="field"] #field-inventory-open{bottom:150px}}
+</style>
+
+<style id="field-status-expanded">
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-inventory-list{grid-column:2/-1;padding:clamp(12px,2.3vw,32px)!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-menu-detail{display:none}
+#field-inventory-dialog .field-status-switch{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:0 0 18px!important;margin-bottom:20px;border-bottom:1px solid #7398ad66;font-size:16px}
+#field-status-character{background:#172b3a;color:#eef8ff;border:1px solid #7195a9;font-size:16px;padding:8px!important}
+#field-inventory-dialog .field-status-party{display:flex;flex:1;gap:6px;flex-wrap:wrap}
+#field-inventory-dialog .field-status-party button{font-size:15px;background:#122331;color:#cbdce6;border-color:#456579}
+#field-inventory-dialog .field-status-party button[aria-pressed="true"]{background:#2b4b5e;border-color:#a9dce9;color:#fff;box-shadow:inset 0 -2px #b4e9ef}
+#field-status-detail{display:grid;grid-template-columns:minmax(220px,42%) minmax(0,1fr);gap:clamp(18px,3vw,48px);align-items:start;min-height:calc(100% - 90px)}
+#field-status-detail .field-status-art{display:grid;place-items:center;position:relative;min-height:340px;height:min(65dvh,680px);background:radial-gradient(ellipse at center,#284656 0%,#142633 45%,#0d1721 80%);border:1px solid #57788b66;overflow:hidden}
+#field-status-detail .field-status-art img{width:100%;height:100%;max-height:100%;object-fit:contain;display:block;filter:drop-shadow(0 8px 14px #0008)}
+#field-status-detail .field-status-art .image-fallback{font-size:clamp(20px,5vw,72px)}
+#field-status-detail .field-status-info{min-width:0;display:grid;gap:16px;font-size:clamp(16px,1.25vw,22px)}
+#field-status-detail .field-status-name{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #83adbe80;padding:0 0 12px}
+#field-status-detail .field-status-name small{color:#94b9c9;font-size:12px;letter-spacing:.2em}
+#field-status-detail .field-status-name h3{font-size:clamp(28px,3vw,52px);line-height:1.1;color:#f4f8fb;margin:8px 0 0}
+#field-status-detail .field-status-name>b{color:#e8c991;white-space:nowrap;font-size:20px}
+#field-status-detail .field-status-name>b strong{font-size:clamp(28px,3vw,50px)}
+#field-status-detail .field-status-resources{display:grid;gap:14px}
+#field-status-detail .field-status-meter>div{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+#field-status-detail .field-status-meter b{font-size:clamp(21px,2vw,34px);font-variant-numeric:tabular-nums}
+#field-status-detail .field-status-meter b small{font-size:.65em;color:#a9bdca}
+#field-status-detail progress{display:block;width:100%;height:12px;appearance:none;border:1px solid #557283;background:#09141d;margin-top:6px;accent-color:#80d8ba}
+#field-status-detail progress::-webkit-progress-bar{background:#09141d}
+#field-status-detail progress::-webkit-progress-value{background:#80d8ba}
+#field-status-detail .sp progress::-webkit-progress-value{background:#76b6f2}
+#field-status-detail .exp progress::-webkit-progress-value{background:#e7c477}
+#field-status-detail .sp progress{accent-color:#76b6f2}
+#field-status-detail .exp progress{accent-color:#e7c477}
+#field-status-detail h4{font-size:18px;letter-spacing:.06em;margin:4px 0 0;padding-bottom:6px;color:#e4edf3;border-bottom:1px solid #52738788}
+#field-status-detail h4 small{font-size:11px;color:#93adbc;letter-spacing:.14em;margin-left:8px}
+#field-status-detail .field-status-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(116px,1fr));gap:8px}
+#field-status-detail .field-status-stats>div{padding:10px 12px;background:#192d3c;border:1px solid #54778a77;display:grid;gap:5px}
+#field-status-detail .field-status-stats span{font-size:15px;color:#d1e3ec}
+#field-status-detail .field-status-stats small{font-size:10px;color:#94b4c4}
+#field-status-detail .field-status-stats strong{font-size:clamp(24px,2.4vw,40px);font-variant-numeric:tabular-nums;line-height:1.2}
+#field-status-detail .field-status-gear{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#field-status-detail .field-status-gear-row{display:grid;gap:6px;padding:10px 12px;border:1px solid #52738766;background:#132331;overflow-wrap:anywhere}
+#field-status-detail .field-status-gear-row span{color:#a8bdca;font-size:13px}
+#field-status-detail .field-status-gear-row strong{font-size:clamp(16px,1.3vw,23px);color:#eef2e7}
+@media(max-width:1050px){#field-status-detail{grid-template-columns:minmax(140px,36%) minmax(0,1fr);gap:16px}#field-status-detail .field-status-art{height:min(50dvh,450px);min-height:220px}}
+@media(max-width:700px){#field-status-detail{grid-template-columns:1fr}#field-status-detail .field-status-art{height:34dvh;min-height:140px}#field-status-detail .field-status-info{gap:10px}#field-inventory-dialog .field-status-party{display:none}#field-status-detail .field-status-stats{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}#field-status-detail .field-status-gear{grid-template-columns:1fr}}
+</style>
+
+<style id="field-menu-expanded-v2">
+#field-inventory-dialog[open]{grid-template-columns:clamp(150px,17vw,260px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
+#field-inventory-dialog #field-inventory-list{grid-column:2/-1;padding:clamp(12px,2vw,30px)!important}
+#field-inventory-dialog #field-menu-detail{display:none!important}
+#field-inventory-dialog .field-item-inline-detail{flex-basis:100%;font-size:16px;color:#c7dce7;margin:4px 0;padding:10px;background:#1a3040}
+#field-inventory-dialog #field-return-to-exploration{justify-self:end;width:min(100%,320px);min-height:58px;background:linear-gradient(120deg,#367b95,#23576c);color:#fff;border:2px solid #bce9f4;font-size:20px;font-weight:800;letter-spacing:.1em;box-shadow:0 0 18px #6ac8e433;border-radius:4px}
+#field-inventory-dialog #field-return-to-exploration:hover,#field-inventory-dialog #field-return-to-exploration:focus-visible{background:#437f95;outline:2px solid #fff}
+#field-status-detail .field-status-stats{grid-template-columns:1fr;gap:6px}
+#field-status-detail .field-status-stats>div{grid-template-columns:minmax(80px,1fr) minmax(60px,2fr) 65px;align-items:center;padding:6px 10px;gap:10px}
+#field-status-detail .field-status-stats strong{grid-column:3;grid-row:1;text-align:right;font-size:clamp(20px,2vw,32px)}
+#field-status-detail .field-status-stats progress{grid-column:2;grid-row:1;margin:0;height:12px;accent-color:#9cb9e7}
+#field-status-detail .field-status-stats progress::-webkit-progress-value{background:linear-gradient(90deg,#5479af,#aed4ee)}
+#field-inventory-dialog .field-formation-board{max-width:1160px;margin:auto;display:grid;gap:18px}
+#field-inventory-dialog .field-formation-board h3{font-size:26px;margin:0}
+#field-inventory-dialog .field-formation-board h3 small{font-size:16px;color:#abc4d3;margin-left:12px}
+#field-inventory-dialog .field-formation-board p{font-size:16px;margin:0;color:#b6ccd8}
+#field-inventory-dialog .field-formation-row h4{font-size:18px;letter-spacing:.1em;color:#a8d7e7;margin:0 0 8px}
+#field-inventory-dialog .field-formation-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#field-inventory-dialog .field-formation-slots button{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;justify-items:center;gap:6px;min-width:0;min-height:190px;padding:10px;background:radial-gradient(ellipse at center,#27475b,#0e1e2b);border:1px solid #648b9f;font-size:19px;overflow:hidden}
+#field-inventory-dialog .field-formation-slots button[aria-pressed="true"]{border:2px solid #f4d99a;background:#304e5b;box-shadow:inset 0 0 25px #dbb85a33}
+#field-inventory-dialog .field-formation-art{height:clamp(95px,20vh,210px);width:100%;display:grid;place-items:center;overflow:hidden}
+#field-inventory-dialog .field-formation-art img{width:100%;height:100%;object-fit:contain}
+#field-inventory-dialog .field-formation-empty{font-size:44px;color:#7693a6}
+#field-inventory-dialog .field-formation-slots button small,#field-inventory-dialog .field-formation-slots button span{font-size:13px;color:#afc5d1}
+#field-inventory-dialog .field-audio-settings{display:grid;gap:24px;max-width:1050px;margin:0 auto}
+#field-inventory-dialog .field-audio-settings h3{font-size:28px;margin:0}
+#field-inventory-dialog .field-audio-card{padding:clamp(18px,3vw,34px);background:#162a39;border:1px solid #608194;display:grid;gap:18px;font-size:20px}
+#field-inventory-dialog .field-audio-card h4{font-size:24px;margin:0}
+#field-inventory-dialog .field-audio-toggle{display:flex;gap:10px;align-items:center}
+#field-inventory-dialog .field-audio-toggle input{width:22px;height:22px;accent-color:#82d1e5}
+#field-inventory-dialog .field-audio-volume{display:grid;gap:16px;width:100%}
+#field-inventory-dialog .field-audio-volume span{display:flex;justify-content:space-between;align-items:center}
+#field-inventory-dialog .field-audio-volume output{font-size:28px;color:#b3e5f4;font-weight:bold}
+#field-inventory-dialog .field-audio-volume input[type=range]{width:100%;max-width:none;min-width:0;height:30px;accent-color:#8ad5eb;margin:0;cursor:pointer}
+#field-inventory-dialog #progression-panel{width:100%;max-width:none;margin:0;box-sizing:border-box;font-size:16px}
+#field-inventory-dialog #progression-panel .training-character-select h2{display:block;font-size:25px}
+#field-inventory-dialog #progression-panel .skill-node-select{min-height:48px}
+#field-inventory-dialog #progression-panel .training-character-tabs button{font-size:15px}
+#field-inventory-dialog #skill-upgrade-dialog{position:fixed;inset:0;z-index:10001}
+@media(max-width:700px){#field-inventory-dialog[open]{grid-template-columns:100px minmax(0,1fr);gap:8px}#field-inventory-dialog #field-return-to-exploration{min-height:48px;font-size:16px}#field-inventory-dialog .field-formation-slots{gap:4px}#field-inventory-dialog .field-formation-slots button{min-height:120px;font-size:12px;padding:4px}#field-inventory-dialog .field-formation-art{height:80px}#field-status-detail .field-status-stats>div{grid-template-columns:minmax(55px,1fr) minmax(35px,1fr) 42px;gap:5px}#field-status-detail .field-status-stats small{display:none}#field-inventory-dialog .field-audio-card{padding:12px}}
+</style>
+
+<style id="field-map-palette-layout">
+body[data-screen="field"] #field-map-rail{display:flex!important;flex-direction:column;align-items:stretch;gap:6px;background:#09141f!important;border:1px solid #8ab5c8;opacity:1!important;box-shadow:0 4px 16px #000a}
+body[data-screen="field"] #field-map-rail .field-minimap{flex:none;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:1;padding:0;border:1px solid #a6c4d1;background:#07111c;opacity:1!important}
+body[data-screen="field"] #field-map-rail>strong{text-align:center;color:#d6e9ef}
+body[data-screen="field"] #field-minimap-status{text-align:center;font-size:12px;color:#dceaf0}
+body[data-screen="field"] #field-minimap-legend{font-size:10px;gap:5px}
+#field #field-fullmap:not([hidden]){position:absolute;inset:0;z-index:80;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:clamp(10px,2vw,28px);border:0;border-radius:0;background:#0b1622;box-sizing:border-box}
+#field-fullmap .field-fullmap-head strong{font-size:clamp(16px,2vw,26px);color:#e5f2f7}
+#field-fullmap .field-fullmap-head span{font-size:16px}
+#field-fullmap .field-fullmap-head button{font-size:16px;padding:10px 22px;background:#245369;border-color:#91c8da}
+#field-map-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,28%);gap:16px;min-height:0;min-width:0}
+#field-map-canvas-wrap{display:grid;place-items:center;min-width:0;min-height:0;overflow:auto;background:#060e17;border:1px solid #56778c}
+#field-fullmap #field-fullmap-canvas{display:block;max-width:none;max-height:none;padding:0;border:0;cursor:crosshair;touch-action:manipulation;background:#07111c;opacity:1}
+#field-map-tools{min-height:0;overflow:auto;background:#122331;padding:14px;border:1px solid #55778a}
+#field-map-tools>strong{font-size:19px;color:#d9eaf2}
+#field-map-tools>p{font-size:13px;color:#a9c2d1;margin:8px 0 12px}
+#field-map-palette{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px}
+#field-map-palette button{display:grid;justify-items:center;align-content:center;gap:5px;min-height:82px;padding:6px;background:#d3e1e9;border:2px solid #6c8597;border-radius:3px;color:#132533;cursor:pointer}
+#field-map-palette button img{width:44px;height:44px;object-fit:contain}
+#field-map-palette button small{font-size:11px;line-height:1.25;text-align:center}
+#field-map-palette button[aria-pressed="true"]{background:#f5df9e;border-color:#ffb938;box-shadow:0 0 9px #f5c65c88}
+#field-map-palette .field-map-erase{font-size:38px;line-height:44px;font-weight:bold;color:#823737}
+#field-fullmap .field-fullmap-legend{display:none}
+@media(max-width:700px){#field-map-workspace{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(110px,35%);gap:8px}#field-map-tools{padding:8px}#field-map-palette{grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:4px}#field-map-palette button{min-height:64px}#field-map-palette button img{width:32px;height:32px}}
 </style>
 <style id="imperial-inline-style">
 #imperial-status-panel{display:none!important}
@@ -199,11 +320,204 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 .imperial-inline-warning .imperial-inline-segments i.filled{background:#ff6957}
 </style>
   <link rel="stylesheet" href="./css/15-victory-result.css?v=20261126-1">
-  <script src="./victory-result.js?v=20261126-1" defer></script>
+  <script src="./victory-result.js?v=20261126-party-only" defer></script>
+<style id="mobile-landscape-only">
+#kotama-orientation-gate{display:none;position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;border:0;box-sizing:border-box;padding:24px;background:#0a1420;color:#edf6fc;text-align:center;z-index:2147483647}
+#kotama-orientation-gate[open]{display:grid;place-items:center}
+#kotama-orientation-gate::backdrop{background:#0a1420}
+#kotama-orientation-gate .rotate-content{display:grid;justify-items:center;gap:18px;max-width:340px}
+#kotama-orientation-gate svg{width:100px;height:100px;color:#a9deef}
+#kotama-orientation-gate h2{font-size:23px;margin:0;color:#fff}
+#kotama-orientation-gate p{font-size:15px;line-height:1.7;color:#b8cad8;margin:0}
+@media (orientation:portrait) and (pointer:coarse) and (max-width:600px){#kotama-orientation-gate:not([open]){display:grid;place-items:center}}
+@media (orientation:landscape) and (pointer:coarse) and (max-height:600px){
+ body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+ #field-inventory-dialog[open],#victory-screen[open]{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important}
+}
+</style>
+  <link id="mobile-landscape-css" rel="stylesheet" href="./css/16-mobile-landscape.css?v=20261126-field-hud-load">
+<style id="opening-layout">
+body:is([data-screen="opening"],[data-screen="start-select"]){margin:0;padding:0!important;background:#071019}
+body:is([data-screen="opening"],[data-screen="start-select"]) .game{width:100%;max-width:none;min-height:100dvh;margin:0;padding:0}
+body:is([data-screen="opening"],[data-screen="start-select"]) .game>.topbar,body:is([data-screen="opening"],[data-screen="start-select"]) .game>.footer-controls{display:none!important}
+body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:100%;max-width:none;margin:0;padding:0}
+#opening.active,#start-select.active{display:grid!important;place-items:center;min-height:100dvh;width:100%;max-width:none;margin:0;padding:clamp(14px,4vw,48px);box-sizing:border-box;border:0;background:radial-gradient(ellipse at 50% 35%,#29433a,#0e2029 50%,#050c14 90%);color:#e5ebdf}
+#opening .opening-panel{display:grid;justify-items:center;gap:clamp(14px,4vh,35px);text-align:center;width:min(100%,850px)}
+#opening h1{font-size:clamp(34px,7vw,92px);font-weight:800;letter-spacing:.08em;margin:0;color:#e8e8d3;text-shadow:0 4px 22px #000;width:100%;min-width:0}
+#opening .opening-title-logo{display:block;width:100%;height:auto;max-height:48dvh;object-fit:contain;margin:0 auto;filter:drop-shadow(0 4px 12px #0005)}
+.opening-kicker{color:#b7c6ac;font-size:clamp(11px,1.5vw,16px);letter-spacing:.22em;margin:0}
+.opening-rule{width:min(65%,360px);height:1px;background:linear-gradient(90deg,transparent,#d5c391,transparent)}
+#opening-start,#opening-new{min-height:52px;padding:10px 35px;border:1px solid #d0c49a;background:#203f46;color:#f1f4df;font-size:clamp(16px,2vw,22px);font-weight:700;letter-spacing:.08em}
+.opening-select-panel{width:min(100%,900px);display:grid;gap:15px}
+.opening-select-panel header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #7e9388;padding-bottom:10px}
+.opening-select-panel h2{font-size:clamp(24px,4vw,42px);margin:0}
+.opening-select-panel p{font-size:15px;color:#b9d0cb;margin:0}
+#opening-back{min-height:40px;padding:8px 14px;font-size:14px}
+#opening-save-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#opening-save-list .opening-save-card{display:grid;gap:9px;text-align:left;padding:16px;min-height:110px;background:#152c38;border:1px solid #718c92;color:#e6f1ef;white-space:normal;overflow-wrap:anywhere}
+#opening-save-list .opening-save-card strong{font-size:18px}
+#opening-save-list .opening-save-card span{font-size:15px}
+#opening-save-list .opening-save-card small{font-size:12px;color:#bdd3db}
+#opening-save-list .opening-save-card:disabled{opacity:.45}
+#opening-new{justify-self:end}
+#opening-status{min-height:1em;color:#e7bd9d}
+@media(orientation:landscape) and (pointer:coarse) and (max-height:600px){#opening.active,#start-select.active{padding:10px max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}#opening .opening-panel{gap:10px}.opening-title-logo{max-height:46dvh}#opening h1{font-size:clamp(32px,6vw,60px)}.opening-select-panel{gap:8px}.opening-select-panel header{padding-bottom:4px}.opening-select-panel h2{font-size:24px}#opening-save-list .opening-save-card{min-height:75px;padding:8px;gap:4px}#opening-save-list .opening-save-card strong{font-size:15px}#opening-save-list .opening-save-card span{font-size:13px}#opening-start,#opening-new{min-height:42px;font-size:16px;padding:6px 24px}}
+</style>
+<style id="field-map-zoom-party-hud">
+body[data-screen="field"] #field{--party-h:90px}
+body[data-screen="field"] #field-party-hud{position:absolute;left:var(--hud-edge);right:var(--hud-edge);bottom:var(--hud-edge);z-index:35;display:grid;grid-template-columns:repeat(var(--party-count,4),minmax(0,1fr));gap:6px;height:var(--party-h);box-sizing:border-box;pointer-events:none}
+#field-party-hud .field-party-member{min-width:0;display:grid;align-content:center;gap:5px;padding:7px 10px;background:#091722ed;border:1px solid #7299b3;border-radius:4px;box-shadow:0 3px 12px #0008;color:#e7f1fa;box-sizing:border-box}
+#field-party-hud .field-party-name{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0}
+#field-party-hud .field-party-name strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(12px,1.2vw,18px)}
+#field-party-hud .field-party-name small{font-size:11px;color:#aac6d5;white-space:nowrap}
+#field-party-hud .field-party-gauge{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:5px;align-items:center;font-size:11px;line-height:1.2}
+#field-party-hud .field-party-gauge b{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:11px}
+#field-party-hud .hp-track,#field-party-hud .sp-track{height:8px;min-width:0;overflow:hidden;margin:0;background:#293946;border-radius:2px}
+#field-party-hud .hp-fill,#field-party-hud .sp-fill{height:100%;transition:width .15s}
+#field-party-hud .field-party-dead{opacity:.6;border-color:#a66060}
+body[data-screen="field"] #field-inventory-open,body[data-screen="field"] #field-danger{bottom:calc(var(--hud-edge) + var(--party-h) + 8px)!important;top:auto!important}
+#field #field-fullmap:not([hidden]){display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;grid-template-columns:minmax(0,1fr);align-items:stretch!important;justify-items:stretch!important;align-content:stretch!important;height:auto;min-height:0;max-height:none;overflow:hidden}
+#field-fullmap #field-map-workspace{height:100%;align-items:stretch;grid-template-rows:minmax(0,1fr);overflow:hidden}
+#field-fullmap #field-map-canvas-wrap{position:relative;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y}
+#field-fullmap #field-fullmap-canvas{flex:none;margin:auto;max-width:none;max-height:none;touch-action:pan-x pan-y}
+#field-fullmap #field-map-tools{height:auto;min-height:0;overflow:auto;align-self:stretch}
+#field-fullmap .field-fullmap-head{min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#field-fullmap .field-map-zoom-controls{display:flex;align-items:center;gap:5px;flex:none}
+#field-fullmap .field-map-zoom-controls button{min-width:40px;min-height:40px;padding:4px 9px;font-size:14px}
+#field-map-zoom-value{min-width:42px;text-align:center;white-space:nowrap;color:#c9e6f2;font-variant-numeric:tabular-nums}
+@media(max-width:700px) and (orientation:portrait){#field-fullmap #field-map-workspace{grid-template-rows:minmax(0,1fr) minmax(110px,30%)}}
+@media(orientation:landscape) and (pointer:coarse) and (max-height:600px){
+ body[data-screen="field"] #field{--party-h:64px}
+ body[data-screen="field"] #field-party-hud{gap:3px;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right))}
+ #field-party-hud .field-party-member{padding:4px;gap:3px}
+ #field-party-hud .field-party-name strong{font-size:11px}
+ #field-party-hud .field-party-name small,#field-party-hud .field-party-gauge b,#field-party-hud .field-party-gauge{font-size:10px}
+ #field-party-hud .field-party-gauge{grid-template-columns:17px minmax(0,1fr) auto;gap:3px}
+ #field-party-hud .hp-track,#field-party-hud .sp-track{height:6px}
+ body[data-screen="field"] #field-inventory-open{bottom:auto!important;top:55px!important}
+ body[data-screen="field"] #field-pad{bottom:calc(var(--party-h) + var(--hud-edge) + 6px)!important}
+ #field #field-fullmap:not([hidden]){grid-template-rows:auto minmax(0,1fr)!important}
+ #field-fullmap .field-fullmap-head{flex-wrap:wrap!important;gap:4px}
+ #field-fullmap .field-map-zoom-controls{gap:3px}
+ #field-fullmap .field-map-zoom-controls button{min-height:36px;min-width:32px;padding:3px 6px;font-size:12px}
+ #field-fullmap #field-fullmap-close{min-width:105px!important;font-size:13px!important}
+}
+</style>
+<style id="field-status-profile-v2">
+/* Status only: editorial character profile. Other inventory tabs retain their layouts. */
+#field-inventory-dialog[open][data-menu-tab="field-inventory-status-tab"]{--profile-accent:#d5f65b;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:8px!important;padding:clamp(10px,1.5vw,22px)!important;background:#101a24!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>h2{display:none}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav{grid-column:1;grid-row:1;display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;border:0;padding:0;overflow-x:auto;min-width:0}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button{flex:1 0 auto;min-height:36px;padding:6px 12px;text-align:center;white-space:nowrap;font-size:clamp(12px,1vw,16px)}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button[aria-current=true]{background:var(--profile-accent);color:#101b20;border-color:var(--profile-accent);box-shadow:none}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-inventory-list{grid-column:1;grid-row:2;min-height:0;height:100%;padding:0!important;border:0;display:flex;flex-direction:column;gap:8px;overflow:hidden;background:transparent!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-return-to-exploration{grid-column:1;grid-row:3;min-height:36px;width:auto;padding:6px 24px;font-size:14px}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch{flex:0 0 auto;margin:0;padding:0 0 7px!important;gap:8px;min-height:0;flex-wrap:nowrap;border-color:#51656a}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party{display:flex;flex-wrap:nowrap;overflow-x:auto;min-width:0}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party button{flex:none;padding:5px 11px;font-size:13px;white-space:nowrap}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party button[aria-pressed=true]{color:var(--profile-accent);border-color:var(--profile-accent);box-shadow:inset 0 -2px var(--profile-accent)}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-character{font-size:13px;padding:5px!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{flex:1;display:grid;grid-template-columns:minmax(240px,35%) minmax(0,1fr);gap:0;align-items:stretch;min-height:0;height:100%;overflow:hidden;border:1px solid #60777a}
+#field-status-detail .field-status-info{position:relative;z-index:2;display:flex;flex-direction:column;gap:8px;min-height:0;overflow-y:auto;overflow-x:hidden;padding:clamp(10px,1.5vw,24px);background:linear-gradient(135deg,#172631,#0d1922);border-right:2px solid var(--profile-accent);font-size:14px}
+#field-status-detail .field-status-info>*{flex:none}
+#field-status-detail .field-status-name{padding:0 0 8px;gap:5px;border-color:#667b73}
+#field-status-detail .field-status-name h3{font-size:clamp(20px,2.2vw,34px);margin:3px 0 0}
+#field-status-detail .field-status-name small{font-size:10px;letter-spacing:.14em;color:var(--profile-accent)}
+#field-status-detail .field-status-name>b{font-size:13px;color:var(--profile-accent)}
+#field-status-detail .field-status-name>b strong{font-size:clamp(20px,2.5vw,36px)}
+#field-status-detail .field-status-resources{gap:6px}
+#field-status-detail .field-status-meter b{font-size:clamp(16px,1.5vw,23px)}
+#field-status-detail .field-status-meter progress{height:7px;margin-top:3px}
+#field-status-detail h4{font-size:14px;margin:6px 0 0;padding:3px 0;border-color:#607d78}
+#field-status-detail h4>span{display:inline-block;color:var(--profile-accent);margin-right:5px;font-style:italic}
+#field-status-detail h4 small{font-size:10px;color:#a9c2bd}
+#field-status-detail .field-status-stats{gap:3px}
+#field-status-detail .field-status-stats>div{grid-template-columns:minmax(65px,1fr) minmax(25px,1fr) 48px;padding:4px 6px;gap:5px;background:#182b34}
+#field-status-detail .field-status-stats span{font-size:12px}
+#field-status-detail .field-status-stats strong{font-size:17px}
+#field-status-detail .field-status-stats progress{height:6px}
+#field-status-detail .field-status-gear{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+#field-status-detail .field-status-gear-row{padding:6px;gap:3px;background:#172a33}
+#field-status-detail .field-status-gear-row span{font-size:10px}
+#field-status-detail .field-status-gear-row strong{font-size:13px}
+#field-status-detail .field-status-skills{display:grid;gap:3px}
+#field-status-detail .field-status-skill-row{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 8px;background:#192e37;border-left:2px solid #769e9d;font-size:13px}
+#field-status-detail .field-status-skill-row small{font-size:10px;color:#b3c4c9}
+#field-status-detail .field-status-skill-row b{font-size:10px;color:#a4d0d2;white-space:nowrap}
+#field-status-detail .field-status-union{border-color:var(--profile-accent)}
+#field-status-detail .field-status-union b{color:var(--profile-accent)}
+#field-status-detail .field-status-actions{display:flex;flex-wrap:wrap;gap:5px}
+#field-status-detail .field-status-actions button{flex:1 1 auto;padding:7px 9px;font-size:12px;background:#22383e;border:1px solid #7d9d91;color:#e8f5e8;min-height:34px}
+#field-inventory-dialog #field-status-detail .field-status-art{position:relative;display:flex;align-items:center;justify-content:center;isolation:isolate;min-width:0;min-height:0;height:100%;top:auto;border:0;overflow:hidden;background:radial-gradient(ellipse at 60% 38%,#3c5262,#182a38 58%,#111e27 95%)}
+#field-status-detail .field-status-art::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(112deg,transparent 20%,#b6ef5412 20.2%,transparent 21%,transparent 75%,#d5f65b14 75.2%,transparent 76%),repeating-linear-gradient(90deg,#bfd5df0b 0 1px,transparent 1px 55px),repeating-linear-gradient(0deg,#bfd5df0b 0 1px,transparent 1px 55px);pointer-events:none}
+#field-status-detail .field-status-art::after{content:"";position:absolute;z-index:3;inset:0;pointer-events:none;border-top:5px solid var(--profile-accent);border-bottom:7px solid var(--profile-accent);background:linear-gradient(0deg,#06131bd9,transparent 32%);clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+#field-status-detail .field-status-art-grid{position:absolute;z-index:1;inset:10px;pointer-events:none;border:1px solid #c2f06050;clip-path:polygon(0 0,25% 0,25% 1%,100% 1%,100% 100%,70% 100%,70% 99%,0 99%)}
+#field-status-detail .field-status-wordmark{position:absolute;z-index:1;left:4%;top:7%;font-family:Impact,"Arial Narrow",sans-serif;font-style:italic;font-size:clamp(52px,11vw,180px);font-weight:900;line-height:.9;white-space:nowrap;letter-spacing:-.04em;color:#c6e5e329;-webkit-text-stroke:1px #d5f65b55;pointer-events:none}
+#field-status-detail .field-status-art img{position:relative;z-index:2;display:block;width:100%;height:100%;max-height:none;object-fit:contain;object-position:center;filter:drop-shadow(0 8px 16px #0007)}
+#field-status-detail .field-status-art .image-fallback{position:relative;z-index:2;color:#e3f5dd;font-size:clamp(32px,10vw,120px)}
+#field-status-detail .field-status-art-code{position:absolute;z-index:4;right:14px;top:15px;color:var(--profile-accent);font-size:10px;line-height:1.5;letter-spacing:.12em;text-align:right;pointer-events:none}
+#field-status-detail .field-status-art-caption{position:absolute;z-index:4;left:5%;right:4%;bottom:5%;display:grid;gap:2px;justify-items:start;pointer-events:none}
+#field-status-detail .field-status-art-caption small{color:var(--profile-accent);font-size:clamp(9px,1vw,13px);letter-spacing:.15em;font-weight:700;text-shadow:0 2px 4px #000}
+#field-status-detail .field-status-art-caption strong{font-size:clamp(36px,6.4vw,112px);font-weight:900;line-height:1.03;letter-spacing:.02em;transform:skew(-5deg);color:#f4faf7;text-shadow:0 4px 10px #000,2px 2px #101d25}
+#field-status-detail .field-status-art-caption span{font-size:12px;letter-spacing:.18em;color:#e8f6d4;padding:2px 9px;background:#253b37}
+#field-status-detail .field-status-art-mark{position:absolute;right:5%;bottom:8%;z-index:4;color:var(--profile-accent);font-size:38px;font-weight:200;pointer-events:none}
+@media (max-height:600px) and (orientation:landscape){
+ #field-inventory-dialog[open][data-menu-tab="field-inventory-status-tab"]{gap:4px!important;padding:6px max(8px,env(safe-area-inset-right)) 6px max(8px,env(safe-area-inset-left))!important}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button{min-height:32px;padding:4px 8px;font-size:12px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch{padding:0 0 3px!important;gap:4px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party button{font-size:11px;padding:3px 7px;min-height:28px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-character{min-height:28px;font-size:11px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{grid-template-columns:minmax(200px,39%) minmax(0,1fr)}
+ #field-status-detail .field-status-info{gap:5px;padding:8px}
+ #field-status-detail .field-status-art-caption strong{font-size:clamp(30px,6vw,60px)}
+ #field-status-detail .field-status-art-code{font-size:8px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-return-to-exploration{min-height:32px;padding:4px 12px;font-size:12px}
+}
+@media (max-width:600px) and (orientation:portrait){#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{grid-template-columns:1fr;grid-template-rows:minmax(100px,40%) minmax(0,1fr)}#field-status-detail .field-status-art{grid-row:1}#field-status-detail .field-status-info{grid-row:2;border-right:0;border-top:2px solid var(--profile-accent)}}
+</style>
+<style id="field-status-fullbleed-v3">
+/* One continuous background, no artwork panel or dividing frame. */
+#field-inventory-dialog[open][data-menu-tab="field-inventory-status-tab"]{isolation:isolate;overflow:hidden}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav,
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch,
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-return-to-exploration{position:relative;z-index:5}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button{background:#10212cbb;border-color:#81979566}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch{border:0;background:transparent}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{display:block;position:static;border:0;background:none;overflow:visible;min-height:0;flex:1}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-art{position:fixed;inset:0;z-index:0;width:100%;height:100%;min-height:0;pointer-events:none;background:radial-gradient(ellipse at 70% 32%,#3c5368,#172b3a 65%,#101a24)}
+#field-status-detail .field-status-art::before{opacity:.65}
+#field-status-detail .field-status-art::after{border:0;clip-path:none;background:linear-gradient(90deg,#08141ef5 0%,#08141ed9 26%,#08141e80 43%,#08141e12 66%,transparent 100%),linear-gradient(0deg,#08141ed9 0%,transparent 27%,transparent 83%,#08141eb3 100%)}
+#field-status-detail .field-status-art-grid{border:0;clip-path:none}
+#field-status-detail .field-status-art img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center 25%;filter:none}
+#field-status-detail .field-status-wordmark{left:38%;top:13%;z-index:3;font-size:clamp(52px,12vw,190px);opacity:.48}
+#field-status-detail .field-status-art-code{top:16%;right:3%}
+#field-status-detail .field-status-art-caption{left:43%;right:3%;bottom:11%;z-index:4}
+#field-status-detail .field-status-art-caption strong{font-size:clamp(36px,7.6vw,132px)}
+#field-status-detail .field-status-art-caption span{background:transparent;padding:0;color:var(--profile-accent)}
+#field-status-detail .field-status-art-mark{bottom:12%}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-info{position:relative;z-index:4;width:clamp(240px,39%,560px);height:100%;min-height:0;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;background:transparent;border:0;padding:clamp(10px,1.5vw,22px);text-shadow:0 1px 4px #050d14}
+#field-status-detail .field-status-info .field-status-stats>div,#field-status-detail .field-status-info .field-status-gear-row,#field-status-detail .field-status-info .field-status-skill-row{background:transparent;border:0;padding:4px 2px}
+#field-status-detail .field-status-info .field-status-stats>div{border-bottom:1px solid #d9e7dd22}
+#field-status-detail .field-status-info .field-status-name,#field-status-detail .field-status-info h4{border-color:#d5f65b55}
+#field-status-detail .field-status-info progress{border:0}
+#field-status-detail .field-status-info .field-status-actions button{background:#10212c88;border-color:#b0ceaa88}
+@media(max-height:600px) and (orientation:landscape){
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-info{width:clamp(205px,42%,400px);padding:6px 10px}
+ #field-status-detail .field-status-art-caption{left:46%;bottom:13%}
+ #field-status-detail .field-status-art-caption strong{font-size:clamp(28px,7vw,70px)}
+ #field-status-detail .field-status-art-code{top:20%}
+}
+@media(max-width:600px) and (orientation:portrait){
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-info{width:100%;height:62%;margin-top:38%;background:linear-gradient(0deg,#08141ef5,#08141ebd);padding:10px}
+ #field-status-detail .field-status-art-caption{left:5%;bottom:auto;top:25%}
+ #field-status-detail .field-status-art::after{background:linear-gradient(0deg,#08141ef5 0%,#08141e99 55%,transparent 80%)}
+}
+</style>
+<link rel="stylesheet" href="./css/17-home-poster.css?v=20261126-home-silhouette">
 </head>
-<body>
+<body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
-    <div class="loading-inner"><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p><button type="button" data-loading-dismiss hidden>探索画面を表示</button></div>
+    <div id="kotama-loading-tip" aria-live="off"><div class="tip-heading">冒険の豆知識</div><div class="tip-rule"></div><div id="kotama-loading-tip-text"></div></div><div class="loading-inner"><div data-loading-recovery hidden><button type="button" data-loading-retry>3D読み込みを再試行</button><button type="button" data-loading-home>ホームへ戻る</button></div><div class="loading-spinner" aria-hidden="true"></div><h2>LOADING<span class="loading-dots" aria-hidden="true"></span></h2><progress class="loading-progress" max="100" value="0" aria-label="3D読み込み進捗"></progress><span data-loading-stage>0% · 初期化</span><p data-loading-message>3Dマップを準備しています。しばらくお待ちください。</p></div>
   </div>
   <div class="game">
 
@@ -236,24 +550,26 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 
     <main>
       <!-- ホーム -->
-      <section id="home" class="screen active">
-        <div class="page-heading">
-
-
-          <p>仲間を編成して、モンスターとの戦いに挑もう。</p>
+      <section id="opening" class="screen active" aria-label="オープニング">
+ <div class="opening-panel"><p class="opening-kicker">A LABYRINTH ADVENTURE</p><h1><img class="opening-title-logo" src="./assets/title/kotama-title.png" alt="コタマのぼうけん" fetchpriority="high" decoding="async"></h1><div class="opening-rule"></div><button id="opening-start" type="button">冒険を始める　›</button></div>
+</section>
+<section id="start-select" class="screen" aria-label="セーブデータ選択">
+ <div class="opening-select-panel"><header><h2>セーブデータ</h2><button id="opening-back" type="button">タイトルに戻る</button></header><p>続きから冒険を再開するデータを選択してください。</p><div id="opening-save-list"></div><button id="opening-new" type="button">＋ 新規作成</button><p id="opening-status" role="status"></p></div>
+</section>
+<section id="home" class="screen" aria-label="ホーム">
+        <div class="home-poster-background" aria-hidden="true"></div>
+        <div id="home-party" class="home-party" aria-label="編成中の仲間"></div>
+        <div class="home-menu">
+          <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
+          <div class="home-actions">
+            <button id="start-button" class="primary-button">冒険へ出発</button>
+            <button id="field-resume-button" type="button" hidden onclick="resumeFieldGame()">探索を再開</button>
+            <div id="home-nav-slot"></div>
+            <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
+            <p id="start-warning" class="warning" role="alert"></p>
+          </div>
         </div>
-
-        <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
-        <div id="home-party" class="home-party"></div>
-
-        <div class="home-actions">
-          <button id="start-button" class="primary-button">
-            START
-          </button><button id="field-resume-button" type="button" hidden onclick="resumeFieldGame()">探索を再開</button>
-          <p id="start-warning" class="warning" role="alert"></p>
-          <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
-          <section id="event-gallery" class="event-gallery" hidden></section>
-        </div>
+        <section id="event-gallery" class="event-gallery" hidden></section>
       </section>
 
       <!-- モンスター図鑑 -->
@@ -370,7 +686,7 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
       <!-- [FIELD] フィールド探索（見下ろし型の自由移動・ランダムエンカウント・会話）。仕様：docs/field-and-story/FIELD_SPEC.md -->
       <section id="field" class="screen field-screen" data-area="1" data-theme="forest" aria-label="フィールド">
         <div class="field-hud"><button id="field-inventory-open" type="button" onclick="openFieldInventory()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v13H3z M3 8l2-4h14l2 4 M3 13h18 M10 11h4v5h-4z"/></svg><span><small>INVENTORY</small>インベントリ</span></button>
-          <span id="field-clock">08時</span><div id="field-location"><strong id="field-area-name">はじまりの樹海</strong></div>
+          <div id="field-location"><strong id="field-area-name">はじまりの樹海</strong><span id="field-clock">8 AM</span></div>
           <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド（1マスずつ）　調べる：Z/Enter・A</span>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
         </div>
@@ -388,6 +704,7 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
             <div class="field-dialog-choices" hidden></div>
           </div>
         </div>
+        <section id="field-party-hud" aria-label="探索中のパーティーの体力・SP"></section>
         <div id="field-pad" class="field-pad" aria-label="移動パッド">
           <div class="field-dpad">
             <button type="button" data-dir="up" aria-label="上">▲</button>
@@ -536,6 +853,31 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 
   </div>
   <script src="./battle-water-map.js?v=20261112-04" defer></script>
-<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><nav><button type="button" id="field-inventory-items-tab">所持品</button><button type="button" id="field-inventory-status-tab">ステータス</button><button type="button" id="field-inventory-skills-tab">スキル</button><button id="field-inventory-formation-tab" type="button">編成</button><button id="field-inventory-training-tab" type="button">強化</button><button id="field-inventory-mission-tab" type="button">ミッション</button><button id="field-inventory-settings-tab" type="button">その他</button><button id="field-inventory-suspend-tab" type="button">一時中断</button></nav><div id="field-inventory-list"></div><aside id="field-menu-detail"><h3>探索メニュー</h3><p>項目を選択してください。</p></aside><button type="button" onclick="this.closest('dialog').close()">探索に戻る</button></dialog>
+<dialog id="field-inventory-dialog" style="width:min(90vw,680px);max-height:85vh;background:#17252e;color:white;border:1px solid #82969d;padding:20px"><h2>所持品 <span id="field-inventory-count"></span></h2><nav><button type="button" id="field-inventory-items-tab">所持品</button><button type="button" id="field-inventory-status-tab">ステータス</button><button type="button" id="field-inventory-skills-tab">スキル</button><button id="field-inventory-formation-tab" type="button">編成</button><button id="field-inventory-training-tab" type="button">強化</button><button id="field-inventory-mission-tab" type="button">ミッション</button><button id="field-inventory-settings-tab" type="button">その他</button><button id="field-inventory-suspend-tab" type="button">一時中断</button></nav><div id="field-inventory-list"></div><aside id="field-menu-detail"><h3>探索メニュー</h3><p>項目を選択してください。</p></aside><button id="field-return-to-exploration" type="button" onclick="this.closest('dialog').close()">探索に戻る　›</button></dialog>
+<dialog id="kotama-orientation-gate" aria-labelledby="kotama-rotate-heading">
+ <div class="rotate-content">
+ <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="27" y="15" width="31" height="54" rx="5"/><path d="M39 62h7M64 24a29 29 0 0 1 20 28m-9-6 9 8 7-10"/><rect x="35" y="62" width="54" height="31" rx="5"/><path d="M42 73v9"/></svg>
+ <h2 id="kotama-rotate-heading">スマートフォンを横向きにしてください</h2>
+ <p>このゲームは横画面専用です。<br>画面の回転ロックを解除し、端末を横にすると操作できます。</p>
+ </div>
+</dialog>
+<script>
+(function(){
+ const gate=document.getElementById("kotama-orientation-gate");
+ const mobile=/Android.*Mobile|iPhone|iPod|Windows Phone/i.test(navigator.userAgent)||(navigator.maxTouchPoints>0&&matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<=600);
+ const portrait=matchMedia("(orientation:portrait)");
+ function update(){
+  const blocked=mobile&&portrait.matches;
+  document.documentElement.classList.toggle("kotama-portrait-blocked",blocked);
+  if(blocked&&!gate.open){try{gate.showModal();}catch(_){gate.setAttribute("open","");}}
+  else if(!blocked&&gate.open){gate.close();}
+ }
+ gate.addEventListener("cancel",e=>e.preventDefault());
+ document.addEventListener("keydown",e=>{if(gate.open){e.preventDefault();e.stopImmediatePropagation();}},true);
+ if(portrait.addEventListener)portrait.addEventListener("change",update);else portrait.addListener(update);
+ window.addEventListener("resize",update);window.addEventListener("orientationchange",update);
+ update();
+})();
+</script>
 </body>
 </html>

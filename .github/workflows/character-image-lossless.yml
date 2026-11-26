@@ -1,0 +1,43 @@
+name: Character portrait lossless conversion
+on:
+  push:
+    branches:
+      - feature/gpt-field-status-large-20261126
+    paths:
+      - tools/optimize-character-images.py
+      - .github/workflows/character-image-lossless.yml
+      - assets/characters/*.png
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: character-lossless-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  optimize:
+    if: github.ref == 'refs/heads/feature/gpt-field-status-large-20261126'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/optimize-character-images.py
+      - name: Preserve PNGs and save verified variants
+        run: |
+          git diff --exit-code -- 'assets/characters/*.png'
+          git add -u
+          git add assets/characters/lossless-report.json
+          find assets/characters -maxdepth 1 -name '*.webp' -print0 | xargs -0 -r git add --
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "Add verified lossless character portraits"
+          git push origin HEAD:refs/heads/feature/gpt-field-status-large-20261126
+      - uses: actions/upload-artifact@v4
+        with:
+          name: character-lossless-report
+          path: assets/characters/lossless-report.json
+          retention-days: 14

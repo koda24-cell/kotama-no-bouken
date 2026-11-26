@@ -1,0 +1,132 @@
+{
+  "images": [
+    {
+      "path": "assets/characters/hi-ra-.png",
+      "png_bytes": 282204,
+      "original_sha256": "47d9071c65a91bbbee80cf5d04db65e0596ac9b321b1b200fa0403720a5ed05a",
+      "selected": true,
+      "width": 800,
+      "height": 800,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 174382,
+      "webp_sha256": "2ad1931df034b15c5b25dbf8683eaae3719c2ad6a114fd2394bd15939713b53d"
+    },
+    {
+      "path": "assets/characters/kishi.png",
+      "png_bytes": 248046,
+      "original_sha256": "fce534f9eb58a7cbace8335032da80f24bfa7c13c644578eea200ce1bfb10bab",
+      "selected": true,
+      "width": 628,
+      "height": 800,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 160824,
+      "webp_sha256": "d0ef7d9491714916cdecae7fe8c8eb8516c1d7643bde833f6a5ccd60685f227d"
+    },
+    {
+      "path": "assets/characters/kotama.png",
+      "png_bytes": 272019,
+      "original_sha256": "c7cfe90d6b6720f3faca77add959164d85ebcdc15e75f7518aaf7d11238daaca",
+      "selected": true,
+      "width": 616,
+      "height": 800,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 182572,
+      "webp_sha256": "a3354d206d9dd46ce411153dd15a812fcf9d2c71c8b9afad300a3dfce253624e"
+    },
+    {
+      "path": "assets/characters/mahoutukai.png",
+      "png_bytes": 265298,
+      "original_sha256": "b38bc20fae3e0d8afd2199fc723ff03e62a7424c26463f23649e5da8ac78826c",
+      "selected": true,
+      "width": 623,
+      "height": 800,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 158786,
+      "webp_sha256": "e2d3a2360e4c5ec136696658fdac65996c5c96c4acda342bd8b15fdb0dd870e5"
+    },
+    {
+      "path": "assets/characters/sennshi.png",
+      "png_bytes": 95573,
+      "original_sha256": "c5ebac02a6114aecda5a71a07bc82cfbc610faf9fc6439c9035ad15f2992fc48",
+      "selected": true,
+      "width": 349,
+      "height": 400,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 61214,
+      "webp_sha256": "fa8220154d0affb16944825140f01ca606d24bb10ec4a1119dc1e353dd9ac66a"
+    },
+    {
+      "path": "assets/characters/イラスト131.2.png",
+      "png_bytes": 1303007,
+      "original_sha256": "7ff39f7c98caf044506fe05c40feb34cd14d6191b33139f7b6dffd01b70ef85c",
+      "selected": true,
+      "width": 1240,
+      "height": 1860,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 629640,
+      "webp_sha256": "703ff37d62eda4fcc0e08544eb8ff4a0a1072e089f5181d9083099bc2a2cea68"
+    },
+    {
+      "path": "assets/characters/イラスト131.png",
+      "png_bytes": 289832,
+      "original_sha256": "72951500683f06d83da90f2a4d4406c0bab9566c673633f93364e5397d4e279c",
+      "selected": true,
+      "width": 595,
+      "height": 663,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 158702,
+      "webp_sha256": "458c48791807afb2bc9837c077f27881925b9f5c5b4b677e28d5d9d3a622fe47"
+    },
+    {
+      "path": "assets/characters/イラスト128.1.png",
+      "png_bytes": 381085,
+      "original_sha256": "33128d2859ae51b46ad946b2b8be8458d914003efaf86a84f4a992dce015752d",
+      "selected": true,
+      "width": 1191,
+      "height": 1000,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 198914,
+      "webp_sha256": "20b295f1691a79e05342e4a26d5c886b0114b2ada8054b0ba94689a52956ae6c"
+    },
+    {
+      "path": "assets/characters/イラスト128.2.png",
+      "png_bytes": 392861,
+      "original_sha256": "ded7945bd1be427162c13a407006f09c433ac9ea82c0d45192ec8d6c1a1e1ca2",
+      "selected": true,
+      "width": 1191,
+      "height": 1000,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 209084,
+      "webp_sha256": "fb4dc8f8807ae012c45968eed624bf183189e8f3a55dbc077643135630b1cd08"
+    },
+    {
+      "path": "assets/characters/イラスト128.3.png",
+      "png_bytes": 412245,
+      "original_sha256": "0d13d1d3bd6437a5800915a7869977a81b0a14eac40d53aa95a8febbcc8877c4",
+      "selected": true,
+      "width": 1191,
+      "height": 1000,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 217206,
+      "webp_sha256": "72fa9812743969cc3b5279fed086fd93bdfc94e6f15dc91ed7afd4c09cb31c0a"
+    }
+  ],
+  "changed_files": [
+    "css/06-field.css",
+    "data/characters.js",
+    "data/jobs.js",
+    "script.js"
+  ],
+  "total_png_bytes": 3942170,
+  "total_display_bytes": 2151324
+}

@@ -118,6 +118,7 @@ function currentBgmTrack(){
   return "normal";
 }
 function startBgm(){
+  if(state.screen==="opening"||state.screen==="start-select"){stopBgm();return;}
   if(soundtrackPreviewActive)return;
   if((activeEvent&&activeEvent.id!=="maou-intro")||(stageIntroStoryPending&&activeEvent?.id!=="maou-intro"&&!maouIntroBgmPersistent)){stopBgm();return;}
   const toggle=$("bgm-toggle");
@@ -178,10 +179,37 @@ function effectiveAttackPowerForSamuraiSlot(c,slot){if(c?.id!=="samurai")return 
 function effectiveSpAttackPower(c){const power=effectiveStats(c).spAttack;return extHasStatus(c,"burn")?Math.floor(power/2):power;}
 function getEquippedName(c,slot){const item=itemById(equipment[c.id]?.[slot]);return item?item.name:"なし";}
 function statWithBonus(base,bonus){return `${base}${bonus?` <b class="stat-bonus">+${bonus}</b>`:""}`;}
-function showScreen(name){const el=$(name);if(!el||!el.classList.contains("screen"))return;if(tutorialState.phase==="complete"&&name!=="home"&&$("tutorial-overlay")&&!$("tutorial-overlay").hidden)tutorialClose();if(name==="home")retryContext=null;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s===el));if(name!=="settings")stopPreview(false);if(name==="shop"&&state.screen!=="shop")shopBuyerId=getParty()[0]?.id||null;state.screen=name;document.body.dataset.screen=name;if(name==="field")window.Kotama3DLoading?.show();else window.Kotama3DLoading?.hide();if($("list-menu"))$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");updateListMenuForScreen();if($("bgm-toggle")?.checked)startBgm();else stopBgm();document.querySelectorAll(".main-nav [data-screen]").forEach(b=>b.toggleAttribute("aria-current",b.dataset.screen===name));renderAll();window.scrollTo({top:0,behavior:"auto"});}
-function getCharacterImage(c){if(c.emblem&&!c.image)return `<span class="image-fallback job-emblem" role="img" aria-label="${esc(c.name)}">${esc(c.emblem)}</span>`;return c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" onerror="this.style.display='none';if(!this.parentElement.querySelector('.image-fallback')){const f=document.createElement('span');f.className='image-fallback';f.textContent='画像未配置';this.parentElement.appendChild(f)}">`:`<span class="image-fallback">画像準備中</span>`;}
+// Remove only images from panels that are rebuilt on entry. Keep layout, controls and save state.
+function releaseInactiveScreenImages(previous,next){
+  if(previous===next)return;
+  const selectors={home:"#home-party img",formation:"#selected-party img,#character-roster img",shop:"#shop-buyer img",training:"#progression-panel img",compendium:"#compendium-list img",battle:"#battle-enemy img,#battle-party img,#battle .battle-preview-portrait img"};
+  if(selectors[previous])document.querySelectorAll(selectors[previous]).forEach(img=>img.remove());
+  if(previous==="field")window.KotamaField3D?.releaseFoeImages?.();
+}
+function showScreen(name){const el=$(name);if(!el||!el.classList.contains("screen"))return;if(tutorialState.phase==="complete"&&name!=="home"&&$("tutorial-overlay")&&!$("tutorial-overlay").hidden)tutorialClose();if(name==="home")retryContext=null;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s===el));releaseInactiveScreenImages(state.screen,name);if(name!=="settings")stopPreview(false);if(name==="shop"&&state.screen!=="shop")shopBuyerId=getParty()[0]?.id||null;state.screen=name;document.body.dataset.screen=name;placeHomeNavigation(name);if(name==="field")window.Kotama3DLoading?.show();else window.Kotama3DLoading?.hide();if($("list-menu"))$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");updateListMenuForScreen();if($("bgm-toggle")?.checked)startBgm();else stopBgm();document.querySelectorAll(".main-nav [data-screen]").forEach(b=>b.toggleAttribute("aria-current",b.dataset.screen===name));renderAll();window.scrollTo({top:0,behavior:"auto"});}
+function getCharacterImage(c){if(c.emblem&&!c.image)return `<span class="image-fallback job-emblem" role="img" aria-label="${esc(c.name)}">${esc(c.emblem)}</span>`;return c.image?`<img loading="lazy" decoding="async" src="${esc(c.image)}" alt="${esc(c.name)}" onerror="this.style.display='none';if(!this.parentElement.querySelector('.image-fallback')){const f=document.createElement('span');f.className='image-fallback';f.textContent='画像未配置';this.parentElement.appendChild(f)}">`:`<span class="image-fallback">画像準備中</span>`;}
 function renderGold(){if($("gold"))$("gold").textContent=state.gold;}
-function renderHome(){const resume=$("field-resume-button");if(resume){try{resume.hidden=!localStorage.getItem("kotamaFieldSuspend");}catch(e){resume.hidden=true;}}const box=$("home-party");if(!box)return;box.innerHTML=getParty().map(c=>`<article class="character-card home-character"><div class="character-art">${getCharacterImage(c)}</div><h3>${esc(c.name)} ${typeof levelBadge==="function"?levelBadge(c):""}</h3><p>HP ${effectiveStats(c).maxHp}　SP ${c.maxSp}</p><p>武器：${esc(getEquippedName(c,"weapon"))}</p><p>防具：${esc(getEquippedName(c,"armor"))}</p></article>`).join("");}
+// Move the existing nav, rather than duplicate it: tutorial hooks and listeners remain intact.
+function placeHomeNavigation(name){
+  const nav=document.querySelector(".main-nav"),slot=$("home-nav-slot"),top=document.querySelector(".topbar");
+  if(!nav||!slot||!top)return;
+  if(name==="home"){if(nav.parentElement!==slot)slot.append(nav);}
+  else if(nav.parentElement!==top)top.insertBefore(nav,top.querySelector(".gold-display"));
+}
+function homeFormationMembers(party,rows){
+  const used=new Set(),mapped=[],unplaced=[];
+  for(const c of party){const p=rows?.[c.id];const n=p&&["front","rear"].includes(p.row)&&Number.isInteger(p.slot)&&p.slot>=0&&p.slot<3?(p.row==="rear"?3:0)+p.slot:-1;
+    if(n<0||used.has(n)){unplaced.push(c);continue;}used.add(n);mapped.push({c,n});}
+  for(const c of unplaced){const n=[0,1,2,3,4,5].find(i=>!used.has(i));if(n===undefined)break;used.add(n);mapped.push({c,n});}
+  return mapped.sort((a,b)=>a.n-b.n);
+}
+function renderHome(){
+  if(state.screen==="home")placeHomeNavigation("home");
+  const resume=$("field-resume-button");if(resume){try{resume.hidden=!localStorage.getItem("kotamaFieldSuspend");}catch(e){resume.hidden=true;}}
+  const box=$("home-party");if(!box)return;
+  const members=homeFormationMembers(getParty(),window.kotamaBattleExportRows?.());
+  box.innerHTML=members.map(({c,n})=>`<article class="home-character home-poster-member" data-party-id="${esc(c.id)}" data-home-slot="${n}" aria-label="${esc(c.name)} ${n<3?"前衛":"後衛"} ${n%3+1}"><div class="character-art">${getCharacterImage(c).replace('loading="lazy"','loading="eager"')}</div><div class="home-member-label"><small>${n<3?"FRONT":"REAR"} / 0${n%3+1}</small><strong>${esc(c.name)}</strong><span>Lv.${levelOf(c)}</span></div></article>`).join("");
+}
 function renderAchievements(){const box=$("achievement-list");if(!box)return;const unlocked=achievementDefinitions.filter(a=>achievementUnlocked[a.id]).length;const progress=$("achievement-progress");if(progress)progress.textContent=`${unlocked} / ${achievementDefinitions.length} 達成`;
  box.innerHTML=achievementDefinitions.map(a=>`<article class="achievement-card ${achievementUnlocked[a.id]?"unlocked":"locked"}"><div><strong>${esc(a.name)}</strong><p>${esc(a.description)}</p></div><span>${achievementUnlocked[a.id]?"達成済み":`報酬 ${a.reward}G`}</span></article>`).join("");
 }
@@ -216,7 +244,7 @@ function registerDefeat(name){if(compendium[name]){compendium[name].encountered=
 function renderCompendium(){if(typeof renderMonsterCompendium==="function"){renderMonsterCompendium();return;}// [COMPENDIUM] 全敵対応の図鑑は monster-compendium.js
  const box=$("compendium-list");if(!box)return;
  const names=compendiumNames().slice(0,5);
- box.innerHTML=names.map((name,i)=>{const d=enemyData[i],r=compendium[name]||{},img=d?.image;return `<article class="compendium-card ${r.defeated?"unlocked":""}"><div class="compendium-art">${r.defeated&&img?`<img src="${esc(img)}" alt="${esc(name)}" onerror="this.remove()">`:`<span>${r.encountered?"影":"?"}</span>`}</div><h3>${r.encountered?esc(name):"？？？？"}</h3><p>${!r.encountered?"未遭遇":r.defeated?`HP ${d.hp} ／ ATK ${d.attack} ／ DEF ${d.defense}<br>属性：${esc(d.element)}<br>弱点：${esc((d.weaknesses||[]).join("・")||"なし")} ／ 耐性：${esc([...(d.resistances||[]),...(d.physicalResistances||[])].join("・")||"なし")}`:"シルエットと名前のみ登録"}</p><small>${r.defeated?"討伐済み":r.encountered?"未討伐":"未発見"}</small></article>`;}).join("");
+ box.innerHTML=names.map((name,i)=>{const d=enemyData[i],r=compendium[name]||{},img=d?.image;return `<article class="compendium-card ${r.defeated?"unlocked":""}"><div class="compendium-art">${r.defeated&&img?`<img loading="lazy" decoding="async" src="${esc(img)}" alt="${esc(name)}" onerror="this.remove()">`:`<span>${r.encountered?"影":"?"}</span>`}</div><h3>${r.encountered?esc(name):"？？？？"}</h3><p>${!r.encountered?"未遭遇":r.defeated?`HP ${d.hp} ／ ATK ${d.attack} ／ DEF ${d.defense}<br>属性：${esc(d.element)}<br>弱点：${esc((d.weaknesses||[]).join("・")||"なし")} ／ 耐性：${esc([...(d.resistances||[]),...(d.physicalResistances||[])].join("・")||"なし")}`:"シルエットと名前のみ登録"}</p><small>${r.defeated?"討伐済み":r.encountered?"未討伐":"未発見"}</small></article>`;}).join("");
  const hidden=compendium["混沌の幻影"]||{};box.insertAdjacentHTML("beforeend",`<article class="compendium-card ${hidden.defeated?"unlocked":""}"><div class="compendium-art"><span>${hidden.defeated?"✦":hidden.encountered?"影":"?"}</span></div><h3>${hidden.encountered?"混沌の幻影":"？？？？"}</h3><p>${!hidden.encountered?"未遭遇":hidden.defeated?"HP 4500 ／ ATK 100 ／ DEF 120<br>SP攻撃力 100 ／ SP防御力 60<br>属性：無属性 ／ 弱点：なし ／ 耐性：全属性":"シルエットと名前のみ登録"}</p><small>${hidden.defeated?"討伐済み":hidden.encountered?"未討伐":"未発見"}</small></article>`);
  const progress=$("compendium-progress");if(progress)progress.textContent=`${names.filter(n=>compendium[n]?.defeated).length} / 5 討伐`;
  const unlock=$("hidden-boss-unlock");if(unlock){unlock.innerHTML=hiddenBossUnlocked()?`<h3>隠しステージ解放！</h3><p>「混沌の幻影」への挑戦条件を達成しました。</p><button id="hidden-boss-start" class="primary-button">隠しボスに挑戦</button>`:'<h3>隠しステージ</h3><p>解放条件：魔王・ドラゴン討伐、通常モンスター図鑑80%以上</p>';$("hidden-boss-start")?.addEventListener("click",startHiddenBoss);}
@@ -286,7 +314,8 @@ function setupStoryEvents(){
 }
 function renderAll(){
   // 画面共通の再描画で一つのパネルが失敗しても、他画面の描画まで巻き込まない。
-  const jobs=[renderHome,renderGold,renderFormation,renderShop,renderProgressionPanel,renderClearSummary,renderCompendium,renderEventGallery,renderAchievements];
+  const panels={home:[renderHome,renderEventGallery],formation:[renderFormation],shop:[renderShop],training:[renderProgressionPanel],clear:[renderClearSummary],compendium:[renderCompendium],achievements:[renderAchievements]};
+  const jobs=[renderGold,...(panels[state.screen]||[])];
   for(const job of jobs){try{job();}catch(error){console.error(`[Render] ${job.name} failed:`,error);if(job===renderProgressionPanel){const box=$("progression-panel");if(box)box.innerHTML='<p class="empty-note">強化・育成データの表示中にエラーが発生しました。画面を再読み込みしてください。</p>';}}}
 }
 function renderClearSummary(){const summary=$("clear-gold-summary");if(!summary)return;const reward=Number(battleState.lastRewardGold)||0;summary.textContent=`魔王討伐報酬：${reward}G ／ 現在の所持金：${state.gold}G`; }
@@ -371,7 +400,7 @@ function renderFormation(){const selected=$("selected-party"),roster=$("characte
   selected.querySelectorAll("[data-remove-character]").forEach(b=>b.onclick=()=>removeCharacter(b.dataset.removeCharacter));selected.querySelectorAll("[data-select-slot]").forEach(b=>b.onclick=()=>{formationTargetSlot=Number(b.dataset.selectSlot);setSystemMessage(`空き枠${formationTargetSlot+1}を選択しました。仲間候補を選んでください。`);});roster.querySelectorAll("[data-toggle-character]").forEach(b=>b.onclick=()=>toggleCharacter(b.dataset.toggleCharacter));selected.querySelectorAll("[data-equip]").forEach(sel=>sel.onchange=()=>equipItem(sel.dataset.character,sel.dataset.equip,sel.value));}
 function equipmentSlots(c){return c.id==="samurai"?[["katana1","刀1"],["katana2","刀2"],["accessory1","装飾品1"],["accessory2","装飾品2"]]:[["weapon","武器"],["armor","防具"],["accessory1","装飾品1"],["accessory2","装飾品2"]];}
 function equipmentOptions(slot,charId){const current=equipment[charId][slot]||"";const cat=(slot==="armor"?"armor":slot.startsWith("accessory")?"accessory":"weapon");const armorRole=EXT_REAR_IDS.includes(charId)?"back":"front";const owned=shopItems.filter(i=>i.category===cat&&(inventory[i.id]>0||equipment[charId]?.[slot]===i.id)&&((i.classes||[]).includes(charId))&&(slot!=="armor"||i.armorRole===armorRole)&&((slot.startsWith("katana")?i.slot==="katana":!i.slot)));return `<option value="" ${!current?"selected":""}>なし</option>`+owned.map(i=>`<option value="${i.id}" ${current===i.id?"selected":""}>${esc(i.name)}</option>`).join("");}
-function equipItem(charId,slot,newId){const c=getCharacter(charId);if(!c||!equipment[c.id]||!(slot in equipment[c.id]))return;const item=itemById(newId);if(newId&&(!item||!(inventory[newId]>0))){setSystemMessage("所持していない装備です。");sound("error");renderFormation();return;}if(newId&&item.category==="armor"&&(item.armorRole!==(EXT_REAR_IDS.includes(charId)?"back":"front")||!(item.classes||[]).includes(charId))){setSystemMessage("この職業の前衛・後衛区分では装備できない防具です。");sound("error");renderFormation();return;}if(newId&&!(item.classes||[]).includes(charId)&&!window.confirm(`${item.name}は${c.name}の適性装備ではありません。装備するとSPスキルとユニオンスキルが使用できなくなります。装備しますか？`)){renderFormation();return;}const old=equipment[charId][slot];if(old===newId)return;if(old&&!newId&&!carriedRoom()){setSystemMessage("所持品がいっぱいです。");renderFormation();return;}if(old)inventory[old]=(inventory[old]||0)+1;if(newId){inventory[newId]--;if(inventory[newId]<=0)delete inventory[newId];}equipment[charId][slot]=newId||null;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword"&&charId==="kotama"&&slot==="weapon"&&equipment.kotama?.weapon==="hero-sword"){tutorialState.heroSwordEquipped=true;tutorialState.phase="shop-nav";tutorialOverlay("SHOPへ移動しよう","装備できたね！装備品はSHOPで購入できるよ。画面上部のショップを押して移動しよう。");tutorialHighlight('.main-nav [data-screen="shop"]');tutorialSave();}
+function equipItem(charId,slot,newId){const c=getCharacter(charId);if(!c||!equipment[c.id]||!(slot in equipment[c.id]))return;const item=itemById(newId);if(newId&&(!item||!(inventory[newId]>0))){setSystemMessage("所持していない装備です。");sound("error");renderFormation();return;}if(newId&&item.category==="armor"&&(item.armorRole!==(EXT_REAR_IDS.includes(charId)?"back":"front")||!(item.classes||[]).includes(charId))){setSystemMessage("この職業の前衛・後衛区分では装備できない防具です。");sound("error");renderFormation();return;}if(newId&&!(item.classes||[]).includes(charId)&&!window.confirm(`${item.name}は${c.name}の適性装備ではありません。装備するとSPスキルとユニオンスキルが使用できなくなります。装備しますか？`)){renderFormation();return;}const old=equipment[charId][slot];if(old===newId)return;if(old&&!newId&&!carriedRoom()){setSystemMessage("所持品がいっぱいです。");renderFormation();return;}if(old)inventory[old]=(inventory[old]||0)+1;if(newId){inventory[newId]--;if(inventory[newId]<=0)delete inventory[newId];}equipment[charId][slot]=newId||null;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword"&&charId==="kotama"&&slot==="weapon"&&equipment.kotama?.weapon==="hero-sword"){tutorialState.heroSwordEquipped=true;tutorialState.phase="shop-nav";tutorialOverlay("SHOPへ移動しよう","装備できたね！装備品はSHOPで購入できるよ。ショップを押して移動しよう。");tutorialHighlight('.main-nav [data-screen="shop"]');tutorialSave();}
   // 勇者の剣を装備するまでは、武器欄の発光を保つ（再描画で対象が作り直されるため付け直す）。
   else if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="equip-hero-sword")tutorialHighlight('#selected-party select[data-character="kotama"][data-equip="weapon"]');}
 function toggleCharacter(id){if(state.party.includes(id)){removeCharacter(id);return;}const used=state.party.filter(Boolean).length;if(used>=PARTY_LIMIT){sound("error");return;}let slot=Number.isInteger(formationTargetSlot)?formationTargetSlot:state.party.findIndex(x=>!x);if(slot<0||slot>=PARTY_LIMIT||state.party[slot])slot=state.party.findIndex(x=>!x);if(slot<0)slot=used;state.party[slot]=id;formationTargetSlot=state.party.findIndex(x=>!x);if(formationTargetSlot<0)formationTargetSlot=0;renderAll();sound("select");if(tutorialState.started&&!tutorialState.completed&&tutorialState.phase==="formation-add"&&id==="healer"&&state.party.includes("healer")){tutorialState.healerReadded=true;tutorialState.phase="equipment-intro";tutorialOverlay("装備を確認しよう","キャラクターごとに武器・防具・アクセサリを管理できるよ。");tutorialHighlight("#selected-party");tutorialSave();}}
@@ -517,7 +546,7 @@ function closeSkillUpgradeDialog(options={}){
   }
 }
 function activateSkillUpgradeDialogEnvironment(dialog){
-  const background=[...document.body.children].filter(element=>element!==dialog);
+  const background=[...dialog.parentElement.children].filter(element=>element!==dialog);
   const previousInert=background.map(element=>({element,inert:element.inert}));
   const bodyOverflow=document.body.style.overflow;
   const rootOverflow=document.documentElement.style.overflow;
@@ -568,7 +597,7 @@ function installSkillUpgradeCommitShield(){
   const shield=document.createElement("div");
   shield.setAttribute("aria-hidden","true");
   Object.assign(shield.style,{position:"fixed",inset:"0",zIndex:"10000",background:"transparent",pointerEvents:"auto",cursor:"default"});
-  document.body.appendChild(shield);
+  ($("field-inventory-dialog")?.open ? $("field-inventory-dialog") : document.body).appendChild(shield);
   const blockKeys=event=>{event.preventDefault();event.stopImmediatePropagation();};
   const blockClicks=event=>{event.preventDefault();event.stopImmediatePropagation();};
   document.addEventListener("keydown",blockKeys,true);
@@ -618,7 +647,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
  '<p class="skill-upgrade-note">確定するまでスキルレベルとSPポイントは変更されません。</p>'+
  '<div class="dialog-actions"><button type="button" class="secondary-button" data-upgrade-cancel>キャンセル</button><button type="button" class="primary-button" data-upgrade-confirm>習得・強化する</button></div></div>';
  dialog._returnFocus=returnFocus||null;
- document.body.appendChild(dialog);
+ ($("field-inventory-dialog")?.open ? $("field-inventory-dialog") : document.body).appendChild(dialog);
  skillUpgradeDialogCleanup=activateSkillUpgradeDialogEnvironment(dialog);
  const cancel=dialog.querySelector("[data-upgrade-cancel]"),confirm=dialog.querySelector("[data-upgrade-confirm]"),quantity=dialog.querySelector("[data-upgrade-count]");
  const refreshPreview=()=>{
@@ -645,7 +674,7 @@ function openSkillUpgradeDialog(charId,nodeId,returnFocus){
   trainingPoints[charId]=latest.points-selected.cost;
   setTreeLevel(charId,nodeId,selected.level);
   unlockedSkills[charId]=treeNodes(charId).filter(n=>getTreeLevel(charId,n.id)>0).map(n=>n.id);
-  selectedTrainingSkill=nodeId;renderAll();
+  selectedTrainingSkill=nodeId;renderAll();persistAutoSave();
   closeSkillUpgradeDialog({focusTarget:focusAfterRender});
   installSkillUpgradeCommitShield();
   setSystemMessage(c.name+"の「"+node.name+"」をLv."+selected.level+"まで"+(eligibility.level?"強化":"習得")+"しました（"+selected.cost+" SP）。");
@@ -671,6 +700,10 @@ function respecCharacterSkillTree(charId){
 }
 function renderProgressionPanelUnsafe(){
  const box=$("progression-panel");if(!box)return;
+ const fieldTraining=!!box.closest("#field-inventory-dialog");
+ const trainingRoster=(fieldTraining?getParty():characters).filter(ch=>skillTreeDefinitions[ch.id]);
+ if(fieldTraining&&!trainingRoster.length){box.textContent="強化できる仲間がいません。";return;}
+ if(fieldTraining&&!trainingRoster.some(ch=>ch.id===trainingCharacterId)){trainingCharacterId=trainingRoster[0].id;selectedTrainingSkill=null;}
  const c=(skillTreeDefinitions[(getCharacter(trainingCharacterId)||characters[0]).id]?(getCharacter(trainingCharacterId)||characters[0]):characters[0]),stats=effectiveStats(c),tree=skillTreeDefinitions[c.id],points=trainingPoints[c.id]||0;
  const passive=tree.passive,a=tree.a,b=tree.b,derived=tree.derived;
  const isNewTree=newTreeCharacterIds.includes(c.id);
@@ -689,7 +722,7 @@ function renderProgressionPanelUnsafe(){
  const mat=Object.entries(materials).map(([id,n])=>`${materialNames[id]||id} ×${n||0}`).join("　／　")||"素材なし";
  const selectedLevel=getTreeLevel(c.id,selectedNode.id),selectedExpansion=(skillTreeExpansionDefinitions[c.id]||[]).find(n=>n.id===selectedNode.id),selectedMax=selectedExpansion?(selectedExpansion.kind==="root"?3:1):(isNewTree?10:selectedNode===a||selectedNode===b?5:1);
  const selectedNext=selectedExpansion?`「${selectedExpansion.skill.name}」を習得`:(isNewTree?(selectedNode===passive?`レベルごとに${c.id==="healer"?"回復量3%":"対応能力2%"}上昇`:selectedNode===derived?`派生スキル「${skillTreeDerivedSkills[c.id].name}」の効果が強化`:`「${(selectedNode===a?skillTreeExtraSkills[c.id].skill:skillTreeBranchBSkills[c.id]).name}」の効果がレベルに応じて上昇`):(selectedNode===passive?"最大HP・攻撃力などの基礎能力が2%上昇":selectedNode===derived?`派生SPスキル「${skillTreeDerivedSkills[c.id].name}」を習得`:`対応する${selectedNode.effect}効果が3%上昇`));
- box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${characters.filter(ch=>skillTreeDefinitions[ch.id]).map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
+ box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${trainingRoster.map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
  <section class="training-tree training-showcase">
  <aside class="training-character-showcase">
   <div class="training-character-art"><img src="${esc(c.image||"")}" alt="${esc(c.name)}" loading="lazy" onerror="this.hidden=true"></div>
@@ -724,6 +757,7 @@ function renderProgressionPanelUnsafe(){
  </section>
  <section class="training-stats"><h3>${esc(c.name)}のステータス</h3><p>Lv.${characterLevels[c.id]||1}　／　取得スキル：${treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).length}系統</p><div class="training-stat-grid"><span>HP <b>${stats.maxHp}</b></span><span>ATK <b>${stats.attack}</b></span><span>DEF <b>${stats.defense}</b></span><span>最大SP <b>${stats.maxSp}</b></span><span>SP攻撃力 <b>${stats.spAttack}</b></span><span>SP防御力 <b>${stats.spDefense}</b></span></div><p>装備補正：${equippedItems(c).map(i=>`${esc(i.name)}（${esc(i.effect||"装備効果")}）`).join("、")||"なし"}</p><p>取得済み：${treeNodes(c.id).filter(n=>getTreeLevel(c.id,n.id)>0).map(n=>`${esc(n.name)} Lv.${getTreeLevel(c.id,n.id)}`).join("、")||"なし"}</p></section>
  <p class="material-line">所持素材：${esc(mat)}</p><div class="progression-grid"><section><h3>武器製作</h3>${recipes.map(r=>{const ok=adminInfiniteResources()||(Object.entries(r.needs).every(([id,n])=>(materials[id]||0)>=n)&&state.gold>=r.cost);return `<article><strong>${esc(r.name)}</strong><small>${r.attackBonus?`ATK +${r.attackBonus}`:`SP攻撃 +${r.spAttackBonus}`} ／ ${r.classes.map(id=>getCharacter(id)?.name).join("・")}</small><small>${Object.entries(r.needs).map(([id,n])=>`${materialNames[id]}×${n}（${materials[id]||0}）`).join("、")} ／ ${r.cost}G</small><button data-craft="${r.id}" ${ok?"":"disabled"}>製作</button></article>`;}).join("")}</section><section><h3>装備中の武器強化</h3><p>${esc(c.name)}が現在装備している武器のみ対象です。最大+5。</p>${[...new Set(Object.values(equipment[c.id]||{}).filter(Boolean))].filter(id=>itemById(id)?.category==="weapon").map(id=>{const lv=weaponLevels[id]||0,cost=enhancementCosts[lv+1]||0,material=enhancementMaterials[id]||"slime_jelly",need=lv+1;return `<article><strong>${esc(itemById(id).name)} +${lv}</strong><small>強化後：${itemById(id).attackBonus?"攻撃力":"SP攻撃力"}補正 +${Math.floor((itemById(id).attackBonus||itemById(id).spAttackBonus||0)*(1+(lv+1)*.1))}</small><small>必要：${lv<5?`${cost}G・${materialNames[material]}×${need}（所持 ${materials[material]||0}）`:"最大強化"}</small><button data-enhance="${id}" ${lv>=5||(!adminInfiniteResources()&&(state.gold<cost||(materials[material]||0)<need))?"disabled":""}>${lv>=5?"強化上限":"強化する"}</button></article>`;}).join("")||"<p>装備中の武器がありません。</p>"}</section></div>`;
+ if(fieldTraining){box.querySelector(".progression-grid")?.remove();box.querySelector(".material-line")?.remove();box.querySelector(".skill-respec-button")?.remove();}
  box.querySelectorAll("[data-training-character]").forEach(btn=>btn.onclick=()=>{trainingCharacterId=btn.dataset.trainingCharacter;selectedTrainingSkill=null;renderProgressionPanel();});
  box.querySelectorAll("[data-select-skill]").forEach(btn=>btn.onclick=()=>{selectedTrainingSkill=btn.dataset.selectSkill;renderProgressionPanel();});
  box.querySelectorAll("[data-upgrade-skill]").forEach(btn=>btn.onclick=()=>{const node=treeNodes(c.id).find(n=>n.id===btn.dataset.upgradeSkill);if(!node)return;openSkillUpgradeDialog(c.id,node.id,btn);});
@@ -1024,9 +1058,9 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
   for(const cid of EXT_REAR_IDS){if(!clean[cid]?.armor)clean[cid].armor="linen-robe";}
   return clean;
 }
-function createSaveData(){return {saveVersion:12,/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
+function createSaveData(){return {saveVersion:12,formationRows:window.kotamaBattleExportRows?.(),/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
-function persistAutoSave(){try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
+function persistAutoSave(){if(state.screen==="opening"||state.screen==="start-select")return false;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
 function createBattleStartSnapshot(){return {game:createSaveData(),battle:{encounterMode:!!battleState.encounterMode,fieldEnemyId:battleState.fieldEnemyId||null,fieldFoeKey:battleState.fieldFoeKey||null,/* [FIELD] */stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges},formationRows:(typeof window.kotamaBattleExportRows==="function"?window.kotamaBattleExportRows():undefined)}};}
 function migrateLegacySlot(){if(localStorage.getItem("kotamaSaveSlot1"))return;const old=localStorage.getItem("fantasyRpgSave");if(!old)return;try{const game=JSON.parse(old);localStorage.setItem("kotamaSaveSlot1",JSON.stringify({savedAt:new Date().toISOString(),game,battle:null}));}catch(e){}}
 function openSaveDialog(){migrateLegacySlot();renderSaveSlots("save");$("save-dialog").hidden=false;$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");}
@@ -1041,7 +1075,7 @@ function loadGame(){try{
   const d=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");
   let repairedStageProgress=false;
   if(!d||!d.state||!Number.isFinite(d.state.gold)||!Array.isArray(d.state.party)||d.state.party.some(id=>id!==null&&!characters.some(c=>c.id===id))||d.state.party.length>PARTY_LIMIT)throw new Error("invalid save");
-  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
+  state.gold=Math.max(0,Math.floor(d.state.gold));state.party=d.state.party.map(id=>id===null?null:id);window.kotamaBattleImportRows?.(d.formationRows);state.maxUnlockedStage=Math.max(1,Math.min(5,Number(d.state.maxUnlockedStage)||1));state.firstStageStarted=d.state.firstStageStarted!==false;state.unlockedJobs=Array.isArray(d.state.unlockedJobs)?d.state.unlockedJobs.filter(id=>EXT_NEW_JOB_IDS.includes(id)):[];
   if(d.tutorial&&typeof d.tutorial==="object"){tutorialState={...tutorialState,...d.tutorial};}else{tutorialState={...tutorialState,started:false,completed:true,phase:"complete"};}
   Object.keys(inventory).forEach(k=>delete inventory[k]);
   if(d.inventory&&typeof d.inventory==="object")for(const [id,count] of Object.entries(d.inventory)){if(shopItems.some(i=>i.id===id)&&Number.isFinite(count)&&count>0)inventory[id]=Math.floor(count);}
@@ -1076,8 +1110,8 @@ function loadGame(){try{
   if(typeof levelDeserialize==="function")levelDeserialize(d.levelExp);// [LEVEL]
   if(typeof fieldDeserialize==="function")fieldDeserialize(d.field);// [FIELD] フィールド位置・既読フラグ（旧セーブは初期値で補う）
   if(repairedStageProgress)persistAutoSave();
-  if($("bgm-toggle")?.checked)startBgm();else stopBgm();renderAll();setSystemMessage(Number(d.saveVersion)>=2?"ロードしました。":"旧セーブデータを新しい装備形式に変換してロードしました。");sound("select");
-}catch(e){setSystemMessage("セーブデータが不正か、存在しません。");sound("error");}}
+  if($("bgm-toggle")?.checked)startBgm();else stopBgm();renderAll();setSystemMessage(Number(d.saveVersion)>=2?"ロードしました。":"旧セーブデータを新しい装備形式に変換してロードしました。");sound("select");return true;
+}catch(e){setSystemMessage("セーブデータが不正か、存在しません。");sound("error");return false;}}
 function createEnemy(stage){
   if(battleState.hiddenBossMode){const h=JSON.parse(JSON.stringify(hiddenBossData));return {...h,maxHp:h.hp,_breakMax:260,_breakCurrent:260};}
   const d=enemyData[stage-1];
@@ -1101,6 +1135,12 @@ async function beginStageCore(){
   const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyGroup||battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
   pendingBattleResumeEnemy=null;
+  // Preserve image display when resuming battle snapshots saved before asset organization.
+  if(resumedBattle){
+    const legacyMonsterImages=new Set(["assets/唸る青灰狼のアニメーション.gif","assets/氷狼の咆哮アニメーション.gif","assets/炎の翼竜、咆哮する姿.gif","assets/紫煙を纏う影の亡霊アニメーション.gif","assets/赤き魔炎を纏う魔王の舞.gif","assets/青いスライムのジャンプアニメーション.gif"]);
+    const restoredUnits=[battleState.enemy,...(Array.isArray(battleState.enemy.members)?battleState.enemy.members:[])];
+    for(const unit of restoredUnits){if(unit&&legacyMonsterImages.has(unit.image))unit.image="assets/monsters/"+unit.image.slice("assets/".length);}
+  }
   const encounterUnits=battleState.enemy._mixedEncounter?battleState.enemy.members:[battleState.enemy];
   for(const unit of encounterUnits){registerEncounter(unit.compendiumAs||unit.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(unit,resumedBattle);}
   // [COMPENDIUM] 混成編成は敵個体ごとに図鑑へ記録
@@ -1816,7 +1856,7 @@ function showHitEffect(kind="slash",targetNode=null){
     sprite.alt="";
     sprite.decoding="async";
     sprite.onerror=()=>sprite.remove();
-    sprite.src="assets/"+assetName;
+    sprite.src="assets/vfx/battle-gifs/"+assetName;
     fx.appendChild(sprite);
   }
   const heavy=["samurai","blunt","flame","lightning"].includes(safeKind);
@@ -1943,7 +1983,7 @@ function clearNegativeStatuses(character){
     Object.keys(character.negativeStatuses).forEach(key=>delete character.negativeStatuses[key]);
   }
 }
-const unionPortraitFiles={kotama:"kotama.png",knight:"kishi.png",warrior:"sennshi.png",healer:"hi-ra-.png",mage:"mahoutukai.png"};
+const unionPortraitFiles={kotama:"kotama.webp",knight:"kishi.webp",warrior:"sennshi.webp",healer:"hi-ra-.webp",mage:"mahoutukai.webp"};
 async function showUnionCutin(skill, participants){
   const unionDetail={actorId:participants[0]?.id,participantIds:participants.map(c=>c.id),skillName:skill.name,skillType:skill.type};// [EVT]
   battleEmit("union:start",unionDetail);
@@ -2412,12 +2452,14 @@ document.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.disabled)return;if(!b.dataset.silentSound&&!b.matches("[data-action],[data-skill],[data-item],[data-target],[data-partner],[data-union]"))sound("select");if($("bgm-toggle")?.checked)startBgm();});
 
 document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigation();setupBattleButtons();$("stage-select-close")?.addEventListener("click",()=>$("stage-select-dialog").hidden=true);
-  migrateLegacySlot();
   const forceNewGame=localStorage.getItem("kotamaStartNewGameNow")==="1";
+  if(!forceNewGame&&!new URLSearchParams(location.search).has("skipOpening")&&window.KotamaSacredPlaytest!==true){
+    state.screen="opening";document.body.dataset.screen="opening";document.querySelectorAll(".screen").forEach(el=>el.classList.toggle("active",el.id==="opening"));setupOpening();return;
+  }
   if(forceNewGame){
     localStorage.removeItem("kotamaStartNewGameNow");localStorage.removeItem("fantasyRpgSave");
     tutorialState={started:true,completed:false,phase:"intro",battlePhase:"tutorial-intro",heroSwordGranted:false,heroSwordEquipped:false,armorBought:false,potionBought:false,healerRemoved:false,healerReadded:false,accessoryExplained:false};
-    state.gold=50;state.party=["kotama","knight","mage","healer"];state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
+    state.gold=50;state.party=["kotama","knight","mage","healer"];window.kotamaBattleImportRows?.(null);state.maxUnlockedStage=1;state.firstStageStarted=false;state.unlockedJobs=[];
     for(const id of Object.keys(equipment))equipment[id]={weapon:null,armor:null,accessory1:null,accessory2:null,katana1:null,katana2:null};
     equipment.kotama.weapon=null;equipment.kotama.armor=null;ensureStarterGear();
     for(const id of Object.keys(inventory))delete inventory[id];
@@ -2450,6 +2492,51 @@ document.addEventListener("DOMContentLoaded",()=>{initAdminTools();setupNavigati
   }
   syncBattleSpeedUI();showScreen("home");renderAll();if(tutorialState.started&&!tutorialState.completed){document.body.classList.add("tutorial-home-focus");$("start-button").textContent="チュートリアル開始";showTutorialWelcome();}syncTutorialActive();});
 
+
+function openingRead(key){
+ try{const raw=localStorage.getItem(key);if(!raw)return null;const data=JSON.parse(raw),g=data?.game||data;return g?.state&&Array.isArray(g.state.party)&&Number.isFinite(g.state.gold)?{game:g,savedAt:data.savedAt||null,battle:data.battle||null}:null;}catch(_){return null;}
+}
+function openingHome(){
+ showScreen("home");
+ if(tutorialState.started&&!tutorialState.completed){
+  tutorialState.phase="intro";tutorialState.battlePhase="tutorial-intro";battleState.tutorialMode=false;
+  document.body.classList.add("tutorial-home-focus");$("start-button").textContent="チュートリアル開始";showTutorialWelcome();
+ }else document.body.classList.remove("tutorial-home-focus");
+ syncTutorialActive();
+}
+function setupOpening(){
+ const status=msg=>{$("opening-status").textContent=msg;};
+ const showSelection=()=>{
+  showScreen("start-select");
+  const list=$("opening-save-list");
+  const slots=[["fantasyRpgSave","オートセーブ"],["kotamaSaveSlot1","セーブデータ 1"],["kotamaSaveSlot2","セーブデータ 2"]];
+  list.innerHTML=slots.map(([key,label],i)=>{const d=openingRead(key);return '<button type="button" class="opening-save-card" data-opening-slot="'+i+'" '+(d?"":"disabled")+'><strong>'+label+'</strong><span>'+(d?esc(saveProgressLabel(d)):"データなし")+'</span><small>'+(d?.savedAt?esc(new Date(d.savedAt).toLocaleString("ja-JP")):d?"続きから":"空きスロット")+'</small></button>';}).join("");
+  list.querySelectorAll("[data-opening-slot]").forEach(b=>b.onclick=()=>{
+   const [key]=slots[Number(b.dataset.openingSlot)],d=openingRead(key);if(!d)return;
+   try{
+    if(key!=="fantasyRpgSave"){
+     const previous=localStorage.getItem("fantasyRpgSave");
+     if(previous&&previous!==JSON.stringify(d.game)&&!confirm("選択したデータをロードしますか？現在のオートセーブは上書きされます。"))return;
+     localStorage.setItem("fantasyRpgSave",JSON.stringify(d.game));
+    }
+    if(!loadGame()){status("セーブデータを読み込めませんでした。");return;}
+    openingHome();
+   }catch(e){status("セーブデータを読み込めませんでした。");}
+  });
+ };
+ $("opening-start").onclick=showSelection;
+ $("opening-back").onclick=()=>showScreen("opening");
+ $("opening-new").onclick=()=>{
+  const hasAuto=!!localStorage.getItem("fantasyRpgSave");
+  if(hasAuto&&!confirm("新規作成しますか？現在のオートセーブは初期化されます。手動セーブデータは残ります。"))return;
+  try{
+   if(hasAuto){const auto=localStorage.getItem("fantasyRpgSave");const free=[1,2].find(n=>!localStorage.getItem("kotamaSaveSlot"+n));if(free&&openingRead("fantasyRpgSave"))localStorage.setItem("kotamaSaveSlot"+free,JSON.stringify({game:JSON.parse(auto),savedAt:new Date().toISOString(),battle:null}));else if(!confirm("現在のオートセーブを置き換えてよいですか？"))return;}
+   localStorage.setItem("kotamaStartNewGameNow","1");
+   location.reload();
+  }catch(e){status("新規作成できませんでした。保存領域を確認してください。");}
+ };
+}
+
 function carriedCount(){return [inventory,materials].reduce((sum,bag)=>sum+Object.values(bag).reduce((n,v)=>n+Math.max(0,Number(v)||0),0),0);}
 function carriedRoom(){return Math.max(0,60-carriedCount());}
 function openFieldInventory(){
@@ -2459,14 +2546,44 @@ function openFieldInventory(){
  const render=()=>{ $("field-inventory-count").textContent=carriedCount()+" / 60";
  const rows=[...Object.entries(inventory).map(([id,n])=>({id,n,bag:inventory,name:itemById(id)?.name||id,item:itemById(id)})),...Object.entries(materials).map(([id,n])=>({id,n,bag:materials,name:materialNames[id]||id}))].filter(x=>x.n>0);
  list.innerHTML=rows.map((x,i)=>'<div><button type="button" data-item-detail="'+i+'">'+esc(x.name)+'</button><span>×'+x.n+'</span><button type="button" data-discard="'+i+'">捨てる</button></div>').join("")||"所持品なし";
- list.querySelectorAll("[data-item-detail]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.itemDetail)];$("field-menu-detail").innerHTML="<h3>"+esc(x.name)+"</h3><p>所持数："+x.n+"</p><p>"+esc(x.item?.description||x.item?.effect||(x.bag===materials?"迷宮で入手した素材":"所持アイテム"))+"</p>";});
+ list.querySelectorAll("[data-item-detail]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.itemDetail)],row=b.parentElement,previous=row.querySelector(".field-item-inline-detail");list.querySelectorAll(".field-item-inline-detail").forEach(el=>el.remove());if(previous)return;const info=document.createElement("p");info.className="field-item-inline-detail";info.textContent=x.item?.description||x.item?.effect||(x.bag===materials?"迷宮で入手した素材":"所持アイテム");row.append(info);});
 
  if(inventory["return-scroll"]>0){const use=document.createElement("button");use.type="button";use.textContent="帰還の書を使う";use.onclick=()=>{if(state.screen!=="field"||!(inventory["return-scroll"]>0)||!confirm("帰還の書を1個使ってホームに戻りますか？"))return;inventory["return-scroll"]--;if(!inventory["return-scroll"])delete inventory["return-scroll"];dlg.close();fieldState.lock=false;fieldLeaveToHome("帰還の書を使用しました。");persistAutoSave();};list.prepend(use);}
  list.querySelectorAll("[data-discard]").forEach(b=>b.onclick=()=>{const x=rows[Number(b.dataset.discard)];if(x&&confirm("1個捨てますか？")){x.bag[x.id]--;if(!x.bag[x.id])delete x.bag[x.id];persistAutoSave();render();}});
- };$("field-inventory-items-tab").onclick=render;$("field-inventory-status-tab").onclick=renderFieldCharacterStatus;$("field-inventory-skills-tab").onclick=renderFieldSkills;$("field-inventory-formation-tab").onclick=renderFieldFormation;$("field-inventory-training-tab").onclick=renderFieldTraining;$("field-inventory-mission-tab").onclick=renderFieldMission;$("field-inventory-settings-tab").onclick=renderFieldSettings;$("field-inventory-suspend-tab").onclick=suspendFieldGame;dlg.querySelectorAll("nav button").forEach(b=>{const action=b.onclick;b.onclick=()=>{dlg.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-current",String(x===b)));dlg.querySelector("h2").firstChild.textContent=b.textContent+" ";$("field-menu-detail").innerHTML="<h3>"+esc(b.textContent)+"</h3><p>探索中の仲間と所持品を管理できます。</p>";action();};});$("field-inventory-items-tab").click();dlg.showModal();dlg.onclose=()=>{fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
+ };$("field-inventory-items-tab").onclick=render;$("field-inventory-status-tab").onclick=renderFieldCharacterStatus;$("field-inventory-skills-tab").onclick=renderFieldSkills;$("field-inventory-formation-tab").onclick=renderFieldFormation;$("field-inventory-training-tab").onclick=renderFieldTraining;$("field-inventory-mission-tab").onclick=renderFieldMission;$("field-inventory-settings-tab").onclick=renderFieldSettings;$("field-inventory-suspend-tab").onclick=suspendFieldGame;dlg.querySelectorAll("nav button").forEach(b=>{const action=b.onclick;b.onclick=()=>{restoreFieldTrainingPanel();dlg.dataset.menuTab=b.id; $("field-inventory-count").textContent=carriedCount()+" / 60";dlg.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-current",String(x===b)));dlg.querySelector("h2").firstChild.textContent=b.textContent+" ";action();};});$("field-inventory-items-tab").click();dlg.showModal();dlg.onclose=()=>{restoreFieldTrainingPanel();fieldState.lock=false;fieldInput.keys.clear();fieldInput.pad.clear();};
 }
 
-function renderFieldCharacterStatus(){const list=$("field-inventory-list"),party=getParty();list.innerHTML='<label>仲間 <select id="field-status-character">'+party.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")+'</select></label><div id="field-status-detail"></div>';const select=$("field-status-character");const render=()=>{const c=party.find(x=>x.id===select.value);if(!c)return;const v=effectiveStats(c);$("field-status-detail").innerHTML='<div style="display:flex;gap:16px;flex-wrap:wrap"><div style="width:160px">'+getCharacterImage(c).replace("<img ","<img style=\"width:100%;object-fit:contain\" ")+'</div><div><h3>'+esc(c.name)+' Lv.'+(characterLevels[c.id]||1)+'</h3><p>HP '+c.hp+' / '+v.maxHp+'　SP '+c.sp+' / '+v.maxSp+'</p><p>攻撃 '+v.attack+'　SP攻撃 '+v.spAttack+'</p><p>防御 '+v.defense+'　SP防御 '+v.spDefense+'　速度 '+v.speed+'</p><h4>装備</h4>'+equippedItems(c).map(i=>'<div>'+esc(i.name)+'</div>').join("")+'</div></div>';};select.onchange=render;render();}
+function renderFieldCharacterStatus(){
+ const list=$("field-inventory-list"),party=getParty();
+ $("field-inventory-count").textContent="";
+ list.innerHTML='<div class="field-status-switch"><label for="field-status-character">仲間</label><select id="field-status-character">'+party.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")+'</select><div class="field-status-party">'+party.map(c=>'<button type="button" data-status-id="'+esc(c.id)+'">'+esc(c.name)+'</button>').join("")+'</div></div><section id="field-status-detail"></section>';
+ const select=$("field-status-character"),detail=$("field-status-detail");
+ const render=()=>{
+  const c=party.find(x=>x.id===select.value);
+  if(!c){detail.textContent="編成中の仲間がいません。";return;}
+  const v=effectiveStats(c),lv=levelOf(c);
+  const meter=(name,now,max,kind)=>'<div class="field-status-meter '+kind+'"><div><strong>'+name+'</strong><b>'+Math.max(0,now)+' <small>/ '+max+'</small></b></div><progress max="'+Math.max(1,max)+'" value="'+Math.max(0,Math.min(now,max))+'" aria-label="'+name+'"></progress></div>';
+  const stats=[["攻撃","ATK",v.attack],["SP攻撃","SP ATK",v.spAttack],["防御","DEF",v.defense],["SP防御","SP DEF",v.spDefense],["速度","SPD",v.speed]];
+  const statKeys=["attack","spAttack","defense","spDefense","speed"],allStats=party.map(effectiveStatsSafe=>effectiveStats(effectiveStatsSafe));
+  const statMax=key=>Math.max(100,Math.ceil(Math.max(...allStats.map(x=>Number(x[key])||0))/50)*50);
+  const gear=equipmentSlots(c).map(([slot,label])=>'<div class="field-status-gear-row"><span>'+esc(label)+'</span><strong>'+esc(getEquippedName(c,slot))+'</strong></div>').join("");
+  const romanNames={kotama:"KOTAMA",knight:"KNIGHT",healer:"HEALER",warrior:"MONK",mage:"MAGE",samurai:"SAMURAI",assassin:"ASSASSIN",gunner:"GUNNER",highlander:"HIGHLANDER",princess:"PRINCESS",reaper:"REAPER",imperial:"IMPERIAL"};
+  const title=romanNames[c.id]||String(c.id).toUpperCase();
+  const skills=getCharacterSkills(c);
+  const passive=treeNodes(c.id).filter(n=>n&&n.kind==="passive"&&getTreeLevel(c.id,n.id)>0);
+  const union=unionSkills[c.id];
+  const skillRows=skills.map(skill=>'<div class="field-status-skill-row"><span>'+esc(skill.name)+(skill.treeLevel?' <small>Lv.'+skill.treeLevel+'</small>':'')+'</span><b>SP '+esc(skill.cost??0)+'</b></div>').join("")+
+    passive.map(n=>'<div class="field-status-skill-row"><span>'+esc(n.name)+' <small>Lv.'+getTreeLevel(c.id,n.id)+'</small></span><b>PASSIVE</b></div>').join("")+
+    (union?'<div class="field-status-skill-row field-status-union"><span>'+esc(union.name)+'</span><b>UNION</b></div>':'');
+  detail.innerHTML='<div class="field-status-info"><header class="field-status-name"><div><small>ADVENTURER / STATUS</small><h3>'+esc(c.name)+'</h3></div><b>Lv. <strong>'+lv+'</strong></b></header><div class="field-status-resources">'+meter("HP",c.hp,v.maxHp,"hp")+meter("SP",c.sp,v.maxSp,"sp")+(lv>=LEVEL_CAP?'<div class="field-status-meter"><strong>EXP MAX</strong></div>':meter("EXP",levelExpNow(c),levelExpToNext(lv),"exp"))+'</div><h4><span>01</span> 能力値 <small>ATTRIBUTES</small></h4><div class="field-status-stats">'+stats.map(([label,abbr,value],i)=>'<div><span>'+esc(label)+' <small>'+abbr+'</small></span><strong>'+value+'</strong><progress max="'+statMax(statKeys[i])+'" value="'+Math.max(0,value)+'" aria-label="'+esc(label)+'"></progress></div>').join("")+'</div><h4><span>02</span> 装備 <small>EQUIPMENT</small></h4><div class="field-status-gear">'+gear+'</div><h4><span>03</span> スキル <small>SKILLS</small></h4><div class="field-status-skills">'+(skillRows||'<p>習得済みスキルなし</p>')+'</div><div class="field-status-actions"><button type="button" data-status-open="skills">探索スキル ›</button><button type="button" data-status-open="training">強化・スキルツリー ›</button></div></div><div class="field-status-art"><div class="field-status-art-grid" aria-hidden="true"></div><div class="field-status-wordmark" aria-hidden="true">'+esc(title)+'</div><span class="field-status-art-code" aria-hidden="true">KOTAMA / ADVENTURER<br>NO. '+String(characters.indexOf(c)+1).padStart(2,"0")+'</span>'+getCharacterImage(c).replace('loading="lazy"','loading="eager"')+'<div class="field-status-art-caption"><small>ADVENTURER PROFILE / '+esc(title)+'</small><strong>'+esc(c.name)+'</strong><span>LEVEL '+String(lv).padStart(2,"0")+'</span></div><span class="field-status-art-mark" aria-hidden="true">＋</span></div>';
+  detail.querySelectorAll("[data-status-open]").forEach(button=>button.onclick=()=>{
+    $("field-inventory-"+button.dataset.statusOpen+"-tab")?.click();
+    if(button.dataset.statusOpen==="skills"){const actor=$("field-skill-actor");if(actor){actor.value=c.id;actor.dispatchEvent(new Event("change"));}}
+  });
+  list.querySelectorAll("[data-status-id]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.statusId===c.id)));
+ };
+ select.onchange=render;list.querySelectorAll("[data-status-id]").forEach(b=>b.onclick=()=>{select.value=b.dataset.statusId;render();});render();
+}
 
 function renderFieldSkills(){
  const list=$("field-inventory-list"),party=getParty();
@@ -2483,11 +2600,48 @@ function renderFieldSkills(){
  };select.onchange=render;render();
 }
 
-function renderFieldFormation(){const box=$("field-inventory-list");box.innerHTML='<h3>編成順</h3>';state.party.forEach((id,i)=>{const c=getCharacter(id);if(!c)return;const row=document.createElement("div");row.textContent=(i+1)+" "+c.name+" ";for(const d of [-1,1]){const b=document.createElement("button");b.textContent=d<0?"↑":"↓";b.disabled=i+d<0||i+d>=state.party.length;b.onclick=()=>{[state.party[i],state.party[i+d]]=[state.party[i+d],state.party[i]];persistAutoSave();renderFieldFormation();};row.append(b);}box.append(row);});}
-function renderFieldTraining(){const box=$("field-inventory-list"),party=getParty().filter(c=>skillTreeDefinitions[c.id]);box.innerHTML='<label>仲間 <select id="field-training-character">'+party.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")+'</select></label><div id="field-training-nodes"></div>';const select=$("field-training-character"),nodes=$("field-training-nodes");const render=()=>{const c=party.find(x=>x.id===select.value);if(!c)return;nodes.innerHTML='<p>SPポイント '+(trainingPoints[c.id]||0)+'</p>';for(const n of treeNodes(c.id)){const e=getTrainingUpgradeEligibility(c.id,n.id),row=document.createElement("div"),b=document.createElement("button");row.textContent=n.name+" Lv."+getTreeLevel(c.id,n.id)+" ";b.textContent="強化 "+e.cost+"pt";b.disabled=!e.allowed;b.title=e.reasons.join(" ");b.onclick=()=>{const v=getTrainingUpgradeEligibility(c.id,n.id);if(!v.allowed||!confirm(n.name+"を強化しますか？"))return;setTreeLevel(c.id,n.id,v.nextLevel);trainingPoints[c.id]=v.points-v.cost;persistAutoSave();render();};row.append(b);nodes.append(row);}};select.onchange=render;render();}
+function renderFieldFormation(selectedId=null){
+ const box=$("field-inventory-list"),party=getParty();
+ const supported=typeof window.kotamaBattleExportRows==="function"&&typeof window.kotamaBattleImportRows==="function";
+ const positions=supported?window.kotamaBattleExportRows():Object.fromEntries(party.map((c,i)=>[c.id,{row:i<3?"front":"rear",slot:i%3}]));
+ const member=(row,slot)=>party.find(c=>positions[c.id]?.row===row&&positions[c.id]?.slot===slot);
+ box.innerHTML='<section class="field-formation-board"><h3>戦闘編成 <small>'+party.length+' / '+PARTY_LIMIT+'人</small></h3><p>'+(supported?"仲間を選択し、移動先の枠をクリックすると移動・交代できます。":"現在の表示モードでは配置変更はできません。")+'</p>'+["front","rear"].map(row=>'<section class="field-formation-row"><h4>'+(row==="front"?"前衛 FRONT":"後衛 REAR")+'</h4><div class="field-formation-slots">'+[0,1,2].map(slot=>{const c=member(row,slot);return '<button type="button" data-field-row="'+row+'" data-field-slot="'+slot+'" aria-pressed="'+Boolean(c&&c.id===selectedId)+'" '+(!supported?"disabled":"")+'><small>'+(slot+1)+'</small>'+(c?'<div class="field-formation-art">'+getCharacterImage(c)+'</div><strong>'+esc(c.name)+'</strong><span>Lv.'+levelOf(c)+'</span>':'<div class="field-formation-art field-formation-empty">＋</div><strong>空き枠</strong>')+'</button>';}).join("")+'</div></section>').join("")+'</section>';
+ box.querySelectorAll("[data-field-slot]").forEach(b=>b.onclick=()=>{
+  const row=b.dataset.fieldRow,slot=Number(b.dataset.fieldSlot),target=member(row,slot);
+  if(!selectedId){if(target)renderFieldFormation(target.id);return;}
+  if(target?.id===selectedId){renderFieldFormation();return;}
+  const source=positions[selectedId];if(!source)return;
+  if(target)positions[target.id]={...source};
+  positions[selectedId]={row,slot};window.kotamaBattleImportRows(positions);persistAutoSave();renderFieldFormation();
+ });
+}
+function restoreFieldTrainingPanel(){
+ const panel=$("progression-panel"),host=$("training");
+ if(panel&&host&&panel.closest("#field-inventory-dialog")){
+  closeSkillUpgradeDialog();host.insertBefore(panel,host.querySelector(".page-actions"));renderProgressionPanel();
+ }
+}
+function renderFieldTraining(){
+ const box=$("field-inventory-list"),panel=$("progression-panel");
+ if(!panel)return;
+ box.replaceChildren(panel);renderProgressionPanel();
+}
 
 function renderFieldMission(){const box=$("field-inventory-list");box.innerHTML="<h3>現在の目的</h3><p>"+esc($("field-area-name").textContent)+" "+esc(fieldFloorLabel(fieldState.area,fieldState.floor))+" を探索する</p><p>階層の奥へ進み、ボスを撃破する。</p><h4>攻略状況</h4>"+Object.entries(stageCleared).filter(([id,v])=>v).map(([id])=>"<p>第"+esc(id)+"ステージ 攻略済み</p>").join("");}
-function renderFieldSettings(){const box=$("field-inventory-list");box.innerHTML='<h3>設定</h3>';for(const [id,name] of [["bgm-toggle","BGM"],["se-toggle","効果音"]]){const source=$(id);if(!source)continue;const label=document.createElement("label"),b=document.createElement("input");b.type="checkbox";b.checked=source.checked;b.onchange=()=>{source.checked=b.checked;source.dispatchEvent(new Event("change"));persistAutoSave();};label.append(b,name);box.append(label,document.createElement("div"));}for(const [id,name] of [["bgm-volume","BGM音量"],["se-volume","効果音量"]]){const source=$(id);if(!source)continue;const label=document.createElement("label"),b=document.createElement("input");b.type="range";b.min=source.min;b.max=source.max;b.value=source.value;b.oninput=()=>{source.value=b.value;source.dispatchEvent(new Event("input"));};b.onchange=()=>persistAutoSave();label.append(name,b);box.append(label,document.createElement("div"));}}
+function renderFieldSettings(){
+ const box=$("field-inventory-list");box.innerHTML='<section class="field-audio-settings"><h3>サウンド設定</h3></section>';
+ const panel=box.firstElementChild;
+ for(const [toggleId,volumeId,name] of [["bgm-toggle","bgm-volume","BGM"],["se-toggle","se-volume","SE・効果音"]]){
+  const source=$(toggleId),volume=$(volumeId);if(!source||!volume)continue;
+  const card=document.createElement("section");card.className="field-audio-card";
+  card.innerHTML='<h4>'+name+'</h4><label class="field-audio-toggle"><input type="checkbox">有効</label><label class="field-audio-volume"><span>音量 <output></output></span><input type="range"></label>';
+  const toggle=card.querySelector('input[type="checkbox"]'),range=card.querySelector('input[type="range"]'),out=card.querySelector("output");
+  toggle.checked=source.checked;range.min=volume.min;range.max=volume.max;range.step=volume.step||"1";range.value=volume.value;out.textContent=range.value+"%";
+  toggle.onchange=()=>{source.checked=toggle.checked;source.dispatchEvent(new Event("change"));persistAutoSave();};
+  range.oninput=()=>{volume.value=range.value;out.textContent=range.value+"%";volume.dispatchEvent(new Event("input"));};range.onchange=()=>persistAutoSave();
+  panel.append(card);
+ }
+}
 
 function suspendFieldGame(){if(state.screen!=="field"||!confirm("現在の探索を一時中断しますか？"))return;try{localStorage.setItem("kotamaFieldSuspend",JSON.stringify(createSaveData()));}catch(e){alert("中断データを保存できませんでした。");return;}$("field-inventory-dialog").close();fieldState.lock=false;showScreen("home");}
 function resumeFieldGame(){try{const raw=localStorage.getItem("kotamaFieldSuspend");if(!raw)return;const data=JSON.parse(raw);if(!data.field||!data.state)return;if(!confirm("中断した探索を再開しますか？ 中断データは消費されます。"))return;localStorage.setItem("fantasyRpgSave",raw);localStorage.removeItem("kotamaFieldSuspend");loadGame();fieldShow({returning:true});persistAutoSave();}catch(e){alert("中断データを再開できませんでした。");}}
