@@ -1,5 +1,5 @@
 {
-  "gameSourceCommit": "7654a1c8332c9027c5ae5b115db39cee73becf52",
+  "gameSourceCommit": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
   "originalAssetAuditRun": 45793054822,
   "originalAssetAuditJob": 139816655112,
   "statueLODJob": 139816824378,
@@ -184,5 +184,12 @@
   ],
   "catalogSha256": "26bae58edd2c2c1d68db5b85ffb5f80c7a95f9235286ec32f044343802a25f49",
   "limitations": "Structure audit counts are not FPS; LOD comparisons are not adopted; authoring originals remain unchanged.",
-  "publicWrapperCommit": "189e246cba16e0517e34cd907bd7231e7a2ca09a"
+  "publicWrapperCommit": "dad994710c9ed1068680d730241a38771ad8cc14",
+  "gameplayCoverage": {
+    "pcControls": "0b3d233fcf3e5a0de4a65ccfbdc8b10d2cada634",
+    "mobileControls": "7654a1c8332c9027c5ae5b115db39cee73becf52",
+    "finalPCVisual": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
+    "finalActualCDN": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
+    "note": "Final difference is opaque terrain and foundations restricted to solid cells; navigation, input and event code unchanged."
+  }
 }

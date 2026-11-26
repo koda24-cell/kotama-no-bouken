@@ -1,0 +1,32 @@
+[
+  {
+    "stage": "public",
+    "exitCode": 0,
+    "completedAt": "2026-11-26T10:08:34Z"
+  },
+  {
+    "stage": "mobile-controls",
+    "exitCode": 0,
+    "completedAt": "2026-11-26T10:12:57Z"
+  },
+  {
+    "stage": "all-source-loader",
+    "exitCode": 0,
+    "completedAt": "2026-11-26T10:13:19Z"
+  },
+  {
+    "stage": "normal-city",
+    "exitCode": 0,
+    "completedAt": "2026-11-26T10:13:34Z"
+  },
+  {
+    "stage": "hash-failure",
+    "exitCode": 0,
+    "completedAt": "2026-11-26T10:13:49Z"
+  },
+  {
+    "stage": "live-delivery",
+    "exitCode": 0,
+    "completedAt": "2026-11-26T10:18:29Z"
+  }
+]

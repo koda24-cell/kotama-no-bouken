@@ -1,0 +1,443 @@
+{
+  "scope": "Genuine CDN resource delivery through local launcher; direct raw.githack HTML availability checked separately",
+  "ignoreManagedProxyCertificate": true,
+  "floors": [
+    {
+      "status": "試験表示中・通常セーブへの保存なし",
+      "theme": {
+        "mode": "b3-industrial-trial",
+        "floor": "3-0",
+        "motifs": {
+          "fracturedRoad": 254,
+          "photographicFernColony": 267,
+          "v2_courtyard_facade": 404,
+          "grating_catwalk": 11,
+          "broken_streetlamp": 10,
+          "drain_channel": 83,
+          "rebar_rubble": 78,
+          "control_cabinet": 13,
+          "ivy_pocket": 84,
+          "rootedPavement": 53,
+          "heaved_asphalt": 75,
+          "retaining_wall": 12,
+          "column_joint": 9,
+          "pipe_rack": 7,
+          "service_stair": 6,
+          "broken_signal": 9,
+          "shattered_window": 6,
+          "roller_shutter": 6,
+          "buckled_portal": 13,
+          "reclaimedGroundPocket": 23,
+          "v2_fern_colony:soft-colony": 11,
+          "v2_factory_bay": 61,
+          "factory_door": 1,
+          "landing_railing": 6,
+          "bridge_abutment": 9,
+          "v2_wildflower_colony:soft-colony": 8,
+          "riveted_girder": 9,
+          "flanged_pipe": 6,
+          "supportedTrussBridge": 4
+        },
+        "quality": "high",
+        "groundSpecies": 3,
+        "artRevision": "V2 city structural revision, work in progress",
+        "representativeFacadeCount": 465,
+        "serviceTowers": 10,
+        "reusedStairCourtyard": 0,
+        "reclaimedTreeCourtyard": 0,
+        "cedarSourceVerified": false,
+        "reusedTransitStop": 1,
+        "sourceMeshes": 19263,
+        "lodPairs": 14,
+        "batches": 2392,
+        "allocatedBatches": 2399,
+        "instances": 19263,
+        "objects": 12,
+        "scenery": 11,
+        "visibleInstances": 358,
+        "occlusionCandidates": 19237,
+        "placed": true,
+        "surfaceTextures": 6,
+        "industrialAssets": {
+          "sourceHashesVerified": true,
+          "models": 28,
+          "catalogModels": 35,
+          "skippedUnusedModels": 7,
+          "materials": 52,
+          "textures": 104,
+          "sharedImages": 92,
+          "decodedImages": 92,
+          "estimatedDecodedImageBytes": 278003712
+        },
+        "memory": {
+          "geometries": 141,
+          "textures": 125
+        }
+      },
+      "childReadsNormalSave": false,
+      "randomSuppressed": true,
+      "builtKey": "3-0",
+      "opening": {
+        "ready": true,
+        "dir": "right",
+        "forwardWalkable": true,
+        "atOriginalStart": true,
+        "locked": false
+      }
+    },
+    {
+      "status": "試験表示中・通常セーブへの保存なし",
+      "theme": {
+        "mode": "b3-industrial-trial",
+        "floor": "3-1",
+        "motifs": {
+          "fracturedRoad": 260,
+          "photographicFernColony": 243,
+          "v2_factory_bay": 280,
+          "grating_catwalk": 12,
+          "drain_channel": 93,
+          "rebar_rubble": 101,
+          "v2_courtyard_facade": 184,
+          "ivy_pocket": 65,
+          "rootedPavement": 54,
+          "heaved_asphalt": 83,
+          "landing_railing": 9,
+          "v2_wildflower_colony:soft-colony": 7,
+          "reclaimedGroundPocket": 21,
+          "column_joint": 14,
+          "pipe_rack": 7,
+          "broken_signal": 13,
+          "broken_streetlamp": 5,
+          "riveted_girder": 10,
+          "roller_shutter": 6,
+          "control_cabinet": 7,
+          "flanged_pipe": 9,
+          "factory_door": 3,
+          "buckled_portal": 10,
+          "retaining_wall": 15,
+          "bridge_abutment": 6,
+          "v2_fern_colony:soft-colony": 9,
+          "service_stair": 8,
+          "shattered_window": 6,
+          "supportedTrussBridge": 4
+        },
+        "quality": "high",
+        "groundSpecies": 3,
+        "artRevision": "V2 city structural revision, work in progress",
+        "representativeFacadeCount": 464,
+        "serviceTowers": 12,
+        "reusedStairCourtyard": 0,
+        "reclaimedTreeCourtyard": 0,
+        "cedarSourceVerified": false,
+        "reusedTransitStop": 1,
+        "sourceMeshes": 19086,
+        "lodPairs": 20,
+        "batches": 2549,
+        "allocatedBatches": 2559,
+        "instances": 19086,
+        "objects": 8,
+        "scenery": 13,
+        "visibleInstances": 1032,
+        "occlusionCandidates": 19055,
+        "placed": true,
+        "surfaceTextures": 6,
+        "industrialAssets": {
+          "sourceHashesVerified": true,
+          "models": 28,
+          "catalogModels": 35,
+          "skippedUnusedModels": 7,
+          "materials": 52,
+          "textures": 104,
+          "sharedImages": 92,
+          "decodedImages": 92,
+          "estimatedDecodedImageBytes": 278003712
+        },
+        "memory": {
+          "geometries": 128,
+          "textures": 122
+        }
+      },
+      "childReadsNormalSave": false,
+      "randomSuppressed": true,
+      "builtKey": "3-1",
+      "opening": {
+        "ready": true,
+        "dir": "up",
+        "forwardWalkable": true,
+        "atOriginalStart": true,
+        "locked": false
+      }
+    },
+    {
+      "status": "試験表示中・通常セーブへの保存なし",
+      "theme": {
+        "mode": "b3-industrial-trial",
+        "floor": "3-2",
+        "motifs": {
+          "fracturedRoad": 202,
+          "photographicFernColony": 50,
+          "v2_courtyard_facade": 61,
+          "control_cabinet": 5,
+          "rootedPavement": 51,
+          "v2_factory_bay": 35,
+          "bridge_abutment": 9,
+          "landing_railing": 5,
+          "flanged_pipe": 6,
+          "v2_wildflower_colony:soft-colony": 29,
+          "reclaimedGroundPocket": 80,
+          "v2_fern_colony:soft-colony": 39,
+          "drain_channel": 8,
+          "rebar_rubble": 2,
+          "column_joint": 5,
+          "pipe_rack": 4,
+          "riveted_girder": 4,
+          "broken_streetlamp": 1,
+          "ivy_pocket": 6,
+          "retaining_wall": 1,
+          "buckled_portal": 6,
+          "factory_door": 1,
+          "broken_signal": 3,
+          "grating_catwalk": 4,
+          "service_stair": 5,
+          "heaved_asphalt": 2
+        },
+        "quality": "high",
+        "groundSpecies": 3,
+        "artRevision": "V2 city structural revision, work in progress",
+        "representativeFacadeCount": 96,
+        "serviceTowers": 1,
+        "reusedStairCourtyard": 1,
+        "reclaimedTreeCourtyard": 1,
+        "cedarSourceVerified": true,
+        "reusedTransitStop": 0,
+        "sourceMeshes": 9793,
+        "lodPairs": 2,
+        "batches": 1101,
+        "allocatedBatches": 1102,
+        "instances": 9793,
+        "objects": 6,
+        "scenery": 3,
+        "visibleInstances": 1818,
+        "occlusionCandidates": 9790,
+        "placed": true,
+        "surfaceTextures": 6,
+        "industrialAssets": {
+          "sourceHashesVerified": true,
+          "models": 29,
+          "catalogModels": 35,
+          "skippedUnusedModels": 6,
+          "materials": 57,
+          "textures": 113,
+          "sharedImages": 94,
+          "decodedImages": 101,
+          "estimatedDecodedImageBytes": 354287616
+        },
+        "memory": {
+          "geometries": 97,
+          "textures": 132
+        }
+      },
+      "childReadsNormalSave": false,
+      "randomSuppressed": true,
+      "builtKey": "3-2",
+      "opening": {
+        "ready": true,
+        "dir": "up",
+        "forwardWalkable": true,
+        "atOriginalStart": true,
+        "locked": false
+      }
+    }
+  ],
+  "errors": [],
+  "responses": [
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/data/field-enemies.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/f1-grass-cutout-lighting-v6.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/battle-formation-ext.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/b4-sanctum.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/b3-industrial-surfaces.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/data/items.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/b4-surface-library.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/b3-city-v2-clearance.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/b3-city-v2-clearance.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/b4-surface-library.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/data/items.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/data/field-enemies.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b1_ancient_forest/modules/gimmick_root_lever.glb",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b1_ancient_forest/modules/mod_ceiling_vault_4m.glb",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b1_ancient_forest/modules/gather_logging_point.glb",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b1_ancient_forest/modules/gimmick_root_lever.glb",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/column_joint/runtime/f3_column_joint.glb",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/column_joint/runtime/f3_column_joint.glb",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
+      "status": 503
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/2c40fee9a8825326bea39fe96e833b33736f1303aeb0ac4d8fd666384a59a940.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/2c40fee9a8825326bea39fe96e833b33736f1303aeb0ac4d8fd666384a59a940.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/623e2ebed3ec29bdb9894a6daed1229c9c36d5b5ba46214236d653ec631b1d76.png",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/623e2ebed3ec29bdb9894a6daed1229c9c36d5b5ba46214236d653ec631b1d76.png",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/b40e07a23d7ab8e8e2d056fa29526d6e3cc1eb41633df9dae00aa647e801a645.png",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/0ae0197567385fef299f88979eadce59976a777d9c29ebbc92adce83e9af2eaf.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/caa6f93c35228f8b9f5124907aad45d6e1e9644fb8048292e002ffc2b752668c.png",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
+      "status": 503
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
+      "status": 503
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b3_industrial_candidates/shared_textures/e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/f3-industrial-playtest-entry.js",
+      "status": 503
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/f3-industrial-playtest-entry.js",
+      "status": 503
+    },
+    {
+      "url": "https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/field/f3-industrial-playtest-entry.js",
+      "status": 503
+    }
+  ],
+  "requestFailures": [
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/characters/hi-ra-.png",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/%E3%82%A4%E3%83%A9%E3%82%B9%E3%83%88128.2.png",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E5%A4%9C%E9%97%87%E3%81%AB%E3%80%81%E9%A2%A8%E3%81%AB%E7%B4%9B%E3%82%8C%E3%81%A6.mp3",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@bf178b2d5e6ff84ae178097b84b3c1e28feb12f7/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E5%A4%9C%E9%97%87%E3%81%AB%E3%80%81%E9%A2%A8%E3%81%AB%E7%B4%9B%E3%82%8C%E3%81%A6.mp3",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "injectedFirstHostImage": "shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
+  "isolationFailure": {
+    "iframeEmpty": true,
+    "gameStarted": false
+  },
+  "passed": true
+}
