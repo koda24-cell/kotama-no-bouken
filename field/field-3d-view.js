@@ -137,6 +137,33 @@ function setPool(n) {
   for (const l of g.pool) g.scene.remove(l);
   g.pool = Array.from({ length: n }, () => { const l = new THREE.PointLight(0x7fe6ff, 0, 8, 2); g.scene.add(l); return l; });
 }
+// Conservative experimental occlusion: only ordinary B1 props/FOEs, never terrain or portals.
+// Two consecutive solid cells and all target samples must be blocked. Fail open.
+function wallOccluded(a, from, to, radius=1.5) {
+  if(Number(fieldState.area)!==1||g.sacredTrial||g.firstLayerDress||!a||!from||!to)return false;
+  if(new URLSearchParams(location.search).get('wallCull')!=='1')return false;
+  const dx=to.x-from.x,dz=to.z-from.z,dist=Math.hypot(dx,dz);
+  if(dist<CELL*3)return false;
+  const blocked=(x,z)=>{
+    const d=Math.hypot(x-from.x,z-from.z),steps=Math.ceil(d/(CELL/8));
+    let previous='',count=0;
+    for(let i=1;i<steps;i++){
+      const t=i/steps,tx=Math.round((from.x+(x-from.x)*t)/CELL),ty=Math.round((from.z+(z-from.z)*t)/CELL);
+      const key=tx+','+ty;if(key===previous)continue;previous=key;
+      if(tx<0||ty<0||tx>=a.w||ty>=a.h)return false;
+      if(fieldTileAt(a,tx,ty)==='#'){if(++count>=2)return true;}else count=0;
+    }return false;
+  };
+  return [-radius,0,radius].every(x=>[-radius,0,radius].every(z=>blocked(to.x+x,to.z+z)));
+}
+function updateWallOcclusion(a){
+  let hidden=0;
+  for(const v of g.foes.values()){
+    const occluded=wallOccluded(a,g.camera.position,v.grp.position,Math.max(2,v.sp.scale.x/2));
+    if(occluded){v.grp.visible=false;hidden++;}
+  }
+  g.wallCullStats={hiddenFoes:hidden,enabled:new URLSearchParams(location.search).get('wallCull')==='1'};
+}
 function updatePool(center, force) {
   const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`;
   if (!force && key === g.lastLightKey) return; g.lastLightKey = key;
@@ -693,6 +720,7 @@ function frame() {
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
+  updateWallOcclusion(a);
   g.natureV6?.update(g.camera.position.x,g.camera.position.z);
   g.sacredTrial?.update?.(now / 1000);
   // The camera frustum excludes remote geometry without changing movement, collision or asset data.
@@ -734,7 +762,7 @@ function gameReviewState() {
 }
 window.KotamaField3D = { active, input, build, frame, toggle, releaseFoeImages, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.renderer?.getContext().isContextLost()){window.Kotama3DLoading?.fail('GPUの復旧を待ってから再試行してください');return;}if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
-  stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
+  stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length, wallCull:g.wallCullStats } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
 if (fieldOk() && typeof state !== 'undefined' && state.screen === 'field') build();
 else applyModeSafe();
