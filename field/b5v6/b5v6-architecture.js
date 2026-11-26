@@ -35,7 +35,7 @@ function breachOutline(w, y0, y1, R) {
   return pts.reverse();
 }
 
-export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, bucket, heights, breachFaces = new Set(), openFaces = new Set(), collapse = 0.1, high = true }) {
+export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, bucket, heights, breachFaces = new Set(), openFaces = new Set(), collapse = 0.1, high = true, holy = () => false, roseAt = null }) {
   const openCells = new Set([...openFaces].map(k => k.split(',').slice(0, 2).join(',')));
   const faces = [], piers = [], collapsed = [], floorCells = [];
   const walk = (x, y) => x >= 0 && y >= 0 && x < a.w && y < a.h && !wallCell(x, y);
@@ -56,7 +56,8 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
     }
     g.translate(x, 0, z); g.computeVertexNormals();
     const region = fbm(tx * 0.23 + 11, 0, ty * 0.23, 2);
-    bucket.add(g, region > 0.52 ? M.floor2 : M.floor, { wx: wx({ grime: 0.05, moss: 0.12, soot: 0, mottle: 0.35, seed: 5 }) });
+    if (holy(tx, ty)) bucket.add(g, M.marble, { wx: wx({ grime: 0, moss: 0, soot: 0, mottle: 0.12, seed: 5 }) });
+    else bucket.add(g, region > 0.52 ? M.floor2 : M.floor, { wx: wx({ grime: 0.05, moss: 0.12, soot: 0, mottle: 0.35, seed: 5 }) });
     floorCells.push({ tx, ty, x, z });
   }
 
@@ -91,7 +92,7 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
           holes.push(ol); backs.push({ x0: -w / 2, x1: w / 2, y0: sill, y1: h1, mat: M.wall, depth: 0.5, arch: { w, sill, h0, h1 } });
         }
         // 欠け落ちた石（穴の奥に割石）
-        const nd = R() < 0.6 ? 1 + (R() < 0.35 ? 1 : 0) : 0;
+        const nd = holy(tx, ty) ? 0 : R() < 0.6 ? 1 + (R() < 0.35 ? 1 : 0) : 0;
         for (let i = 0; i < nd; i++) {
           for (let tries = 0; tries < 6; tries++) {
             const rx = 0.28 + R() * 0.45, ry = 0.22 + R() * 0.38;
@@ -108,7 +109,8 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
       const depth = breach ? 1.6 : backs.some(b => b.arch) ? 0.5 : 0.34;
       const slab = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 12 });
       slab.translate(0, 0, -depth);
-      bucket.add(slab, M.wall, { matrix: mat, wx: wx({ grime: 1.1, soot: 0.35, moss: 0.18, seed: 7 }) });
+      const H0 = holy(tx, ty), wallM = H0 ? M.holyWall : M.wall;
+      bucket.add(slab, wallM, { matrix: mat, wx: wx(H0 ? { grime: 0.4, soot: 0.15, moss: 0, seed: 7 } : { grime: 1.1, soot: 0.35, moss: 0.18, seed: 7 }) });
       // 窪み・欠けの奥の面
       for (const b of backs) {
         const pg = new THREE.PlaneGeometry(b.x1 - b.x0 + 0.1, b.y1 - b.y0 + 0.1, 6, 6);
@@ -169,9 +171,10 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
         const w = 2.3, y0 = 6.6, y1 = Math.min(apex - 1.6, 14.0);
         const ol = archOutline(w, 5.2, y1 - y0, 18, 0.6);
         const sh = new THREE.Shape(ol); const pg = new THREE.ShapeGeometry(sh, 12);
+        const isRose = roseAt && roseAt[0] === tx && roseAt[1] === ty && roseAt[2] === dx && roseAt[3] === dz;
         const uv = pg.attributes.uv, pp = pg.attributes.position; for (let i = 0; i < pp.count; i++) uv.setXY(i, pp.getX(i) / w + 0.5, pp.getY(i) / (y1 - y0));
         pg.translate(0, y0, 0.035);
-        bucket.add(pg, M.glass, { matrix: mat, uv: 'keep', wx: false });
+        if (!isRose) bucket.add(pg, holy(tx, ty) ? M.glassGold : M.glass, { matrix: mat, uv: 'keep', wx: false });
         // 枠・方立て（2 本）・円の狭間飾り
         const frame = archOutline(w + 0.04, 5.2, y1 - y0, 20, 0.6).slice(2).map(v => new THREE.Vector3(v.x, v.y + y0, 0.04));
         frame.unshift(new THREE.Vector3(w / 2 + 0.02, y0, 0.04)); frame.push(new THREE.Vector3(-w / 2 - 0.02, y0, 0.04));
@@ -179,7 +182,19 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
         for (const mx of [-w / 6, w / 6]) bucket.add(new THREE.BoxGeometry(0.07, 5.0, 0.09).translate(mx, y0 + 2.5, 0.06), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.6, floorY: y0 - 6, seed: 16 }) });
         bucket.add(new THREE.TorusGeometry(0.42, 0.045, 6, 24).translate(0, y1 - 1.05, 0.07), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.6, floorY: y0 - 6, seed: 17 }) });
         bucket.add(new THREE.BoxGeometry(w + 0.4, 0.16, 0.36, 4, 1, 1).translate(0, y0 - 0.08, 0.12), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.4, floorY: y0 - 6, seed: 18 }) });
-        win = { center: new THREE.Vector3(0, (y0 + y1) / 2, 0.1).applyMatrix4(mat), y0, y1 };
+        win = { center: new THREE.Vector3(0, (y0 + y1) / 2, 0.1).applyMatrix4(mat), y0, y1, holy: holy(tx, ty) };
+        if (isRose) {
+          // 玉座の真上の薔薇窓：円の色ガラスと、放射状の狭間飾り（金）
+          const rc = new THREE.Vector3(0, y1 - 2.4, 0), R0 = 1.95;
+          const disc = new THREE.CircleGeometry(R0, 48); const du = disc.attributes.uv, dp = disc.attributes.position;
+          for (let i = 0; i < dp.count; i++) du.setXY(i, dp.getX(i) / (R0 * 2) + 0.5, dp.getY(i) / (R0 * 2) + 0.5);
+          disc.translate(rc.x, rc.y, 0.05); bucket.add(disc, M.rose, { matrix: mat, uv: 'keep', wx: false });
+          for (const rr of [0.45, 1.15, R0]) bucket.add(new THREE.TorusGeometry(rr, rr === R0 ? 0.12 : 0.05, 6, 48).translate(rc.x, rc.y, 0.1), M.gold, { matrix: mat, wx: false });
+          for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; bucket.add(new THREE.BoxGeometry(0.05, R0 - 0.45, 0.06).translate(0, 0.45 + (R0 - 0.45) / 2, 0).rotateZ(a).translate(rc.x, rc.y, 0.1), M.gold, { matrix: mat, wx: false }); }
+          win.rose = new THREE.Vector3(rc.x, rc.y, 0.2).applyMatrix4(mat);
+          // 下半分のランセット 2 つ（金のガラス）
+          for (const lx of [-0.62, 0.62]) { const lg = new THREE.ShapeGeometry(new THREE.Shape(archOutline(0.9, 2.6, 3.4, 12, 0.6)), 8); const lu = lg.attributes.uv, lp = lg.attributes.position; for (let i = 0; i < lp.count; i++) lu.setXY(i, lp.getX(i) / 0.9 + 0.5, lp.getY(i) / 3.4); lg.translate(lx, y0, 0.05); bucket.add(lg, M.glassGold, { matrix: mat, uv: 'keep', wx: false }); }
+        }
       }
       const world = new THREE.Vector3(x + dx * 2, 0, z + dz * 2);
       faces.push({ win, tx, ty, dx, dz, key, variant, world, normal: new THREE.Vector3(-dx, 0, -dz), matrix: mat, spring, apex,
@@ -226,7 +241,8 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
     // 中ほどの環（アニュレット）と柱頭
     const ring = lathe([[0, 0], [0.47, 0], [0.5, 0.05], [0.47, 0.1], [0, 0.1]], 8).translate(0, 0.7 + (top - 1.15) * 0.48, 0);
     const cap = lathe([[0, 0], [0.42, 0], [0.47, 0.08], [0.52, 0.2], [0.6, 0.3], [0.66, 0.36], [0.66, 0.45], [0, 0.45]], 8).translate(0, top - 0.45, 0);
-    for (const c of [ring, cap]) bucket.add(c, M.dressed, { matrix: T, wx: wx({ grime: 0, soot: 0.6, moss: 0.1, seed: 24, edgeAO: 0.6 }) });
+    const holyPier = w.some(([x, y]) => holy(x, y));
+    for (const c of [ring, cap]) bucket.add(c, holyPier ? M.gold : M.dressed, { matrix: T, wx: holyPier ? false : wx({ grime: 0, soot: 0.6, moss: 0.1, seed: 24, edgeAO: 0.6 }) });
     piers.push({ vx, vy, x: px, z: pz, top, broken, free: w.length === 4 });
   }
 
@@ -239,7 +255,7 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
     const ch0 = ch(tx, ty);
     const cR = rng(Math.floor(hash(tx, ty, 451) * 1e9));
     const openCell = openCells.has(tx + ',' + ty);
-    const isCollapsed = openCell || (collapse > 0 && ch0 !== '<' && ch0 !== '>' && hash(tx, ty, 452) < collapse);
+    const isCollapsed = openCell || (collapse > 0 && !holy(tx, ty) && ch0 !== '<' && ch0 !== '>' && hash(tx, ty, 452) < collapse);
     const holeR = openCell ? 0.85 + cR() * 0.15 : 0.55 + cR() * 0.25, hcx = (cR() - 0.5) * 0.4, hcz = (cR() - 0.5) * 0.4;
     const inHole = (u, v) => {
       if (!isCollapsed) return false;

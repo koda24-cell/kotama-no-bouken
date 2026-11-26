@@ -49,6 +49,7 @@ export function createB5V6Materials({ high = true } = {}) {
     // 布（色は個別。布目は実写の織り）
     clothRed: pbr('fabric', { meters: 0.35, color: 0xb83442, normalScale: 0.7, side: THREE.DoubleSide }),
     clothBlue: pbr('fabric', { meters: 0.35, color: 0x3c4a8c, normalScale: 0.7, side: THREE.DoubleSide }),
+    clothWhite: pbr('fabric', { meters: 0.35, color: 0xe8e0d0, normalScale: 0.7, side: THREE.DoubleSide }),
     clothBlack: pbr('fabric', { meters: 0.35, color: 0x4a4252, normalScale: 0.7, side: THREE.DoubleSide }),
   };
   // 単色の補助材質
@@ -101,6 +102,20 @@ export function createB5V6Materials({ high = true } = {}) {
     for (let i = 0; i < 4; i++) { x.beginPath(); x.arc(128, 64 + i * 128, 44, 0, Math.PI * 2); x.stroke(); }
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; textures.push(t);
     M.glass = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.3, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 1.5 }); M.glass.name = 'b5v6:glass'; materials.push(M.glass);
+    // 魔王の間：金と白のガラス（神々しさ）
+    const c2 = document.createElement('canvas'); c2.width = 256; c2.height = 512; const y2 = c2.getContext('2d');
+    y2.fillStyle = '#100c04'; y2.fillRect(0, 0, 256, 512);
+    const pal2 = ['#ffe9b0', '#f7d27a', '#fff6dc', '#e8b85a', '#ffffff', '#c9a0ff', '#f0c060'];
+    for (let yy = 0; yy < 512; yy += 32) for (let xx = 0; xx < 256; xx += 32) {
+      y2.fillStyle = pal2[Math.floor(r() * pal2.length)]; y2.globalAlpha = 0.65 + r() * 0.35;
+      y2.beginPath(); y2.moveTo(xx + 3, yy + 3); y2.lineTo(xx + 29, yy + 3); y2.lineTo(xx + 29, yy + 29); y2.lineTo(xx + 3, yy + 29); y2.closePath(); y2.fill();
+    }
+    y2.globalAlpha = 1; y2.strokeStyle = '#1a1206'; y2.lineWidth = 5;
+    for (let yy = 0; yy <= 512; yy += 128) { y2.beginPath(); y2.moveTo(0, yy); y2.lineTo(256, yy); y2.stroke(); }
+    for (let i = 0; i < 4; i++) { y2.beginPath(); y2.arc(128, 64 + i * 128, 44, 0, Math.PI * 2); y2.stroke(); }
+    const t2 = new THREE.CanvasTexture(c2); t2.colorSpace = THREE.SRGBColorSpace; textures.push(t2);
+    M.glassGold = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.3, emissive: 0xffffff, emissiveMap: t2, emissiveIntensity: 2.2 }); M.glassGold.name = 'b5v6:glassGold'; materials.push(M.glassGold);
+    M.rose = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0xfff0c8, emissiveMap: t2, emissiveIntensity: 2.6, side: THREE.DoubleSide }); M.rose.name = 'b5v6:rose'; materials.push(M.rose);
   }
   M.ready = Promise.all(pending);
   M.dispose = () => { textures.forEach(t => t.dispose()); materials.forEach(m => m.dispose()); envRT?.dispose(); };

@@ -88,7 +88,7 @@ export async function createB5V6Scene({ root, a, ch, wallCell, hash, CELL = 4, g
   await M.ready;
   M.setEnv(g?.renderer);
   const group = new THREE.Group(); group.name = 'b5v6'; root.add(group);
-  const ownedGeo = [], ownedObj = [], updaters = [], myLights = [];
+  const ownedGeo = [], ownedObj = [], updaters = [], myLights = [], disposers = [];
   const heights = b5v6Heights(a, ch);
   const vistas = pickVistas(a, ch, wallCell, hash, a.f === 2 ? 1 : 2, new Set([...Array(a.w * a.h).keys()].map(i => [i % a.w, Math.floor(i / a.w)]).filter(([x, y]) => heights(x, y).apex > 12).map(([x, y]) => x + ',' + y)));
   const openFaces = new Set(); for (const v of vistas) for (const [x, y] of v.cells) openFaces.add(`${x},${y},${v.dx},${v.dz}`);
@@ -99,20 +99,54 @@ export async function createB5V6Scene({ root, a, ch, wallCell, hash, CELL = 4, g
   // 暗い神殿でも石の形が読める最低限の環境光（色は冷たい灰紫）
   const amb = new THREE.AmbientLight(0x8c88a8, high ? 0.9 : 1.2); group.add(amb);
 
+  // 15F：魔王の間（ボス前の身廊）と、そこへ至る参道
+  let holy = () => false, roseAt = null, procession = new Map(), bossCell = null;
+  if (a.f === 2) {
+    for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (ch(x, y) === 'B') bossCell = [x, y];
+    if (bossCell) {
+      holy = (x, y) => y <= bossCell[1] + 3 && heights(x, y).apex > 12;
+      roseAt = [bossCell[0], bossCell[1], 0, -1];
+      // 開始地点からボスまでの最短経路のうち、身廊の手前 11 マスを参道にする
+      const SOL = c => '#~STG?D'.includes(c) || /[a-z]/.test(c), w2 = (x, y) => x >= 0 && y >= 0 && x < a.w && y < a.h && !SOL(ch(x, y));
+      let start = null; for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) if (ch(x, y) === 'P') start = [x, y];
+      if (start) {
+        const prev = new Map([[start.join(','), null]]), q = [start];
+        while (q.length) { const [x, y] = q.shift(); for (const [dx, dy] of DIRS) { const n = [x + dx, y + dy], k = n.join(','); if (!prev.has(k) && (w2(...n) || ch(...n) === 'B')) { prev.set(k, [x, y]); q.push(n); } } }
+        const path = []; let cur = bossCell.join(','); while (cur) { path.unshift(cur.split(',').map(Number)); const p0 = prev.get(cur); cur = p0 ? p0.join(',') : null; }
+        const entry = path.findIndex(([x, y]) => holy(x, y));
+        for (let i = Math.max(0, entry - 11); i < entry; i++) procession.set(path[i].join(','), { i: entry - i, next: path[i + 1], prev: path[i - 1] });
+      }
+    }
+  }
+
   const bucket = new Bucket(12);
-  const arch = buildB5V6Architecture({ a, ch, wallCell, hash, CELL, M, bucket, heights, breachFaces, openFaces, collapse: a.f === 2 ? 0.06 : 0.1, high });
+  const arch = buildB5V6Architecture({ holy, roseAt, a, ch, wallCell, hash, CELL, M, bucket, heights, breachFaces, openFaces, collapse: a.f === 2 ? 0.06 : 0.1, high });
   const addLight = (x, y, z, color, intensity, range) => { const L = { world: new THREE.Vector3(x, y, z), color, intensity, range, off: false }; g?.lights?.push(L); lights.push(L); myLights.push(L); return L; };
 
   // 小物・灯り・VFX
-  const flames = new FlameSystem(), embers = new EmberSystem(), mist = new GroundMist(), shafts = new LightShafts(), banners = new BannerSystem(M);
-  const ctx = { bucket, flames, embers, mist, shafts, addLight };
-  const stats = layoutB5V6({ a, ch, wallCell, hash, CELL, M, arch, heights, ctx, banners, high, breaches });
+  const flames = new FlameSystem(), embers = new EmberSystem(), goldMotes = new EmberSystem(0xffd890), mist = new GroundMist(), shafts = new LightShafts(), banners = new BannerSystem(M);
+  const ctx = { bucket, flames, embers, mist, shafts, addLight, goldMotes };
+  const stats = layoutB5V6({ a, ch, wallCell, hash, CELL, M, arch, heights, ctx, banners, high, breaches, holy, procession, bossCell });
   banners.build(group, bucket);
-  flames.build(group); embers.build(group); mist.build(group, CELL); shafts.build(group);
-  ownedObj.push(flames, embers, mist, shafts, banners);
-  updaters.push((t) => { flames.update(t); embers.update(t, g?.renderer?.getPixelRatio?.() || 1); mist.update(t); shafts.update(t); banners.update(t); });
+  flames.build(group); embers.build(group); goldMotes.build(group); mist.build(group, CELL); shafts.build(group);
+  ownedObj.push(flames, embers, mist, shafts, banners, goldMotes);
+  updaters.push((t) => { flames.update(t); embers.update(t, g?.renderer?.getPixelRatio?.() || 1); goldMotes.update(t, g?.renderer?.getPixelRatio?.() || 1); mist.update(t); shafts.update(t); banners.update(t); });
   const staticMeshes = bucket.build(group, 'b5v6');
   for (const m of staticMeshes) ownedGeo.push(m.geometry);
+  // 魔王の間に入ると空気が変わる：霧と環境光が暖かい金色へ（離れると元に戻る）
+  if (bossCell && g?.scene?.fog) {
+    const fog = g.scene.fog, baseFog = fog.color.clone(), baseD = fog.density, warmFog = new THREE.Color(0x2a1f14), baseAmb = amb.color.clone(), warmAmb = new THREE.Color(0xc8b08a);
+    const bx = bossCell[0] * CELL, bz = bossCell[1] * CELL; let k = 0;
+    updaters.push((t, camera) => {
+      if (!camera) return;
+      const d = Math.hypot(camera.position.x - bx, camera.position.z - (bz + 6));
+      const target = THREE.MathUtils.clamp(1 - (d - 10) / 18, 0, 1);
+      k += (target - k) * 0.05;
+      fog.color.copy(baseFog).lerp(warmFog, k); fog.density = baseD * (1 - 0.35 * k);
+      amb.color.copy(baseAmb).lerp(warmAmb, k); amb.intensity = (high ? 0.9 : 1.2) * (1 + 0.6 * k);
+    });
+    disposers.push(() => { fog.color.copy(baseFog); fog.density = baseD; });
+  }
   // 霧の向こう（約 46 m 先）の区画は描かない。区画は 12 m 角なので、カメラが 2 m 動くごとに判定し直す
   const lastCam = new THREE.Vector3(1e9, 0, 0), sph = new THREE.Vector3();
   updaters.push((t, camera) => {
@@ -143,7 +177,7 @@ export async function createB5V6Scene({ root, a, ch, wallCell, hash, CELL = 4, g
     update(now, camera) { for (const u of updaters) u(now * 0.001, camera); },
     dispose() {
       if (disposed) return; disposed = true;
-      ownedGeo.forEach(g => g.dispose()); ownedObj.forEach(o => o.dispose?.());
+      disposers.forEach(f => f()); ownedGeo.forEach(g => g.dispose()); ownedObj.forEach(o => o.dispose?.());
       for (const L of myLights) L.off = true;
       group.removeFromParent();
     }

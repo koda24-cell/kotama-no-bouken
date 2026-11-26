@@ -13,7 +13,7 @@ function ring(r, y, t = 0.03, seg = 40, broken = null) {
   return sweep(pts, [[-t, -t * 0.7], [t, -t * 0.7], [t, t * 0.7], [-t, t * 0.7]], { up: V(0, 1, 0), closed: true });
 }
 
-export function chandelier(M, seed = 1, { radius = 1.2, chainTo = 6, tiers = 2, fallen = false } = {}) {
+export function chandelier(M, seed = 1, { radius = 1.2, chainTo = 6, tiers = 2, fallen = false, gold = false } = {}) {
   const R = rng(seed), parts = [], flames = [], k = radius / 1.2;
   const add = (g, m = M.iron, w = IW) => parts.push([g, m, w]);
   const broken = fallen ? [R() * 4, 0] : null; if (broken) broken[1] = broken[0] + 0.9;
@@ -55,6 +55,7 @@ export function chandelier(M, seed = 1, { radius = 1.2, chainTo = 6, tiers = 2, 
     chainLine(V(0, 1.22 * k, 0), V(0, chainTo, 0));
   }
   link.dispose();
+  if (gold) parts.forEach(p => { if (p[1] === M.iron) { p[1] = M.gold; p[2] = false; } });
   const lights = fallen ? [] : [[0, -0.1, 0, 0xffa24e, 2.0 * k, 7 * k]];
   return { parts, flames, embers: [], lights };
 }

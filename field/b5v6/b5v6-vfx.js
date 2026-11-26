@@ -78,7 +78,7 @@ export class FlameSystem {
 
 /* 火の粉・魔力の粒：発生点ごとに数個、上へ昇って消える */
 export class EmberSystem {
-  constructor() { this.src = []; }
+  constructor(color = 0xcc73ff) { this.src = []; this.color = new THREE.Color(color); }
   add(x, y, z, count = 6, spread = 0.25, height = 2.2, palette = 0) { this.src.push([x, y, z, count, spread, height, palette]); }
   build(parent) {
     const P = [], A = [];
@@ -86,7 +86,7 @@ export class EmberSystem {
     if (!P.length) return null;
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); geo.setAttribute('aP', new THREE.Float32BufferAttribute(A, 4));
     const mat = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: { value: 0 }, uScale: { value: 1 } }]), fog: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: { value: 0 }, uScale: { value: 1 }, uColor: { value: this.color } }]), fog: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       vertexShader: `attribute vec4 aP; uniform float uTime; uniform float uScale; varying float vA; varying float vDist;
         void main(){
           float life = fract(uTime * (0.18 + aP.x * 0.22) + aP.x * 7.0);
@@ -96,9 +96,9 @@ export class EmberSystem {
           gl_PointSize = uScale * (2.5 + 3.0 * aP.x) * (8.0 / max(1.0, -mv.z));
           gl_Position = projectionMatrix * mv;
         }`,
-      fragmentShader: FOG + `varying float vA; varying float vDist;
+      fragmentShader: FOG + `uniform vec3 uColor; varying float vA; varying float vDist;
         void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.1, d) * vA * (1.0 - fogF(vDist));
-          gl_FragColor = vec4(vec3(0.8, 0.45, 1.0) * a * 1.4, 1.0); }`
+          gl_FragColor = vec4(uColor * a * 1.4, 1.0); }`
     });
     const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; pts.renderOrder = 6; parent.add(pts);
     this.pts = pts; this.mat = mat; this.geo = geo; return pts;

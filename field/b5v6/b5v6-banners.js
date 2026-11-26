@@ -61,7 +61,7 @@ export class BannerSystem {
   /* 壁掛けの長旗。matrix は壁面（z=0、+z が通路）の位置。top は吊り下げ高さ */
   wallBanner(matrix, seed, { top = 5.2, w = 1.05, h = 3.6, color = 'red' } = {}) {
     const R = rng(seed), M = this.M;
-    const mat = color === 'blue' ? M.clothBlue : color === 'black' ? M.clothBlack : M.clothRed;
+    const mat = color === 'blue' ? M.clothBlue : color === 'black' ? M.clothBlack : color === 'white' ? M.clothWhite : M.clothRed;
     const g = cloth(w, h, R, { tail: R() < 0.5 ? 'swallow' : 'point', holes: 0.1, burn: 0.45 });
     g.applyMatrix4(new THREE.Matrix4().makeTranslation(0, top, 0.32)); g.applyMatrix4(matrix);
     this._push(mat, g, R() * 6.28);
@@ -74,7 +74,7 @@ export class BannerSystem {
   /* 天井から吊る長い垂れ幕（身廊用）。matrix は吊り点 */
   hangingBanner(matrix, seed, { w = 1.4, h = 7.5, color = 'red' } = {}) {
     const R = rng(seed), M = this.M;
-    const mat = color === 'blue' ? M.clothBlue : color === 'black' ? M.clothBlack : M.clothRed;
+    const mat = color === 'blue' ? M.clothBlue : color === 'black' ? M.clothBlack : color === 'white' ? M.clothWhite : M.clothRed;
     const g = cloth(w, h, R, { tail: 'swallow', holes: 0.06, burn: 0.35, rows: 34, curl: 0.09 });
     g.applyMatrix4(matrix); this._push(mat, g, R() * 6.28);
     const bar = new THREE.CylinderGeometry(0.035, 0.035, w + 0.25, 8).rotateZ(Math.PI / 2);
@@ -91,7 +91,7 @@ export class BannerSystem {
     this.parts.push([pole.applyMatrix4(m), M.wood, { grime: 0.6, soot: 0.4, moss: 0.1, seed: 93 }]);
     this.parts.push([cross.applyMatrix4(m), M.wood, { grime: 0, soot: 0.4, moss: 0, seed: 93 }]);
     this.parts.push([finial.applyMatrix4(m), M.iron, { grime: 0, soot: 0.5, moss: 0, seed: 93 }]);
-    const mat = color === 'blue' ? M.clothBlue : color === 'black' ? M.clothBlack : M.clothRed;
+    const mat = color === 'blue' ? M.clothBlue : color === 'black' ? M.clothBlack : color === 'white' ? M.clothWhite : M.clothRed;
     const g = cloth(0.9, 1.7 + R() * 0.5, R, { tail: 'swallow', holes: 0.16, burn: 0.6, rows: 16, cols: 8 });
     g.applyMatrix4(new THREE.Matrix4().makeTranslation(0, height - 0.45, 0.03)); g.applyMatrix4(m);
     this._push(mat, g, R() * 6.28);

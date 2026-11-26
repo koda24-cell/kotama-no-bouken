@@ -8,7 +8,7 @@ const ROUND = n => Array.from({ length: n }, (_, i) => { const a = i / n * Math.
 function rod(pts, r = 0.025, n = 6) { return sweep(pts, ROUND(n).map(([c, s]) => [c * r, s * r]), { closed: true }); }
 
 // 篝火台：鍛鉄の三脚と浅い鉢。鉢の中に燃えさしと紫の炎
-export function brazier(M, seed = 1, { scale = 1, tipped = false } = {}) {
+export function brazier(M, seed = 1, { scale = 1, tipped = false, holy = false } = {}) {
   const R = rng(seed), parts = [], k = scale;
   const bowl = lathe([[0, 0], [0.12, 0], [0.34, 0.08], [0.46, 0.2], [0.5, 0.28], [0.47, 0.3], [0.42, 0.22], [0.3, 0.12], [0, 0.1]].map(([r, y]) => [r * k, y * k]), 16).translate(0, 0.95 * k, 0);
   parts.push([bowl, M.iron, { grime: 0, soot: 1.2, moss: 0, seed: 41 }]);
@@ -33,7 +33,9 @@ export function brazier(M, seed = 1, { scale = 1, tipped = false } = {}) {
     const r = new THREE.DodecahedronGeometry((0.07 + R() * 0.06) * k, 0).translate((R() - 0.5) * 0.45 * k, 1.12 * k, (R() - 0.5) * 0.45 * k);
     parts.push([r, i % 3 ? M.rubble : M.rune, { grime: 0, soot: 1.5, moss: 0, base: 0.5, seed: 46 }]);
   }
-  return { parts, flames: [[0, 1.12 * k, 0, 0.85 * k, 0], [0.12 * k, 1.1 * k, 0.05 * k, 0.5 * k, 0], [-0.1 * k, 1.1 * k, -0.08 * k, 0.55 * k, 0]], embers: [[0, 1.4 * k, 0, 10, 0.18 * k, 2.4 * k]], lights: [[0, 1.7 * k, 0, 0x8c62f0, 3.2, 6.5]] };
+  if (holy) parts.forEach(p => { if (p[1] === M.iron) p[1] = M.gold; });
+  const pal = holy ? 1 : 0;
+  return { parts, flames: [[0, 1.12 * k, 0, 0.85 * k, pal], [0.12 * k, 1.1 * k, 0.05 * k, 0.5 * k, pal], [-0.1 * k, 1.1 * k, -0.08 * k, 0.55 * k, pal]], embers: holy ? [] : [[0, 1.4 * k, 0, 10, 0.18 * k, 2.4 * k]], lights: [[0, 1.7 * k, 0, holy ? 0xffc27a : 0x8c62f0, 3.2, 6.5]] };
 }
 
 // 壁の松明（壁面から張り出す腕金と杯）。ローカル +z が通路側、z=0 が壁面
@@ -75,4 +77,23 @@ export function fallenBrazier(M, seed = 1) {
   const m = new THREE.Matrix4().makeRotationZ(Math.PI / 2 - 0.25).setPosition(0.9, 0.3, 0);
   b.parts.forEach(p => p[0].applyMatrix4(m));
   return { parts: b.parts, flames: [], embers: [], lights: [] };
+}
+
+// 金の大燭台（魔王の間・参道）：細い柱に 3 段 7 本のろうそく
+export function candelabrum(M, seed = 1, { height = 2.3 } = {}) {
+  const parts = [], flames = [], h = height;
+  parts.push([lathe([[0, 0], [0.26, 0], [0.24, 0.06], [0.12, 0.12], [0.06, 0.3], [0.045, h * 0.5], [0.07, h * 0.52], [0.04, h * 0.56], [0.035, h - 0.1], [0.06, h - 0.06], [0, h - 0.05]], 10), M.gold, false]);
+  const arms = [[0, h + 0.02, 0]];
+  for (const [r, y, n] of [[0.32, h - 0.32, 2], [0.5, h - 0.55, 4]]) for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + (n === 2 ? Math.PI / 2 : Math.PI / 4), x = Math.cos(a) * r, z = Math.sin(a) * r;
+    parts.push([rod([V(0, y - 0.05, 0), V(x * 0.5, y - 0.12, z * 0.5), V(x, y, z)], 0.014), M.gold, false]);
+    arms.push([x, y + 0.02, z]);
+  }
+  for (const [x, y, z] of arms) {
+    parts.push([lathe([[0, 0], [0.05, 0], [0.06, 0.02], [0.03, 0.03], [0, 0.03]], 8).translate(x, y, z), M.gold, false]);
+    const ch = 0.12 + Math.abs(Math.sin(x * 9 + z * 7)) * 0.14;
+    parts.push([new THREE.CylinderGeometry(0.02, 0.022, ch, 7).translate(x, y + 0.03 + ch / 2, z), M.wax, false]);
+    flames.push([x, y + 0.03 + ch, z, 0.12, 1]);
+  }
+  return { parts, flames, embers: [], lights: [[0, h, 0, 0xffc47e, 1.4, 4.5]] };
 }
