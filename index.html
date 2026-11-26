@@ -36,7 +36,7 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261126-image-release" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-profile-v2" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261126-level-instant" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
@@ -399,6 +399,78 @@ body[data-screen="field"] #field-inventory-open,body[data-screen="field"] #field
  #field-fullmap .field-map-zoom-controls button{min-height:36px;min-width:32px;padding:3px 6px;font-size:12px}
  #field-fullmap #field-fullmap-close{min-width:105px!important;font-size:13px!important}
 }
+</style>
+<style id="field-status-profile-v2">
+/* Status only: editorial character profile. Other inventory tabs retain their layouts. */
+#field-inventory-dialog[open][data-menu-tab="field-inventory-status-tab"]{--profile-accent:#d5f65b;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:8px!important;padding:clamp(10px,1.5vw,22px)!important;background:#101a24!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>h2{display:none}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav{grid-column:1;grid-row:1;display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;border:0;padding:0;overflow-x:auto;min-width:0}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button{flex:1 0 auto;min-height:36px;padding:6px 12px;text-align:center;white-space:nowrap;font-size:clamp(12px,1vw,16px)}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button[aria-current=true]{background:var(--profile-accent);color:#101b20;border-color:var(--profile-accent);box-shadow:none}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-inventory-list{grid-column:1;grid-row:2;min-height:0;height:100%;padding:0!important;border:0;display:flex;flex-direction:column;gap:8px;overflow:hidden;background:transparent!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-return-to-exploration{grid-column:1;grid-row:3;min-height:36px;width:auto;padding:6px 24px;font-size:14px}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch{flex:0 0 auto;margin:0;padding:0 0 7px!important;gap:8px;min-height:0;flex-wrap:nowrap;border-color:#51656a}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party{display:flex;flex-wrap:nowrap;overflow-x:auto;min-width:0}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party button{flex:none;padding:5px 11px;font-size:13px;white-space:nowrap}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party button[aria-pressed=true]{color:var(--profile-accent);border-color:var(--profile-accent);box-shadow:inset 0 -2px var(--profile-accent)}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-character{font-size:13px;padding:5px!important}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{flex:1;display:grid;grid-template-columns:minmax(240px,35%) minmax(0,1fr);gap:0;align-items:stretch;min-height:0;height:100%;overflow:hidden;border:1px solid #60777a}
+#field-status-detail .field-status-info{position:relative;z-index:2;display:flex;flex-direction:column;gap:8px;min-height:0;overflow-y:auto;overflow-x:hidden;padding:clamp(10px,1.5vw,24px);background:linear-gradient(135deg,#172631,#0d1922);border-right:2px solid var(--profile-accent);font-size:14px}
+#field-status-detail .field-status-info>*{flex:none}
+#field-status-detail .field-status-name{padding:0 0 8px;gap:5px;border-color:#667b73}
+#field-status-detail .field-status-name h3{font-size:clamp(20px,2.2vw,34px);margin:3px 0 0}
+#field-status-detail .field-status-name small{font-size:10px;letter-spacing:.14em;color:var(--profile-accent)}
+#field-status-detail .field-status-name>b{font-size:13px;color:var(--profile-accent)}
+#field-status-detail .field-status-name>b strong{font-size:clamp(20px,2.5vw,36px)}
+#field-status-detail .field-status-resources{gap:6px}
+#field-status-detail .field-status-meter b{font-size:clamp(16px,1.5vw,23px)}
+#field-status-detail .field-status-meter progress{height:7px;margin-top:3px}
+#field-status-detail h4{font-size:14px;margin:6px 0 0;padding:3px 0;border-color:#607d78}
+#field-status-detail h4>span{display:inline-block;color:var(--profile-accent);margin-right:5px;font-style:italic}
+#field-status-detail h4 small{font-size:10px;color:#a9c2bd}
+#field-status-detail .field-status-stats{gap:3px}
+#field-status-detail .field-status-stats>div{grid-template-columns:minmax(65px,1fr) minmax(25px,1fr) 48px;padding:4px 6px;gap:5px;background:#182b34}
+#field-status-detail .field-status-stats span{font-size:12px}
+#field-status-detail .field-status-stats strong{font-size:17px}
+#field-status-detail .field-status-stats progress{height:6px}
+#field-status-detail .field-status-gear{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+#field-status-detail .field-status-gear-row{padding:6px;gap:3px;background:#172a33}
+#field-status-detail .field-status-gear-row span{font-size:10px}
+#field-status-detail .field-status-gear-row strong{font-size:13px}
+#field-status-detail .field-status-skills{display:grid;gap:3px}
+#field-status-detail .field-status-skill-row{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 8px;background:#192e37;border-left:2px solid #769e9d;font-size:13px}
+#field-status-detail .field-status-skill-row small{font-size:10px;color:#b3c4c9}
+#field-status-detail .field-status-skill-row b{font-size:10px;color:#a4d0d2;white-space:nowrap}
+#field-status-detail .field-status-union{border-color:var(--profile-accent)}
+#field-status-detail .field-status-union b{color:var(--profile-accent)}
+#field-status-detail .field-status-actions{display:flex;flex-wrap:wrap;gap:5px}
+#field-status-detail .field-status-actions button{flex:1 1 auto;padding:7px 9px;font-size:12px;background:#22383e;border:1px solid #7d9d91;color:#e8f5e8;min-height:34px}
+#field-inventory-dialog #field-status-detail .field-status-art{position:relative;display:flex;align-items:center;justify-content:center;isolation:isolate;min-width:0;min-height:0;height:100%;top:auto;border:0;overflow:hidden;background:radial-gradient(ellipse at 60% 38%,#3c5262,#182a38 58%,#111e27 95%)}
+#field-status-detail .field-status-art::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(112deg,transparent 20%,#b6ef5412 20.2%,transparent 21%,transparent 75%,#d5f65b14 75.2%,transparent 76%),repeating-linear-gradient(90deg,#bfd5df0b 0 1px,transparent 1px 55px),repeating-linear-gradient(0deg,#bfd5df0b 0 1px,transparent 1px 55px);pointer-events:none}
+#field-status-detail .field-status-art::after{content:"";position:absolute;z-index:3;inset:0;pointer-events:none;border-top:5px solid var(--profile-accent);border-bottom:7px solid var(--profile-accent);background:linear-gradient(0deg,#06131bd9,transparent 32%);clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+#field-status-detail .field-status-art-grid{position:absolute;z-index:1;inset:10px;pointer-events:none;border:1px solid #c2f06050;clip-path:polygon(0 0,25% 0,25% 1%,100% 1%,100% 100%,70% 100%,70% 99%,0 99%)}
+#field-status-detail .field-status-wordmark{position:absolute;z-index:1;left:4%;top:7%;font-family:Impact,"Arial Narrow",sans-serif;font-style:italic;font-size:clamp(52px,11vw,180px);font-weight:900;line-height:.9;white-space:nowrap;letter-spacing:-.04em;color:#c6e5e329;-webkit-text-stroke:1px #d5f65b55;pointer-events:none}
+#field-status-detail .field-status-art img{position:relative;z-index:2;display:block;width:100%;height:100%;max-height:none;object-fit:contain;object-position:center;filter:drop-shadow(0 8px 16px #0007)}
+#field-status-detail .field-status-art .image-fallback{position:relative;z-index:2;color:#e3f5dd;font-size:clamp(32px,10vw,120px)}
+#field-status-detail .field-status-art-code{position:absolute;z-index:4;right:14px;top:15px;color:var(--profile-accent);font-size:10px;line-height:1.5;letter-spacing:.12em;text-align:right;pointer-events:none}
+#field-status-detail .field-status-art-caption{position:absolute;z-index:4;left:5%;right:4%;bottom:5%;display:grid;gap:2px;justify-items:start;pointer-events:none}
+#field-status-detail .field-status-art-caption small{color:var(--profile-accent);font-size:clamp(9px,1vw,13px);letter-spacing:.15em;font-weight:700;text-shadow:0 2px 4px #000}
+#field-status-detail .field-status-art-caption strong{font-size:clamp(36px,6.4vw,112px);font-weight:900;line-height:1.03;letter-spacing:.02em;transform:skew(-5deg);color:#f4faf7;text-shadow:0 4px 10px #000,2px 2px #101d25}
+#field-status-detail .field-status-art-caption span{font-size:12px;letter-spacing:.18em;color:#e8f6d4;padding:2px 9px;background:#253b37}
+#field-status-detail .field-status-art-mark{position:absolute;right:5%;bottom:8%;z-index:4;color:var(--profile-accent);font-size:38px;font-weight:200;pointer-events:none}
+@media (max-height:600px) and (orientation:landscape){
+ #field-inventory-dialog[open][data-menu-tab="field-inventory-status-tab"]{gap:4px!important;padding:6px max(8px,env(safe-area-inset-right)) 6px max(8px,env(safe-area-inset-left))!important}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button{min-height:32px;padding:4px 8px;font-size:12px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch{padding:0 0 3px!important;gap:4px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-party button{font-size:11px;padding:3px 7px;min-height:28px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-character{min-height:28px;font-size:11px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{grid-template-columns:minmax(200px,39%) minmax(0,1fr)}
+ #field-status-detail .field-status-info{gap:5px;padding:8px}
+ #field-status-detail .field-status-art-caption strong{font-size:clamp(30px,6vw,60px)}
+ #field-status-detail .field-status-art-code{font-size:8px}
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-return-to-exploration{min-height:32px;padding:4px 12px;font-size:12px}
+}
+@media (max-width:600px) and (orientation:portrait){#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{grid-template-columns:1fr;grid-template-rows:minmax(100px,40%) minmax(0,1fr)}#field-status-detail .field-status-art{grid-row:1}#field-status-detail .field-status-info{grid-row:2;border-right:0;border-top:2px solid var(--profile-accent)}}
 </style>
 </head>
 <body data-screen="opening">
