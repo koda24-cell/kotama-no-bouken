@@ -216,6 +216,39 @@ function cellInfo(a) {
 // 隠し通路の開閉が変わったら作り直す
 function doorSig(a) { return a.objects.filter((o) => o.kind === 'door' && o.hidden).map((o) => (fieldDoorOpen(o) ? 1 : 0)).join(''); }
 
+// Keep the full terrain kit; only request props that this floor can use.
+function firstFloorSharedKeys(a){
+  const keys=new Set(['floor','floorBroken','floorSoil','wall','wallMossy','wallCollapsed','ceil','ceilRoots','fern','crystalVein','vines','mushrooms','mossPatch']);
+  for(const o of a.objects){
+    switch(o.kind){
+      case 'stairs':keys.add(o.dir==='down'?'stairsDown':'stairsUp');break;
+      case 'save':keys.add('seal');keys.add('torch');break;
+      case 'chest':case 'cache':keys.add('chest');keys.add('chestOpen');break;
+      case 'gather':{const kind=gatherDef(o).kind;keys.add(kind==='chop'?'logging':kind==='mine'?'mining':'herb');break;}
+      case 'sign':keys.add('sign');break;
+      case 'gate':keys.add('runeDoor');break;
+      case 'switch':keys.add('lever');break;
+      case 'exit':keys.add('rootArch');break;
+      case 'npc':keys.add(o.id==='woodcutter'?'npcWood':o.id==='herb-girl'?'npcHerb':'npcTraveler');break;
+      case 'door':if(!o.hidden)keys.add('gate');break;
+      case 'event':keys.add(o.hidden?'roots':o.sprite==='ev-stump'?'stump':'mushrooms');break;
+    }
+  }
+  return [...keys];
+}
+// Rolling workers avoid waiting for the slowest item in every batch. On phones,
+// keep the previous single-load budget to avoid another memory-related reload.
+async function loadSharedAssets(files,limit,onDone){
+  let next=0,error=null;
+  async function worker(){
+    while(!error&&next<files.length){
+      const file=files[next++];
+      try{await load(file);onDone();}catch(e){error=e;}
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(limit,files.length)},worker));
+  if(error)throw error;
+}
 async function buildFloor() {
   const a = fieldArea(); if (!a) return;
   const key = a.buildKey || a.key, token = ++g.buildToken;   // [RANDOM-MAZE]
@@ -231,12 +264,14 @@ async function buildFloor() {
   }
   try {
     // Later strata own their terrain kit; only load shared props actually used by their builders.
-    const sharedKeys=area===1?Object.keys(FILES):area===2?[]:area===3?['stairsDown','stairsUp','seal','torch','sign','lever','runeDoor']:['sign','stairsDown','stairsUp','seal','torch','runeDoor','rootArch','npcTraveler'];
+    const sharedKeys=area===1?firstFloorSharedKeys(a):area===2?[]:area===3?['stairsDown','stairsUp','seal','torch','sign','lever','runeDoor']:['sign','stairsDown','stairsUp','seal','torch','runeDoor','rootArch','npcTraveler'];
     const list=sharedKeys.map(k=>FILES[k]); let done=0;
     g.requiredSharedKeys=sharedKeys;
     report(20,'共通素材読み込み');
-    const concurrency=g.high?6:1;
-    for(let i=0;i<list.length;i+=concurrency)await Promise.all(list.slice(i,i+concurrency).map(f=>load(f).then(()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);})));
+    const concurrency=PHONE_VIEW?1:g.high?6:1;
+    const started=performance.now(), uncached=list.filter(f=>!g.cache.has(f)).length;
+    await loadSharedAssets(list,concurrency,()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);});
+    g.sharedLoadReport={area,total:list.length,uncached,concurrency,elapsedMs:Math.round(performance.now()-started)};
     if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
   } catch (e) {
     if(th&&th!==g.theme)try{th.dispose({final:true});}catch(_){} throw e;
@@ -664,7 +699,7 @@ function setPreview(n, on) {
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
 function gameReviewState() {
-  return { builtKey:g.builtKey, buildingKey:g.buildingKey, phoneView:PHONE_VIEW, drawDistance:g.camera?.far, floorFailures:Object.fromEntries(g.floorFailures),
+  return { builtKey:g.builtKey, buildingKey:g.buildingKey, phoneView:PHONE_VIEW, sharedLoadReport:g.sharedLoadReport||null, drawDistance:g.camera?.far, floorFailures:Object.fromEntries(g.floorFailures),
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
     cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
