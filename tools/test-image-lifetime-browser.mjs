@@ -223,7 +223,7 @@ try{
   assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
   const adminBossLaunch=true;
   const enemyPortraits=await page.evaluate(async()=>{
-    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.png","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.png","fire-lizard":"62ee5c0e-50b9-41c6-90f2-618d52d120a0.png"};
+    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.png","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.png","fire-lizard":"62ee5c0e-50b9-41c6-90f2-618d52d120a0.png","lava-golem":"13964637-9c62-4394-a172-31b721771096.png"};
     const result=[];
     const oldEnemy=battleState.enemy,oldMode=battleState.encounterMode,oldReveal=adminCompendiumReveal;
     try{
@@ -254,7 +254,7 @@ try{
       return result;
     }finally{battleState.enemy=oldEnemy;battleState.encounterMode=oldMode;adminCompendiumReveal=oldReveal;renderBattle();renderMonsterCompendium();}
   });
-  assert.equal(enemyPortraits.length,8);
+  assert.equal(enemyPortraits.length,9);
   const salamanderLegacy=await page.evaluate(()=>{
     const snapshot={monsterRecords:compendiumSerialize(),adminCompendiumReveal};
     try{
