@@ -19,7 +19,7 @@
     const image=window.KotamaShopArt?.items?.[key];
     if(typeof image==="string"&&image.startsWith("./assets/")) {
       const img=document.createElement("img");img.alt="";img.loading="lazy";img.decoding="async";img.hidden=false;img.style.position="absolute";img.style.opacity="0";
-      img.onload=()=>{img.style.position="";img.style.opacity="";art.replaceChildren(img);};img.onerror=()=>img.remove();art.append(img);img.src=image;
+      img.onload=()=>{if(img.parentNode!==art||!art.isConnected)return;img.style.position="";img.style.opacity="";art.replaceChildren(img);};img.onerror=()=>img.remove();art.append(img);img.src=image;
     }
     return art;
   };
@@ -62,7 +62,7 @@
     if(empty)shelf.append(empty);
     else if(!cards.length){const note=document.createElement("p");note.className="empty-note";note.textContent=box.textContent||"商品がありません。";shelf.append(note);}
     const img=window.KotamaShopArt?.merchant;
-    if(typeof img==="string"&&img.startsWith("./assets/")){const el=document.createElement("img");el.alt="店主";el.decoding="async";el.onload=()=>portrait.replaceChildren(el);el.onerror=()=>el.remove();portrait.append(el);el.src=img;}
+    if(typeof img==="string"&&img.startsWith("./assets/")){const el=document.createElement("img");el.alt="店主";el.decoding="async";el.onload=()=>{if(el.parentNode===portrait&&portrait.isConnected)portrait.replaceChildren(el);};el.onerror=()=>el.remove();portrait.append(el);el.src=img;}
     box.replaceChildren(shelf,counter);select();
     const gold=document.getElementById("shop-shelf-gold");if(gold)gold.textContent=state.gold.toLocaleString("ja-JP")+" G";
     const tabs=document.getElementById("shop-category-tabs");tabs?.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.classList.contains("active"))));
