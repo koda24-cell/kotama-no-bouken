@@ -22,3 +22,9 @@
 | win_a | https://ambientcg.com/view?id=Facade010 | CC0 1.0 | Emission マップを 1024 に縮小 |
 | win_b | https://ambientcg.com/view?id=Facade009 | CC0 1.0 | Emission マップを 1024 に縮小 |
 | win_c | https://ambientcg.com/view?id=Facade020C | CC0 1.0 | Emission マップを 1024 に縮小 |
+
+## 魔王の間（2026-11-26 追加）
+| ファイル | 出典 | ライセンス | 加工 |
+|---|---|---|---|
+| `marble_*` | https://ambientcg.com/view?id=Marble014 ・ https://ambientcg.com/view?id=Marble006 | CC0 1.0 | 白黒の市松に合成、目地と法線・粗さを生成 |
+| `holywall_*` | https://polyhaven.com/a/rough_block_wall | CC0 1.0 | 暖かい白の石灰岩に色補正 |

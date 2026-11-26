@@ -35,3 +35,13 @@
 - Breath of the Wild GDC 2017（滝澤 智）：「遊びやすさと現実感の調停」。
 - Dishonored 2 のレベルデザイナー：開けすぎて視線を遮るものがないレイアウトは探索感を損なう（80.lv）。
 - Game Developer「Making Better Hallways」：回廊の一部の形を取り除いて眺望を見せる手法。
+
+## 追加調査（2026-11-26 午後、ユーザーの指摘を受けて）
+**依頼内容**：魔王前に他の区間と違う神々しさ／魔王の間までの参道の雰囲気／奈落とビルが集まったエリアを増やす／階段などの固有物。
+
+| 検索語 | 主なピン | 参考ポイント |
+|---|---|---|
+| divine throne room cathedral golden light god rays concept art | https://jp.pinterest.com/pin/444026844496264182/ ・ https://jp.pinterest.com/pin/1052083162972856392/ ・ https://jp.pinterest.com/pin/1133077587470004548/ ・ https://jp.pinterest.com/pin/756534437439797416/ | 紫ではなく**金と白の光**。正面奥に巨大な**薔薇窓**、玉座への中心軸、段のある祭壇、磨かれた床の照り返し、光の柱が床に落ちる。暗い区間との明暗差で神々しさが出る |
+| ruined cathedral balcony overlooking abyss city lights fantasy | https://jp.pinterest.com/pin/993606736555790911/ ・ https://jp.pinterest.com/pin/1126603663104142864/ ・ https://jp.pinterest.com/pin/1029565164829907069/ ・ https://jp.pinterest.com/pin/1007610116632134502/ | アーチが連なる**開廊（回廊の外側が手すりだけ）**から奈落を見下ろす。浮遊する遺構の破片、霞に林立する尖塔、崩れた手すり |
+| throne room approach corridor kneeling knight statues candles carpet | https://jp.pinterest.com/pin/442830575870742907/ ・ https://jp.pinterest.com/pin/339951471898770332/ ・ https://jp.pinterest.com/pin/882705595731102093/ ・ https://jp.pinterest.com/pin/438186238766671190/ | 参道は**赤い絨毯**、両脇にろうそくの列と跪く騎士、突き当たりに一本の光。奥に向かって明るくなる |
+| gothic castle stone staircase dungeon game environment | https://jp.pinterest.com/pin/722194490292020673/ ・ https://jp.pinterest.com/pin/1125759238120646507/ ・ https://jp.pinterest.com/pin/1128362881689396272/ | 両側に側壁（手すり）のある石段。上りは光の差すアーチへ、下りは暗がりへ沈む |

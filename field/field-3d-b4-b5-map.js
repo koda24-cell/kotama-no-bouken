@@ -507,6 +507,17 @@ export function createTheme(api, area) {
     for (const o of a.objects) {
       const x = o.tx * CELL, z = o.ty * CELL, f = facing(o.tx, o.ty), ry = FACE_YAW[f];
       const e = { o, kind: o.kind, obj: null, state: null, at: new THREE.Vector3(x, 1.2, z), ry };
+      const KV = b5v6?.kit;
+      if (KV) {
+        // 5層 V6：1層の素材を使わず 5層専用品で置く
+        const k = { stairs: o.dir === 'down' ? KV.stairsDown : KV.stairsUp, save: KV.save, sign: KV.sign, exit: KV.exit, npc: KV.ghost, gate: KV.bossSeal }[o.kind];
+        if (k) {
+          e.obj = place(g.world, k, x, 0, z, o.kind === 'gate' ? 0 : ry, 1);
+          if (o.kind === 'save') e.at.y = 1.9; else if (o.kind === 'sign') e.at.y = 1.6; else if (o.kind === 'npc') e.at.y = 2.2;
+          if (!o.onWall) g.entries.push(e);
+          continue;
+        }
+      }
       switch (o.kind) {
         case 'stairs':
           e.obj = K ? place(g.world, o.dir === 'down' ? K.stairsDown : K.stairsUp, x, 0, z, ry, 1) : place(g.world, o.dir === 'down' ? S.stairsDown : S.stairsUp, x, 0, z, ry, o.dir === 'down' ? 1 : 0.75); break;
@@ -585,6 +596,14 @@ export function createTheme(api, area) {
   }
   // 4層：宝箱と扉は専用の部品で置く（森の部品を使わない）
   async function sync(e, st) {
+    if (b5v6?.kit && root) {
+      const KV = b5v6.kit, o = e.o, x = o.tx * CELL, z = o.ty * CELL;
+      const drop = obj => { if (!obj) return; obj.parent?.remove(obj); for (const L of obj.userData.lights || []) L.off = true; };
+      if (o.kind === 'chest' || o.kind === 'cache') { drop(e.obj); e.obj = place(g.world, o.kind === 'cache' ? (st === 'open' ? KV.cacheOpen : KV.cache) : (st === 'open' ? KV.chestOpen : KV.chest), x, 0, z, e.ry); return true; }
+      if (o.kind === 'gather') { const [kind, left] = st.split(':'), kk = kind === 'chop' ? 'chop' : kind === 'mine' ? 'mine' : 'herb'; drop(e.obj); e.obj = place(g.world, KV.gather[left === 'empty' ? kk + 'Empty' : kk], x, 0, z, e.ry, 1); return true; }
+      if (o.kind === 'door' && !o.hidden) { if (!e.obj) e.obj = place(g.world, KV.gate, x, 0, z, e.ry, 1); e.obj.position.y = st === 'open' ? 3.4 : 0; e.obj.updateMatrix(); e.obj.updateMatrixWorld(true); return true; }
+      if (o.kind === 'event') { if (!e.obj) { const t = KV.event(o.sprite, o.hidden); e.obj = place(g.world, t, x, 0, z, e.ry, 1); } return true; }
+    }
     const b4Kit = magma ? getB4Kit() : null;
     if (!magma || !root) return false;
     const o = e.o, x = o.tx * CELL, z = o.ty * CELL;

@@ -33,7 +33,7 @@ export class FlameSystem {
         varying vec2 vUv; varying float vKind; varying float vPal; varying float vSeed; varying float vDist;
         void main(){
           vUv = uv; vKind = aKind; vPal = aPal; vSeed = aSeed;
-          vec4 mv = viewMatrix * vec4(aPos, 1.0);
+          vec4 mv = viewMatrix * modelMatrix * vec4(aPos, 1.0);
           float flick = 1.0 + 0.08 * sin(uTime * 13.0 + aSeed * 40.0) + 0.05 * sin(uTime * 23.0 + aSeed * 11.0);
           float w = aSize * (aKind > 0.5 ? 1.0 : 0.62), hgt = aSize * (aKind > 0.5 ? 1.0 : 1.35) * flick;
           mv.xy += vec2((position.x) * w, (position.y - (aKind > 0.5 ? 0.5 : 0.0)) * hgt);

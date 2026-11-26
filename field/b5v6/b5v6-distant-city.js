@@ -9,7 +9,7 @@ import { rng } from './b5v6-geom.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const BASE = new URL('../assets/b5v6/city/', import.meta.url).href;
-const HAZE = new THREE.Color(0x120c22), HAZE_LOW = new THREE.Color(0x1e0f3a);
+const HAZE = new THREE.Color(0x07050e), HAZE_LOW = new THREE.Color(0x120826);
 
 const hazeChunk = /* glsl */`
   uniform vec3 uHaze; uniform vec3 uHazeLow; uniform vec3 uCenter; uniform float uTime;
@@ -38,14 +38,14 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
       float fbm(vec2 p){ float a=0.0, m=0.5; for(int i=0;i<5;i++){ a+=m*n(p); p*=2.03; m*=0.5; } return a; }
       void main(){
         float y = vDir.y; float az = atan(vDir.z, vDir.x);
-        vec3 top = vec3(0.006,0.005,0.012), hor = vec3(0.03,0.02,0.055), abyss = vec3(0.05,0.018,0.09);
+        vec3 top = vec3(0.004,0.003,0.008), hor = vec3(0.012,0.009,0.024), abyss = vec3(0.025,0.01,0.05);
         vec3 col = mix(hor, top, smoothstep(0.0, 0.7, y));
         col = mix(col, abyss, smoothstep(0.0, -0.6, y));
         // 流れる星雲（上空）と、奈落の底から立ちのぼる紫の光
         float neb = fbm(vec2(az*3.0 + uTime*0.004, y*4.0 - uTime*0.002));
         col += vec3(0.05,0.025,0.09) * smoothstep(0.55, 0.95, neb) * smoothstep(-0.1, 0.5, y) * 0.8;
         float glow = fbm(vec2(az*5.0, y*2.5 + uTime*0.01));
-        col += vec3(0.16,0.05,0.30) * pow(smoothstep(-0.05, -0.75, y), 2.0) * (0.45 + 0.55*glow);
+        col += vec3(0.10,0.03,0.20) * pow(smoothstep(-0.05, -0.75, y), 2.0) * (0.45 + 0.55*glow);
         // 星
         vec2 sp = vec2(az*90.0, y*90.0); float s = h(floor(sp));
         col += vec3(0.8,0.75,1.0) * step(0.9975, s) * smoothstep(0.05, 0.4, y) * (0.6 + 0.4*sin(uTime*2.0 + s*50.0));
@@ -66,15 +66,25 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
       fragmentShader: hazeChunk + `uniform sampler2D uWin; uniform vec3 uTint; varying vec2 vUv; varying vec3 vWp; varying float vSeed; varying float vSide;
         float h(vec2 p){ return fract(sin(dot(p, vec2(41.3,289.1))) * 15731.743); }
         void main(){
-          vec3 win = texture2D(uWin, vUv).rgb;
-          // 窓の区画ごとに、ゆっくり点いたり消えたりする
-          vec2 cell = floor(vUv * vec2(10.0, 10.0));
-          float slot = floor(uTime * 0.12 + h(cell + vSeed) * 7.0);
-          float on = step(0.28, h(cell * 1.7 + slot + vSeed * 3.1));
-          float flick = 0.85 + 0.15 * sin(uTime * (1.0 + h(cell)) * 3.0 + vSeed * 20.0);
-          vec3 body = vec3(0.012, 0.011, 0.02) * (0.6 + 0.4 * vSide);
-          vec3 col = body + win * uTint * 1.05 * on * flick * vSide;
-          gl_FragColor = vec4(applyHaze(col, vWp, 1.0), 1.0);
+          // 2026-11-26 ユーザー指示：ビルの形は見せず、窓の明かりだけが闇の中にまばらに群れて見える
+          // 窓の格子（約 1.6 m × 3.6 m）ごとに乱数で点灯。点灯の密度は大きなノイズでむらを作り、群れになる
+          vec2 g = vUv * vec2(9.4, 4.2);
+          vec2 cell = floor(g), f = fract(g);
+          float cluster = smoothstep(0.35, 0.8, h(floor(cell / vec2(5.0, 7.0)) + vSeed * 1.7)) * 0.75 + 0.25 * h(floor(cell / vec2(2.0, 3.0)) + vSeed);
+          float slot = floor(uTime * 0.08 + h(cell + vSeed) * 9.0);
+          float on = step(1.0 - cluster * 0.55, h(cell * 1.7 + slot * 0.31 + vSeed * 3.1));
+          // 窓ごとに大きさと位置をずらし、格子の規則性を崩す
+          vec2 sz = vec2(0.22 + 0.4 * h(cell + 1.3), 0.18 + 0.35 * h(cell + 2.9));
+          vec2 ctr = vec2(0.5 + (h(cell + 4.1) - 0.5) * (1.0 - sz.x), 0.5 + (h(cell + 5.3) - 0.5) * (1.0 - sz.y));
+          vec2 d = abs(f - ctr) / sz;
+          float shape = smoothstep(1.0, 0.55, max(d.x, d.y));
+          float flick = 0.8 + 0.2 * sin(uTime * (0.6 + h(cell)) * 2.0 + vSeed * 20.0);
+          float k = h(cell + 3.7);
+          vec3 tint = k < 0.55 ? vec3(1.0, 0.82, 0.58) : k < 0.85 ? vec3(0.78, 0.84, 1.0) : vec3(0.85, 0.6, 1.0);
+          vec3 col = tint * shape * on * flick * (0.5 + 0.7 * h(cell + 9.1)) * vSide * 1.2;
+          // 建物の面は描かない（窓の光だけが闇に浮かぶ）
+          if (dot(col, vec3(1.0)) < 0.02) discard;
+          gl_FragColor = vec4(applyHaze(col, vWp, 0.8), 1.0);
         }`
     });
     owned.push(m); return m;
@@ -108,28 +118,29 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
       tops[tops.length - 1].y += h2;
     }
   }
-  {
-    towerParts.forEach((parts, k) => {
-      if (!parts.length) return;
-      const merged = mergeGeometries(parts); parts.forEach(p => p.dispose());
-      const mesh = new THREE.Mesh(merged, towerMats[k]); mesh.frustumCulled = false; mesh.renderOrder = -5; group.add(mesh); owned.push(merged);
-    });
-  }
 
   // ---------------------------------------------------------------- 実写カード（主役のビル群）
   const cardDefs = [['sj_a', 0.294, 95], ['sj_b', 0.198, 88], ['sj_c', 0.143, 100], ['sj_d', 0.56, 40], ['sj_e', 0.337, 48], ['sj_f', 0.725, 30], ['hk_skyline', 1.074, 70], ['mh_fogcity', 1.548, 60]];
   const cardMat = (file) => {
     const m = new THREE.ShaderMaterial({
-      uniforms: { ...common, uMap: { value: tex(file) }, uGain: { value: file.startsWith('mh') ? 0.22 : file.startsWith('hk') ? 0.9 : 1.25 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+      uniforms: { ...common, uMap: { value: tex(file) }, uGain: { value: file.startsWith('mh') ? 0.22 : file.startsWith('hk') ? 0.8 : 0.95 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
       vertexShader: `varying vec2 vUv; varying vec3 vWp; void main(){ vUv = uv; vec4 wp = modelMatrix * vec4(position,1.0); vWp = wp.xyz; gl_Position = projectionMatrix * viewMatrix * wp; }`,
       fragmentShader: hazeChunk + `uniform sampler2D uMap; uniform float uGain; varying vec2 vUv; varying vec3 vWp;
         void main(){
           vec3 c = texture2D(uMap, vUv).rgb;
+          // 外壁や空は落とし、明るい窓の光だけを残す
+          float lum = dot(c, vec3(0.299, 0.587, 0.114));
+          c *= smoothstep(0.42, 0.78, lum) * 1.4;
+          // 実写の窓もまばらに間引いて、ビルの輪郭が浮かばないようにする
+          vec2 wc = floor(vUv * vec2(36.0, 110.0));
+          float hh = fract(sin(dot(wc, vec2(12.9898, 78.233))) * 43758.5453);
+          float hc = fract(sin(dot(floor(wc / vec2(6.0, 9.0)), vec2(39.3, 11.7))) * 13758.5453);
+          c *= step(0.55 - hc * 0.4, hh);
           float edge = smoothstep(0.0, 0.06, vUv.x) * smoothstep(1.0, 0.94, vUv.x) * smoothstep(0.0, 0.25, vUv.y);
           c *= uGain * edge * (0.92 + 0.08 * sin(uTime * 0.7 + vWp.x));
           // ビルの壁面を下から上へゆっくり走る光の帯（ライトアップの演出）
           float band = fract(uTime * 0.035 + fract(vWp.x * 0.013) );
-          c *= 1.0 + 0.9 * smoothstep(0.06, 0.0, abs(vUv.y - band)) ;
+          c *= 1.0 + 0.35 * smoothstep(0.06, 0.0, abs(vUv.y - band));
           // 加算なので、霞は「暗くする」方向に効かせる
           float d = length(vWp.xz - uCenter.xz);
           c *= mix(1.0, 0.35, smoothstep(50.0, 170.0, d)) * mix(1.0, 0.25, smoothstep(-10.0, -70.0, vWp.y));
@@ -154,17 +165,56 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
 
   // 破れ目の正面には必ず実写のビルを置く（どの破れ目からも主役が見える）
   const hero = ['sj_a', 'hk_skyline', 'sj_c', 'sj_b', 'sj_e'];
+  const ruinParts = [];
   focus.forEach((fc, fi) => {
     const dir = fc.dir.clone().normalize(), side = new THREE.Vector3(-dir.z, 0, dir.x);
-    for (let j = 0; j < 3; j++) {
+    if (fc.vista) {
+      // 開廊の正面：近い塔の群れ（35〜60 m）と、宙に浮かぶ遺構の破片
+      for (let j = 0; j < 4; j++) {
+        const dist = 46 + R() * 30, lat = (R() - 0.5) * 70, w = 6 + R() * 8, d = 6 + R() * 8, h = 40 + R() * 70, base = -70 - R() * 15;
+        const g = new THREE.BoxGeometry(w, h, d); const uv = g.attributes.uv, nrm = g.attributes.normal, pos = g.attributes.position;
+        for (let k = 0; k < uv.count; k++) { const across = Math.abs(nrm.getX(k)) > 0.5 ? pos.getZ(k) : pos.getX(k); uv.setXY(k, (across + 50) / 15, (pos.getY(k) + h / 2) / 15); if (Math.abs(nrm.getY(k)) > 0.5) uv.setXY(k, 0, 0); }
+        const p = fc.pos.clone().addScaledVector(dir, dist).addScaledVector(side, lat);
+        g.translate(p.x, base + h / 2, p.z); g.setAttribute('aSeed', new THREE.BufferAttribute(new Float32Array(pos.count).fill(R() * 10), 1));
+        towerParts[Math.floor(R() * 3)].push(g); tops.push(new THREE.Vector3(p.x, base + h + 0.5, p.z));
+      }
+      for (let j = 0; j < 8; j++) {
+        // 浮かぶ島：下へ尖る岩塊＋上の平らな床と崩れた壁・柱
+        const s = 2 + R() * 4, p = fc.pos.clone().addScaledVector(dir, 16 + R() * 42).addScaledVector(side, (R() - 0.5) * 56); p.y = -8 + R() * 20;
+        const rock = new THREE.ConeGeometry(s, s * (1.8 + R()), 7, 3).rotateX(Math.PI); const rp = rock.attributes.position;
+        for (let k = 0; k < rp.count; k++) { const f = 1 + (Math.sin(k * 12.9898) * 43758.5453 % 1) * 0.25; rp.setX(k, rp.getX(k) * f); rp.setZ(k, rp.getZ(k) * f); }
+        rock.translate(p.x, p.y - s * 0.9, p.z); ruinParts.push(rock);
+        ruinParts.push(new THREE.BoxGeometry(s * 1.6, 0.6, s * 1.4).rotateY(R() * 3).translate(p.x, p.y, p.z));
+        if (R() < 0.7) ruinParts.push(new THREE.BoxGeometry(s * (0.6 + R() * 0.8), 2 + R() * 3, 0.6).rotateY(R() * 3).translate(p.x + (R() - 0.5) * s, p.y + 1.5, p.z + (R() - 0.5) * s));
+        if (R() < 0.6) ruinParts.push(new THREE.CylinderGeometry(0.35, 0.4, 2 + R() * 4, 8).translate(p.x + (R() - 0.5) * s, p.y + 2, p.z + (R() - 0.5) * s));
+      }
+    }
+    for (let j = 0; j < (fc.vista ? 5 : 3); j++) {
       const file = hero[(fi + j) % hero.length], def = cardDefs.find(d => d[0] === file);
-      const dist = 70 + j * 22 + R() * 10, lat = (j - 1) * (14 + R() * 8);
+      const dist = (fc.vista ? 52 : 70) + j * 20 + R() * 10, lat = (j - (fc.vista ? 2 : 1)) * (14 + R() * 8);
       const h = def[2] * (1.0 + R() * 0.3), w = h * def[1];
       const m = new THREE.Mesh(plane, cardMats.get(file)); m.scale.set(w, h, 1);
       m.position.copy(fc.pos).addScaledVector(dir, dist).addScaledVector(side, lat); m.position.y = -h * 0.55 + (file === 'hk_skyline' ? 8 : 0);
       m.lookAt(fc.pos.x, m.position.y, fc.pos.z); m.renderOrder = -4; m.frustumCulled = false; group.add(m);
     }
   });
+
+  {
+    towerParts.forEach((parts, k) => {
+      if (!parts.length) return;
+      const merged = mergeGeometries(parts); parts.forEach(p => p.dispose());
+      const mesh = new THREE.Mesh(merged, towerMats[k]); mesh.frustumCulled = false; mesh.renderOrder = -5; group.add(mesh); owned.push(merged);
+    });
+  }
+  if (ruinParts.length) {
+    const rg = mergeGeometries(ruinParts.map(g => { const n = g.index ? g.toNonIndexed() : g; for (const k of Object.keys(n.attributes)) if (k !== 'position' && k !== 'normal') n.deleteAttribute(k); return n; }));
+    const rm = new THREE.ShaderMaterial({ uniforms: { ...common }, fog: false,
+      vertexShader: `varying vec3 vN; varying vec3 vWp; void main(){ vN = normalize(mat3(modelMatrix) * normal); vec4 wp = modelMatrix * vec4(position,1.0); vWp = wp.xyz; gl_Position = projectionMatrix * viewMatrix * wp; }`,
+      fragmentShader: hazeChunk + `varying vec3 vN; varying vec3 vWp; void main(){ float up = max(0.0, vN.y); float rim = pow(1.0 - abs(vN.y), 3.0); vec3 col = vec3(0.006, 0.005, 0.01) + vec3(0.05, 0.035, 0.09) * up + vec3(0.12, 0.06, 0.22) * rim * 0.12; gl_FragColor = vec4(applyHaze(col, vWp, 0.35), 1.0); }` });
+    const rmesh = new THREE.Mesh(rg, rm); rmesh.frustumCulled = false; rmesh.renderOrder = -4; group.add(rmesh); owned.push(rg, rm);
+    ruinParts.forEach(g => g.dispose());
+    updaters.push(t => { rmesh.position.y = Math.sin(t * 0.25) * 0.6; });
+  }
 
   // ---------------------------------------------------------------- 航空障害灯・屋上の光帯
   const beaconGeo = new THREE.BufferGeometry().setFromPoints(tops);
@@ -200,7 +250,7 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
 
   return {
     group,
-    update(t) { common.uTime.value = t; },
+    update(t) { common.uTime.value = t; updaters.forEach(u => u(t)); },
     dispose() { owned.forEach(o => o.dispose?.()); group.removeFromParent(); }
   };
 }

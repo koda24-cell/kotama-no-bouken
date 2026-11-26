@@ -26,7 +26,7 @@ export function layoutB5V6({ a, ch, wallCell, hash, CELL = 4, M, arch, heights, 
   arch.faces.forEach((fc, i) => {
     const R = rng(Math.floor(fc.seed * 1e9) + 17), k = R();
     const occupiedWallObj = a.objects.some(o => o.onWall && o.tx === fc.tx + fc.dx && o.ty === fc.ty + fc.dz);
-    if (fc.variant === 'breach' || occupiedWallObj) return;
+    if ((fc.variant === 'breach' || fc.variant === 'open') || occupiedWallObj) return;
     if (fc.variant === 'arch') {
       // 窪み：棚に燭台、手前に低い瓦礫。14F は窪みの前に小さな騎士像も
       if (f === 1 && k < 0.22 && !nearObj(fc.tx, fc.ty, 1)) {
@@ -50,7 +50,7 @@ export function layoutB5V6({ a, ch, wallCell, hash, CELL = 4, M, arch, heights, 
 
   // 行き止まり・突き当たりの壁は必ず見どころにする（旗＋左右の松明）
   for (const fc of arch.faces) {
-    if (usedFace.has(fc.key) || fc.variant === 'breach') continue;
+    if (usedFace.has(fc.key) || (fc.variant === 'breach' || fc.variant === 'open')) continue;
     if (a.objects.some(o => o.onWall && o.tx === fc.tx + fc.dx && o.ty === fc.ty + fc.dz)) continue;
     // 2 マス以上まっすぐ歩いてきた先の正面の壁＝視線の終点
     const back = walk(fc.tx - fc.dx, fc.ty - fc.dz) && walk(fc.tx - 2 * fc.dx, fc.ty - 2 * fc.dz);
@@ -62,7 +62,7 @@ export function layoutB5V6({ a, ch, wallCell, hash, CELL = 4, M, arch, heights, 
   // 植生：つる（上から垂れる）・根（壁際）
   const nearLight = (tx, ty) => arch.collapsed.some(c => Math.abs(c.tx - tx) + Math.abs(c.ty - ty) <= 2) || breaches.some(b => Math.abs(b.tx - tx) + Math.abs(b.ty - ty) <= 2);
   for (const fc of arch.faces) {
-    if (fc.variant === 'breach') continue;
+    if ((fc.variant === 'breach' || fc.variant === 'open')) continue;
     const R = rng(Math.floor(fc.seed * 1e9) + 91), lit = nearLight(fc.tx, fc.ty);
     if (R() < (lit ? 0.75 : 0.32) * (high ? 1 : 0.5)) { placeAsset(ctx, wallVines(M, Math.floor(R() * 1e6), { y0: fc.spring - 0.3, count: 3 + Math.floor(R() * 5), leafy: lit ? 0.9 : 0.35, maxLen: lit ? 4.6 : 3.2 }), fc.matrix); stats.vines = (stats.vines || 0) + 1; }
     if (R() < (lit ? 0.6 : 0.25)) placeAsset(ctx, floorRoots(M, Math.floor(R() * 1e6), { count: 2 + Math.floor(R() * 3) }), fc.matrix);
@@ -76,7 +76,7 @@ export function layoutB5V6({ a, ch, wallCell, hash, CELL = 4, M, arch, heights, 
     const hall = heights(tx, ty).apex > 12;
     // 壁際の低い瓦礫（どのマスにも）
     for (const fc of faces) {
-      if (fc.variant === 'breach') continue;
+      if ((fc.variant === 'breach' || fc.variant === 'open')) continue;
       const along = new THREE.Vector3(fc.dz !== 0 ? 1 : 0, 0, fc.dx !== 0 ? 1 : 0), off = (R() - 0.5) * 2.4;
       const p = new THREE.Vector3(x + fc.dx * 1.45, 0, z + fc.dz * 1.45).addScaledVector(along, off);
       placeAsset(ctx, rubble(M, Math.floor(R() * 1e6), { radius: 0.45, count: 3 + Math.floor(R() * 4), drums: 0, voussoirs: R() < 0.3 ? 1 : 0, low: true }), trs(p.x, 0, p.z, R() * 6));

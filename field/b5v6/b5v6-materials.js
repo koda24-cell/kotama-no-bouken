@@ -61,6 +61,15 @@ export function createB5V6Materials({ high = true } = {}) {
   M.flower = plain({ color: 0xeee8f6, roughness: 0.7, emissive: 0x3a3050, emissiveIntensity: 0.6, side: THREE.DoubleSide }, 'flower');
   M.wood = plain({ color: 0x2f2620, roughness: 0.9 }, 'wood');
   M.leather = plain({ color: 0x2b211d, roughness: 0.8 }, 'leather');
+  M.sigil = plain({ color: 0x101830, emissive: 0x9cc0ff, emissiveIntensity: 1.6, roughness: 0.4, side: THREE.DoubleSide }, 'sigil');
+  M.brass.envMapIntensity = 0.6;
+  M.gold = plain({ color: 0xc8963c, roughness: 0.32, metalness: 1.0 }, 'gold');
+  M.goldGlow = plain({ color: 0x2a1c08, emissive: 0xffc870, emissiveIntensity: 1.5, roughness: 0.4, side: THREE.DoubleSide }, 'goldGlow');
+  M.crystal = plain({ color: 0x3a1c6a, emissive: 0x9a5cff, emissiveIntensity: 1.4, roughness: 0.15, metalness: 0.1 }, 'crystal');
+  M.ghost = new THREE.MeshStandardMaterial({ color: 0x9cc8ff, emissive: 0x4a78c8, emissiveIntensity: 0.9, transparent: true, opacity: 0.45, depthWrite: false, roughness: 0.6, vertexColors: true }); M.ghost.name = 'b5v6:ghost'; materials.push(M.ghost);
+  M.portal = new THREE.MeshBasicMaterial({ color: 0xcfdcff }); M.portal.name = 'b5v6:portal'; materials.push(M.portal);
+  M.marble = pbr('marble', { meters: 2.0, color: 0xffffff, roughness: 1, normalScale: 0.6 });
+  M.holyWall = pbr('holywall', { meters: 2.6, color: 0xffffff, normalScale: 1.1 });
   M.void = new THREE.MeshBasicMaterial({ color: 0x050411 }); M.void.name = 'b5v6:void'; materials.push(M.void);
   // 紫の魔力を帯びた刻印（自発光）
   M.rune = plain({ color: 0x2a1840, emissive: 0x8a4dff, emissiveIntensity: 1.6, roughness: 0.4 }, 'rune');
@@ -74,7 +83,7 @@ export function createB5V6Materials({ high = true } = {}) {
     const glow = (c, x, y, z, s) => { const m = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color: c })); m.position.set(x, y, z); m.scale.setScalar(s); room.add(m); };
     glow(0x6a3cc8, 4, 1, 0, 1.6); glow(0x6a3cc8, -3, 0.5, 3, 1.2); glow(0xb0682a, -2, 1.5, -4, 1.0); glow(0x2a2440, 0, 6, 0, 8); glow(0x16121e, 0, -5, 0, 10);
     envRT = pm.fromScene(room, 0.04);
-    for (const m of [M.steel, M.iron, M.brass]) { m.envMap = envRT.texture; m.envMapIntensity = m === M.steel ? 0.9 : 0.6; m.needsUpdate = true; }
+    for (const m of [M.steel, M.iron, M.brass, M.gold, M.marble]) { m.envMap = envRT.texture; m.envMapIntensity = m === M.steel ? 0.9 : 0.6; m.needsUpdate = true; }
     room.traverse(o => o.material?.dispose()); box.dispose(); pm.dispose();
   };
   // ステンドグラス（鉛の枠と色ガラス。物語の図像は入れず、幾何学の色面だけ）。自発光で暗い身廊を照らす

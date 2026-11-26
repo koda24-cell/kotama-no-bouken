@@ -35,7 +35,8 @@ function breachOutline(w, y0, y1, R) {
   return pts.reverse();
 }
 
-export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, bucket, heights, breachFaces = new Set(), collapse = 0.1, high = true }) {
+export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, bucket, heights, breachFaces = new Set(), openFaces = new Set(), collapse = 0.1, high = true }) {
+  const openCells = new Set([...openFaces].map(k => k.split(',').slice(0, 2).join(',')));
   const faces = [], piers = [], collapsed = [], floorCells = [];
   const walk = (x, y) => x >= 0 && y >= 0 && x < a.w && y < a.h && !wallCell(x, y);
   const H = (tx, ty) => heights(tx, ty);   // {spring, apex}
@@ -44,6 +45,7 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
   // ---------------------------------------------------------------- A5 床
   for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
     if (!walk(tx, ty)) continue;
+    if (ch(tx, ty) === '>') { floorCells.push({ tx, ty, x: tx * CELL, z: ty * CELL, stairwell: true }); continue; }   // 下り階段の吹き抜け（床は抜く）
     const x = tx * CELL, z = ty * CELL, seg = high ? 8 : 4;
     const g = new THREE.PlaneGeometry(CELL + 0.04, CELL + 0.04, seg, seg).rotateX(-Math.PI / 2);
     const p = g.attributes.position;
@@ -65,12 +67,17 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
     DIRS.forEach(([dx, dz], di) => {
       if (walk(tx + dx, ty + dz)) return;
       const key = `${tx},${ty},${dx},${dz}`, R = rng(Math.floor(hash(tx * 7 + dx, ty * 7 + dz, 401) * 1e9));
-      const breach = breachFaces.has(key);
+      const breach = breachFaces.has(key) || openFaces.has(key), open = openFaces.has(key);
       const mat = faceMatrix(x, z, dx, dz);
       const shape = new THREE.Shape([new THREE.Vector2(-2.02, 0), new THREE.Vector2(2.02, 0), new THREE.Vector2(2.02, WH), new THREE.Vector2(-2.02, WH)]);
       const holes = [], backs = [];
       let variant = 'plain';
-      if (breach) {
+      if (open) {
+        // 開廊：手すりの上が大きく開いたアーチ（奈落を見渡すバルコニー）
+        variant = 'open';
+        const ol = archOutline(3.5, spring + 0.3 - 0.95, Math.min(spring + 2.0, apex - 0.5) - 0.95, 20, 0.6).map(v => new THREE.Vector2(v.x, v.y + 0.95));
+        holes.push(ol);
+      } else if (breach) {
         variant = 'breach';
         const ol = breachOutline(3.25, 0.8, Math.min(spring + 1.4, 8.0), R);
         holes.push(ol);
@@ -120,6 +127,20 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
           chip(shelf, 0.025, 4, R() * 9);
           bucket.add(shelf, M.dressed, { matrix: mat, wx: wx({ grime: 1.0, soot: 0.3, moss: 0.3, seed: 12 }) });
         }
+      }
+      if (open) {
+        const bw = 3.5, gap = R() < 0.6 ? (R() - 0.5) * 2.2 : null;
+        bucket.add(new THREE.BoxGeometry(bw + 0.2, 0.2, 0.5, 6, 1, 1).translate(0, 0.1, -0.15), M.dressed, { matrix: mat, wx: wx({ grime: 0.6, moss: 0.4, seed: 19 }) });
+        for (const [x0, x1] of gap === null ? [[-bw / 2, bw / 2]] : [[-bw / 2, gap - 0.4], [gap + 0.4, bw / 2]]) {
+          if (x1 - x0 < 0.3) continue;
+          bucket.add(new THREE.BoxGeometry(x1 - x0, 0.14, 0.46, 4, 1, 1).translate((x0 + x1) / 2, 0.95, -0.15), M.dressed, { matrix: mat, wx: wx({ grime: 0, soot: 0.3, moss: 0.3, seed: 20 }) });
+          for (let bx = x0 + 0.15; bx < x1 - 0.1; bx += 0.3) bucket.add(lathe([[0, 0], [0.08, 0], [0.1, 0.14], [0.06, 0.36], [0.1, 0.58], [0.07, 0.75], [0, 0.75]], 8).translate(bx, 0.2, -0.15), M.dressed, { matrix: mat, wx: wx({ grime: 0.3, moss: 0.3, seed: 21 }) });
+        }
+        // 外側の張り出し（崩れた縁）と、奈落へ落ちる外壁
+        const ledge = new THREE.BoxGeometry(4.0, 0.5, 1.8, 8, 1, 4).translate(0, -0.25, -2.4); chip(ledge, 0.12, 1.5, R() * 9);
+        bucket.add(ledge, M.wall, { matrix: mat, wx: wx({ grime: 0, moss: 0.4, seed: 22 }) });
+        const cliff = new THREE.BoxGeometry(4.04, 36, 0.6, 2, 18, 1).translate(0, -18.4, -3.1); chip(cliff, 0.25, 0.6, R() * 9);
+        bucket.add(cliff, M.wall, { matrix: mat, wx: wx({ grime: 0, soot: 0.6, base: 0.6, floorY: -36, seed: 23 }) });
       }
       // 台座の繰形（ときどき欠ける）
       const plinthGap = !breach && R() < 0.35 ? { c: (R() - 0.5) * 2.4, w: 0.5 + R() * 0.7 } : null;
@@ -217,8 +238,9 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
     const x = tx * CELL, z = ty * CELL, { spring, apex } = H(tx, ty), rise = apex - spring;
     const ch0 = ch(tx, ty);
     const cR = rng(Math.floor(hash(tx, ty, 451) * 1e9));
-    const isCollapsed = collapse > 0 && ch0 !== '<' && ch0 !== '>' && hash(tx, ty, 452) < collapse;
-    const holeR = 0.55 + cR() * 0.25, hcx = (cR() - 0.5) * 0.4, hcz = (cR() - 0.5) * 0.4;
+    const openCell = openCells.has(tx + ',' + ty);
+    const isCollapsed = openCell || (collapse > 0 && ch0 !== '<' && ch0 !== '>' && hash(tx, ty, 452) < collapse);
+    const holeR = openCell ? 0.85 + cR() * 0.15 : 0.55 + cR() * 0.25, hcx = (cR() - 0.5) * 0.4, hcz = (cR() - 0.5) * 0.4;
     const inHole = (u, v) => {
       if (!isCollapsed) return false;
       const du = u - hcx, dv = v - hcz, ang = Math.atan2(dv, du);
