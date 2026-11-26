@@ -20,6 +20,16 @@ try{
     return loc.count();
   };
   const home=await inspect('#home-party img');
+  const townBackground=await page.evaluate(async()=>{
+    const style=getComputedStyle(document.querySelector('#home .home-poster-background'));
+    const match=style.backgroundImage.match(/url\(["']?([^"')]+)["']?\)/);
+    if(!match)throw new Error('Home background URL missing');
+    const image=new Image();image.src=match[1];await image.decode();
+    return {url:match[1],width:image.naturalWidth,height:image.naturalHeight,size:style.backgroundSize};
+  });
+  assert.ok(townBackground.url.endsWith('/assets/8091ad13-a63c-469c-b31a-8c16f3d1d70d.png'));
+  assert.ok(townBackground.width>0&&townBackground.height>0);
+  assert.ok(townBackground.size.includes('cover'));
   const homePoster=await page.evaluate(()=>{
     const nav=document.querySelector('.main-nav'),stage=document.getElementById('home-party');
     const menu=document.querySelector('.home-menu');
@@ -140,7 +150,7 @@ try{
   await page.screenshot({path:'status-profile-'+viewport.width+'.png'});
   await page.evaluate(()=>document.getElementById('field-inventory-dialog').close());
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,homePoster,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
