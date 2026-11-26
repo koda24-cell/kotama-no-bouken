@@ -132,7 +132,7 @@ function compendiumDeserialize(d) {
   if (fieldCounts && typeof fieldCounts === "object") {
     for (const entry of entries) {
       if (!entry.id.startsWith("field:")) continue;
-      const n = Math.max(0, Math.floor(Number(fieldCounts[entry.name]) || 0));
+      const n = Math.max(0, Math.floor(Number(fieldCounts[entry.name]) || 0), entry.id === "field:fire-lizard" ? Math.floor(Number(fieldCounts["火トカゲ"]) || 0) : entry.id === "field:dark-knight" ? Math.floor(Number(fieldCounts["魔王軍の騎士"]) || 0) : 0);
       if (n > 0) { const r = monsterRecord(entry.id); r.encountered = true; r.encounters = Math.max(r.encounters, n); }
     }
   }

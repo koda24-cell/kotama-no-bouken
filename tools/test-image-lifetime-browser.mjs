@@ -149,10 +149,10 @@ try{
       const rect=id=>{const r=document.getElementById(id).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width};};
       fieldRenderPartyHud();
       const party=rect('field-party-hud'),inventory=rect('field-inventory-open'),danger=rect('field-danger');
-      const partyCount=document.querySelectorAll('#field-party-hud .field-party-member').length;
-      const first=getParty()[0],hp=first.hp;
+      const partyCount=document.querySelectorAll('#field-party-hud .kph-member').length;
+      const first=window.kotamaPartyHudLayout(getParty())[0].c,hp=first.hp;
       first.hp=Math.max(0,hp-1);fieldRenderPartyHud();
-      const hpUpdated=document.querySelector('#field-party-hud .field-party-gauge b').textContent.startsWith(first.hp+'/');
+      const hpUpdated=document.querySelector('#field-party-hud .kph-hp-label b')?.textContent===first.hp+'/'+effectiveStats(first).maxHp;
       first.hp=hp;fieldRenderPartyHud();
       fieldToggleFullMap(true);
       const workspace=rect('field-map-workspace'),wrap=rect('field-map-canvas-wrap'),header=document.querySelector('.field-fullmap-head').getBoundingClientRect();
@@ -222,7 +222,60 @@ try{
   await page.waitForFunction(()=>state.screen==='battle'&&battleState.stage===3&&battleState.enemy?.name==='オオカミ'&&!battleState.busy,{},{timeout:30000});
   assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
   const adminBossLaunch=true;
-  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,fieldLayout,profile,pageErrors:errors});
+  const enemyPortraits=await page.evaluate(async()=>{
+    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.png","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.png","fire-lizard":"62ee5c0e-50b9-41c6-90f2-618d52d120a0.png","lava-golem":"13964637-9c62-4394-a172-31b721771096.png","dark-knight":"7a6e64a3-1704-4d0e-b46f-006befd1801d.png"};
+    const result=[];
+    const oldEnemy=battleState.enemy,oldMode=battleState.encounterMode,oldReveal=adminCompendiumReveal;
+    try{
+      adminCompendiumReveal=true;renderMonsterCompendium();
+      battleState.encounterMode=true;
+      for(const [id,file] of Object.entries(expected)){
+        const path='assets/monsters/'+file;
+        const unit=fieldCreateEnemy(id,1);
+        if(unit.image!==path)throw Error('Incorrect battle mapping: '+id);
+        if(id==='dark-knight'&&(unit.name!=='黒骸騎士'||FIELD_ENEMIES['foe-black-general'].name!=='黒騎士団長'))throw Error('Incorrect dark knight name or FOE changed');
+        if(id==='fire-lizard'&&(unit.name!=='サラマンダー'||FIELD_ENEMIES['foe-salamander'].name!=='灼熱のサラマンダー'))throw Error('Incorrect salamander name or FOE changed');
+        const card=document.querySelector('[data-monster-id="field:'+id+'"] img');
+        if(!card||card.getAttribute('src')!==path)throw Error('Incorrect compendium mapping: '+id);
+        const probe=new Image();probe.src=path;await probe.decode();
+        battleState.enemy=unit;renderBattle();
+        const art=document.querySelector('#battle-enemy .enemy-image');
+        if(!art||art.dataset.enemyImage!==path)throw Error('Incorrect battle portrait: '+id);
+        await art.decode();
+        result.push({id,file,width:art.naturalWidth,height:art.naturalHeight});
+      }
+      const path=enemyData[0].image;
+      if(path!=='assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png')throw Error('Incorrect slime mapping');
+      const bossCard=document.querySelector('[data-monster-id="boss-1"] img');
+      if(!bossCard||bossCard.getAttribute('src')!==path)throw Error('Incorrect slime compendium mapping');
+      battleState.encounterMode=false;battleState.enemy={...enemyData[0],maxHp:enemyData[0].hp};renderBattle();
+      const slimeArt=document.querySelector('#battle-enemy .enemy-image');
+      if(!slimeArt||slimeArt.dataset.enemyImage!==path)throw Error('Incorrect slime battle portrait');
+      await slimeArt.decode();result.push({id:'boss-1',file:path.split('/').pop(),width:slimeArt.naturalWidth,height:slimeArt.naturalHeight});
+      return result;
+    }finally{battleState.enemy=oldEnemy;battleState.encounterMode=oldMode;adminCompendiumReveal=oldReveal;renderBattle();renderMonsterCompendium();}
+  });
+  assert.equal(enemyPortraits.length,10);
+  const salamanderLegacy=await page.evaluate(()=>{
+    const snapshot={monsterRecords:compendiumSerialize(),adminCompendiumReveal};
+    try{
+      compendiumDeserialize({field:{enemyEncounters:{"火トカゲ":4}},monsterRecords:{"field:fire-lizard":{encountered:true,defeated:true,encounters:2,defeats:1}}});
+      const old=monsterRecords["field:fire-lizard"];
+      return {encounters:old.encounters,defeats:old.defeats,defeated:old.defeated,name:monsterEntryById("field:fire-lizard").name};
+    }finally{compendiumDeserialize(snapshot);}
+  });
+  assert.deepEqual(salamanderLegacy,{encounters:4,defeats:1,defeated:true,name:'サラマンダー'});
+  const knightLegacy=await page.evaluate(()=>{
+    const snapshot={monsterRecords:compendiumSerialize(),adminCompendiumReveal};
+    try{
+      compendiumDeserialize({field:{enemyEncounters:{"魔王軍の騎士":5}},monsterRecords:{"field:dark-knight":{encountered:true,defeated:true,encounters:2,defeats:1}}});
+      const old=monsterRecords["field:dark-knight"];
+      return {encounters:old.encounters,defeats:old.defeats,defeated:old.defeated,name:monsterEntryById("field:dark-knight").name};
+    }finally{compendiumDeserialize(snapshot);}
+  });
+  assert.deepEqual(knightLegacy,{encounters:5,defeats:1,defeated:true,name:'黒骸騎士'});
+  assert.ok(enemyPortraits.every(x=>x.width>0&&x.height>0));
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,enemyPortraits,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
