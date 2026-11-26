@@ -24,7 +24,7 @@ const FIELD_ENEMIES = {
     ai:[ { name:"吸血", weight:55, kind:"phys", power:1.0, drain:.4 }, { name:"超音波", weight:45, all:true, kind:"sp", power:.55, status:{ type:"paralysis", chance:.22, turns:1 } } ] },
   "forest-wolf": { name:"森オオカミ", element:"無属性", weaknesses:["雷","打撃","壊"], resistances:[], hp:1120, attack:72, spAttack:24, defense:22, spDefense:12, gold:20, exp:150, speed:85, dropAs:"オオカミ", image:"assets/monsters/a7ceca83-c5cc-4b88-a19c-259865aa9347.png", sprite:"wolf",
     ai:[ { name:"噛みつき", weight:60, kind:"phys", power:1.0 }, { name:"飛びかかり", weight:40, kind:"phys", power:1.35, target:"rear", minTurn:2 } ] },
-  "fire-lizard": { name:"火トカゲ", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:880, attack:62, spAttack:66, defense:32, spDefense:22, gold:26, exp:310, speed:60, image:"assets/monsters/dragon.svg", sprite:"dragon",
+  "fire-lizard": { name:"サラマンダー", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:880, attack:62, spAttack:66, defense:32, spDefense:22, gold:26, exp:310, speed:60, image:"assets/monsters/62ee5c0e-50b9-41c6-90f2-618d52d120a0.png", sprite:"dragon",
     ai:[ { name:"しっぽ打ち", weight:55, kind:"phys", power:1.0 }, { name:"火の息", weight:45, kind:"sp", power:1.0, element:"炎", status:{ type:"burn", chance:.35, turns:2 } } ] },
   "lava-golem": { name:"溶岩ゴーレム", element:"炎", weaknesses:["氷","打撃"], resistances:["炎"], hp:1000, attack:70, spAttack:56, defense:58, spDefense:20, gold:30, exp:340, speed:20, image:"assets/monsters/dragon.svg", sprite:"dragon",
     ai:[ { name:"岩の拳", weight:65, kind:"phys", power:1.15 }, { name:"溶岩投げ", weight:35, all:true, kind:"sp", power:.6, element:"炎", status:{ type:"burn", chance:.25, turns:2 } } ] },

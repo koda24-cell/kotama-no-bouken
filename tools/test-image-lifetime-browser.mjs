@@ -223,7 +223,7 @@ try{
   assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
   const adminBossLaunch=true;
   const enemyPortraits=await page.evaluate(async()=>{
-    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.png","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.png"};
+    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.png","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.png","fire-lizard":"62ee5c0e-50b9-41c6-90f2-618d52d120a0.png"};
     const result=[];
     const oldEnemy=battleState.enemy,oldMode=battleState.encounterMode,oldReveal=adminCompendiumReveal;
     try{
@@ -233,6 +233,7 @@ try{
         const path='assets/monsters/'+file;
         const unit=fieldCreateEnemy(id,1);
         if(unit.image!==path)throw Error('Incorrect battle mapping: '+id);
+        if(id==='fire-lizard'&&(unit.name!=='サラマンダー'||FIELD_ENEMIES['foe-salamander'].name!=='灼熱のサラマンダー'))throw Error('Incorrect salamander name or FOE changed');
         const card=document.querySelector('[data-monster-id="field:'+id+'"] img');
         if(!card||card.getAttribute('src')!==path)throw Error('Incorrect compendium mapping: '+id);
         const probe=new Image();probe.src=path;await probe.decode();
@@ -253,7 +254,7 @@ try{
       return result;
     }finally{battleState.enemy=oldEnemy;battleState.encounterMode=oldMode;adminCompendiumReveal=oldReveal;renderBattle();renderMonsterCompendium();}
   });
-  assert.equal(enemyPortraits.length,7);
+  assert.equal(enemyPortraits.length,8);
   assert.ok(enemyPortraits.every(x=>x.width>0&&x.height>0));
   results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,enemyPortraits,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
