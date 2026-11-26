@@ -150,8 +150,19 @@ function updatePool(center, force) {
 const loader = new GLTFLoader();
 async function retryLoad(job){let last;for(let i=0;i<3;i++){try{return await job(i);}catch(e){last=e;if(i<2)await new Promise(resolve=>setTimeout(resolve,350*(i+1)));}}throw last;}
 async function boundedAsset(file){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const url=new URL(BASE+file,document.baseURI);const response=await fetch(url,{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status+' '+file);const data=await response.arrayBuffer();return await loader.parseAsync(data,new URL('.',url).href);}finally{clearTimeout(timer);}}
+// Downscale ordinary shared GLB image textures before GPU upload on phones. Keep original files intact.
+function limitPhoneTextures(scene){
+  if(!PHONE_VIEW)return scene;
+  const seen=new Set();
+  scene.traverse(obj=>{for(const mat of [].concat(obj.material||[]))for(const tex of Object.values(mat)){
+    if(!tex?.isTexture||seen.has(tex)||tex.isCompressedTexture||tex.isDataTexture||tex.isCubeTexture||tex.isVideoTexture)continue;
+    seen.add(tex);const img=tex.image,w=img?.naturalWidth||img?.width,h=img?.naturalHeight||img?.height;
+    if(!w||!h||Math.max(w,h)<=1024)continue;
+    try{const canvas=document.createElement('canvas'),scale=1024/Math.max(w,h);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d');if(!ctx)continue;ctx.drawImage(img,0,0,canvas.width,canvas.height);tex.image=canvas;tex.needsUpdate=true;}catch(error){console.warn('[field-3d] texture resize skipped',error);}
+  }});return scene;
+}
 function load(file) {
-  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>boundedAsset(file)).then(x=>x.scene).catch(e=>{g.cache.delete(file);throw e;}));
+  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>boundedAsset(file)).then(x=>limitPhoneTextures(x.scene)).catch(e=>{g.cache.delete(file);throw e;}));
   return g.cache.get(file);
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
@@ -675,7 +686,7 @@ function frame() {
   const now = performance.now();
   if (g.maxFps && now - g.lastRender < 1000 / g.maxFps) return;
   g.lastRender = now;
-  const dt = g.lastT ? Math.min(g.maxFps ? 0.1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
+  const dt = g.lastT ? Math.min(PHONE_VIEW ? 0.1 : g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
   mount();
   const a = fieldArea();
   if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; startFloorBuild(); return; }
