@@ -157,6 +157,11 @@ export function createTheme(api) {
     const shadowTexture=new THREE.CanvasTexture(shadowCanvas);ownedThemeTextures.push(shadowTexture);contactGeometry=geo(new THREE.PlaneGeometry(1,1));
     contactMaterial=new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});materials.push(contactMaterial);
     const { paving, stone, soil, rust: steel, leaf: grass } = finish.palette;
+    // Terrain continues beneath the solid city blocks as well as the streets.
+    // Vines can extend below a source bay's structural floor; without a ground
+    // bed its small foundation gap exposed the sky through the missing terrain.
+    const terrain=add(cube,soil,(a.w-1)*CELL/2,-.25,(a.h-1)*CELL/2,(a.w+1)*CELL,.35,(a.h+1)*CELL);
+    terrain.userData.f3Keep=true;
     // Reuse the already scanned original cutout plants, with unchanged geometry and atlas bytes.
     const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Ground vegetation catalog unavailable');
     const grassCatalog=await nature.json(),tufts=[];
@@ -234,6 +239,13 @@ export function createTheme(api) {
       const [x,z]=key.split(',').map(Number),ground=add(cube,soil,x*CELL,-.13,z*CELL,4.04,.25,4.04);
       const b=new THREE.Box3().setFromObject(ground);
       ground.userData.f3Bounds={min:b.min.toArray(),max:b.max.toArray(),ownerCells:courtOwners.get(key)};
+    }
+    if(v2)for(let z=0;z<a.h;z++)for(let x=0;x<a.w;x++){
+      if(ch(x,z)==='#'&&!stairCells.has(`${x},${z}`)&&!machineCells.has(`${x},${z}`)){
+        const foundation=add(cube,finish.palette.concrete,x*CELL,.10,z*CELL,4.02,.36,4.02);
+        const b=new THREE.Box3().setFromObject(foundation);
+        foundation.userData.f3Bounds={min:b.min.toArray(),max:b.max.toArray(),ownerCells:[x,z,x,z]};
+      }
     }
     const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`)&&!stairCells.has(`${x},${z}`);
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
