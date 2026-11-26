@@ -1,4 +1,19 @@
 /* Presentation-only formation gallery. Existing selection/equipment handlers remain authoritative. */
+/* Read-only presentation helpers shared by formation and exploration.
+   Mirror the battle preview's normal six-column, two-row layout. */
+window.kotamaPartyHudLayout = function(party) {
+  const rows=window.kotamaBattleExportRows?.();
+  const entries=party.map((c,i)=>({c,row:rows?.[c.id]?.row==="rear"||(!rows?.[c.id]&&i>=3)?"rear":"front",slot:rows?.[c.id]?.slot??i%3}));
+  return ["front","rear"].flatMap(row=>{
+    const members=entries.filter(e=>e.row===row);
+    return members.map((e,i)=>({...e,column:members.length===2?2+i*2:1+e.slot*2,gridRow:row==="rear"?2:1}));
+  });
+};
+window.kotamaPartyHudContent = function(c) {
+  const stat=effectiveStats(c),hp=Math.max(0,c.hp),sp=Math.max(0,c.sp),maxHp=stat.maxHp,maxSp=c.maxSp;
+  const gauge=(label,value,max,kind)=>'<span class="kph-label kph-'+kind+'-label"><span>'+label+'</span><b>'+value+'/'+max+'</b></span><span class="kph-track kph-'+kind+'"><i style="width:'+Math.min(100,Math.max(0,value/Math.max(1,max)*100))+'%"></i></span>';
+  return '<span class="kph-portrait">'+getCharacterImage(c)+'</span><span class="kph-name"><strong>'+esc(c.name)+'</strong><small>Lv.'+(typeof levelOf==="function"?levelOf(c):1)+'</small></span>'+gauge("HP",hp,maxHp,"hp")+gauge("SP",sp,maxSp,"sp");
+};
 (() => {
   "use strict";
   const legacyRender = renderFormation;
@@ -51,17 +66,22 @@
     if (mode === "detail") {
       const rail = document.createElement("nav");
       rail.id = "formation-gallery-rail"; rail.setAttribute("aria-label", "編成中の仲間");
-      Array.from({length: PARTY_LIMIT}, (_, index) => {
-        const c = getCharacter(state.party[index]);
-        const b = button("", () => {
-          if (c) { focusId = c.id; renderFormation(); }
-          else { formationTargetSlot = index; show("roster"); }
-        }, "fg-member");
-        b.innerHTML = '<span class="fg-avatar">' + (c ? getCharacterImage(c) : "+") + '</span><span>' + (c ? esc(c.name) : "空き枠 " + (index + 1)) + '</span>';
-        b.setAttribute("aria-pressed", String(!!c && c.id === focusId));
+      rail.classList.add("kotama-party-hud");
+      window.kotamaPartyHudLayout(party).forEach(({c,row,slot,column,gridRow})=>{
+        const b=button("",()=>{focusId=c.id;renderFormation();},"fg-member kph-member");
+        b.innerHTML=window.kotamaPartyHudContent(c);
+        b.style.gridColumn=column+" / span 2";b.style.gridRow=String(gridRow);
+        b.dataset.row=row;b.dataset.slot=String(slot);
+        b.classList.toggle("kph-dead",c.hp<=0);
+        b.setAttribute("aria-pressed",String(c.id===focusId));
         rail.append(b);
       });
-      selected.before(rail);
+      selected.after(rail);
+      const emptySlot=Array.from({length:PARTY_LIMIT},(_,i)=>i).find(i=>!state.party[i]);
+      if(emptySlot!==undefined){
+        const add=button("＋ 空き枠に仲間を追加",()=>{formationTargetSlot=emptySlot;show("roster");},"fg-switch");
+        root.querySelector("#formation-gallery-toolbar")?.append(add);
+      }
       Array.from(selected.children).forEach((card, index) => {
         const c = getCharacter(state.party[index]);
         card.hidden = focusId ? c?.id !== focusId : index !== 0;

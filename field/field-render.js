@@ -257,11 +257,11 @@ function fieldBindMapZoom(){
 }
 function fieldRenderPartyHud(){
   const box=$("field-party-hud");if(!box)return;
-  const members=getParty().map(c=>({id:c.id,name:c.name,lv:typeof characterLevels!=="undefined"?characterLevels[c.id]||1:1,hp:Math.max(0,c.hp),maxHp:effectiveStats(c).maxHp,sp:Math.max(0,c.sp),maxSp:c.maxSp}));
-  const key=JSON.stringify(members);if(box.dataset.renderKey===key)return;box.dataset.renderKey=key;
-  box.style.setProperty("--party-count",Math.max(1,members.length));
-  const gauge=(label,value,max,cls)=>`<div class="field-party-gauge"><span>${label}</span><div class="${cls}-track"><div class="${cls}-fill" style="width:${Math.min(100,Math.max(0,value/Math.max(1,max)*100))}%"></div></div><b>${value}/${max}</b></div>`;
-  box.innerHTML=members.map(c=>`<article class="field-party-member${c.hp<=0?" field-party-dead":""}"><div class="field-party-name"><strong>${esc(c.name)}</strong><small>Lv.${c.lv}</small></div>${gauge("HP",c.hp,c.maxHp,"hp")}${gauge("SP",c.sp,c.maxSp,"sp")}</article>`).join("");
+  const members=window.kotamaPartyHudLayout(getParty());
+  const key=JSON.stringify(members.map(({c,row,slot})=>[c.id,c.name,c.image,c.hp,c.sp,effectiveStats(c).maxHp,c.maxSp,typeof levelOf==="function"?levelOf(c):1,row,slot]));
+  if(box.dataset.renderKey===key&&box.childElementCount===members.length)return;box.dataset.renderKey=key;
+  box.classList.add("kotama-party-hud");
+  box.innerHTML=members.map(({c,row,slot,column,gridRow})=>'<article class="kph-member'+(c.hp<=0?' kph-dead':'')+'" data-row="'+row+'" data-slot="'+slot+'" style="grid-column:'+column+' / span 2;grid-row:'+gridRow+'">'+window.kotamaPartyHudContent(c)+'</article>').join("");
 }
 function fieldToggleFullMap(force) {
   const full = $("field-fullmap"); if (!full) return;
