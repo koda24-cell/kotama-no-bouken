@@ -1950,7 +1950,7 @@ function clearNegativeStatuses(character){
     Object.keys(character.negativeStatuses).forEach(key=>delete character.negativeStatuses[key]);
   }
 }
-const unionPortraitFiles={kotama:"kotama.png",knight:"kishi.png",warrior:"sennshi.png",healer:"hi-ra-.png",mage:"mahoutukai.png"};
+const unionPortraitFiles={kotama:"kotama.webp",knight:"kishi.webp",warrior:"sennshi.webp",healer:"hi-ra-.webp",mage:"mahoutukai.webp"};
 async function showUnionCutin(skill, participants){
   const unionDetail={actorId:participants[0]?.id,participantIds:participants.map(c=>c.id),skillName:skill.name,skillType:skill.type};// [EVT]
   battleEmit("union:start",unionDetail);

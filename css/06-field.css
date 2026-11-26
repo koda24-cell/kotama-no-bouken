@@ -108,7 +108,7 @@
 /* 主人公（仮：コタマの立ち絵を縮小。GPTが4方向×歩行コマの絵に差し替える） */
 .field-player{position:absolute;width:32px;height:40px;pointer-events:none}
 .field-player-shadow{position:absolute;left:7px;right:7px;bottom:2px;height:6px;border-radius:50%;background:#0006}
-.field-player-sprite{position:absolute;inset:0 0 4px;background:url("../assets/characters/kotama.png") center top/contain no-repeat;transform-origin:50% 100%}
+.field-player-sprite{position:absolute;inset:0 0 4px;background:url("../assets/characters/kotama.webp") center top/contain no-repeat;transform-origin:50% 100%}
 .field-player[data-dir="left"] .field-player-sprite{transform:scaleX(-1)}
 .field-player[data-moving="true"][data-step="1"] .field-player-sprite,.field-player[data-moving="true"][data-step="3"] .field-player-sprite{translate:0 -2px}
 .field-player[data-moving="true"][data-dir="left"][data-step="1"] .field-player-sprite,.field-player[data-moving="true"][data-dir="left"][data-step="3"] .field-player-sprite{translate:0 -2px}
