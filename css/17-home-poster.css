@@ -1,5 +1,5 @@
 /* Home-only composition; later artwork is supplied via --home-scene-image. */
-body[data-screen="home"]{--home-scene-image:url('../assets/8091ad13-a63c-469c-b31a-8c16f3d1d70d.png');--home-scene-brightness:.85;--home-accent:#e1d6ab;--home-menu-width:30%;margin:0;padding:0!important;overflow:hidden;background:#101a23}
+body[data-screen="home"]{--home-scene-image:url('../assets/optimized/8091ad13-a63c-469c-b31a-8c16f3d1d70d.png.webp');--home-scene-brightness:.85;--home-accent:#e1d6ab;--home-menu-width:30%;margin:0;padding:0!important;overflow:hidden;background:#101a23}
 body[data-screen="home"] .game{position:relative;width:100%!important;max-width:none!important;height:100dvh;min-height:0!important;display:block;padding:0;margin:0;overflow:hidden}
 body[data-screen="home"] .game>main{position:absolute;inset:0;width:100%;max-width:none;margin:0;padding:0}
 body[data-screen="home"] #home.active{position:absolute;inset:0;display:block!important;min-height:0;width:100%;height:100%;overflow:hidden;margin:0;padding:0;border:0;border-radius:0;background:#15242f;box-shadow:none;isolation:isolate}

@@ -1,0 +1,302 @@
+[
+  {
+    "source": "assets/8091ad13-a63c-469c-b31a-8c16f3d1d70d.png",
+    "output": "assets/optimized/8091ad13-a63c-469c-b31a-8c16f3d1d70d.png.webp",
+    "before": 3583011,
+    "after": 314940,
+    "size": [
+      1200,
+      675
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-01-forest.png",
+    "output": "assets/optimized/battle-backgrounds/floor-01-forest.png.webp",
+    "before": 3258175,
+    "after": 382048,
+    "size": [
+      1600,
+      800
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-02-water.png",
+    "output": "assets/optimized/battle-backgrounds/floor-02-water.png.webp",
+    "before": 2690452,
+    "after": 274102,
+    "size": [
+      1600,
+      800
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-02-water.webp",
+    "output": "assets/optimized/battle-backgrounds/floor-02-water.webp.webp",
+    "before": 2019314,
+    "after": 274102,
+    "size": [
+      1600,
+      800
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-03-ruins.png",
+    "output": "assets/optimized/battle-backgrounds/floor-03-ruins.png.webp",
+    "before": 2834621,
+    "after": 250136,
+    "size": [
+      1600,
+      800
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-03-ruins.webp",
+    "output": "assets/optimized/battle-backgrounds/floor-03-ruins.webp.webp",
+    "before": 1906834,
+    "after": 250136,
+    "size": [
+      1600,
+      800
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-04-volcano.png",
+    "output": "assets/optimized/battle-backgrounds/floor-04-volcano.png.webp",
+    "before": 2883059,
+    "after": 273694,
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-04-volcano.webp",
+    "output": "assets/optimized/battle-backgrounds/floor-04-volcano.webp.webp",
+    "before": 1915190,
+    "after": 273694,
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-05-castle.png",
+    "output": "assets/optimized/battle-backgrounds/floor-05-castle.png.webp",
+    "before": 2593919,
+    "after": 232884,
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/battle-backgrounds/floor-05-castle.webp",
+    "output": "assets/optimized/battle-backgrounds/floor-05-castle.webp.webp",
+    "before": 1804790,
+    "after": 232884,
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/characters/hi-ra-.webp",
+    "output": "assets/optimized/characters/hi-ra-.webp.webp",
+    "before": 174382,
+    "after": 39558,
+    "size": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/characters/kishi.webp",
+    "output": "assets/optimized/characters/kishi.webp.webp",
+    "before": 160824,
+    "after": 35826,
+    "size": [
+      628,
+      800
+    ]
+  },
+  {
+    "source": "assets/characters/kotama.webp",
+    "output": "assets/optimized/characters/kotama.webp.webp",
+    "before": 182572,
+    "after": 38756,
+    "size": [
+      616,
+      800
+    ]
+  },
+  {
+    "source": "assets/characters/イラスト128.1.webp",
+    "output": "assets/optimized/characters/イラスト128.1.webp.webp",
+    "before": 198914,
+    "after": 90710,
+    "size": [
+      1191,
+      1000
+    ]
+  },
+  {
+    "source": "assets/characters/イラスト128.2.webp",
+    "output": "assets/optimized/characters/イラスト128.2.webp.webp",
+    "before": 209084,
+    "after": 83396,
+    "size": [
+      1191,
+      1000
+    ]
+  },
+  {
+    "source": "assets/characters/イラスト131.2.webp",
+    "output": "assets/optimized/characters/イラスト131.2.webp.webp",
+    "before": 629640,
+    "after": 110268,
+    "size": [
+      800,
+      1200
+    ]
+  },
+  {
+    "source": "assets/characters/イラスト131.webp",
+    "output": "assets/optimized/characters/イラスト131.webp.webp",
+    "before": 158702,
+    "after": 61442,
+    "size": [
+      595,
+      663
+    ]
+  },
+  {
+    "source": "assets/monsters/13964637-9c62-4394-a172-31b721771096.png",
+    "output": "assets/optimized/monsters/13964637-9c62-4394-a172-31b721771096.png.webp",
+    "before": 2474412,
+    "after": 436048,
+    "size": [
+      1200,
+      1097
+    ]
+  },
+  {
+    "source": "assets/monsters/33710b53-8af8-4ef3-b69b-a204696db496.png",
+    "output": "assets/optimized/monsters/33710b53-8af8-4ef3-b69b-a204696db496.png.webp",
+    "before": 2063537,
+    "after": 179628,
+    "size": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/monsters/62ee5c0e-50b9-41c6-90f2-618d52d120a0.png",
+    "output": "assets/optimized/monsters/62ee5c0e-50b9-41c6-90f2-618d52d120a0.png.webp",
+    "before": 2172991,
+    "after": 162266,
+    "size": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/monsters/64bb1648-e941-4a0f-b475-0e8b1a0c1181.png",
+    "output": "assets/optimized/monsters/64bb1648-e941-4a0f-b475-0e8b1a0c1181.png.webp",
+    "before": 2406182,
+    "after": 469676,
+    "size": [
+      1097,
+      1200
+    ]
+  },
+  {
+    "source": "assets/monsters/7a6e64a3-1704-4d0e-b46f-006befd1801d.png",
+    "output": "assets/optimized/monsters/7a6e64a3-1704-4d0e-b46f-006befd1801d.png.webp",
+    "before": 2274321,
+    "after": 370384,
+    "size": [
+      1097,
+      1200
+    ]
+  },
+  {
+    "source": "assets/monsters/a7ceca83-c5cc-4b88-a19c-259865aa9347.png",
+    "output": "assets/optimized/monsters/a7ceca83-c5cc-4b88-a19c-259865aa9347.png.webp",
+    "before": 1989912,
+    "after": 290602,
+    "size": [
+      1097,
+      1200
+    ]
+  },
+  {
+    "source": "assets/monsters/dcebcee7-80cb-4260-8ded-3680ee605f6b.png",
+    "output": "assets/optimized/monsters/dcebcee7-80cb-4260-8ded-3680ee605f6b.png.webp",
+    "before": 1582610,
+    "after": 261798,
+    "size": [
+      1097,
+      1200
+    ]
+  },
+  {
+    "source": "assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png",
+    "output": "assets/optimized/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png.webp",
+    "before": 1318233,
+    "after": 203054,
+    "size": [
+      1200,
+      1097
+    ]
+  },
+  {
+    "source": "assets/monsters/goburinn.webp",
+    "output": "assets/optimized/monsters/goburinn.webp.webp",
+    "before": 1215164,
+    "after": 311236,
+    "size": [
+      1097,
+      1200
+    ]
+  },
+  {
+    "source": "assets/monsters/maou.png",
+    "output": "assets/optimized/monsters/maou.png.webp",
+    "before": 395591,
+    "after": 40334,
+    "size": [
+      800,
+      705
+    ]
+  },
+  {
+    "source": "assets/monsters/毒胞子を放つキノコもどき.png",
+    "output": "assets/optimized/monsters/毒胞子を放つキノコもどき.png.webp",
+    "before": 2235836,
+    "after": 327254,
+    "size": [
+      1200,
+      1097
+    ]
+  },
+  {
+    "source": "assets/monsters/氷晶をまとった鉱石ガニ.png",
+    "output": "assets/optimized/monsters/氷晶をまとった鉱石ガニ.png.webp",
+    "before": 2527068,
+    "after": 256010,
+    "size": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/title/kotama-title.png",
+    "output": "assets/optimized/title/kotama-title.png.webp",
+    "before": 2547720,
+    "after": 380220,
+    "size": [
+      1600,
+      674
+    ]
+  }
+]
