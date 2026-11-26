@@ -119,6 +119,53 @@
       ],
       "design": "docs/3d/B5_ABYSS_TEMPLE_V6_DESIGN.md",
       "preview": "preview/b5v6-asset-lab.html"
+    },
+    {
+      "id": "f3-industrial-city",
+      "version": "V2-grounded",
+      "floor": 3,
+      "title": "第3層 遺跡都市 V2",
+      "author": "Codex",
+      "updated_at": "2026-11-26T10:26:13Z",
+      "source_sha": "8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d",
+      "pr": 785,
+      "public_review": true,
+      "approval": "NOT_APPROVED",
+      "kind": "scene",
+      "images": [
+        {
+          "path": "docs/3d/f3-city-v2-review-20261126/7f-residential-street.png",
+          "label": "7F 廃住居と支持付き連絡橋"
+        },
+        {
+          "path": "docs/3d/f3-city-v2-review-20261126/8f-factory-street.png",
+          "label": "8F 工場窓・鉄骨・路面と下草"
+        },
+        {
+          "path": "docs/3d/f3-city-v2-review-20261126/9f-reclaimed-plaza.png",
+          "label": "9F 植生の戻る遺跡と風化した石像"
+        },
+        {
+          "path": "docs/3d/f3-city-v2-review-20261126/public-entry.png",
+          "label": "実公開URLからの開始地点・地盤補修後"
+        }
+      ],
+      "assets": [
+        {
+          "label": "空間配置・地盤・植生",
+          "path": "field/field-3d-b3-industrial.js"
+        },
+        {
+          "label": "全35点のレビューカタログ",
+          "path": "assets/3d/dungeons/b3_industrial_candidates/catalog.json"
+        },
+        {
+          "label": "個別アセット・出典・正常run",
+          "path": "tools/f3-industrial/parts.json"
+        }
+      ],
+      "design": "docs/3d/F3_CITY_V2_REVIEW_20261126.md",
+      "preview": "preview/f3-industrial-playtest.html"
     }
   ]
 }
