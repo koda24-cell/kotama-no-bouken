@@ -210,7 +210,7 @@ function load(file) {
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
 function applyEnv(area, env) {
-  const review=area===1&&(window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1');
+  const review=area===1&&(g.sacredTrial!=null||window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1');
   const E = review?{...(env||ENV_B1),hemi:{sky:0xbac6b4,ground:0x626f58,high:1.9,low:2.2}}:(env||ENV_B1);
   if(review&&!g.reviewFill){g.reviewFill=new THREE.AmbientLight(0xbac6ac,.32);g.scene.add(g.reviewFill);}
   if(g.reviewFill)g.reviewFill.intensity=review?.32:0;
@@ -373,7 +373,7 @@ async function buildFloor() {
   }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
   let sacred = false;
-  if (area === 1 && a.f === 2 && (new URLSearchParams(location.search).get('f1sacred') === '1' || window.KotamaSacredPlaytest === true)) {
+  if (area === 1 && a.f === 2) {
     try {
       const { buildSacredForestTrial } = await import('./field-3d-b1-sacred-trial.js?v=20261117-1');
       const trial = await buildSacredForestTrial({ world: g.world, area: a, renderer:g.renderer,
@@ -441,7 +441,7 @@ async function buildFloor() {
       g.firstLayerDress=dressing;applyEnv(area,dressing.env);
     }catch(error){console.warn('[field-3d] 一層の段階装飾を読み込めません:',error);}
   }
-  if(area===1&&(new URLSearchParams(location.search).get('f1sacred')==='1'||window.KotamaSacredPlaytest===true)){
+  if(area===1&&(a.f===2||new URLSearchParams(location.search).get('f1sacred')==='1'||window.KotamaSacredPlaytest===true)){
     try{const {buildFirstLayerNatureV6}=await import('./f1-nature-v6.js');
       const tiles=Array.from({length:a.h},(_,z)=>Array.from({length:a.w},(_,x)=>[x,z])).flat();
       const nature=await buildFirstLayerNatureV6({world:g.world,area:a,openTiles:tiles.filter(([x,z])=>!wallCell(x,z)),walkTiles:tiles.filter(([x,z])=>!fieldCharSolid(a,ch(x,z)))});
@@ -456,7 +456,7 @@ async function buildFloor() {
     switch (o.kind) {
       case 'stairs':
         if (o.dir === 'down') e.obj = place(g.world, S.stairsDown, x, 0, z, ry);
-        else { if (!sacred) place(g.world, S.floor, x, 0, z); e.obj = place(g.world, S.stairsUp, x, 0, z - 0, (area===1&&(window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1'))?ry:ry + Math.PI, 0.75); }
+        else { if (!sacred) place(g.world, S.floor, x, 0, z); e.obj = place(g.world, S.stairsUp, x, 0, z - 0, (area===1&&(a.f===2||window.KotamaSacredPlaytest===true||new URLSearchParams(location.search).get('f1sacred')==='1'))?ry:ry + Math.PI, 0.75); }
         break;
       case 'save': place(g.world, S.seal, x, 0.005, z, 0, 0.8); e.obj = place(g.world, S.torch, x, 0, z); e.at.y = 1.9; break;
       case 'chest': case 'cache': e.ry = ry; break;   // 開閉に応じて sync で置く
