@@ -64,7 +64,8 @@ function fieldBuildDom() {
   fieldState.lastTileKey = "";
   fieldSpawnFoes();
   fieldMiniDirty = true;
-  if (window.KotamaField3D) window.KotamaField3D.build();   // [FIELD-3D] 第1階層の一人称3D表示（field/field-3d-view.js）
+  if (window.KotamaField3D) window.KotamaField3D.build();
+  else window.KotamaLoad3D?.().catch(error=>{if(document.body.dataset.screen==='field')window.Kotama3DLoading?.fail('3Dプログラムを読み込めません。再試行してください');console.warn('[field-3d]',error);});   // [FIELD-3D] 第1階層の一人称3D表示（field/field-3d-view.js）
 }
 function fieldViewScale() {
   const vp = $("field-viewport"); if (!vp) return 1;
@@ -73,6 +74,9 @@ function fieldViewScale() {
 function fieldRender() {
   const a = fieldArea(), vp = $("field-viewport"), map = $("field-map"), p = $("field-player");
   if (!a || !vp || !map || !p) return;
+  // The hidden 2D layer must not compete with camera rotation or WebGL rendering.
+  const in3d=!!window.KotamaField3D?.active();
+  if(!in3d){
   const view = fieldViewPos();   // [GRID] 見た目の位置（移動アニメーション中は補間）
   p.style.left = (view.x - 16) + "px";
   p.style.top = (view.y - 34) + "px";
@@ -89,9 +93,11 @@ function fieldRender() {
     fog.style.background = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${Math.round(r * .55)}px, rgba(0,0,0,.5) ${Math.round(r * .95)}px, rgba(0,0,0,.66) ${Math.round(r * 1.25)}px)`;
   }
   fieldRenderFoes();
-  fieldRenderPartyHud();
+  }
+  const hudNow=performance.now();
+  if(!in3d||hudNow-(fieldRender.lastHud||0)>=100){fieldRender.lastHud=hudNow;fieldRenderPartyHud();}
   const now = performance.now();
-  if (fieldMiniDirty || now - fieldMiniTimer > 250) { fieldMiniTimer = now; fieldMiniDirty = false; fieldDrawMinimap(); if (fieldState.mapOpen) fieldDrawFullMap(); }
+  if (fieldMiniDirty || now - fieldMiniTimer > (in3d ? 500 : 250)) { fieldMiniTimer = now; fieldMiniDirty = false; fieldDrawMinimap(); if (fieldState.mapOpen) fieldDrawFullMap(); }
   if (window.KotamaField3D) window.KotamaField3D.frame();   // [FIELD-3D]
 }
 
