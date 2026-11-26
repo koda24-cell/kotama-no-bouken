@@ -223,7 +223,7 @@ try{
   assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
   const adminBossLaunch=true;
   const enemyPortraits=await page.evaluate(async()=>{
-    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.png","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.png","fire-lizard":"62ee5c0e-50b9-41c6-90f2-618d52d120a0.png","lava-golem":"13964637-9c62-4394-a172-31b721771096.png","dark-knight":"7a6e64a3-1704-4d0e-b46f-006befd1801d.png","wraith":"64bb1648-e941-4a0f-b475-0e8b1a0c1181.png"};
+    const expected={"mushroom":"毒胞子を放つキノコもどき.webp","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.webp","ore-crab":"氷晶をまとった鉱石ガニ.webp","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.webp","goblin-scout":"dcebcee7-80cb-4260-8ded-3680ee605f6b.webp","forest-wolf":"a7ceca83-c5cc-4b88-a19c-259865aa9347.webp","fire-lizard":"62ee5c0e-50b9-41c6-90f2-618d52d120a0.webp","lava-golem":"13964637-9c62-4394-a172-31b721771096.webp","dark-knight":"7a6e64a3-1704-4d0e-b46f-006befd1801d.webp","wraith":"64bb1648-e941-4a0f-b475-0e8b1a0c1181.webp"};
     const result=[];
     const oldEnemy=battleState.enemy,oldMode=battleState.encounterMode,oldReveal=adminCompendiumReveal;
     try{
@@ -245,7 +245,7 @@ try{
         result.push({id,file,width:art.naturalWidth,height:art.naturalHeight});
       }
       const path=enemyData[0].image;
-      if(path!=='assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png')throw Error('Incorrect slime mapping');
+      if(path!=='assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.webp')throw Error('Incorrect slime mapping');
       const bossCard=document.querySelector('[data-monster-id="boss-1"] img');
       if(!bossCard||bossCard.getAttribute('src')!==path)throw Error('Incorrect slime compendium mapping');
       battleState.encounterMode=false;battleState.enemy={...enemyData[0],maxHp:enemyData[0].hp};renderBattle();
