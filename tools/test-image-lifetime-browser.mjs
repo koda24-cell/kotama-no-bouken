@@ -54,8 +54,23 @@ try{
     }finally{window.confirm=oldConfirm;}
   });
   assert.deepEqual(levelTest,{set:10,up:11,down:10,confirmations:0,restored:true});
+  const fieldLayout=await page.evaluate(()=>{
+    fieldEnsureExtraDom();
+    const field=document.getElementById('field'),home=document.getElementById('home');
+    const old=document.body.dataset.screen;
+    home.classList.remove('active');field.classList.add('active');document.body.dataset.screen='field';
+    try{
+      document.getElementById('field-area-name').textContent='第1階層 はじまりの樹海';
+      const rect=id=>{const r=document.getElementById(id).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width};};
+      return {field:rect('field'),map:rect('field-map-rail'),name:rect('field-area-name'),clock:rect('field-clock')};
+    }finally{field.classList.remove('active');home.classList.add('active');document.body.dataset.screen=old;}
+  });
+  assert.ok(fieldLayout.map.top-fieldLayout.field.top<40,'map not top-right');
+  assert.ok(fieldLayout.field.right-fieldLayout.map.right<40,'map not aligned right');
+  assert.ok(fieldLayout.clock.left>=fieldLayout.name.right-1,'clock must be right of title');
+  assert.ok(fieldLayout.clock.right<=fieldLayout.map.left+1,'clock and map overlap');
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
