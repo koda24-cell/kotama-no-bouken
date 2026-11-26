@@ -1,0 +1,51 @@
+name: Field rendering performance checks
+on:
+  pull_request:
+    paths:
+      - 'field/field-3d-view.js'
+      - 'field/field-render.js'
+      - 'index.html'
+      - 'admin-tools.js'
+      - '.github/workflows/field-render-performance-check.yml'
+  push:
+    branches: [feature/gpt-mobile-memory-turn-performance-20261126]
+    paths:
+      - 'field/field-3d-view.js'
+      - 'field/field-render.js'
+      - 'index.html'
+      - 'admin-tools.js'
+      - '.github/workflows/field-render-performance-check.yml'
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and performance policy checks
+        run: |
+          node --input-type=module --check < field/field-3d-view.js
+          node --check field/field-render.js
+          node --check admin-tools.js
+          node <<'NODE'
+          const fs=require('node:fs'), assert=require('node:assert/strict'), vm=require('node:vm');
+          const source=fs.readFileSync('field/field-3d-view.js','utf8'), html=fs.readFileSync('index.html','utf8'), renderer=fs.readFileSync('field/field-render.js','utf8');
+          const start=source.indexOf('const perfBudget='), end=source.indexOf('function phonePixelRatio',start);
+          assert(start>=0&&end>start);
+          const context=vm.createContext({g:{maxFps:60,size:[100,100]}});
+          vm.runInContext(source.slice(start,end),context);
+          let now=100;
+          for(let i=0;i<150;i++){now+=40;vm.runInContext('observeFrame('+now+')',context);}
+          assert(vm.runInContext('perfBudget.scale',context)<=.8);
+          assert(vm.runInContext('perfBudget.scale',context)>=.65);
+          for(let i=0;i<900;i++){now+=16.67;vm.runInContext('observeFrame('+now+')',context);}
+          assert.equal(vm.runInContext('perfBudget.scale',context),1);
+          assert(html.includes("import('./field/field-3d-view.js?v="));
+          assert(!/<script\s+type="module"\s+src="\.\/field\/field-3d-view\.js/.test(html));
+          assert(renderer.includes('if(!in3d){'));
+          assert(source.includes('await releaseFloorResources()'));
+          console.log('Adaptive resolution, deferred loading, rendering guard and resource-release wiring checks passed.');
+          NODE
