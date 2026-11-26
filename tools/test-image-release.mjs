@@ -30,3 +30,16 @@ gpu.releaseFoeImages();assert.equal(disposed,2);assert.equal(spritesDisposed,1);
 gpu.releaseFoeImages();assert.equal(disposed,2);
 assert.match(fs.readFileSync('css/15-battle-ui-refresh.css','utf8'),/#battle:not\(\.active\)\{--battle-floor-art:none!important\}/);
 console.log('PASS: screen image cleanup, shared texture retention, final texture disposal and inactive background guard (mocked DOM/GPU).');
+
+const layout=vm.createContext({gatherDef:o=>({kind:o.gatherKind}),loaded:[]});
+vm.runInContext('async function load(file){loaded.push(file);}'+'\n'+extract('field/field-3d-view.js','firstFloorSharedKeys')+'\n'+extract('field/field-3d-view.js','loadSharedAssets').replace('function loadSharedAssets','async function loadSharedAssets'),layout);
+const empty=layout.firstFloorSharedKeys({objects:[]});
+assert.equal(empty.length,13);
+assert.ok(!empty.includes('chest')&&!empty.includes('npcWood'));
+const populated=layout.firstFloorSharedKeys({objects:[{kind:'stairs',dir:'up'},{kind:'chest'},{kind:'gather',gatherKind:'mine'},{kind:'npc',id:'woodcutter'},{kind:'door',hidden:false},{kind:'event',hidden:true}]});
+for(const k of ['stairsUp','chest','chestOpen','mining','npcWood','gate','roots'])assert.ok(populated.includes(k),k);
+assert.ok(!populated.includes('npcHerb')&&!populated.includes('stairsDown'));
+let done=0;
+await layout.loadSharedAssets(['a','b','c'],2,()=>done++);
+assert.equal(done,3);assert.equal(layout.loaded.length,3);
+console.log('PASS: floor-specific asset selection and rolling worker queue.');
