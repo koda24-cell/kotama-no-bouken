@@ -111,6 +111,7 @@ export class BannerSystem {
     this.parts = []; this.meshes = []; this.mats = [];
     for (const [mat, geos] of this.cloth) {
       const merged = mergeGeometries(geos); geos.forEach(g => g.dispose());
+      { const N = merged.attributes.normal.array, P = merged.attributes.position.array; for (let i = 0; i < P.length; i++) if (!Number.isFinite(P[i])) P[i] = 0; for (let i = 0; i < N.length; i += 3) if (!Number.isFinite(N[i] + N[i + 1] + N[i + 2])) { N[i] = 0; N[i + 1] = 0; N[i + 2] = 1; } }
       // 布目テクスチャを実寸 UV で使う（uv は m 単位）
       const m = mat.clone(); m.vertexColors = true; m.side = THREE.DoubleSide;
       const u = this.uniform;

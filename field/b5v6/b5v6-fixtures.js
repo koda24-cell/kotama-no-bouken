@@ -47,7 +47,7 @@ export function wallTorch(M, seed = 1, { palette = 0 } = {}) {
   parts.push([brace, M.iron, { grime: 0, soot: 1, moss: 0, seed: 52 }]);
   const cup = lathe([[0, 0], [0.05, 0], [0.12, 0.1], [0.14, 0.18], [0.12, 0.19], [0.1, 0.12], [0, 0.1]], 10).translate(0, 2.42, 0.4);
   parts.push([cup, M.iron, { grime: 0, soot: 1.4, moss: 0, seed: 53 }]);
-  return { parts, flames: [[0, 2.6, 0.4, 0.55, palette]], embers: [[0, 2.8, 0.4, 4, 0.08, 1.4]], lights: [[0, 2.7, 0.55, palette === 1 ? 0xff9a4a : 0x8a6ad8, 1.8, 4.8]],
+  return { parts, flames: [[0, 2.6, 0.4, 0.55, palette]], embers: [[0, 2.8, 0.4, 4, 0.08, 1.4]], lights: [[0, 2.7, 0.55, palette === 1 ? 0xd88a52 : 0x8a6ad8, 1.6, 4.8]],
     soot: { y0: 2.6, y1: 4.6, z: 0.002 } };
 }
 
@@ -66,7 +66,7 @@ export function candles(M, seed = 1, { count = 7, radius = 0.35, base = 0 } = {}
     if (R() < 0.6) { const d = new THREE.CapsuleGeometry(w * 0.35, h * 0.4, 2, 5).translate(x + w * 0.9, base + h * 0.55, z); parts.push([d, M.wax, false]); }
     if (R() < 0.82) flames.push([x, base + h, z, 0.09 + w * 1.4, 1]);
   }
-  return { parts, flames, embers: [], lights: [[0, base + 0.5, 0, 0xffa24e, 0.9, 3.2]] };
+  return { parts, flames, embers: [], lights: [[0, base + 0.5, 0, 0xd8945a, 0.8, 3.0]] };
 }
 
 // 倒れた篝火台（戦場跡の小物）

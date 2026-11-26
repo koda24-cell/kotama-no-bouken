@@ -41,9 +41,9 @@ export function chandelier(M, seed = 1, { radius = 1.2, chainTo = 6, tiers = 2, 
     }
   }
   // 鎖（輪をつなぐ 4 本＋天井への 1 本）
-  const link = new THREE.TorusGeometry(0.035 * k, 0.009 * k, 4, 8);
+  const link = new THREE.TorusGeometry(0.04 * k, 0.01 * k, 3, 6);
   const chainLine = (a, b) => {
-    const d = b.clone().sub(a), L = d.length(), n = Math.max(2, Math.floor(L / (0.06 * k))), q = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), d.clone().normalize());
+    const d = b.clone().sub(a), L = d.length(), n = Math.max(2, Math.floor(L / (0.075 * k))), q = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), d.clone().normalize());
     for (let i = 0; i < n; i++) {
       const g = link.clone().rotateY(i % 2 ? Math.PI / 2 : 0).rotateX(Math.PI / 2 * 0).applyQuaternion(q);
       const p = a.clone().addScaledVector(d, (i + 0.5) / n); g.translate(p.x, p.y, p.z); add(g);

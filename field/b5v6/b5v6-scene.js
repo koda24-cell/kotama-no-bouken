@@ -69,17 +69,25 @@ export async function createB5V6Scene({ root, a, ch, wallCell, hash, CELL = 4, g
   flames.build(group); embers.build(group); mist.build(group, CELL); shafts.build(group);
   ownedObj.push(flames, embers, mist, shafts, banners);
   updaters.push((t) => { flames.update(t); embers.update(t, g?.renderer?.getPixelRatio?.() || 1); mist.update(t); shafts.update(t); banners.update(t); });
-  for (const m of bucket.build(group, 'b5v6')) ownedGeo.push(m.geometry);
+  const staticMeshes = bucket.build(group, 'b5v6');
+  for (const m of staticMeshes) ownedGeo.push(m.geometry);
+  // 霧の向こう（約 46 m 先）の区画は描かない。区画は 12 m 角なので、カメラが 2 m 動くごとに判定し直す
+  const lastCam = new THREE.Vector3(1e9, 0, 0), sph = new THREE.Vector3();
+  updaters.push((t, camera) => {
+    if (!camera || camera.position.distanceToSquared(lastCam) < 4) return;
+    lastCam.copy(camera.position);
+    for (const m of staticMeshes) { const bs = m.geometry.boundingSphere; sph.copy(bs.center); m.visible = sph.distanceTo(camera.position) - bs.radius < 46; }
+  });
 
   // 遠景：奈落とビル群（破れ目と崩れた天井からだけ見える）
   const center = new THREE.Vector3((a.w - 1) * CELL / 2, 0, (a.h - 1) * CELL / 2);
-  const city = createB5V6DistantCity({ center, seed: 11 + a.f * 7, high, radius: [Math.max(a.w, a.h) * CELL * 0.5 + 18, Math.max(a.w, a.h) * CELL * 0.5 + 80] });
+  const city = createB5V6DistantCity({ center, seed: 11 + a.f * 7, high, radius: [Math.max(a.w, a.h) * CELL * 0.5 + 45, Math.max(a.w, a.h) * CELL * 0.5 + 110], focus: breaches.map(b => ({ pos: new THREE.Vector3(b.tx * CELL + b.dx * 2, 0, b.ty * CELL + b.dz * 2), dir: new THREE.Vector3(b.dx, 0, b.dz) })) });
   group.add(city.group); ownedObj.push(city); updaters.push(t => city.update(t));
 
   let disposed = false;
   return {
     group,
-    info: () => ({ stats, faces: arch.faces.length, piers: arch.piers.length, collapsed: arch.collapsed.length, breaches: breaches.length, lights: myLights.length, meshes: ownedGeo.length }),
+    info: () => ({ stats, breachList: breaches.map(b => [b.tx, b.ty, b.dx, b.dz]), faces: arch.faces.length, piers: arch.piers.length, collapsed: arch.collapsed.length, breaches: breaches.length, lights: myLights.length, meshes: ownedGeo.length }),
     // 壁に付いた謎解きの騎士像（14F）。既存のエントリ（調べる・状態）はそのまま使い、見た目だけこの像にする
     switchStatue(seed = 1) {
       const b = new Bucket(64), gr = new THREE.Group(); gr.name = 'b5v6:switch-knight';

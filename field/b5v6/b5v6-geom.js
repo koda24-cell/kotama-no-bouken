@@ -27,6 +27,10 @@ export function prep(geo) {
   if (!g.attributes.uv) g.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array(n * 2), 2));
   if (!g.attributes.color) g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 3).fill(1), 3));
   g.morphAttributes = {};
+  // 縮退した三角形の NaN を消す（NaN の法線はブルームで画面全体を黒くする）
+  const P = g.attributes.position.array, N = g.attributes.normal.array;
+  for (let i = 0; i < P.length; i++) if (!Number.isFinite(P[i])) P[i] = 0;
+  for (let i = 0; i < N.length; i += 3) if (!Number.isFinite(N[i]) || !Number.isFinite(N[i + 1]) || !Number.isFinite(N[i + 2]) || (N[i] === 0 && N[i + 1] === 0 && N[i + 2] === 0)) { N[i] = 0; N[i + 1] = 1; N[i + 2] = 0; }
   return g;
 }
 

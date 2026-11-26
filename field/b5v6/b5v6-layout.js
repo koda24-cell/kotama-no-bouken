@@ -33,14 +33,14 @@ export function layoutB5V6({ a, ch, wallCell, hash, CELL = 4, M, arch, heights, 
         placeAsset(ctx, knightStatue(M, i * 7 + 3, { damage: R() < 0.4 ? 'arm' : 'none' }), wallMount(fc).multiply(trs(0, 0, 0.55, 0, 0.72)));
         stats.statues++; usedFace.add(fc.key); return;
       }
-      placeAsset(ctx, candles(M, i * 11 + 1, { count: 5 + Math.floor(R() * 6), radius: 0.4, base: 0.95 + 0.07 }), wallMount(fc).multiply(trs((R() - 0.5) * 0.6, 0, -0.18)));
+      placeAsset(ctx, candles(M, i * 11 + 1, { count: (high ? 5 : 3) + Math.floor(R() * (high ? 6 : 3)), radius: 0.4, base: 0.95 + 0.07 }), wallMount(fc).multiply(trs((R() - 0.5) * 0.6, 0, -0.18)));
       stats.candles++; usedFace.add(fc.key);
       return;
     }
     // 平らな壁：一定の間隔で松明、間に旗
     const torchP = f === 1 ? 0.3 : 0.36;
     if (k < torchP) {
-      placeAsset(ctx, wallTorch(M, i, { palette: R() < (f === 1 ? 0.45 : 0.2) ? 1 : 0 }), wallMount(fc));
+      placeAsset(ctx, wallTorch(M, i, { palette: R() < (f === 1 ? 0.25 : 0.1) ? 1 : 0 }), wallMount(fc));
       stats.torches++; usedFace.add(fc.key);
     } else if (k < torchP + (f === 1 ? 0.32 : 0.18)) {
       banners.wallBanner(wallMount(fc), i * 13 + 5, { top: Math.min(fc.spring - 0.55, 5.1), h: 2.9 + R() * 0.9, color: f === 1 ? (R() < 0.6 ? 'blue' : 'red') : R() < 0.7 ? 'red' : 'black' });
@@ -64,7 +64,7 @@ export function layoutB5V6({ a, ch, wallCell, hash, CELL = 4, M, arch, heights, 
   for (const fc of arch.faces) {
     if (fc.variant === 'breach') continue;
     const R = rng(Math.floor(fc.seed * 1e9) + 91), lit = nearLight(fc.tx, fc.ty);
-    if (R() < (lit ? 0.75 : 0.32)) { placeAsset(ctx, wallVines(M, Math.floor(R() * 1e6), { y0: fc.spring - 0.3, count: 3 + Math.floor(R() * 5), leafy: lit ? 0.9 : 0.35, maxLen: lit ? 4.6 : 3.2 }), fc.matrix); stats.vines = (stats.vines || 0) + 1; }
+    if (R() < (lit ? 0.75 : 0.32) * (high ? 1 : 0.5)) { placeAsset(ctx, wallVines(M, Math.floor(R() * 1e6), { y0: fc.spring - 0.3, count: 3 + Math.floor(R() * 5), leafy: lit ? 0.9 : 0.35, maxLen: lit ? 4.6 : 3.2 }), fc.matrix); stats.vines = (stats.vines || 0) + 1; }
     if (R() < (lit ? 0.6 : 0.25)) placeAsset(ctx, floorRoots(M, Math.floor(R() * 1e6), { count: 2 + Math.floor(R() * 3) }), fc.matrix);
   }
 

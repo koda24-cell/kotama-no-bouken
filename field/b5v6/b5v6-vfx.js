@@ -121,7 +121,7 @@ export class GroundMist {
     }
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('aD', new THREE.Float32BufferAttribute(dens, 1));
     const mat = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x5a3a9a) } }]), fog: true,
+      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x4a3a7c) } }]), fog: true,
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
       vertexShader: `attribute float aD; varying float vD; varying vec3 vWp; varying float vDist; void main(){ vD = aD; vec4 wp = modelMatrix * vec4(position,1.0); vWp = wp.xyz; vec4 mv = viewMatrix * wp; vDist = -mv.z; gl_Position = projectionMatrix * mv; }`,
       fragmentShader: NOISE + FOG + `uniform float uTime; uniform vec3 uColor; varying float vD; varying vec3 vWp; varying float vDist;

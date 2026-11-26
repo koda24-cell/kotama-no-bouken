@@ -21,7 +21,7 @@ const hazeChunk = /* glsl */`
     return mix(col, hz, clamp(far * 0.5 + low * 0.7, 0.0, 0.9) * amount);
   }`;
 
-export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [62, 125], count = 46, seed = 5, high = true } = {}) {
+export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [62, 125], count = 46, seed = 5, high = true, focus = [] } = {}) {
   const group = new THREE.Group(); group.name = 'b5v6:distant-city';
   const owned = [], updaters = [], loader = new THREE.TextureLoader();
   const R = rng(seed);
@@ -73,7 +73,7 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
           float on = step(0.28, h(cell * 1.7 + slot + vSeed * 3.1));
           float flick = 0.85 + 0.15 * sin(uTime * (1.0 + h(cell)) * 3.0 + vSeed * 20.0);
           vec3 body = vec3(0.012, 0.011, 0.02) * (0.6 + 0.4 * vSide);
-          vec3 col = body + win * uTint * 1.6 * on * flick * vSide;
+          vec3 col = body + win * uTint * 1.05 * on * flick * vSide;
           gl_FragColor = vec4(applyHaze(col, vWp, 1.0), 1.0);
         }`
     });
@@ -90,7 +90,7 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
     for (let k = 0; k < uv.count; k++) {
       const nx = Math.abs(nrm.getX(k)), ny = Math.abs(nrm.getY(k));
       const across = nx > 0.5 ? pos.getZ(k) : pos.getX(k);
-      uv.setXY(k, (across + 50) / 24, (pos.getY(k) + h / 2) / 24);
+      uv.setXY(k, (across + 50) / 15, (pos.getY(k) + h / 2) / 15);
       if (ny > 0.5) uv.setXY(k, 0, 0);
     }
     g.translate(x, base + h / 2, z); g.rotateY(0);
@@ -101,7 +101,7 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
     if (R() < 0.35) {
       const h2 = 12 + R() * 30, g2 = new THREE.BoxGeometry(w * 0.6, h2, d * 0.6);
       const uv2 = g2.attributes.uv, n2 = g2.attributes.normal, p2 = g2.attributes.position;
-      for (let k = 0; k < uv2.count; k++) { const across = Math.abs(n2.getX(k)) > 0.5 ? p2.getZ(k) : p2.getX(k); uv2.setXY(k, (across + 50) / 24, (p2.getY(k) + h2 / 2) / 24); if (Math.abs(n2.getY(k)) > 0.5) uv2.setXY(k, 0, 0); }
+      for (let k = 0; k < uv2.count; k++) { const across = Math.abs(n2.getX(k)) > 0.5 ? p2.getZ(k) : p2.getX(k); uv2.setXY(k, (across + 50) / 15, (p2.getY(k) + h2 / 2) / 15); if (Math.abs(n2.getY(k)) > 0.5) uv2.setXY(k, 0, 0); }
       g2.translate(x, base + h + h2 / 2, z);
       g2.setAttribute('aSeed', new THREE.BufferAttribute(new Float32Array(p2.count).fill(R() * 10), 1));
       towerParts[Math.floor(R() * 3)].push(g2);
@@ -120,7 +120,7 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
   const cardDefs = [['sj_a', 0.294, 95], ['sj_b', 0.198, 88], ['sj_c', 0.143, 100], ['sj_d', 0.56, 40], ['sj_e', 0.337, 48], ['sj_f', 0.725, 30], ['hk_skyline', 1.074, 70], ['mh_fogcity', 1.548, 60]];
   const cardMat = (file) => {
     const m = new THREE.ShaderMaterial({
-      uniforms: { ...common, uMap: { value: tex(file) }, uGain: { value: file.startsWith('mh') ? 0.4 : file.startsWith('hk') ? 0.9 : 1.25 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+      uniforms: { ...common, uMap: { value: tex(file) }, uGain: { value: file.startsWith('mh') ? 0.22 : file.startsWith('hk') ? 0.9 : 1.25 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
       vertexShader: `varying vec2 vUv; varying vec3 vWp; void main(){ vUv = uv; vec4 wp = modelMatrix * vec4(position,1.0); vWp = wp.xyz; gl_Position = projectionMatrix * viewMatrix * wp; }`,
       fragmentShader: hazeChunk + `uniform sampler2D uMap; uniform float uGain; varying vec2 vUv; varying vec3 vWp;
         void main(){
@@ -148,6 +148,20 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
     m.lookAt(center.x, m.position.y, center.z); m.renderOrder = -4; m.frustumCulled = false;
     group.add(m);
   }
+
+  // 破れ目の正面には必ず実写のビルを置く（どの破れ目からも主役が見える）
+  const hero = ['sj_a', 'hk_skyline', 'sj_c', 'sj_b', 'sj_e'];
+  focus.forEach((fc, fi) => {
+    const dir = fc.dir.clone().normalize(), side = new THREE.Vector3(-dir.z, 0, dir.x);
+    for (let j = 0; j < 3; j++) {
+      const file = hero[(fi + j) % hero.length], def = cardDefs.find(d => d[0] === file);
+      const dist = 70 + j * 22 + R() * 10, lat = (j - 1) * (14 + R() * 8);
+      const h = def[2] * (1.0 + R() * 0.3), w = h * def[1];
+      const m = new THREE.Mesh(plane, cardMats.get(file)); m.scale.set(w, h, 1);
+      m.position.copy(fc.pos).addScaledVector(dir, dist).addScaledVector(side, lat); m.position.y = -h * 0.55 + (file === 'hk_skyline' ? 8 : 0);
+      m.lookAt(fc.pos.x, m.position.y, fc.pos.z); m.renderOrder = -4; m.frustumCulled = false; group.add(m);
+    }
+  });
 
   // ---------------------------------------------------------------- 航空障害灯・屋上の光帯
   const beaconGeo = new THREE.BufferGeometry().setFromPoints(tops);

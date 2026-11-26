@@ -173,7 +173,8 @@ export function buildB5V6Architecture({ a, ch, wallCell, hash, CELL = 4, M, buck
     const w = cells.filter(([x, y]) => walk(x, y));
     if (!w.length || w.length === 4) {
       // 4 マスとも通路：大広間の独立柱（ときどき）
-      if (w.length === 4 && hash(vx, vy, 431) < 0.35) {} else continue;
+      // 広い場所の独立柱は、普通の床（. * ,）に囲まれたときだけ（開始地点・安全地帯・広間の中央には立てない）
+      if (w.length === 4 && hash(vx, vy, 431) < 0.35 && cells.every(([x, y]) => '.*,'.includes(ch(x, y)))) {} else continue;
     }
     const px = (vx - 0.5) * CELL, pz = (vy - 0.5) * CELL;
     const hs = w.map(([x, y]) => H(x, y)), spring = Math.min(...hs.map(h => h.spring)), top = spring - 0.15;
