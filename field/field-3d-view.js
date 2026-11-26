@@ -32,6 +32,21 @@ const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 },
 const PHONE_VIEW = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(navigator.userAgent) || (navigator.maxTouchPoints>0 && matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<=600);
 const PHONE_FAR = 24, PHONE_LIGHT_RANGE = 16;
 const PHONE_FPS = 30, PHONE_MAX_PIXELS = 900000;
+// Adjust resolution only after sustained slow frames, never on every camera turn.
+const perfBudget={scale:1,frames:0,sum:0,good:0,last:0};
+function observeFrame(now){
+  const dt=perfBudget.last?now-perfBudget.last:0;perfBudget.last=now;
+  if(dt<=0||dt>250)return;
+  perfBudget.sum+=dt;perfBudget.frames++;
+  if(perfBudget.frames<30)return;
+  const average=perfBudget.sum/perfBudget.frames, target=1000/(g.maxFps||60);
+  perfBudget.frames=0;perfBudget.sum=0;
+  const old=perfBudget.scale;
+  if(average>target*1.3){perfBudget.scale=Math.max(.65,old-.1);perfBudget.good=0;}
+  else if(average<target*1.12){if(++perfBudget.good>=4){perfBudget.scale=Math.min(1,old+.05);perfBudget.good=0;}}
+  else perfBudget.good=0;
+  if(old!==perfBudget.scale)g.size=[0,0];
+}
 function phonePixelRatio(w,h){return Math.min(1,devicePixelRatio||1,Math.sqrt(PHONE_MAX_PIXELS/Math.max(1,w*h)));}
 function viewFar(distance){return PHONE_VIEW?Math.min(distance,PHONE_FAR):distance;}
 const CELL = 4, EYE = 1.6, BACK = 1.1;    // 1マス4m、目の高さ、マスの後ろ寄りに立つ距離
@@ -128,7 +143,7 @@ function mount() {
   if (!g.badge) { g.badge = document.createElement('div'); g.badge.className = 'field-3d-badge'; g.badge.hidden = true; vp.appendChild(g.badge); }
   const w = vp.clientWidth, h = vp.clientHeight;
   if (w && h && (w !== g.size[0] || h !== g.size[1])) {
-    g.size = [w, h]; if(PHONE_VIEW)g.renderer.setPixelRatio(phonePixelRatio(w,h)); g.renderer.setSize(w, h, false); g.canvas.style.width = w + 'px'; g.canvas.style.height = h + 'px';
+    g.size = [w, h]; const baseRatio=PHONE_VIEW?phonePixelRatio(w,h):g.high?Math.min(2,devicePixelRatio||1):Math.min(1.25,devicePixelRatio||1); g.renderer.setPixelRatio(baseRatio*perfBudget.scale); g.renderer.setSize(w, h, false); g.canvas.style.width = w + 'px'; g.canvas.style.height = h + 'px';
     g.camera.aspect = w / h; g.camera.updateProjectionMatrix();
     if (g.composer) { g.composer.setSize(w, h); g.composer.setPixelRatio(g.renderer.getPixelRatio()); }
   }
@@ -279,6 +294,8 @@ async function buildFloor() {
   report(5,'3Dテーマ準備');
   showBadge('3D表示を準備中…');
   const area = Number(fieldState.area);
+  // Release the previous stratum before loading another one, avoiding peak overlap.
+  if(g.envArea!==area){await releaseFloorResources();if(token!==g.buildToken||curKey()!==key)return;}
   let th = null;
   if (area === 2 || area === 3 || area === 4 || area === 5) {
     try { th = await retryLoad(()=>area === 2 ? loadTheme2() : area === 3 ? loadTheme3() : loadTheme45(area)); }
@@ -424,8 +441,9 @@ async function buildFloor() {
   }   // 第1階層の組み立てここまで
   report(95,'初回描画待ち');
   g.sig = doorSig(a);
-  g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';
-  for (const e of g.entries) syncEntry(e, S);
+  for (const e of g.entries) await scheduleEntrySync(e, S);
+  if(token!==g.buildToken||curKey()!==key)return;
+  g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';g.lastEntrySync=0;
   showBadge('');
   applyMode();
 }
@@ -505,6 +523,7 @@ function pruneFoeTextures(){
   for(const [src,texture] of g.texCache) if(!used.has(texture)){g.texCache.delete(src);texture.dispose();}
 }
 function releaseFoeImages(){
+  if(PHONE_VIEW)queueIdleRelease();
   if(PHONE_VIEW&&g.renderer&&!g.buildingKey){g.renderer.setSize(1,1,false);g.size=[0,0];}
   for(const v of g.foes.values())disposeFoe(v);
   g.foes.clear();pruneFoeTextures();
@@ -556,12 +575,14 @@ function camTarget() {
 }
 function updateCamera(dt) {
   const t = camTarget(), c = g.cam;
-  if (!c.ready) { c.pos.copy(t.pos); c.yaw = t.yaw; c.ready = true; }
-  const kp = 1 - Math.exp(-dt * 13), ky = 1 - Math.exp(-dt * 15);
+  if (!c.ready) { c.pos.copy(t.pos); c.yaw = t.yaw; c.ready = true; c.tileKey=Math.floor(fieldState.x/FIELD_TILE)+','+Math.floor(fieldState.y/FIELD_TILE);c.walkUntil=0; }
+  const kp = 1 - Math.exp(-dt * 13), ky = 1 - Math.exp(-dt * 18);
   c.pos.lerp(t.pos, kp);
   let dyaw = t.yaw - c.yaw; while (dyaw > Math.PI) dyaw -= Math.PI * 2; while (dyaw < -Math.PI) dyaw += Math.PI * 2;
   c.yaw += dyaw * ky;
-  const moving = c.pos.distanceTo(t.pos) > 0.05;
+  const tileKey=Math.floor(fieldState.x/FIELD_TILE)+','+Math.floor(fieldState.y/FIELD_TILE);
+  if(c.tileKey!==tileKey){c.tileKey=tileKey;c.walkUntil=performance.now()+STEP_MS;}
+  const moving = performance.now()<(c.walkUntil||0)&&c.pos.distanceTo(t.pos) > 0.05;
   const bob = moving ? Math.sin(performance.now() / 85) * 0.035 : 0;
   let bx = 0, bz = 0;
   if (c.bump > 0) { c.bump = Math.max(0, c.bump - dt); const s = Math.sin((1 - c.bump / 0.18) * Math.PI) * 0.14; bx = c.bumpDir[0] * s; bz = c.bumpDir[1] * s; }
@@ -656,6 +677,29 @@ function toggle(force) {
 }
 function showBadge(text) { if (!g.badge) return; g.badge.textContent = text; g.badge.hidden = !text; }
 
+async function releaseFloorResources(){
+  await Promise.allSettled([...pendingEntrySync]);
+  g.natureV6?.dispose();g.natureV6=null;g.firstLayerDress?.dispose();g.firstLayerDress=null;g.sacredTrial?.dispose();g.sacredTrial=null;g.cameraPortals=[];
+  if(g.theme){g.theme.dispose({final:true});g.theme=null;}
+  for(const obj of [...g.world.children])g.world.remove(obj);
+  for(const foe of g.foes.values())disposeFoe(foe);g.foes.clear();pruneFoeTextures();
+  for(const obj of [...g.dyn.children])if(obj!==g.near)g.dyn.remove(obj);
+  const models=await Promise.allSettled([...g.cache.values()]);g.cache.clear();
+  const geos=new Set(),mats=new Set(),textures=new Set();
+  for(const result of models)if(result.status==='fulfilled')result.value.traverse(obj=>{if(obj.geometry)geos.add(obj.geometry);for(const mat of [].concat(obj.material||[])){mats.add(mat);for(const tex of Object.values(mat))if(tex?.isTexture)textures.add(tex);}});
+  textures.forEach(t=>t.dispose());mats.forEach(m=>m.dispose());geos.forEach(geo=>geo.dispose());
+  g.entries=[];g.lights=[];g.lastLightKey='';g.builtKey='';g.cam.ready=false;g.renderer?.renderLists.dispose();
+}
+const pendingEntrySync=new Set();
+function scheduleEntrySync(e,S){const job=syncEntry(e,S);pendingEntrySync.add(job);job.catch(error=>console.warn('[field-3d] object sync',error)).finally(()=>pendingEntrySync.delete(job));return job;}
+let idleReleaseTimer=null;
+function queueIdleRelease(){
+  clearTimeout(idleReleaseTimer);idleReleaseTimer=setTimeout(()=>{
+    if(document.body.dataset.screen!=='home'||g.buildingKey||!g.renderer||!g.builtKey)return;
+    const key=g.builtKey;g.buildingKey=key;g.builtKey='';
+    releaseFloorResources().catch(error=>console.warn('[field-3d] idle release',error)).finally(()=>{if(g.buildingKey===key)g.buildingKey='';if(document.body.dataset.screen==='field')build();});
+  },1500);
+}
 function recoverFloor(key,error){
  console.error('[field-3d] floor failed:',key,error);
  if(g.buildingKey===key)g.buildingKey='';
@@ -668,6 +712,7 @@ function recoverFloor(key,error){
 function startFloorBuild(){const key=curKey();buildFloor().catch(e=>recoverFloor(key,e)).finally(()=>{if(g.buildingKey===key)g.buildingKey='';if(g.retryRequested){g.retryRequested=false;if(document.body.dataset.screen==='field'&&curKey()===key&&!active()){g.floorFailures.delete(key);g.failed=false;window.Kotama3DLoading?.show();build();}}});}
 function build() {
   if (!fieldOk() || document.body.dataset.screen!=='field') return;
+  clearTimeout(idleReleaseTimer);
   if (!eligible()) { applyMode(); if(document.body.dataset.screen==='field')window.Kotama3DLoading?.fail('3D表示を利用できません。再試行してください'); return; }
   if (!ensureRenderer()) { applyMode(); window.Kotama3DLoading?.fail('3D描画を初期化できません'); return; }
   mount();
@@ -684,13 +729,14 @@ function frame() {
   if (!fieldOk() || document.hidden || document.body.dataset.screen!=='field') return;
   if (!active()) { if (g.canvas && !g.canvas.hidden) applyMode(); if (eligible() && !g.buildingKey && g.builtKey !== curKey()) build(); return; }
   const now = performance.now();
-  if (g.maxFps && now - g.lastRender < 1000 / g.maxFps) return;
+  if (g.maxFps && now - g.lastRender < 1000 / g.maxFps - .5) return;
   g.lastRender = now;
-  const dt = g.lastT ? Math.min(PHONE_VIEW ? 0.1 : g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
+  observeFrame(now);
+  const dt = g.lastT ? Math.min(PHONE_VIEW ? 0.1 : g.maxFps ? 1 : 0.1, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
   mount();
   const a = fieldArea();
   if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; startFloorBuild(); return; }
-  for (const e of g.entries) syncEntry(e);
+  if(!g.lastEntrySync||now-g.lastEntrySync>=100){g.lastEntrySync=now;for (const e of g.entries) scheduleEntrySync(e);}
   syncFoes(now);
   updateCamera(dt);
   g.natureV6?.update(g.camera.position.x,g.camera.position.z);
@@ -724,7 +770,7 @@ function setPreview(n, on) {
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
 function gameReviewState() {
-  return { builtKey:g.builtKey, buildingKey:g.buildingKey, phoneView:PHONE_VIEW, sharedLoadReport:g.sharedLoadReport||null, drawDistance:g.camera?.far, floorFailures:Object.fromEntries(g.floorFailures),
+  return { builtKey:g.builtKey, buildingKey:g.buildingKey, phoneView:PHONE_VIEW, adaptiveResolutionScale:perfBudget.scale, sharedCacheSize:g.cache.size, sharedLoadReport:g.sharedLoadReport||null, drawDistance:g.camera?.far, floorFailures:Object.fromEntries(g.floorFailures),
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
     cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),

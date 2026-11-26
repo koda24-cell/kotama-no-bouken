@@ -51,7 +51,7 @@ function adminRenderBattleControls(){
 }
 // [FIELD-3D] 第2階層（凍てつく水源）の3D表示の試験。localStorage だけを使い、セーブ・進行には触れない
 function adminField3dPreview(){
- const api=window.KotamaField3D;if(!api||!api.setPreview)return '';
+ const api=window.KotamaField3D;if(!api||!api.setPreview)return '<div class="admin-section"><h3>3D表示の試験</h3><button type="button" id="admin-load-3d">3D試験機能を読み込む</button></div>';
  const on=api.previewOn(2);
  return '<div class="admin-section"><h3>3D表示の試験（第2階層・凍てつく水源）</h3><label class="admin-encounter-toggle"><input type="checkbox" id="admin-f3d-b2" '+(on?'checked':'')+'> 第2階層を一人称3Dで表示する（この端末だけ・試験用）</label><div class="admin-actions admin-skip-actions">'+[0,1,2].map(f=>'<button type="button" data-admin-f3d-floor="'+f+'" '+(on?'':'disabled')+'>第2階層 '+(f+1)+'F を3Dで確認</button>').join('')+'</div><p class="admin-note">通常の進行では第2階層は2D表示のままです。フロアの移動は「マップスキップ移動」と同じ扱いです。URL に ?f3d=b2 を付けても一時的に有効になります。</p></div>';
 }
@@ -73,6 +73,7 @@ function adminBindBattleControls(){
  content.querySelectorAll("[data-admin-union-max]").forEach(el=>el.addEventListener("click",()=>{if(state.screen!=="battle"||battleState.busy)return;const id=el.dataset.adminUnionMax,u=unionSkills[id];if(u)battleState.unionGauges[id]=u.requiredHits;renderBattle();renderAdminPanel();}));
 
  $("admin-battle-full-heal")?.addEventListener("click",()=>{if(state.screen!=="battle"||battleState.busy)return;for(const c of getParty()){const st=effectiveStats(c);c.hp=st.maxHp;c.sp=st.maxSp;if(typeof extClearHarmful==="function")extClearHarmful(c);if(typeof burnedTurns!=="undefined")burnedTurns[c.id]=0;c._defenseDownTurns=0;c._stunTurns=0;c._actionDisabledTurns=0;c._stunned=false;c.stunned=false;c.actionDisabled=false;}battleState.koCount=0;renderAll();renderAdminPanel();pushEvent("管理者操作：味方全員のHP・SPと不利な状態異常を全回復した。");});
+ $("admin-load-3d")?.addEventListener("click",async e=>{const button=e.currentTarget;button.disabled=true;try{await window.KotamaLoad3D();renderAdminPanel();}catch(error){button.disabled=false;button.textContent="3D機能の読み込みに失敗（再試行）";console.warn(error);}});
  $("admin-f3d-b2")?.addEventListener("change",e=>{window.KotamaField3D?.setPreview(2,e.target.checked);renderAdminPanel();});
  content.querySelectorAll("[data-admin-f3d-floor]").forEach(el=>el.addEventListener("click",async()=>{if(state.screen!=="field"){window.alert("フィールド探索中に使用してください。");return;}const f=Number(el.dataset.adminF3dFloor);await fieldEnterArea(2,{floor:0,adminSkip:true});if(f>0){fieldState.floor=f;fieldState.positioned=false;fieldState.built="";fieldShow();}}));
  content.querySelectorAll("[data-admin-skip-stage]").forEach(el=>el.addEventListener("click",async()=>{const n=Number(el.dataset.adminSkipStage),f=Number(el.dataset.adminSkipFloor)||0;await fieldEnterArea(n,{floor:f,adminSkip:true});renderAdminPanel();}));
