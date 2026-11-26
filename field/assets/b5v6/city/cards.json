@@ -1,0 +1,32 @@
+{
+ "sj_a": {
+  "src": "Nishi-Shinjuku",
+  "aspect": 0.29423076923076924
+ },
+ "sj_b": {
+  "src": "Nishi-Shinjuku",
+  "aspect": 0.1984126984126984
+ },
+ "sj_c": {
+  "src": "Nishi-Shinjuku",
+  "aspect": 0.1431159420289855
+ },
+ "sj_d": {
+  "src": "Nishi-Shinjuku",
+  "aspect": 0.559322033898305
+ },
+ "sj_e": {
+  "src": "Nishi-Shinjuku",
+  "aspect": 0.3373493975903614
+ },
+ "sj_f": {
+  "src": "Nishi-Shinjuku",
+  "aspect": 0.725
+ },
+ "hk_skyline": {
+  "aspect": 1.0740740740740742
+ },
+ "mh_fogcity": {
+  "aspect": 1.5483870967741935
+ }
+}

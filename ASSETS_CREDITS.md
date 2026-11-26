@@ -120,3 +120,8 @@ BGM
 - `field/b4-surface-library.js`：既存の `assets/3d/dungeons/b4_dragonfire/textures/` の火山岩・灰色石・黒ずんだ青銅・溶岩の色/法線/粗さ/発光画像を再利用。元画像の削除・上書きなし。
 - `field/b4-volcanic-detail.js`：柱状節理、破砕岩、冷却岩殻、爪痕、火の粉をThree.jsの基本形状から生成。GPT / Codexによる本プロジェクト用のオリジナル描画コード。
 - 炭化坑木の木目と城塞の灰煙・溶岩の照り返しの背景は、同コード内で数式とCanvasから生成。外部の画像・モデル・ライブラリ・サービスの追加なし。第三者素材からの転用なし。
+
+## B5 V6 黒い神殿・深淵（2026-11-26, Claude, 未承認）
+- テクスチャ（CC0）：Poly Haven rough_block_wall／castle_wall_slates／granular_concrete／rock_tile_floor_02／monastery_stone_floor、ambientCG Metal021／Metal013／Fabric024。色補正して `field/assets/b5v6/tex/` に配置。
+- 遠景ビル（CC0）：Wikimedia Commons「Hong Kong skyscrapers in a night of typhoon」（Wilfredor）、「Clouds over Lower Manhattan skyscrapers at night」、「Skyscrapers in Nishi-Shinjuku at night」（panayota @Pixabay）、ambientCG Facade009／010／020C。
+- 詳細（URL・加工内容）：`field/assets/b5v6/CREDITS.md`。CC0 のためクレジット表記は必須ではないが、出典として記録する。
