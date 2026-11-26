@@ -8,6 +8,21 @@
    ------------------------------------------------------------ */
 async function fieldInteract(o) {
   if (fieldState.lock) return;
+  if (fieldState.area === 1 && fieldState.floor === 0) {
+    if (o.id === "a1-trial-guard") { await fieldA1Report(); return; }
+    if (o.id === "a1-wounded") { await fieldA1Wounded(); return; }
+    if (o.id === "a1-lost") { await fieldA1Lost(); return; }
+    if (o.id === "a1-resting") {
+      await fieldPlayScene("a1-resting");
+      if (!fieldSideDone("a1-axe-return") && fieldSideDone("a1-old-stump")) {
+        if (await fieldAsk("見つけた手斧を預けますか？（持ち主へ届けてもらう）",["預ける","やめる"])===0 && !fieldSideDone("a1-axe-return")) {
+          fieldSideMarkDone("a1-axe-return"); const got=fieldSideGrant(fieldSideDef("a1-axe-return")); persistAutoSave();
+          await fieldSay("ボルドさんの斧だね。街で渡しておくよ。"+got,"a1-adventurer");
+        }
+      }
+      return;
+    }
+  }
   if (o.kind === "npc" || o.kind === "sign") {
     await fieldPlayScene(o.scene);
     if (o.sideEvents && typeof fieldRunNpcSideEvents === "function") await fieldRunNpcSideEvents(o);   // [SIDE]（Claude B）
@@ -60,6 +75,7 @@ async function fieldGather(o) {
   const bonus = typeof FIELD_GATHER_RULES !== "undefined" && Number.isFinite(FIELD_GATHER_RULES.bonusChance) ? FIELD_GATHER_RULES.bonusChance : .25;
   const count = Math.random() < bonus ? 2 : 1;
   const ok = fieldLootAddMaterial(mat, count, "gather");
+  if (ok && a.n === 1 && a.f === 0) fieldState.flags["a1:trial-gather"] = true;
   if (remaining <= 0) document.querySelector(`#field-map .field-object[data-key="${CSS.escape(o.key)}"]`)?.classList.add("is-opened");
   if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .6);
   fieldEmit("gather", { area: fieldState.area, floor: fieldState.floor, objectId: o.key, objectKey: o.key, kind: def.kind, material: ok ? mat : null, count: ok ? count : 0, uses: def.uses, remaining, state: remaining > 0 ? "ready" : "depleted", respawn: fieldGatherRespawnRule(), respawnAt: fieldGatherRespawnAt(o) });
@@ -391,6 +407,10 @@ async function fieldOnStairs(dir) {
   if (fieldState.lock) return;
   const target = dir === "down" ? fieldState.floor + 1 : fieldState.floor - 1;
   if (target < 0 || target >= fieldFloorCount(fieldState.area)) return;
+  if (fieldState.area === 1 && fieldState.floor === 0 && dir === "down" && !fieldA1TrialPassed()) {
+    await fieldSay("2F以降へ進むには通行証が必要だ。入口の衛兵に課題の成果を報告しよう。");
+    return;
+  }
   const choice = await fieldAsk(`${fieldFloorLabel(fieldState.area, target)}へ${dir === "down" ? "降り" : "上り"}ますか？`, [dir === "down" ? "降りる" : "上る", "やめる"]);
   if (choice !== 0) return;
   if (typeof sound === "function") sound("select");
@@ -511,6 +531,7 @@ async function fieldFinishEncounter(e) {
   const drops=defeatedUnits.flatMap(m=>awardMaterials(m));
   const levelResult=typeof levelAwardBattleExp==="function"?levelAwardBattleExp({...e,exp:defeatedUnits.reduce((n,m)=>n+(Number(m.exp)||0),0)}):null;
   if (battleState.fieldFoeKey) fieldState.foeDefeated[battleState.fieldFoeKey] = true;
+  if (fieldState.area === 1 && fieldState.floor === 0 && !battleState.fieldFoeKey) fieldState.flags["a1:trial-victory"] = true;
   persistAutoSave();
   renderGold();
   if ($("bgm-toggle")?.checked) startBgm();
@@ -574,3 +595,43 @@ function fieldSetupRetreatChoice() {
   });
 }
 
+
+// 1F新人試験。既存の手動マップと永続フラグを使用。
+function fieldA1TrialPassed() {
+  return !!(fieldState.flags["a1:exam-passed"] || fieldState.flags["floor:1-1"] || fieldState.flags["floor:1-2"]);
+}
+function fieldA1TrialStatus() {
+  const a=fieldArea(1,0), marks=fieldManualMap(a), exp=fieldExplored(a);
+  const found=(kind,icons)=>a.objects.some(o=>o.kind===kind && exp[o.ty*a.w+o.tx] && icons.includes(marks[o.tx+","+o.ty]));
+  const rate=fieldExploredRate(a),chest=found("chest",["chest","chest_open"]),door=found("door",["door","locked_door"]);
+  return {rate,chest,door,map:rate>=25&&chest&&door,gather:!!fieldState.flags["a1:trial-gather"],battle:!!fieldState.flags["a1:trial-victory"]};
+}
+async function fieldA1Report() {
+  if(fieldState.lock)return;
+  if(fieldA1TrialPassed()){await fieldSay("通行証は交付済みだ。2F以降も気をつけて進め。","a1-guard");return;}
+  if(!fieldState.flags["a1-trial-start"]){await fieldPlayScene("a1-trial-start");persistAutoSave();}
+  const s=fieldA1TrialStatus();
+  if(!(s.map&&s.gather&&s.battle)){
+    await fieldSay("地図："+(s.map?"達成":"未達成")+"（探索 "+s.rate+"%／25%、宝箱 "+(s.chest?"済":"未記録")+"、扉 "+(s.door?"済":"未記録")+"）\n採取："+(s.gather?"達成":"未達成")+"\n討伐："+(s.battle?"達成":"未達成"),"a1-guard");return;
+  }
+  fieldState.flags["a1:exam-passed"]=true;
+  persistAutoSave();
+  await fieldPlayScene("a1-trial-pass");
+  await fieldSay("迷宮通行証を受け取った。");
+  persistAutoSave();
+}
+async function fieldA1Wounded() {
+  if(fieldState.flags["a1:wounded-helped"]){await fieldSay("さっきはありがとう。もう大丈夫だ。","a1-adventurer");return;}
+  await fieldPlayScene("a1-wounded");
+  if(!(inventory.potion>0)){await fieldSay("渡せる回復薬がない。");return;}
+  if(await fieldAsk("回復薬を1個渡しますか？",["渡す","やめる"])!==0||!(inventory.potion>0)||fieldState.flags["a1:wounded-helped"])return;
+  inventory.potion--;fieldState.flags["a1:wounded-helped"]=true;persistAutoSave();
+  await fieldSay("助かったよ。ありがとう。無理をせず街に戻るよ。","a1-adventurer");
+}
+async function fieldA1Lost() {
+  if(fieldState.flags["a1:lost-helped"]){await fieldSay("入口までの道、分かったよ。ありがとう。","a1-newcomer");return;}
+  await fieldPlayScene("a1-lost");
+  if(await fieldAsk("入口までの道を教えますか？",["教える","立ち去る"])!==0)return;
+  fieldState.flags["a1:lost-helped"]=true;persistAutoSave();
+  await fieldSay("来た道をたどればいいんだね。ありがとう！","a1-newcomer");
+}
