@@ -175,7 +175,27 @@ try{
   await page.screenshot({path:'status-profile-'+viewport.width+'.png'});
   await page.evaluate(()=>document.getElementById('field-inventory-dialog').close());
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,fieldLayout,profile,pageErrors:errors});
+  // Start an actual locked boss battle through the admin control.
+  await page.evaluate(()=>{
+    state.maxUnlockedStage=1;
+    window.confirm=()=>true;
+    adminActiveTab='encounter';renderAdminPanel();
+    document.getElementById('admin-boss-select').value='variant:snowdrift-boss';
+    document.getElementById('admin-boss-launch').click();
+  });
+  await page.waitForFunction(()=>state.screen==='battle'&&battleState.enemy?.name==='スノードリフト'&&!battleState.busy,{},{timeout:30000});
+  assert.equal(await page.evaluate(()=>battleState.enemy.variantId),'snowdrift-boss');
+  assert.ok(await page.locator('#battle-commands button').count()>0);
+  await navigate('home');
+  await page.evaluate(()=>{
+    adminActiveTab='encounter';renderAdminPanel();
+    document.getElementById('admin-boss-select').value='boss-3';
+    document.getElementById('admin-boss-launch').click();
+  });
+  await page.waitForFunction(()=>state.screen==='battle'&&battleState.stage===3&&battleState.enemy?.name==='オオカミ'&&!battleState.busy,{},{timeout:30000});
+  assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
+  const adminBossLaunch=true;
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }

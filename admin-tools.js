@@ -89,7 +89,7 @@ function adminBossCanStart(){
  return (state.screen==="home"||state.screen==="field")&&!(state.screen==="field"&&fieldState.lock)&&!(tutorialState.started&&!tutorialState.completed)&&getParty().length>0;
 }
 function adminBossSection(){
- const options=adminBossEntries().map(e=>'<option value="'+esc(e.id)+'">'+esc(e.where+"："+e.name)+'</option>').join("");
+ const options=adminBossEntries().map(e=>'<option value="'+esc(e.id)+'">'+esc((/^boss-\d+$/.test(e.id)?`第${e.id.slice(5)}階層 ${FIELD_AREAS[e.id.slice(5)]?.name||""}`:e.where)+"："+e.name)+'</option>').join("");
  return '<section class="admin-section"><h3>階層・隠しボスとの戦闘</h3><label class="admin-select-row">ボス<select id="admin-boss-select">'+options+'</select></label><div class="admin-actions"><button type="button" id="admin-boss-launch" '+(adminBossCanStart()?"":"disabled")+'>選択したボスと戦闘開始</button></div><p class="admin-note">ホームまたは探索中に、未解放でも選択したボスに直接挑戦できます。勝利時は通常の報酬・討伐・ステージ進行が反映されます。チュートリアル中は使用できません。</p></section>';
 }
 function adminStartBoss(id){

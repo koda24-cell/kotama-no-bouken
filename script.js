@@ -1184,19 +1184,19 @@ async function beginStageCore(){
 
   const stageEventIds={1:"forest-intro",2:"goblin-intro",3:"wolf-intro",4:"dragon-intro",5:"maou-intro"};
   const introEvent=stageEvents.find(e=>e.id===stageEventIds[battleState.stage]&&!e.trigger);
-  stageIntroStoryPending=!battleState.encounterMode&&!!(introEvent&&!eventRead[introEvent.id]);// [FIELD]
+  stageIntroStoryPending=!battleState.adminBossId&&!battleState.encounterMode&&!!(introEvent&&!eventRead[introEvent.id]);// [FIELD]
   maouIntroBgmPersistent=false;
   battleStartSnapshot=createBattleStartSnapshot();
   showScreen("battle");
   renderBattle();
   const commandBox=$("battle-commands");
   if(commandBox){commandBox.inert=false;renderActionMenu(true);commandBox.inert=true;}
-  if(!battleState.hiddenBossMode&&!battleState.encounterMode){await new Promise(resolve=>playStageEvent(battleState.stage,resolve));}// [FIELD]
+  if(!battleState.adminBossId&&!battleState.hiddenBossMode&&!battleState.encounterMode){await new Promise(resolve=>playStageEvent(battleState.stage,resolve));}// [FIELD]
   stageIntroStoryPending=false;
   maouIntroBgmPersistent=false;
   if($("bgm-toggle")?.checked)startBgm();
   renderBattle();
-  if(battleState.stage===1&&!battleState.encounterMode)pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
+  if(battleState.enemy?.name==="スライム"&&battleState.stage===1&&!battleState.encounterMode)pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
   const overlay=$("stage-transition");
   if(battleState.encounterMode){arena?.classList.remove("stage-arrival-pending");await wait(250);}// [FIELD] 雑魚戦はステージ名の暗転を出さない
   else if(overlay){
