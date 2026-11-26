@@ -1,0 +1,31 @@
+{
+  "images": [
+    {
+      "path": "assets/monsters/ChatGPT 画像 2026年11月26日 14_42_04-1.png",
+      "png_bytes": 1546433,
+      "original_sha256": "d92888a745257383bb93f4aa58297d55e03e87b7a8d94a21d8466544ef2a15a0",
+      "selected": true,
+      "width": 1086,
+      "height": 1448,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1001680,
+      "webp_sha256": "5d606d3531563eee6214b4937ede8cdace793b22ddf0d9e7209c719d169d51a2"
+    },
+    {
+      "path": "assets/monsters/ChatGPT 画像 2026年11月26日 14_42_05-2.png",
+      "png_bytes": 2020927,
+      "original_sha256": "69bb570d7c4a8ef9be6d01ac95883f644e884dbba88e207c7bd11c7e3ca87fef",
+      "selected": true,
+      "width": 1086,
+      "height": 1448,
+      "rgba_exact": true,
+      "icc_exact": true,
+      "webp_bytes": 1331586,
+      "webp_sha256": "72b381eac7848ffa13ea1197f9e8a75f7c620b118fbbeb90ad713720e299a247"
+    }
+  ],
+  "changed_files": [],
+  "total_png_bytes": 3567360,
+  "total_display_bytes": 2333266
+}
