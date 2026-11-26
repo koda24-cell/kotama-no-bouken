@@ -27,13 +27,13 @@
  .game-dialog-panel button,.story-event-panel button{min-height:40px;font-size:14px}
  /* Field: restore existing touch controls, previously hidden by full-screen HUD. */
  body[data-screen="field"] #field{--map-w:clamp(106px,19dvh,150px);--hud-edge:8px}
- body[data-screen="field"] #field-location{left:max(8px,env(safe-area-inset-left));top:8px;padding:6px 10px;max-width:55%}
+ body[data-screen="field"] #field-location{left:max(8px,env(safe-area-inset-left));top:8px;padding:6px 10px;max-width:calc(100% - var(--map-w) - 32px);gap:3px 8px}
  body[data-screen="field"] #field-location strong{font-size:16px}
- body[data-screen="field"] #field-clock{right:max(8px,env(safe-area-inset-right));font-size:16px;padding:6px 10px}
- body[data-screen="field"] #field-map-rail{right:max(8px,env(safe-area-inset-right))!important;bottom:8px!important;width:var(--map-w)!important;padding:5px!important;gap:3px}
+ body[data-screen="field"] #field-clock{font-size:14px;padding:4px 6px}
+ body[data-screen="field"] #field-map-rail{right:max(8px,env(safe-area-inset-right))!important;top:8px!important;bottom:auto!important;width:var(--map-w)!important;padding:5px!important;gap:3px}
  body[data-screen="field"] #field-minimap-legend,body[data-screen="field"] #field-map-rail>strong{display:none!important}
  body[data-screen="field"] #field-minimap-status{font-size:11px;padding:2px}
- body[data-screen="field"] #field-danger{right:max(8px,env(safe-area-inset-right));bottom:calc(var(--map-w) + 34px);width:var(--map-w);padding:6px;gap:3px}
+ body[data-screen="field"] #field-danger{right:max(8px,env(safe-area-inset-right));bottom:8px;width:var(--map-w);padding:6px;gap:3px}
  body[data-screen="field"] #field-danger .danger-label{font-size:10px;letter-spacing:0}
  body[data-screen="field"] #field-danger .danger-state{font-size:16px}
  body[data-screen="field"] #field-danger .danger-meter i{height:6px}
