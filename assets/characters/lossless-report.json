@@ -85,7 +85,7 @@
       "webp_sha256": "458c48791807afb2bc9837c077f27881925b9f5c5b4b677e28d5d9d3a622fe47"
     },
     {
-      "path": "assets/イラスト128.1.png",
+      "path": "assets/characters/イラスト128.1.png",
       "png_bytes": 381085,
       "original_sha256": "33128d2859ae51b46ad946b2b8be8458d914003efaf86a84f4a992dce015752d",
       "selected": true,
@@ -97,7 +97,7 @@
       "webp_sha256": "20b295f1691a79e05342e4a26d5c886b0114b2ada8054b0ba94689a52956ae6c"
     },
     {
-      "path": "assets/イラスト128.2.png",
+      "path": "assets/characters/イラスト128.2.png",
       "png_bytes": 392861,
       "original_sha256": "ded7945bd1be427162c13a407006f09c433ac9ea82c0d45192ec8d6c1a1e1ca2",
       "selected": true,
@@ -109,7 +109,7 @@
       "webp_sha256": "fb4dc8f8807ae012c45968eed624bf183189e8f3a55dbc077643135630b1cd08"
     },
     {
-      "path": "assets/イラスト128.3.png",
+      "path": "assets/characters/イラスト128.3.png",
       "png_bytes": 412245,
       "original_sha256": "0d13d1d3bd6437a5800915a7869977a81b0a14eac40d53aa95a8febbcc8877c4",
       "selected": true,

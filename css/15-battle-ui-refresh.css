@@ -2248,7 +2248,7 @@ body:has(#battle.active.battle-ui-preview) #battle-support {
 #battle.battle-ui-preview .battle-field-map-dock #battle-field-map[hidden],#battle.battle-ui-preview .battle-field-map-dock #battle-field-map-toggle[hidden]{display:none!important;}
 
 /* Per-floor artwork, inherited by arena and surrounding battle frame. */
-#battle:has(.battle-arena[data-environment="forest"]){--battle-floor-art:url("../assets/4136d33a-6f86-4f1e-8a9a-cdb18b7556cf.png")}
+#battle:has(.battle-arena[data-environment="forest"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-01-forest.png")}
 #battle:has(.battle-arena[data-environment="water"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-02-water.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-02-water.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-02-water.png") type("image/png"))}
 #battle:has(.battle-arena[data-environment="ruins"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-03-ruins.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-03-ruins.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-03-ruins.png") type("image/png"))}
 #battle:has(.battle-arena[data-environment="lava"]){--battle-floor-art:url("../assets/battle-backgrounds/floor-04-volcano.png");--battle-floor-art:image-set(url("../assets/battle-backgrounds/floor-04-volcano.webp") type("image/webp"),url("../assets/battle-backgrounds/floor-04-volcano.png") type("image/png"))}

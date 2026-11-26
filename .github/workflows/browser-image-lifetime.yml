@@ -3,10 +3,15 @@ on:
   push:
     branches:
       - feature/gpt-field-status-large-20261126
-      - feature/gpt-home-poster-ui-20261126
     paths:
       - tools/test-image-lifetime-browser.mjs
       - css/17-home-poster.css
+      - .github/workflows/browser-image-lifetime.yml
+  pull_request:
+    branches: [development]
+    paths:
+      - css/17-home-poster.css
+      - tools/test-image-lifetime-browser.mjs
       - .github/workflows/browser-image-lifetime.yml
   workflow_dispatch:
 permissions:

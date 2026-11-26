@@ -210,7 +210,6 @@ function renderHome(){
   const members=homeFormationMembers(getParty(),window.kotamaBattleExportRows?.());
   box.innerHTML=members.map(({c,n})=>`<article class="home-character home-poster-member" data-party-id="${esc(c.id)}" data-home-slot="${n}" aria-label="${esc(c.name)} ${n<3?"前衛":"後衛"} ${n%3+1}"><div class="character-art">${getCharacterImage(c).replace('loading="lazy"','loading="eager"')}</div><div class="home-member-label"><small>${n<3?"FRONT":"REAR"} / 0${n%3+1}</small><strong>${esc(c.name)}</strong><span>Lv.${levelOf(c)}</span></div></article>`).join("");
 }
-
 function renderAchievements(){const box=$("achievement-list");if(!box)return;const unlocked=achievementDefinitions.filter(a=>achievementUnlocked[a.id]).length;const progress=$("achievement-progress");if(progress)progress.textContent=`${unlocked} / ${achievementDefinitions.length} 達成`;
  box.innerHTML=achievementDefinitions.map(a=>`<article class="achievement-card ${achievementUnlocked[a.id]?"unlocked":"locked"}"><div><strong>${esc(a.name)}</strong><p>${esc(a.description)}</p></div><span>${achievementUnlocked[a.id]?"達成済み":`報酬 ${a.reward}G`}</span></article>`).join("");
 }
@@ -1136,6 +1135,12 @@ async function beginStageCore(){
   const resumedBattle=!!pendingBattleResumeEnemy;
   battleState.enemy=pendingBattleResumeEnemy||(battleState.encounterMode&&typeof fieldCreateEnemy==="function"?fieldCreateEnemy(battleState.fieldEnemyGroup||battleState.fieldEnemyId):createEnemy(battleState.stage));// [FIELD] 雑魚戦はフィールドの敵
   pendingBattleResumeEnemy=null;
+  // Preserve image display when resuming battle snapshots saved before asset organization.
+  if(resumedBattle){
+    const legacyMonsterImages=new Set(["assets/唸る青灰狼のアニメーション.gif","assets/氷狼の咆哮アニメーション.gif","assets/炎の翼竜、咆哮する姿.gif","assets/紫煙を纏う影の亡霊アニメーション.gif","assets/赤き魔炎を纏う魔王の舞.gif","assets/青いスライムのジャンプアニメーション.gif"]);
+    const restoredUnits=[battleState.enemy,...(Array.isArray(battleState.enemy.members)?battleState.enemy.members:[])];
+    for(const unit of restoredUnits){if(unit&&legacyMonsterImages.has(unit.image))unit.image="assets/monsters/"+unit.image.slice("assets/".length);}
+  }
   const encounterUnits=battleState.enemy._mixedEncounter?battleState.enemy.members:[battleState.enemy];
   for(const unit of encounterUnits){registerEncounter(unit.compendiumAs||unit.name);if(typeof compendiumRecordEncounter==="function")compendiumRecordEncounter(unit,resumedBattle);}
   // [COMPENDIUM] 混成編成は敵個体ごとに図鑑へ記録
@@ -1851,7 +1856,7 @@ function showHitEffect(kind="slash",targetNode=null){
     sprite.alt="";
     sprite.decoding="async";
     sprite.onerror=()=>sprite.remove();
-    sprite.src="assets/"+assetName;
+    sprite.src="assets/vfx/battle-gifs/"+assetName;
     fx.appendChild(sprite);
   }
   const heavy=["samurai","blunt","flame","lightning"].includes(safeKind);

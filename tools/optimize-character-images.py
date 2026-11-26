@@ -2,9 +2,7 @@ from pathlib import Path
 from PIL import Image
 import hashlib, json, subprocess
 
-sources = sorted(Path('assets/characters').glob('*.png')) + [
-    Path('assets') / f'イラスト128.{i}.png' for i in (1,2,3)
-]
+sources = sorted(Path('assets/characters').glob('*.png'))
 report = []
 replacements = {}
 for src in sources:

@@ -14,7 +14,7 @@ body[data-screen="home"] #home.active{position:absolute;inset:0;display:block!im
 #home .main-nav button[aria-current]{color:#c5ced3}
 #home #start-button{font-size:clamp(20px,2.3vw,36px);font-weight:900}
 #home #start-warning{margin:2px 0;color:#f4b7a9;font-size:12px}
-body[data-screen="home"] #home-party{position:absolute;z-index:1;left:30%;right:0;top:2%;bottom:0;display:block!important;min-height:0!important;height:auto;width:auto;max-width:none;margin:0;padding:0;border:0;background:none;box-shadow:none;overflow:hidden;pointer-events:none}
+body[data-screen="home"] #home-party{position:absolute;z-index:1;left:var(--home-menu-width);right:0;top:2%;bottom:0;display:block!important;min-height:0!important;height:auto;width:auto;max-width:none;margin:0;padding:0;border:0;background:none;box-shadow:none;overflow:hidden;pointer-events:none}
 #home-party .home-poster-member{position:absolute;display:block;width:38%;height:59%;min-width:0;max-width:none;margin:0;padding:0;border:0;background:none;box-shadow:none;overflow:visible}
 #home-party .home-poster-member[data-home-slot="0"]{left:0;top:0;z-index:1}
 #home-party .home-poster-member[data-home-slot="1"]{left:31%;top:0;z-index:2}
