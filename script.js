@@ -183,7 +183,7 @@ function statWithBonus(base,bonus){return `${base}${bonus?` <b class="stat-bonus
 function releaseInactiveScreenImages(previous,next){
   if(previous===next)return;
   const selectors={home:"#home-party img",formation:"#selected-party img,#character-roster img",shop:"#shop-buyer img",training:"#progression-panel img",compendium:"#compendium-list img",battle:"#battle-enemy img,#battle-party img,#battle .battle-preview-portrait img"};
-  if(selectors[previous])document.querySelectorAll(selectors[previous]).forEach(img=>img.remove());
+  if(selectors[previous])document.querySelectorAll(selectors[previous]).forEach(img=>{img.removeAttribute("srcset");img.removeAttribute("src");img.remove();});
   if(previous==="field"){window.KotamaField3D?.releaseFoeImages?.();const hud=$("field-party-hud");if(hud){hud.replaceChildren();delete hud.dataset.renderKey;}}
 }
 function showScreen(name){const el=$(name);if(!el||!el.classList.contains("screen"))return;if(tutorialState.phase==="complete"&&name!=="home"&&$("tutorial-overlay")&&!$("tutorial-overlay").hidden)tutorialClose();if(name==="home")retryContext=null;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s===el));releaseInactiveScreenImages(state.screen,name);if(name!=="settings")stopPreview(false);if(name==="shop"&&state.screen!=="shop")shopBuyerId=getParty()[0]?.id||null;state.screen=name;document.body.dataset.screen=name;placeHomeNavigation(name);if(name==="field")window.Kotama3DLoading?.show();else window.Kotama3DLoading?.hide();if($("list-menu"))$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");updateListMenuForScreen();if($("bgm-toggle")?.checked)startBgm();else stopBgm();document.querySelectorAll(".main-nav [data-screen]").forEach(b=>b.toggleAttribute("aria-current",b.dataset.screen===name));renderAll();window.scrollTo({top:0,behavior:"auto"});}
@@ -725,7 +725,7 @@ function renderProgressionPanelUnsafe(){
  box.innerHTML=`<div class="training-character-select"><h2>強化・育成</h2><div class="training-character-tabs">${trainingRoster.map(ch=>`<button type="button" data-training-character="${ch.id}" class="${ch.id===c.id?"active":""}">${esc(ch.name)}</button>`).join("")}</div></div>
  <section class="training-tree training-showcase">
  <aside class="training-character-showcase">
-  <div class="training-character-art"><img src="${esc(c.image||"")}" alt="${esc(c.name)}" loading="lazy" onerror="this.hidden=true"></div>
+  <div class="training-character-art"><img src="${esc(c.image||"")}" alt="${esc(c.name)}" loading="lazy" decoding="async" onerror="this.hidden=true"></div>
   <h3>${esc(c.name)}</h3>
   <p>Lv.${characterLevels[c.id]||1} ／ SPポイント ${points}pt</p><button type="button" class="skill-respec-button" data-skill-respec="${c.id}" ${((characterLevels[c.id]||1)>=5?"":"disabled")}>スキル振り直し（Lv.5解放）</button>
   <div class="training-character-stats"><span>HP <b>${stats.maxHp}</b></span><span>ATK <b>${stats.attack}</b></span><span>DEF <b>${stats.defense}</b></span><span>SP <b>${stats.maxSp}</b></span></div>
