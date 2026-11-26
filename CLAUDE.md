@@ -20,3 +20,13 @@ For all new 3D work, **use the same GitHub Actions Blender 5.3.0 + ClamAV enviro
 4. Existing Claude workflows with Node/Three.js export, downloaded textures, multiple scripts, or custom output paths **must retain their working pipeline** until an equivalent adapter is implemented and validated. Do not bulk replace workflows, overwrite Claude's completed B2 models, or change `main`.
 5. Inspect the real run ID, logs, front/side/angle PNG, GLB and scan reports. Keep outputs `NOT_APPROVED` until user approval. If Claude cannot invoke GitHub Actions with its available tools, commit the caller on a branch and report the actual trigger/permission limitation; never claim a run started without evidence.
 
+
+
+## 制作者による成果物の直接保存・開発確認サイトへの反映（2026-11-26 ユーザー指示・最優先）
+**Claude は制作した成果物を自分で保存・掲載する担当者である。自動収集や GPT の後追い登録を待ってはならない。** GPT・Codex にも同じ原則を適用する。従来の自動収集待ち・自動台帳取得を前提とする記述より本節を優先する。
+
+1. 第1〜6層、キャラクター、壁・床・天井・小物・装備・VFX・シェーダー・迷宮全景を含め、制作したものは規模を問わず、制作コード、編集可能な元データ（存在する形式のみ）、実際の確認画像、設計資料を作業ブランチのGitに保存する。Three.js制作物に存在しないGLB/Blendを捏造しない。
+2. できた単体素材ごとに、可能なら正面・側面・斜め、ゲーム空間は代表地点を実際に描画・撮影する。制作途中でも検査済みの区切りごとに保存し、最終完成を待たない。画像未取得なら未取得と明示する。作品全景だけで個別素材の確認を済ませない。
+3. 撮影画像の公開可否・出典・安全性を確認し、`docs/3d/<review-directory>/` にコミットする。既存の `docs/3d/scene-review-index.json` に安定ID、版、階層、担当、日時、元コミット、PR、画像パス、公開可否、承認状態を追記する。旧版を消さない。Artifactsのみの保存やチャット内の画像だけでは保存完了ではない。
+4. **制作者自身が `koda24-cell/kotama-3d-progress` にアクセスし、同RepoのAGENTS.mdに従い、確認サイトへの掲載まで行う。** Three.js/ゲームの実画像は既存の `main/index.html` のゲーム内制作レビュー欄に元コミット固定の画像リンク・名称・版・出典・制作担当を追加する（第5層V6の既存掲載方式を参照）。必要に応じ同欄を階層・個別素材・版ごとに整理する。Blender画像は既存の検査済みPNG登録手順を使用する。画像リンクの到達性、PRのブラウザ検査、公開版への反映を確認する。自動巡回機能の実装を待つ必要はない。
+5. 各作業報告に元コード/画像の保存先、元PR、進捗サイト掲載PRと状態を記す。書込権限や安全確認不足で掲載できない場合のみ、理由・画像の保存先・未掲載を明示して引き継ぐ。公開レビューはゲーム採用承認ではなく、未承認の正式素材昇格は禁止。ゲーム本体のmainは変更しない。
