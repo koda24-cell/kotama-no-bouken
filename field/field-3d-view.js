@@ -31,6 +31,8 @@ const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 },
 // Phone-only view budget. Desktop retains its per-theme far plane.
 const PHONE_VIEW = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(navigator.userAgent) || (navigator.maxTouchPoints>0 && matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<=600);
 const PHONE_FAR = 24, PHONE_LIGHT_RANGE = 16;
+const PHONE_FPS = 30, PHONE_MAX_PIXELS = 900000;
+function phonePixelRatio(w,h){return Math.min(1,devicePixelRatio||1,Math.sqrt(PHONE_MAX_PIXELS/Math.max(1,w*h)));}
 function viewFar(distance){return PHONE_VIEW?Math.min(distance,PHONE_FAR):distance;}
 const CELL = 4, EYE = 1.6, BACK = 1.1;    // 1マス4m、目の高さ、マスの後ろ寄りに立つ距離
 const STEP_MS = 230, TURN_MS = 210;       // 3D表示中の1歩・1回の旋回にかける時間
@@ -60,7 +62,7 @@ const g = {
   builtKey: '', buildingKey: '', buildToken: 0, sig: '', retryRequested:false,
   cache: new Map(), lights: [], pool: [], entries: [], foes: new Map(), texCache: new Map(),
   cam: { pos: new THREE.Vector3(), yaw: 0, ready: false, bump: 0, bumpDir: [0, 0] },
-  lastT: 0, lastRender: 0, lastLightKey: '', size: [0, 0], high: readQuality(), near: null, maxFps: readMaxFps(),
+  lastT: 0, lastRender: 0, lastLightKey: '', size: [0, 0], high: !PHONE_VIEW && readQuality(), near: null, maxFps: PHONE_VIEW ? Math.min(PHONE_FPS,readMaxFps() || PHONE_FPS) : readMaxFps(),
   hemi: null, envArea: 1, theme: null, themePromise: null, themeFailed: false, floorFailures: new Map(), preview: readPreview(),
 };
 
@@ -90,11 +92,20 @@ const curKey = () => (fieldOk() ? (fieldArea()?.buildKey || fieldArea()?.key) : 
 function ensureRenderer() {
   if (g.renderer) return true;
   try {
-    const r = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const r = new THREE.WebGLRenderer({ antialias: !PHONE_VIEW, powerPreference: PHONE_VIEW ? 'low-power' : 'high-performance' });
     r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.3; r.outputColorSpace = THREE.SRGBColorSpace;
-    r.setPixelRatio(g.high ? Math.min(2, devicePixelRatio || 1) : Math.min(1.25, devicePixelRatio || 1));
+    r.setPixelRatio(PHONE_VIEW ? 1 : g.high ? Math.min(2, devicePixelRatio || 1) : Math.min(1.25, devicePixelRatio || 1));
     r.info.autoReset = false;
     g.renderer = r; g.canvas = r.domElement; g.canvas.className = 'field-3d-canvas'; g.canvas.setAttribute('aria-hidden', 'true');
+    g.canvas.addEventListener('webglcontextlost',event=>{
+      event.preventDefault(); g.webgl=false; g.lastT=0;
+      applyMode();
+      if(document.body.dataset.screen==='field')window.Kotama3DLoading?.fail('GPUの描画が停止しました。復旧後に再試行できます。');
+    });
+    g.canvas.addEventListener('webglcontextrestored',()=>{
+      g.webgl=true; g.lastT=0; g.lastRender=0; g.size=[0,0];
+      if(document.body.dataset.screen==='field'&&!g.buildingKey){applyMode();build();}
+    });
     g.scene = new THREE.Scene();
     g.scene.background = new THREE.Color(0x070d11); g.scene.fog = new THREE.FogExp2(0x0c1a20, 0.042);
     g.hemi = new THREE.HemisphereLight(0x7aa8c4, 0x1c241c, g.high ? 1.25 : 1.7); g.scene.add(g.hemi);   // 暗所でも形が読める明るさ（点光源の少ない低画質では強め）
@@ -117,7 +128,7 @@ function mount() {
   if (!g.badge) { g.badge = document.createElement('div'); g.badge.className = 'field-3d-badge'; g.badge.hidden = true; vp.appendChild(g.badge); }
   const w = vp.clientWidth, h = vp.clientHeight;
   if (w && h && (w !== g.size[0] || h !== g.size[1])) {
-    g.size = [w, h]; g.renderer.setSize(w, h, false); g.canvas.style.width = w + 'px'; g.canvas.style.height = h + 'px';
+    g.size = [w, h]; if(PHONE_VIEW)g.renderer.setPixelRatio(phonePixelRatio(w,h)); g.renderer.setSize(w, h, false); g.canvas.style.width = w + 'px'; g.canvas.style.height = h + 'px';
     g.camera.aspect = w / h; g.camera.updateProjectionMatrix();
     if (g.composer) { g.composer.setSize(w, h); g.composer.setPixelRatio(g.renderer.getPixelRatio()); }
   }
@@ -139,8 +150,19 @@ function updatePool(center, force) {
 const loader = new GLTFLoader();
 async function retryLoad(job){let last;for(let i=0;i<3;i++){try{return await job(i);}catch(e){last=e;if(i<2)await new Promise(resolve=>setTimeout(resolve,350*(i+1)));}}throw last;}
 async function boundedAsset(file){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const url=new URL(BASE+file,document.baseURI);const response=await fetch(url,{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status+' '+file);const data=await response.arrayBuffer();return await loader.parseAsync(data,new URL('.',url).href);}finally{clearTimeout(timer);}}
+// Downscale ordinary shared GLB image textures before GPU upload on phones. Keep original files intact.
+function limitPhoneTextures(scene){
+  if(!PHONE_VIEW)return scene;
+  const seen=new Set();
+  scene.traverse(obj=>{for(const mat of [].concat(obj.material||[]))for(const tex of Object.values(mat)){
+    if(!tex?.isTexture||seen.has(tex)||tex.isCompressedTexture||tex.isDataTexture||tex.isCubeTexture||tex.isVideoTexture)continue;
+    seen.add(tex);const img=tex.image,w=img?.naturalWidth||img?.width,h=img?.naturalHeight||img?.height;
+    if(!w||!h||Math.max(w,h)<=1024)continue;
+    try{const canvas=document.createElement('canvas'),scale=1024/Math.max(w,h);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d');if(!ctx)continue;ctx.drawImage(img,0,0,canvas.width,canvas.height);tex.image=canvas;tex.needsUpdate=true;}catch(error){console.warn('[field-3d] texture resize skipped',error);}
+  }});return scene;
+}
 function load(file) {
-  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>boundedAsset(file)).then(x=>x.scene).catch(e=>{g.cache.delete(file);throw e;}));
+  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>boundedAsset(file)).then(x=>limitPhoneTextures(x.scene)).catch(e=>{g.cache.delete(file);throw e;}));
   return g.cache.get(file);
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
@@ -460,16 +482,18 @@ function foeTexture(src) {
   if (!g.texCache.has(src)) {
     const t = new THREE.TextureLoader().load(src, texture => {
       if (g.texCache.get(src)!==texture) { texture.dispose(); return; }
-      if (!/\.svg(?:$|[?#])/i.test(src)) return;
+      const svg=/\.svg(?:$|[?#])/i.test(src);
+      if (!svg && !PHONE_VIEW) return;
       // DOM SVG images can fail WebGL2 immutable texture upload. Rasterize
       // synchronously in onLoad, before the first render can upload the SVG.
       const image = texture.image, width = image.naturalWidth || image.width || 512;
       const height = image.naturalHeight || image.height || 512;
-      const scale = Math.min(2048 / Math.max(width,height), Math.max(1,512 / Math.max(width,height)));
+      const scale = PHONE_VIEW ? Math.min(1,768/Math.max(width,height)) : Math.min(2048 / Math.max(width,height), Math.max(1,512 / Math.max(width,height)));
+      if(!svg&&scale===1)return;
       const canvas = document.createElement('canvas');
       canvas.width = Math.max(1,Math.round(width*scale)); canvas.height = Math.max(1,Math.round(height*scale));
-      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
-      texture.image = canvas; texture.userData.svgRasterized = true; texture.needsUpdate = true;
+      const ctx=canvas.getContext('2d'); if(!ctx)return; ctx.drawImage(image,0,0,canvas.width,canvas.height);
+      texture.image = canvas; texture.userData.svgRasterized = svg; texture.needsUpdate = true;
     });
     t.colorSpace = THREE.SRGBColorSpace; g.texCache.set(src,t);
   }
@@ -481,6 +505,7 @@ function pruneFoeTextures(){
   for(const [src,texture] of g.texCache) if(!used.has(texture)){g.texCache.delete(src);texture.dispose();}
 }
 function releaseFoeImages(){
+  if(PHONE_VIEW&&g.renderer&&!g.buildingKey){g.renderer.setSize(1,1,false);g.size=[0,0];}
   for(const v of g.foes.values())disposeFoe(v);
   g.foes.clear();pruneFoeTextures();
 }
@@ -656,12 +681,12 @@ function build() {
 }
 
 function frame() {
-  if (!fieldOk() || document.body.dataset.screen!=='field') return;
+  if (!fieldOk() || document.hidden || document.body.dataset.screen!=='field') return;
   if (!active()) { if (g.canvas && !g.canvas.hidden) applyMode(); if (eligible() && !g.buildingKey && g.builtKey !== curKey()) build(); return; }
   const now = performance.now();
   if (g.maxFps && now - g.lastRender < 1000 / g.maxFps) return;
   g.lastRender = now;
-  const dt = g.lastT ? Math.min(g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
+  const dt = g.lastT ? Math.min(PHONE_VIEW ? 0.1 : g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
   mount();
   const a = fieldArea();
   if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; startFloorBuild(); return; }
@@ -707,7 +732,7 @@ function gameReviewState() {
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
     natureV6Info:g.natureV6?.info()||null,natureV6Error:g.natureV6Error||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
-window.KotamaField3D = { active, input, build, frame, toggle, releaseFoeImages, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+window.KotamaField3D = { active, input, build, frame, toggle, releaseFoeImages, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.renderer?.getContext().isContextLost()){window.Kotama3DLoading?.fail('GPUの復旧を待ってから再試行してください');return;}if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
   stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
