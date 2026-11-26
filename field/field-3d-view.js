@@ -254,7 +254,7 @@ async function buildFloor() {
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
   for (const foe of g.foes.values()) disposeFoe(foe);
-  g.lights = []; g.entries = []; g.foes.clear();
+  g.lights = []; g.entries = []; g.foes.clear(); pruneFoeTextures();
   if (g.theme && g.theme !== th) g.theme.dispose({ final: true });
   g.theme = th;
   applyEnv(area, th && th.env);
@@ -424,6 +424,7 @@ function gatherDef(o) { try { return fieldGatherPointDef(fieldArea(), o); } catc
 function foeTexture(src) {
   if (!g.texCache.has(src)) {
     const t = new THREE.TextureLoader().load(src, texture => {
+      if (g.texCache.get(src)!==texture) { texture.dispose(); return; }
       if (!/\.svg(?:$|[?#])/i.test(src)) return;
       // DOM SVG images can fail WebGL2 immutable texture upload. Rasterize
       // synchronously in onLoad, before the first render can upload the SVG.
@@ -439,7 +440,16 @@ function foeTexture(src) {
   }
   return g.texCache.get(src);
 }
-// FOE visuals own these GPU resources; textures remain in the shared cache.
+// Only retain FOE texture entries referenced by current sprites.
+function pruneFoeTextures(){
+  const used=new Set([...g.foes.values()].map(v=>v.sp.material.map));
+  for(const [src,texture] of g.texCache) if(!used.has(texture)){g.texCache.delete(src);texture.dispose();}
+}
+function releaseFoeImages(){
+  for(const v of g.foes.values())disposeFoe(v);
+  g.foes.clear();pruneFoeTextures();
+}
+// FOE visuals own their material and geometry; shared textures are pruned separately.
 function disposeFoe(v) {
   g.dyn.remove(v.grp);
   v.ring.geometry.dispose(); v.ring.material.dispose(); v.sp.material.dispose();
@@ -448,6 +458,7 @@ function disposeFoe(v) {
 function syncFoes(t) {
   const seen = new Set();
   for (const f of fieldState.foes || []) {
+    if(f.defeated)continue;
     seen.add(f.key);
     let v = g.foes.get(f.key);
     if (!v) {
@@ -473,6 +484,7 @@ function syncFoes(t) {
     v.sp.material.color.setHex(chase ? 0xffc0c0 : 0xffffff);
   }
   for (const [k, v] of g.foes) if (!seen.has(k)) { disposeFoe(v); g.foes.delete(k); }
+  pruneFoeTextures();
 }
 
 /* ------------------------------------------------------------
@@ -660,7 +672,7 @@ function gameReviewState() {
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
     natureV6Info:g.natureV6?.info()||null,natureV6Error:g.natureV6Error||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
-window.KotamaField3D = { active, input, build, frame, toggle, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+window.KotamaField3D = { active, input, build, frame, toggle, releaseFoeImages, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
   stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる
