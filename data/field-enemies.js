@@ -30,7 +30,7 @@ const FIELD_ENEMIES = {
     ai:[ { name:"岩の拳", weight:65, kind:"phys", power:1.15 }, { name:"溶岩投げ", weight:35, all:true, kind:"sp", power:.6, element:"炎", status:{ type:"burn", chance:.25, turns:2 } } ] },
   "dark-knight": { name:"黒骸騎士", element:"無属性", weaknesses:["雷","聖"], resistances:[], hp:1350, attack:82, spAttack:70, defense:64, spDefense:40, gold:36, exp:520, speed:50, image:"assets/monsters/7a6e64a3-1704-4d0e-b46f-006befd1801d.png", sprite:"maou",
     ai:[ { name:"黒鉄の斬撃", weight:65, kind:"phys", power:1.1 }, { name:"闇の剣", weight:35, kind:"sp", power:1.0, status:{ type:"curse", chance:.3, turns:3 } } ] },
-  "wraith": { name:"さまよう亡霊", element:"無属性", weaknesses:["聖","炎"], resistances:["斬撃","突"], hp:1000, attack:52, spAttack:74, defense:28, spDefense:62, gold:32, exp:500, speed:70, image:"assets/monsters/chaos-phantom.svg", sprite:"maou",
+  "wraith": { name:"さまよう亡霊", element:"無属性", weaknesses:["聖","炎"], resistances:["斬撃","突"], hp:1000, attack:52, spAttack:74, defense:28, spDefense:62, gold:32, exp:500, speed:70, image:"assets/monsters/64bb1648-e941-4a0f-b475-0e8b1a0c1181.png", sprite:"maou",
     ai:[ { name:"呪いの声", weight:45, all:true, kind:"sp", power:.55, status:{ type:"curse", chance:.25, turns:2 } }, { name:"生命吸収", weight:55, kind:"sp", power:.9, drain:.4 } ] },
 
   "fire-slime": { name:"炎スライム", element:"炎", weaknesses:["氷"], resistances:["炎"], hp:210, attack:18, spAttack:30, defense:4, spDefense:30, gold:8, exp:16, speed:40, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime" },
