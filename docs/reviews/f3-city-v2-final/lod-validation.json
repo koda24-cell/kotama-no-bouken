@@ -1,0 +1,45 @@
+{
+  "scope": "Actual archived rigid LOD GLBs, not runtime adoption or visual acceptance",
+  "models": 1,
+  "variants": [
+    {
+      "id": "v2_memory_statue",
+      "lod": 0,
+      "triangles": 28007,
+      "sourceTriangles": 28007,
+      "sha256": "213370ca7829c5bf7d9f5bfffb26f1378d2080ac5006532f1835e4ad950e84d2",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "v2_memory_statue",
+      "lod": 1,
+      "triangles": 15403,
+      "sourceTriangles": 28007,
+      "sha256": "d00d3ee7b7da88d503d44cff19ab32f17492f190744747e3f3034d35b568d23a",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    },
+    {
+      "id": "v2_memory_statue",
+      "lod": 2,
+      "triangles": 7001,
+      "sourceTriangles": 28007,
+      "sha256": "944e5f4240bde483bb728b082fc0bfdf1e18ba31d36d3d87e19e3e1f6e04279d",
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 0,
+      "numHints": 0,
+      "messages": [],
+      "truncated": false
+    }
+  ]
+}

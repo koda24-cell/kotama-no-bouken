@@ -5,7 +5,7 @@ const root=process.env.REPO || path.resolve(__dirname, '../..'), out=process.env
 fs.mkdirSync(out, {recursive:true});
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.png':'image/png','.mp3':'audio/mpeg','.jpg':'image/jpeg'};
 const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComponent(req.url.split('?')[0]));fs.readFile(file,(err,data)=>{res.writeHead(err?404:200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});res.end(err?'':data);});}).listen(8773);
-let testBrowser;
+let testBrowser,testPage,testLogs=[],testErrors=[];
 (async()=>{
 const browser=testBrowser=await chromium.launch({executablePath:process.env.CHROME || '/usr/bin/chromium',args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
 const mobile=process.argv.includes('--mobile');
@@ -13,7 +13,7 @@ const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{
 await context.route(/cdn\.jsdelivr\.net\/npm\/three@0\.180\.0\/(.*)/,r=>r.fulfill({path:path.join(process.env.THREE_DIR || path.resolve(path.dirname(require.resolve('three')), '..'),r.request().url().split('three@0.180.0/')[1]),contentType:'text/javascript'}));
 if (process.env.BASELINE_B3_MODULE) await context.route('**/field/field-3d-b3-city.js*', r => r.fulfill({body:fs.readFileSync(process.env.BASELINE_B3_MODULE,'utf8'),contentType:'text/javascript'}));
 await context.route('**/field/field-3d-view.js*', r=>r.fulfill({body:fs.readFileSync(root+'/field/field-3d-view.js','utf8')+'\nwindow.__test3d={g};',contentType:'text/javascript'}));
-const page=await context.newPage(), errors=[];
+const page=testPage=await context.newPage(), errors=testErrors;
 
 page.on('requestfailed',r=>console.log('request failed: '+r.url()+' '+r.failure()?.errorText));
 page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
@@ -33,7 +33,7 @@ await page.waitForTimeout(1500);
 if(!process.env.F3_INSPECT_VIEW)await page.screenshot({timeout:120000,path:out+(mobile?'/mobile':'/pc')+'-entry.png'});
 console.log('3D ready');
 // Sample street and plaza views on all floors.
-const logs=[];
+const logs=testLogs;
 await page.evaluate(()=>{
  window.__perf=[]; const {g}=window.__test3d, render=g.renderer.render.bind(g.renderer);
  g.renderer.render=(scene,camera)=>{const start=performance.now();render(scene,camera);if(scene===g.scene)window.__perf.push({time:performance.now(),ms:performance.now()-start,calls:g.renderer.info.render.calls,triangles:g.renderer.info.render.triangles});};
@@ -83,6 +83,7 @@ for(const view of JSON.parse(process.env.F3_EXTRA_VIEWS||'[]').filter(v=>v.floor
 }
 await page.evaluate(()=>window.__perf=[]);await page.waitForTimeout(4000);
 info.performance=await page.evaluate(()=>{const p=window.__perf,t=p.map(x=>x.time);return {frames:p.length,fps:p.length>1?(p.length-1)*1000/(t.at(-1)-t[0]):0,calls:Math.max(...p.map(x=>x.calls)),triangles:Math.max(...p.map(x=>x.triangles)),memory:{...__test3d.g.renderer.info.memory}};});
+fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-floor-checkpoints.json`,JSON.stringify({logs,errors,complete:false},null,2));
 
 }
 if (process.argv.includes('--visual-only')) {
@@ -120,8 +121,10 @@ for(const id of await page.evaluate(()=>fieldPuzzleDef('a3-lanterns').order)) {
 await page.waitForFunction(()=>fieldPuzzleSolved('a3-lanterns')&&__test3d.g.entries.find(e=>e.o.id==='a3-gate')?.state==='open',null,{timeout:30000});
 const puzzle=await page.evaluate(()=>({solved:fieldPuzzleSolved('a3-lanterns'),door:__test3d.g.entries.find(e=>e.o.id==='a3-gate')?.state}));logs.push({puzzle});
 if(mobile){
+ await settle();
+ await page.waitForFunction(()=>!fieldState.lock&&!fieldState.mapOpen&&!fieldDialogAdvance&&!fieldChoiceState&&!fieldModalOpen(),null,{timeout:30000});
  await page.evaluate(()=>{const c=fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
- const before=await check();await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===9,null,{timeout:10000});const after=await check();logs.push({touch:{before,after}});
+ const before=await check();console.log('touch before',JSON.stringify(before));await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===9,null,{timeout:30000});const after=await check();logs.push({touch:{before,after}});
  await page.evaluate(()=>scrollTo(0,0));await page.screenshot({timeout:120000,path:out+'/mobile-controls.png',fullPage:true});
 }
 
@@ -170,4 +173,4 @@ logs.push({failures});
 fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-results.json`,JSON.stringify({logs,errors},null,2));
 console.log(JSON.stringify({floors:logs.map(({edgePlacements,...x})=>x),errors},null,2));
 await browser.close();server.close();if(failures.length)process.exitCode=1;
-})().catch(async e=>{console.error(e);if(testBrowser)await testBrowser.close();server.close();process.exitCode=1;});
+})().catch(async e=>{console.error(e);let state;try{state=await testPage.evaluate(()=>({tile:fieldPlayerTile(),lock:fieldState.lock,stepUntil:fieldState.stepUntil,dir:fieldState.dir,modal:fieldModalOpen(),mapOpen:fieldState.mapOpen,openModals:[...document.querySelectorAll(".game-dialog,#story-event,#tutorial-overlay,#list-menu")].filter(e=>!e.hidden).map(e=>e.id),dialog:!!fieldDialogAdvance,typing:!!fieldDialogTyping,choice:!!fieldChoiceState,active:fieldIsActive(),input:{tap:fieldInput.tap,pad:[...fieldInput.pad],keys:[...fieldInput.keys]}}));}catch(_){}fs.writeFileSync(`${out}/failure-diagnostic.json`,JSON.stringify({message:e.message,state,logs:testLogs,errors:testErrors},null,2));if(testBrowser)await testBrowser.close();server.close();process.exitCode=1;});

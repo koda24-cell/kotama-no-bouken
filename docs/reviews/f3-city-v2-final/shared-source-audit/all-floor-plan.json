@@ -1,0 +1,101 @@
+{
+  "schema": "kotama-all-floor-optimization-plan-v1",
+  "source": "GLB structure only, not actual WebGL FPS/draw calls",
+  "approved_for_game_integration": false,
+  "approval_required": true,
+  "scope": "all present repository GLBs, floor6 or uncommitted models are not assumed to exist",
+  "floors": {
+    "floor3": {
+      "models": 8,
+      "triangles": 196491,
+      "primitive_instances": 50,
+      "candidate_modes": {
+        "rigid_geometry_review": 5,
+        "transparency_specialized_review": 1,
+        "foliage_or_transparency_review": 2
+      },
+      "high_priority": 0
+    }
+  },
+  "assets": [
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_courtyard_facade/props/f3_v2_courtyard_facade.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 29106,
+      "primitive_instances": 13
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_factory_bay/props/f3_v2_factory_bay.glb",
+      "floor": "floor3",
+      "mode": "transparency_specialized_review",
+      "rigid_candidate": false,
+      "priority": "medium",
+      "triangles": 33700,
+      "primitive_instances": 10
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_fern_colony/props/f3_v2_fern_colony.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 6232,
+      "primitive_instances": 1
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_fractured_road/props/f3_v2_fractured_road.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 900,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_memory_statue/props/f3_v2_memory_statue.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 28007,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_service_tower/props/f3_v2_service_tower.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 43208,
+      "primitive_instances": 14
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_truss_bridge/props/f3_v2_truss_bridge.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 20988,
+      "primitive_instances": 6
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v2_wildflower_colony/props/f3_v2_wildflower_colony.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "medium",
+      "triangles": 34350,
+      "primitive_instances": 1
+    }
+  ],
+  "next_steps": [
+    "Keep source GLBs immutable and compare source/LOD screenshots",
+    "Use rigid LOD review only for static opaque eligible assets",
+    "Use leaf material batching and multiview impostors for vegetation",
+    "Keep water/magma/VFX and characters out of generic geometry simplification",
+    "Measure scene draw calls, frame time and visual popping in real Three.js before integration"
+  ]
+}
