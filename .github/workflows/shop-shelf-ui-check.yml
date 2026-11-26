@@ -1,0 +1,36 @@
+name: Shop shelf UI checks
+on:
+  pull_request:
+    paths:
+      - 'shop-shelf.js'
+      - 'script.js'
+      - 'index.html'
+      - 'css/18-shop-shelf.css'
+      - '.github/workflows/shop-shelf-ui-check.yml'
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and integration checks
+        run: |
+          node --check shop-shelf.js
+          node --check script.js
+          node <<'NODE'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const js=fs.readFileSync('shop-shelf.js','utf8'),html=fs.readFileSync('index.html','utf8'),main=fs.readFileSync('script.js','utf8');
+          assert(html.includes('./shop-shelf.js?v='));
+          assert(html.includes('./css/18-shop-shelf.css?v='));
+          assert(js.includes('baseRender();'));
+          assert(js.includes('if(tutorialState.started&&!tutorialState.completed)return;'));
+          assert(js.includes('detail.append(card)'));
+          assert(main.includes('data-buy-item=')&&main.includes('data-sell-row='));
+          assert(main.includes('data-item-id='));
+          assert(js.includes('merchant: null, items: {}'));
+          console.log('Shop UI syntax and existing transaction integration checks passed.');
+          NODE
