@@ -1,0 +1,14 @@
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
+const ctx=vm.createContext({});
+for(const path of ["data/field-maps.js","data/story.js"])vm.runInContext(fs.readFileSync(path,"utf8"),ctx);
+const map=vm.runInContext(`(()=>{const a=FIELD_AREAS[1],g=a.floors[0].map,walk=(x,y)=>/^[.*E>]$/.test(g[y]?.[x]||"#"),seen=new Set(["1,19"]),q=[[1,19]];for(let i=0;i<q.length;i++){const [x,y]=q[i];for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const p=[x+dx,y+dy],k=p.join(",");if(walk(...p)&&!seen.has(k)){seen.add(k);q.push(p)}}}return {dims:g.length===21&&g.every(r=>r.length===27),foes:a.floors[0].foes.length,second:a.floors[1].foes.length,reachable:seen.has("19,3"),count:seen.size,scenes:"hijklmnopqr".split("").every(k=>g.join("").includes(k)&&!!a.objects[k]&&(!a.objects[k].scene||!!STORY_SCENES[a.objects[k].scene])&&(!a.objects[k].event||!!FIELD_SIDE_EVENTS[a.objects[k].event]))};})()`,ctx);
+assert.ok(map.dims);assert.equal(map.foes,0);assert.ok(map.second>0);assert.ok(map.reachable);assert.equal(map.count,259);assert.ok(map.scenes);
+const src=fs.readFileSync("field/field-interactions.js","utf8"),start=src.indexOf("function fieldA1TrialPassed()"),end=src.indexOf("async function fieldA1Report()",start);
+assert.ok(start>=0&&end>start);
+const flags={},marks={"0,0":"chest","1,0":"door"},exp=[1,1,0];let rate=24;
+const t=vm.createContext({fieldState:{flags},fieldArea:()=>({w:3,objects:[{kind:"chest",tx:0,ty:0},{kind:"door",tx:1,ty:0}]}),fieldManualMap:()=>marks,fieldExplored:()=>exp,fieldExploredRate:()=>rate});
+vm.runInContext(src.slice(start,end),t);
+const status=()=>vm.runInContext("fieldA1TrialStatus()",t),passed=()=>vm.runInContext("fieldA1TrialPassed()",t);
+assert.equal(status().map,false);rate=25;assert.equal(status().map,true);delete marks["1,0"];assert.equal(status().map,false);marks["1,0"]="door";exp[1]=0;assert.equal(status().map,false);exp[1]=1;assert.equal(status().map,true);assert.equal(status().gather,false);assert.equal(status().battle,false);assert.equal(passed(),false);flags["a1:trial-gather"]=true;flags["a1:trial-victory"]=true;assert.ok(status().gather&&status().battle);assert.equal(passed(),false);flags["a1:exam-passed"]=true;assert.equal(passed(),true);delete flags["a1:exam-passed"];flags["floor:1-1"]=true;assert.equal(passed(),true);
+console.log("F1 map and trial static checks passed",map);
