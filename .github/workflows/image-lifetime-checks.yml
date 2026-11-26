@@ -1,0 +1,30 @@
+name: Image lifetime checks
+on:
+  push:
+    branches:
+      - feature/gpt-field-status-large-20261126
+    paths:
+      - tools/test-image-release.mjs
+      - .github/workflows/image-lifetime-checks.yml
+      - script.js
+      - field/field-3d-view.js
+      - battle-ui-preview.js
+      - monster-compendium.js
+      - css/15-battle-ui-refresh.css
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          node --check script.js
+          node --check battle-ui-preview.js
+          node --check monster-compendium.js
+          node --input-type=module --check < field/field-3d-view.js
+          node tools/test-image-release.mjs

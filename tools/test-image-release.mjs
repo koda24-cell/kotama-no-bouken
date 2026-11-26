@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+function extract(path, name) {
+  const s=fs.readFileSync(path,'utf8');
+  const start=s.indexOf('function '+name+'(');
+  assert.ok(start>=0,name);
+  const end=s.indexOf('\n}',start);
+  assert.ok(end>start,name);
+  return s.slice(start,end+2);
+}
+let removed=0, queried=[], fieldReleased=0;
+const dom=vm.createContext({document:{querySelectorAll(selector){queried.push(selector);return [{remove(){removed++}}]}},window:{KotamaField3D:{releaseFoeImages(){fieldReleased++}}}});
+vm.runInContext(extract('script.js','releaseInactiveScreenImages'),dom);
+dom.releaseInactiveScreenImages('home','home');assert.equal(removed,0);
+dom.releaseInactiveScreenImages('home','formation');assert.deepEqual(queried,['#home-party img']);
+dom.releaseInactiveScreenImages('formation','battle');assert.match(queried[1],/#character-roster img/);
+dom.releaseInactiveScreenImages('battle','field');assert.match(queried[2],/battle-preview-portrait/);
+dom.releaseInactiveScreenImages('field','home');assert.equal(fieldReleased,1);
+dom.releaseInactiveScreenImages('settings','home');assert.equal(removed,3);
+let disposed=0, spritesDisposed=0;
+const live={dispose(){disposed++}}, unused={dispose(){disposed++}};
+const sprite={sp:{material:{map:live}}};
+const g={foes:new Map([['a',sprite],['b',sprite]]),texCache:new Map([['live',live],['unused',unused]])};
+const gpu=vm.createContext({g,disposeFoe(){spritesDisposed++}});
+vm.runInContext(extract('field/field-3d-view.js','pruneFoeTextures')+'\n'+extract('field/field-3d-view.js','releaseFoeImages'),gpu);
+gpu.pruneFoeTextures();assert.equal(disposed,1);assert.equal(g.texCache.size,1);
+g.foes.delete('a');gpu.pruneFoeTextures();assert.equal(disposed,1);
+gpu.releaseFoeImages();assert.equal(disposed,2);assert.equal(spritesDisposed,1);assert.equal(g.texCache.size,0);assert.equal(g.foes.size,0);
+gpu.releaseFoeImages();assert.equal(disposed,2);
+assert.match(fs.readFileSync('css/15-battle-ui-refresh.css','utf8'),/#battle:not\(\.active\)\{--battle-floor-art:none!important\}/);
+console.log('PASS: screen image cleanup, shared texture retention, final texture disposal and inactive background guard (mocked DOM/GPU).');
+
+const layout=vm.createContext({gatherDef:o=>({kind:o.gatherKind}),loaded:[]});
+vm.runInContext('async function load(file){loaded.push(file);}'+'\n'+extract('field/field-3d-view.js','firstFloorSharedKeys')+'\n'+extract('field/field-3d-view.js','loadSharedAssets').replace('function loadSharedAssets','async function loadSharedAssets'),layout);
+const empty=layout.firstFloorSharedKeys({objects:[]});
+assert.equal(empty.length,13);
+assert.ok(!empty.includes('chest')&&!empty.includes('npcWood'));
+const populated=layout.firstFloorSharedKeys({objects:[{kind:'stairs',dir:'up'},{kind:'chest'},{kind:'gather',gatherKind:'mine'},{kind:'npc',id:'woodcutter'},{kind:'door',hidden:false},{kind:'event',hidden:true}]});
+for(const k of ['stairsUp','chest','chestOpen','mining','npcWood','gate','roots'])assert.ok(populated.includes(k),k);
+assert.ok(!populated.includes('npcHerb')&&!populated.includes('stairsDown'));
+let done=0;
+await layout.loadSharedAssets(['a','b','c'],2,()=>done++);
+assert.equal(done,3);assert.equal(layout.loaded.length,3);
+console.log('PASS: floor-specific asset selection and rolling worker queue.');

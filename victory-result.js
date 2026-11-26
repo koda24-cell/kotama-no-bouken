@@ -9,7 +9,7 @@ function showVictoryResult(levelResult, drops) {
   dialog.tabIndex = -1;
   const title = document.getElementById("result-title").textContent;
   const summary = document.getElementById("result-message").textContent;
-  const rows = (levelResult?.members || []).slice().sort((a,b)=>Number(b.active)-Number(a.active));
+  const rows = (levelResult?.members || []).filter(m=>m.active);
   const aggregated = new Map();
   for (const item of drops || []) {
     const key = item.id || item.name;

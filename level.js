@@ -53,10 +53,12 @@ function levelAwardBattleExp(e) {
       ups.push({ id: c.id, name: c.name, from, to: lv });
     }
   }
-  const text = `経験値 +${exp}` + (ups.length ? `\n${ups.map(u => `${u.name} Lv.${u.from}→${u.to}`).join("　")}（スキルポイント獲得）` : "");
-  if (ups.length) {
-    try { document.dispatchEvent(new CustomEvent("battle:level:up", { detail: { ups: ups.map(u => ({ ...u })) } })); } catch (_) {}
-    if (typeof showPurchasePopup === "function") showPurchasePopup(`レベルアップ！ ${ups.map(u => `${u.name} Lv.${u.to}`).join("・")}`);
+  const visibleUps=ups.filter(u=>activeIds.has(u.id));
+  const text = `経験値 +${exp}` + (visibleUps.length ? `\n${visibleUps.map(u => `${u.name} Lv.${u.from}→${u.to}`).join("　")}（スキルポイント獲得）` : "");
+  if (visibleUps.length) {
+    try { document.dispatchEvent(new CustomEvent("battle:level:up", { detail: { ups: visibleUps.map(u => ({ ...u })) } })); } catch (_) {}
+    // 通常戦では勝利画面のLEVEL UP演出に一本化する。
+    if (typeof showVictoryResult !== "function" && typeof showPurchasePopup === "function") showPurchasePopup(`レベルアップ！ ${visibleUps.map(u => `${u.name} Lv.${u.to}`).join("・")}`);
     if (typeof playSe === "function") playSe("assets/se/syouri/アイテムを入手2", .8);
   }
   pushLog(text.replace("\n", " "));

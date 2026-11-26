@@ -151,7 +151,7 @@ function monsterCardHtml(entry, r, legacy) {
   const defeated = legacy ? !!legacy.defeated : !!r?.defeated;
   const d = entry.data() || {};
   const img = d.image;
-  const art = defeated && img ? `<img src="${esc(img)}" alt="${esc(entry.name)}" onerror="this.remove()">` : `<span>${encountered ? "影" : "?"}</span>`;
+  const art = defeated && img ? `<img loading="lazy" decoding="async" src="${esc(img)}" alt="${esc(entry.name)}" onerror="this.remove()">` : `<span>${encountered ? "影" : "?"}</span>`;
   let body;
   if (!encountered) body = "未遭遇";
   else if (!defeated) body = "名前のみ登録（討伐すると詳細が解放されます）";

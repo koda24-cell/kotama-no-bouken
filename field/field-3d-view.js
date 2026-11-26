@@ -28,6 +28,10 @@ const AREAS_3D = new Set([1, 2, 3, 4, 5]); // 第1〜第5階層の探索は3Dを
 const PREVIEW_KEY = 'kotama.field3d.preview';   // 試験表示する階層（例 "2"）。セーブデータには入れない
 // 第1階層の空気（ensureRenderer で使っている値と同じ。第2階層から戻ったときに戻す）
 const ENV_B1 = { background: 0x070d11, fog: { color: 0x0c1a20, density: 0.042 }, hemi: { sky: 0x7aa8c4, ground: 0x1c241c, high: 1.25, low: 1.7 } };
+// Phone-only view budget. Desktop retains its per-theme far plane.
+const PHONE_VIEW = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(navigator.userAgent) || (navigator.maxTouchPoints>0 && matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<=600);
+const PHONE_FAR = 24, PHONE_LIGHT_RANGE = 16;
+function viewFar(distance){return PHONE_VIEW?Math.min(distance,PHONE_FAR):distance;}
 const CELL = 4, EYE = 1.6, BACK = 1.1;    // 1マス4m、目の高さ、マスの後ろ寄りに立つ距離
 const STEP_MS = 230, TURN_MS = 210;       // 3D表示中の1歩・1回の旋回にかける時間
 const PREF_KEY = 'kotama.field3d', QUALITY_KEY = 'kotama.field3d.quality';
@@ -53,11 +57,11 @@ const FILES = {
 const g = {
   pref: readPref(), failed: false, webgl: true,
   renderer: null, composer: null, scene: null, camera: null, world: null, dyn: null, canvas: null, badge: null,
-  builtKey: '', buildingKey: '', buildToken: 0, sig: '',
+  builtKey: '', buildingKey: '', buildToken: 0, sig: '', retryRequested:false,
   cache: new Map(), lights: [], pool: [], entries: [], foes: new Map(), texCache: new Map(),
   cam: { pos: new THREE.Vector3(), yaw: 0, ready: false, bump: 0, bumpDir: [0, 0] },
   lastT: 0, lastRender: 0, lastLightKey: '', size: [0, 0], high: readQuality(), near: null, maxFps: readMaxFps(),
-  hemi: null, envArea: 1, theme: null, themePromise: null, themeFailed: false, preview: readPreview(),
+  hemi: null, envArea: 1, theme: null, themePromise: null, themeFailed: false, floorFailures: new Map(), preview: readPreview(),
 };
 
 function readPref() { try { return localStorage.getItem(PREF_KEY) !== 'off'; } catch (_) { return true; } }
@@ -72,7 +76,7 @@ function readPreview() {
   return set;
 }
 // 3D表示できる階層：第1階層と、試験表示を有効にした第2階層
-const areaOn = (n) => AREAS_3D.has(n) && (n !== 2 || !g.themeFailed);
+const areaOn = (n) => AREAS_3D.has(n) && !g.floorFailures.has(curKey());
 function writePref(on) { try { localStorage.setItem(PREF_KEY, on ? 'on' : 'off'); } catch (_) {} }
 const hash = (x, z, s = 0) => { let h = (x * 374761393 + z * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const fieldOk = () => typeof fieldState !== 'undefined' && typeof fieldArea === 'function';
@@ -94,9 +98,9 @@ function ensureRenderer() {
     g.scene = new THREE.Scene();
     g.scene.background = new THREE.Color(0x070d11); g.scene.fog = new THREE.FogExp2(0x0c1a20, 0.042);
     g.hemi = new THREE.HemisphereLight(0x7aa8c4, 0x1c241c, g.high ? 1.25 : 1.7); g.scene.add(g.hemi);   // 暗所でも形が読める明るさ（点光源の少ない低画質では強め）
-    g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, 48);
+    g.camera = new THREE.PerspectiveCamera(68, 1, 0.05, viewFar(48));
     g.world = new THREE.Group(); g.dyn = new THREE.Group(); g.scene.add(g.world, g.dyn);
-    setPool(g.high ? 14 : 6);   // 点光源は多いほど重い（1画素ごとに全部を計算する）ため、近いものだけ
+    setPool(PHONE_VIEW ? 4 : g.high ? 14 : 6);   // 点光源は多いほど重い（1画素ごとに全部を計算する）ため、近いものだけ
     if (g.high) {
       g.composer = new EffectComposer(r); g.composer.addPass(new RenderPass(g.scene, g.camera));
       g.composer.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.45, 0.5, 0.84)); g.composer.addPass(new OutputPass());
@@ -125,7 +129,7 @@ function setPool(n) {
 function updatePool(center, force) {
   const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`;
   if (!force && key === g.lastLightKey) return; g.lastLightKey = key;
-  const list = g.lights.filter((L) => !L.off).map((L) => ({ L, d: L.world.distanceToSquared(center) })).sort((a, b) => a.d - b.d);
+  const list = g.lights.filter((L) => !L.off).map((L) => ({ L, d: L.world.distanceToSquared(center) })).filter(e=>!PHONE_VIEW||e.d<=PHONE_LIGHT_RANGE**2).sort((a, b) => a.d - b.d);
   g.pool.forEach((p, i) => { const e = list[i]; if (!e) { p.intensity = 0; return; } p.position.copy(e.L.world); p.color.setHex(e.L.color); p.intensity = e.L.intensity * 2.4; p.distance = e.L.range * 2.0; });
 }
 
@@ -133,8 +137,10 @@ function updatePool(center, force) {
    素材の読み込みと配置
    ------------------------------------------------------------ */
 const loader = new GLTFLoader();
+async function retryLoad(job){let last;for(let i=0;i<3;i++){try{return await job(i);}catch(e){last=e;if(i<2)await new Promise(resolve=>setTimeout(resolve,350*(i+1)));}}throw last;}
+async function boundedAsset(file){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const url=new URL(BASE+file,document.baseURI);const response=await fetch(url,{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status+' '+file);const data=await response.arrayBuffer();return await loader.parseAsync(data,new URL('.',url).href);}finally{clearTimeout(timer);}}
 function load(file) {
-  if (!g.cache.has(file)) g.cache.set(file, loader.loadAsync(BASE + file).then((x) => x.scene));
+  if (!g.cache.has(file)) g.cache.set(file, retryLoad(()=>boundedAsset(file)).then(x=>x.scene).catch(e=>{g.cache.delete(file);throw e;}));
   return g.cache.get(file);
 }
 // 階層ごとの空気（背景・霧・環境光）。第1階層は ENV_B1（元の値のまま）
@@ -144,9 +150,9 @@ function applyEnv(area, env) {
   if(review&&!g.reviewFill){g.reviewFill=new THREE.AmbientLight(0xbac6ac,.32);g.scene.add(g.reviewFill);}
   if(g.reviewFill)g.reviewFill.intensity=review?.32:0;
   g.renderer.toneMappingExposure=review?1.48:1.3;
-  g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = E.fog.density;
+  g.scene.background.setHex(E.background); g.scene.fog.color.setHex(E.fog.color); g.scene.fog.density = PHONE_VIEW ? Math.max(E.fog.density,0.085) : E.fog.density;
   if (g.hemi) { g.hemi.color.setHex(E.hemi.sky); g.hemi.groundColor.setHex(E.hemi.ground); g.hemi.intensity = g.high ? E.hemi.high : E.hemi.low; }
-  g.camera.far = area === 5 ? 180 : 48;
+  g.camera.far = viewFar(area === 5 ? 180 : 48);
   g.camera.updateProjectionMatrix();
   g.envArea = area;
 }
@@ -210,6 +216,39 @@ function cellInfo(a) {
 // 隠し通路の開閉が変わったら作り直す
 function doorSig(a) { return a.objects.filter((o) => o.kind === 'door' && o.hidden).map((o) => (fieldDoorOpen(o) ? 1 : 0)).join(''); }
 
+// Keep the full terrain kit; only request props that this floor can use.
+function firstFloorSharedKeys(a){
+  const keys=new Set(['floor','floorBroken','floorSoil','wall','wallMossy','wallCollapsed','ceil','ceilRoots','fern','crystalVein','vines','mushrooms','mossPatch']);
+  for(const o of a.objects){
+    switch(o.kind){
+      case 'stairs':keys.add(o.dir==='down'?'stairsDown':'stairsUp');break;
+      case 'save':keys.add('seal');keys.add('torch');break;
+      case 'chest':case 'cache':keys.add('chest');keys.add('chestOpen');break;
+      case 'gather':{const kind=gatherDef(o).kind;keys.add(kind==='chop'?'logging':kind==='mine'?'mining':'herb');break;}
+      case 'sign':keys.add('sign');break;
+      case 'gate':keys.add('runeDoor');break;
+      case 'switch':keys.add('lever');break;
+      case 'exit':keys.add('rootArch');break;
+      case 'npc':keys.add(o.id==='woodcutter'?'npcWood':o.id==='herb-girl'?'npcHerb':'npcTraveler');break;
+      case 'door':if(!o.hidden)keys.add('gate');break;
+      case 'event':keys.add(o.hidden?'roots':o.sprite==='ev-stump'?'stump':'mushrooms');break;
+    }
+  }
+  return [...keys];
+}
+// Rolling workers avoid waiting for the slowest item in every batch. On phones,
+// keep the previous single-load budget to avoid another memory-related reload.
+async function loadSharedAssets(files,limit,onDone){
+  let next=0,error=null;
+  async function worker(){
+    while(!error&&next<files.length){
+      const file=files[next++];
+      try{await load(file);onDone();}catch(e){error=e;}
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(limit,files.length)},worker));
+  if(error)throw error;
+}
 async function buildFloor() {
   const a = fieldArea(); if (!a) return;
   const key = a.buildKey || a.key, token = ++g.buildToken;   // [RANDOM-MAZE]
@@ -220,16 +259,22 @@ async function buildFloor() {
   const area = Number(fieldState.area);
   let th = null;
   if (area === 2 || area === 3 || area === 4 || area === 5) {
-    try { th = area === 2 ? await loadTheme2() : area === 3 ? await loadTheme3() : await loadTheme45(area); }
-    catch (e) { console.warn('[field-3d] 3Dテーマの読み込みに失敗しました:', area, e); if (area === 2) g.themeFailed = true; else g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return; }
+    try { th = await retryLoad(()=>area === 2 ? loadTheme2() : area === 3 ? loadTheme3() : loadTheme45(area)); }
+    catch (e) { throw e; }
   }
   try {
-    const list = Object.values(FILES); let done = 0;
+    // Later strata own their terrain kit; only load shared props actually used by their builders.
+    const sharedKeys=area===1?firstFloorSharedKeys(a):area===2?[]:area===3?['stairsDown','stairsUp','seal','torch','sign','lever','runeDoor']:['sign','stairsDown','stairsUp','seal','torch','runeDoor','rootArch','npcTraveler'];
+    const list=sharedKeys.map(k=>FILES[k]); let done=0;
+    g.requiredSharedKeys=sharedKeys;
     report(20,'共通素材読み込み');
-    await Promise.all(list.map((f) => load(f).then(() => { done++; report(20+50*done/list.length,`素材 ${done}/${list.length}`); showBadge(`3D表示を準備中… ${done}/${list.length}`); })));
-    for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
+    const concurrency=PHONE_VIEW?1:g.high?6:1;
+    const started=performance.now(), uncached=list.filter(f=>!g.cache.has(f)).length;
+    await loadSharedAssets(list,concurrency,()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);});
+    g.sharedLoadReport={area,total:list.length,uncached,concurrency,elapsedMs:Math.round(performance.now()-started)};
+    if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
   } catch (e) {
-    console.warn('[field-3d] 素材を読めなかったため2D表示に戻します:', e); g.failed = true; showBadge(''); applyMode(); return;
+    if(th&&th!==g.theme)try{th.dispose({final:true});}catch(_){} throw e;
   }
   if (token !== g.buildToken || curKey() !== key) {
     if (th && th !== g.theme) th.dispose({ final: true });
@@ -237,14 +282,14 @@ async function buildFloor() {
     return;
   }   // 待っている間にフロアが変わった
   report(75,'マップ組み立て');
-  const S = {}; for (const [k, f] of Object.entries(FILES)) S[k] = await load(f);
+  const S = {}; for (const k of g.requiredSharedKeys) S[k] = await load(FILES[k]);
   // The URL-only sacred trial owns no save or interaction state.
   g.natureV6?.dispose();g.natureV6=null;g.natureV6Error=null;g.cameraPortals=[]; g.firstLayerDress?.dispose(); g.firstLayerDress=null; g.sacredTrial?.dispose(); g.sacredTrial = null; g.sacredTrialError = null;
   // 片付け
   for (const c of [...g.world.children]) g.world.remove(c);
   for (const c of [...g.dyn.children]) if (c !== g.near) g.dyn.remove(c);
   for (const foe of g.foes.values()) disposeFoe(foe);
-  g.lights = []; g.entries = []; g.foes.clear();
+  g.lights = []; g.entries = []; g.foes.clear(); pruneFoeTextures();
   if (g.theme && g.theme !== th) g.theme.dispose({ final: true });
   g.theme = th;
   applyEnv(area, th && th.env);
@@ -258,7 +303,7 @@ async function buildFloor() {
     }
     catch (e) {
       console.error('[field-3d] 3Dマップの組み立てに失敗:', area, e);
-      g.failed = true; g.buildingKey = ''; showBadge(''); applyMode(); return;
+      throw e;
     }
   }
   else {                                // 第1階層：ここから下は従来の組み立て（変更なし）
@@ -270,7 +315,7 @@ async function buildFloor() {
         layoutUrl: new URL('../assets/3d/dungeons/b1_sacred_forest_candidates/scene/game-layout-v6.json', import.meta.url).href });
       if (token !== g.buildToken || curKey() !== key) { trial.dispose(); if (token === g.buildToken) g.buildingKey = ''; return; }
       g.sacredTrial = trial; sacred = true;
-      applyEnv(area, trial.env); g.camera.far = trial.far; g.camera.updateProjectionMatrix();
+      applyEnv(area, trial.env); g.camera.far = viewFar(trial.far); g.camera.updateProjectionMatrix();
     } catch (error) {
       if (token !== g.buildToken || curKey() !== key) return;
       g.sacredTrialError = String(error.message || error);
@@ -357,7 +402,7 @@ async function buildFloor() {
   }   // 第1階層の組み立てここまで
   report(95,'初回描画待ち');
   g.sig = doorSig(a);
-  g.builtKey = key; g.buildingKey = ''; g.cam.ready = false; g.lastLightKey = '';
+  g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';
   for (const e of g.entries) syncEntry(e, S);
   showBadge('');
   applyMode();
@@ -414,6 +459,7 @@ function gatherDef(o) { try { return fieldGatherPointDef(fieldArea(), o); } catc
 function foeTexture(src) {
   if (!g.texCache.has(src)) {
     const t = new THREE.TextureLoader().load(src, texture => {
+      if (g.texCache.get(src)!==texture) { texture.dispose(); return; }
       if (!/\.svg(?:$|[?#])/i.test(src)) return;
       // DOM SVG images can fail WebGL2 immutable texture upload. Rasterize
       // synchronously in onLoad, before the first render can upload the SVG.
@@ -429,7 +475,16 @@ function foeTexture(src) {
   }
   return g.texCache.get(src);
 }
-// FOE visuals own these GPU resources; textures remain in the shared cache.
+// Only retain FOE texture entries referenced by current sprites.
+function pruneFoeTextures(){
+  const used=new Set([...g.foes.values()].map(v=>v.sp.material.map));
+  for(const [src,texture] of g.texCache) if(!used.has(texture)){g.texCache.delete(src);texture.dispose();}
+}
+function releaseFoeImages(){
+  for(const v of g.foes.values())disposeFoe(v);
+  g.foes.clear();pruneFoeTextures();
+}
+// FOE visuals own their material and geometry; shared textures are pruned separately.
 function disposeFoe(v) {
   g.dyn.remove(v.grp);
   v.ring.geometry.dispose(); v.ring.material.dispose(); v.sp.material.dispose();
@@ -438,6 +493,7 @@ function disposeFoe(v) {
 function syncFoes(t) {
   const seen = new Set();
   for (const f of fieldState.foes || []) {
+    if(f.defeated)continue;
     seen.add(f.key);
     let v = g.foes.get(f.key);
     if (!v) {
@@ -463,6 +519,7 @@ function syncFoes(t) {
     v.sp.material.color.setHex(chase ? 0xffc0c0 : 0xffffff);
   }
   for (const [k, v] of g.foes) if (!seen.has(k)) { disposeFoe(v); g.foes.delete(k); }
+  pruneFoeTextures();
 }
 
 /* ------------------------------------------------------------
@@ -561,34 +618,45 @@ function ensureToggle() {
   const can = fieldOk() && areaOn(area) && g.webgl && !g.failed;
   // 第1〜第5階層では3D表示を固定し、2D/3D切り替えボタンを出さない。
   // ほかの階層で3Dを解放した場合は、従来どおり切り替えられる。
-  btn.hidden = !can || AREAS_3D.has(area);
-  btn.textContent = g.pref ? '2D表示' : '3D表示';
+  const failedHere=g.floorFailures.has(curKey());
+  btn.hidden = !failedHere && (!can || AREAS_3D.has(area));
+  btn.textContent = failedHere?'3D再試行':g.pref ? '2D表示' : '3D表示';
   btn.title = g.pref ? '見下ろしの2D表示に切り替える' : '一人称の3D表示に切り替える';
 }
 function toggle(force) {
-  if (fieldOk() && AREAS_3D.has(Number(fieldState.area))) { g.pref = true; build(); return; }
+  if (fieldOk() && AREAS_3D.has(Number(fieldState.area))) { g.floorFailures.delete(curKey()); g.pref = true; window.Kotama3DLoading?.show(); build(); return; }
   g.pref = typeof force === 'boolean' ? force : !g.pref; writePref(g.pref);
   if (typeof fieldInput !== 'undefined') { fieldInput.keys.clear(); fieldInput.pad.clear(); fieldInput.tap = null; }
   if (g.pref) build(); else applyMode();
 }
 function showBadge(text) { if (!g.badge) return; g.badge.textContent = text; g.badge.hidden = !text; }
 
+function recoverFloor(key,error){
+ console.error('[field-3d] floor failed:',key,error);
+ if(g.buildingKey===key)g.buildingKey='';
+ g.floorFailures.set(key,String(error?.message||error));
+ g.builtKey='';
+ try{g.theme?.dispose({final:true});}catch(_){} g.theme=null;
+ showBadge('');applyMode();
+ if(curKey()===key&&document.body.dataset.screen==='field'){window.Kotama3DLoading?.fail('3Dマップの読み込みに失敗しました');showBadge('');}
+}
+function startFloorBuild(){const key=curKey();buildFloor().catch(e=>recoverFloor(key,e)).finally(()=>{if(g.buildingKey===key)g.buildingKey='';if(g.retryRequested){g.retryRequested=false;if(document.body.dataset.screen==='field'&&curKey()===key&&!active()){g.floorFailures.delete(key);g.failed=false;window.Kotama3DLoading?.show();build();}}});}
 function build() {
-  if (!fieldOk()) return;
-  if (!eligible()) { applyMode(); return; }
-  if (!ensureRenderer()) { applyMode(); return; }
+  if (!fieldOk() || document.body.dataset.screen!=='field') return;
+  if (!eligible()) { applyMode(); if(document.body.dataset.screen==='field')window.Kotama3DLoading?.fail('3D表示を利用できません。再試行してください'); return; }
+  if (!ensureRenderer()) { applyMode(); window.Kotama3DLoading?.fail('3D描画を初期化できません'); return; }
   mount();
   const key = curKey();
-  if (g.builtKey === key && doorSig(fieldArea()) === g.sig) { g.cam.ready = false; applyMode(); return; }
+  if (g.builtKey === key && doorSig(fieldArea()) === g.sig) { g.cam.ready = false; applyMode(); window.Kotama3DLoading?.hide(); return; }
   // Serialize async builds: a floor change is picked up by frame() afterwards.
   if (g.buildingKey) return;
   g.builtKey = '';
   applyMode();
-  buildFloor();
+  startFloorBuild();
 }
 
 function frame() {
-  if (!fieldOk()) return;
+  if (!fieldOk() || document.body.dataset.screen!=='field') return;
   if (!active()) { if (g.canvas && !g.canvas.hidden) applyMode(); if (eligible() && !g.buildingKey && g.builtKey !== curKey()) build(); return; }
   const now = performance.now();
   if (g.maxFps && now - g.lastRender < 1000 / g.maxFps) return;
@@ -596,22 +664,26 @@ function frame() {
   const dt = g.lastT ? Math.min(g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
   mount();
   const a = fieldArea();
-  if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; buildFloor(); return; }
+  if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; startFloorBuild(); return; }
   for (const e of g.entries) syncEntry(e);
   syncFoes(now);
   updateCamera(dt);
   g.natureV6?.update(g.camera.position.x,g.camera.position.z);
   g.sacredTrial?.update?.(now / 1000);
-  if (g.theme?.area === 4 && g.envArea === 4) g.theme.tick(dt, now, g.camera.position);
+  // The camera frustum excludes remote geometry without changing movement, collision or asset data.
+  const themeStep=!PHONE_VIEW||!g.lastThemeTick||now-g.lastThemeTick>=1000/20;
+  const themeDt=PHONE_VIEW?Math.min(.15,g.lastThemeTick?(now-g.lastThemeTick)/1000:dt):dt;
+  if(themeStep)g.lastThemeTick=now;
+  if (themeStep && g.theme?.area === 4 && g.envArea === 4) g.theme.tick(themeDt, now, g.camera.position);
   updatePool(g.camera.position, g.envArea === 4);
-  if (g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(dt, now, g.camera.position);
+  if (themeStep && g.theme && g.envArea === g.theme.area && g.envArea !== 4) g.theme.tick(themeDt, now, g.camera.position);
   // 正面の調べられる物に目印
   const nk = fieldState.lock ? '' : fieldState.nearKey;
   const ne = nk && g.entries.find((e) => e.o.key === nk);
   if (ne) { g.near.visible = true; g.near.position.set(ne.at.x, ne.at.y + 0.9 + Math.sin(now / 300) * 0.08, ne.at.z); g.near.rotation.y = now / 600; }
   else g.near.visible = false;
   g.renderer.info.reset();   // 後処理（ブルーム）の分も含めて1フレームの描画数を数える
-  if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);
+  try{if (g.composer) g.composer.render(); else g.renderer.render(g.scene, g.camera);}catch(e){recoverFloor(curKey(),e);return;}
   // Only dismiss the full-screen loading state after the first actual 3D frame.
   window.Kotama3DLoading?.ready();
 
@@ -627,7 +699,7 @@ function setPreview(n, on) {
   if (fieldOk()) { g.builtKey = ''; build(); applyMode(); }
 }
 function gameReviewState() {
-  return { builtKey:g.builtKey, buildingKey:g.buildingKey,
+  return { builtKey:g.builtKey, buildingKey:g.buildingKey, phoneView:PHONE_VIEW, sharedLoadReport:g.sharedLoadReport||null, drawDistance:g.camera?.far, floorFailures:Object.fromEntries(g.floorFailures),
     environment:{area:g.envArea,background:g.scene?.background?.getHex?.(),fogDensity:g.scene?.fog?.density,far:g.camera?.far,exposure:g.renderer?.toneMappingExposure,hemisphereIntensity:g.hemi?.intensity,fillIntensity:g.reviewFill?.intensity||0},
     cameraClearanceAdjustments:g.lastCameraClearanceAdjustments||0,camera:g.camera?{position:g.camera.position.toArray(),rotation:g.camera.rotation.toArray().slice(0,3)}:null,
     entries:g.entries.map(e=>({key:e.o.key,kind:e.kind,state:e.state,at:e.at.toArray(),objectId:e.o.id||null,sprite:e.o.sprite,hasObject:!!e.obj,modelName:e.obj?.name||null,objectUuid:e.obj?.uuid||null,modelRotationY:e.obj?.rotation.y??null,modelBounds:e.obj?new THREE.Box3().setFromObject(e.obj).getSize(new THREE.Vector3()).toArray():null,childNames:e.obj?e.obj.children.map(c=>c.name):[]})),
@@ -635,7 +707,7 @@ function gameReviewState() {
     foes:[...g.foes].map(([key,v])=>({key,visible:v.grp.visible,meshOrSprite:v.sp.type,textureLoaded:!!v.sp.material.map?.image,textureRasterized:!!v.sp.material.map?.userData.svgRasterized,textureSize:v.sp.material.map?.image?[v.sp.material.map.image.width,v.sp.material.map.image.height]:null})),
     natureV6Info:g.natureV6?.info()||null,natureV6Error:g.natureV6Error||null,firstLayerProgressionInfo:g.firstLayerDress?.info()||null,staticTrialInfo:g.sacredTrial?.info()||null,trialFallback:g.sacredTrialError||null };
 }
-window.KotamaField3D = { active, input, build, frame, toggle, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
+window.KotamaField3D = { active, input, build, frame, toggle, releaseFoeImages, retryLoad:()=>{if(document.body.dataset.screen!=='field')return;if(g.buildingKey){g.retryRequested=true;window.Kotama3DLoading?.waiting?.('現在の読み込みを完了後に再試行します');return;}g.floorFailures.delete(curKey());g.failed=false;g.webgl=true;g.pref=true;window.Kotama3DLoading?.show();build();}, gameReviewState, natureGeometryReview:()=>g.natureV6?.geometryReview()||null, sacredTrialInfo: () => g.sacredTrial?.info() || (g.sacredTrialError ? {active:false,fallbackReason:g.sacredTrialError} : null), isEnabled: () => g.pref, setPreview, previewOn: (n) => g.preview.has(n), themeInfo: () => g.theme?.info(), renderInfo: () => ({ calls: g.renderer?.info.render.calls, triangles: g.renderer?.info.render.triangles, memory: { ...g.renderer?.info.memory } }),
   // 診断用：直近の描画の回数・三角形数と、GPU に残っているジオメトリ・テクスチャの数（後処理の分も含めて1フレーム）
   stats: () => (g.renderer ? { calls: g.renderer.info.render.calls, triangles: g.renderer.info.render.triangles, geometries: g.renderer.info.memory.geometries, textures: g.renderer.info.memory.textures, lights: g.lights.length } : null) };
 // 読み込みが探索画面の開始より遅れた場合に備えて、いまの状態で一度組み立てる

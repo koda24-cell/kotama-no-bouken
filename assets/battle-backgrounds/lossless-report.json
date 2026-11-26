@@ -1,0 +1,50 @@
+[
+  {
+    "name": "floor-02-water",
+    "width": 1774,
+    "height": 887,
+    "png_bytes": 2690452,
+    "webp_bytes": 2019314,
+    "selected": true,
+    "rgba_exact": true,
+    "icc_exact": true,
+    "original_sha256": "b3addf3f809c10af070eb56daed1c0e01d934f3e13292c6bae5f6881408a47af",
+    "webp_sha256": "82ab871e0ffcae75727825a58bd477c7acb9e0d93ac0c63484d2e04a02daa424"
+  },
+  {
+    "name": "floor-03-ruins",
+    "width": 1774,
+    "height": 887,
+    "png_bytes": 2834621,
+    "webp_bytes": 1906834,
+    "selected": true,
+    "rgba_exact": true,
+    "icc_exact": true,
+    "original_sha256": "cb21943fedce680c723710473982652cda03cb3732c3b2bc4a5f8716bb8b28d9",
+    "webp_sha256": "75e11b8803645e0170332e3251743f5257d29299dc3ff0485f2bbda9f80c0ef5"
+  },
+  {
+    "name": "floor-04-volcano",
+    "width": 1672,
+    "height": 941,
+    "png_bytes": 2883059,
+    "webp_bytes": 1915190,
+    "selected": true,
+    "rgba_exact": true,
+    "icc_exact": true,
+    "original_sha256": "ae49ef8ef26c6f7d2023e6c5ef1712b464e5bc6e278bf811680551a2fc72533b",
+    "webp_sha256": "4c27f1e3831968e8b51a1f76f2ce9eb8169dcb0904a4fcac3d6bde80db612522"
+  },
+  {
+    "name": "floor-05-castle",
+    "width": 1672,
+    "height": 941,
+    "png_bytes": 2593919,
+    "webp_bytes": 1804790,
+    "selected": true,
+    "rgba_exact": true,
+    "icc_exact": true,
+    "original_sha256": "ab9f21af66e543bea5acd52c76d86d70aa0ef374786fa0abf3b0b8669962f250",
+    "webp_sha256": "cb027e631fcc6005e5e9fc5885197a60bd01b25d8596ef85070ba7385c6196d3"
+  }
+]

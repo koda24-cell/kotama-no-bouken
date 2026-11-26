@@ -9,8 +9,9 @@
   if (disabled) return;
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet";
-  sheet.href = "./css/15-battle-ui-refresh.css?v=20261126-floor-art";
-  document.head.appendChild(sheet);
+  sheet.href = "./css/15-battle-ui-refresh.css?v=20261126-image-release";
+  const mobileSheet=document.getElementById("mobile-landscape-css");
+  if(mobileSheet)document.head.insertBefore(sheet,mobileSheet);else document.head.appendChild(sheet);
   function setup() {
     const battle = document.getElementById("battle");
     const party = document.getElementById("battle-party");
@@ -226,7 +227,7 @@
       const actor = members.find(c => c.id === activeId) || members.find(c => title.includes(c.name)) || members[0];
       if (!actor) { hud.hidden = true; return; }
       hud.hidden = false;
-      if (hud.dataset.actorId !== actor.id) {
+      if (hud.dataset.actorId !== actor.id || (actor.image && !portrait.querySelector("img") && portrait.childNodes.length === 1)) {
         hud.dataset.actorId = actor.id;
         portrait.replaceChildren(executionLabel);
         const portraitSrc = actor.image;

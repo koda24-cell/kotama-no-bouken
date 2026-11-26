@@ -1,0 +1,41 @@
+name: Battle background lossless conversion
+on:
+  push:
+    branches:
+      - feature/gpt-field-status-large-20261126
+    paths:
+      - tools/optimize-battle-backgrounds.py
+      - .github/workflows/battle-background-lossless.yml
+      - assets/battle-backgrounds/*.png
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: battle-background-lossless-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  optimize:
+    if: github.ref == 'refs/heads/feature/gpt-field-status-large-20261126'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==11.3.0
+      - run: python tools/optimize-battle-backgrounds.py
+      - name: Save verified derivatives only
+        run: |
+          git diff --exit-code -- 'assets/battle-backgrounds/*.png'
+          git add assets/battle-backgrounds css/15-battle-ui-refresh.css
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "Add pixel-identical lossless battle background derivatives"
+          git push origin HEAD:refs/heads/feature/gpt-field-status-large-20261126
+      - uses: actions/upload-artifact@v4
+        with:
+          name: battle-background-lossless-report
+          path: assets/battle-backgrounds/lossless-report.json
+          retention-days: 14

@@ -21,10 +21,11 @@ function fieldEnsureExtraDom() {
     const fog = document.createElement("div"); fog.id = "field-fog"; fog.className = "field-fog"; fog.setAttribute("aria-hidden", "true");
     vp.insertBefore(fog, vp.children[1] || null);
     const full = document.createElement("div"); full.id = "field-fullmap"; full.className = "field-fullmap"; full.hidden = true; full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "全体マップ");
-    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><button type="button" id="field-fullmap-close">閉じる</button></div><div id="field-map-tools" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><label>地図アイコン <select id="field-map-tool"></select></label><span>マスをクリック・タップして配置／消去</span></div><canvas id="field-fullmap-canvas" style="cursor:crosshair;touch-action:manipulation"></canvas><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
-    vp.appendChild(full);
+    full.innerHTML = `<div class="field-fullmap-head"><strong id="field-fullmap-title"></strong><span id="field-fullmap-rate"></span><div class="field-map-zoom-controls"><button type="button" id="field-map-zoom-out" aria-label="縮小">−</button><button type="button" id="field-map-zoom-fit" aria-label="全体表示">全体</button><button type="button" id="field-map-zoom-in" aria-label="拡大">＋</button><button type="button" id="field-map-zoom-center" aria-label="現在地へ">現在地</button><output id="field-map-zoom-value">100%</output></div><button type="button" id="field-fullmap-close" aria-label="地図を閉じて探索に戻る">× 地図を閉じる</button></div><div id="field-map-workspace"><div id="field-map-canvas-wrap"><canvas id="field-fullmap-canvas" aria-label="探索地図"></canvas></div><aside id="field-map-tools"><strong>地図アイコン</strong><p>アイコンを選び、地図のマスをクリック</p><div id="field-map-palette" role="group" aria-label="地図アイコン選択"></div></aside></div><div class="field-fullmap-legend"><span><i class="lg-player"></i>現在地</span><span><i class="lg-stairs"></i>階段</span><span><i class="lg-lamp"></i>導きの灯</span><span><i class="lg-chest"></i>宝箱</span><span><i class="lg-gather"></i>採取</span><span><i class="lg-foe"></i>FOE</span><span><i class="lg-gate"></i>ボス</span></div>`;
+    $("field").appendChild(full);
     $("field-fullmap-close").addEventListener("click", () => fieldToggleFullMap(false));
     fieldBindManualMap();
+    fieldBindMapZoom();
   }
   if (!$("field-map-rail")) {
     const rail = document.createElement("aside");
@@ -88,6 +89,7 @@ function fieldRender() {
     fog.style.background = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${Math.round(r * .55)}px, rgba(0,0,0,.5) ${Math.round(r * .95)}px, rgba(0,0,0,.66) ${Math.round(r * 1.25)}px)`;
   }
   fieldRenderFoes();
+  fieldRenderPartyHud();
   const now = performance.now();
   if (fieldMiniDirty || now - fieldMiniTimer > 250) { fieldMiniTimer = now; fieldMiniDirty = false; fieldDrawMinimap(); if (fieldState.mapOpen) fieldDrawFullMap(); }
   if (window.KotamaField3D) window.KotamaField3D.frame();   // [FIELD-3D]
@@ -96,7 +98,7 @@ function fieldRender() {
 /* ------------------------------------------------------------
    ミニマップ・全体マップ
    ------------------------------------------------------------ */
-const FIELD_MAP_COLORS = { wall: "#3a4160", floor: "#a9b8d6", path: "#c9b98f", grass: "#8fbf7d", water: "#3d78c4", lava: "#e0612a", safe: "#d9e6b8", gate: "#ff5a5a", exit: "#ffffff" };
+const FIELD_MAP_COLORS = { wall: "#344155", floor: "#e0e8ee", path: "#e4d0a0", grass: "#9bc989", water: "#4d94db", lava: "#ef773c", safe: "#d9e6b8", gate: "#ff5a5a", exit: "#ffffff" };
 function fieldMapColor(a, c) {
   if (c === "#" || (typeof fieldWallLike === "function" && fieldWallLike(a, c))) return FIELD_MAP_COLORS.wall;
   if (c === "~") return a.def.theme === "lava" ? FIELD_MAP_COLORS.lava : FIELD_MAP_COLORS.water;
@@ -126,12 +128,12 @@ function fieldDrawMap(canvas, cell, full) {
     const visible=fieldState.visible?.has(x+","+y)||false;
     g.fillStyle=fieldMapColor(a,fieldTileAt(a,x,y)); g.fillRect(sx,sy,cell,cell);
     // 視界内は地形色をそのまま見せる。視界外の踏破済みマスだけ暗くする。
-    if(!visible){g.fillStyle="rgba(2,8,16,.48)";g.fillRect(sx,sy,cell,cell);}
+    if(!visible){g.fillStyle="rgba(2,8,16,.24)";g.fillRect(sx,sy,cell,cell);}
     else {
       // 視界の内側には黄色いマス枠を描かず、後段で外周だけを描画する。
     }
-    if(!visible){
-      g.strokeStyle="rgba(0,0,0,.28)";
+    {
+      g.strokeStyle="rgba(8,18,29,.45)";
       g.lineWidth=Math.max(.7,cell*.08);
       g.strokeRect(sx+.5,sy+.5,Math.max(0,cell-1),Math.max(0,cell-1));
     }
@@ -207,12 +209,59 @@ function fieldDrawMinimap() {
   const chasing=visible.filter(f=>f.mode==="chase").length;
   status.textContent=`座標 ${tx+1}, ${ty+1}`;
 }
+let fieldMapZoom=1,fieldMapZoomKey='';
+function fieldMapFitCell(a,wrap){return Math.max(2,Math.floor(Math.min((wrap.clientWidth-20)/a.w,(wrap.clientHeight-20)/a.h)));}
 function fieldDrawFullMap() {
-  const a = fieldArea(), vp = $("field-viewport"); if (!a || !vp) return;
-  const cell = Math.max(6, Math.floor(Math.min((vp.clientWidth - 24) / a.w, (vp.clientHeight - 150) / a.h)));
-  fieldDrawMap($("field-fullmap-canvas"), cell, true);
-  $("field-fullmap-title").textContent = `${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n, a.f)}`;
-  $("field-fullmap-rate").textContent = `踏破率 ${fieldExploredRate(a)}%`;
+  const a=fieldArea(),wrap=$("field-map-canvas-wrap"),canvas=$("field-fullmap-canvas");
+  if(!a||!wrap||!canvas||!wrap.clientWidth||!wrap.clientHeight)return;
+  const key=a.buildKey||a.key||a.n+"-"+a.f;
+  if(key!==fieldMapZoomKey){fieldMapZoomKey=key;fieldMapZoom=1;}
+  const fit=fieldMapFitCell(a,wrap);
+  // Limit canvas backing store even at high zoom on large generated floors.
+  const maxCell=Math.max(2,Math.floor(Math.min(4096/a.w,4096/a.h,Math.sqrt(8000000/(a.w*a.h)))/Math.min(2,devicePixelRatio||1)));
+  const cell=Math.min(maxCell,Math.max(2,Math.round(fit*fieldMapZoom)));
+  fieldDrawMap(canvas,cell,true);
+  const actual=cell/fit;
+  $("field-map-zoom-value").textContent=Math.round(actual*100)+"%";
+  $("field-map-zoom-in").disabled=cell>=maxCell;
+  $("field-map-zoom-out").disabled=fieldMapZoom<=.5;
+  $("field-fullmap-title").textContent=`${fieldStratumLabel(a.n)} ${a.def.name}　${fieldFloorLabel(a.n,a.f)}`;
+  $("field-fullmap-rate").textContent=`踏破率 ${fieldExploredRate(a)}%`;
+}
+function fieldMapCenter(x,y){
+  const a=fieldArea(),wrap=$("field-map-canvas-wrap"),canvas=$("field-fullmap-canvas");if(!a||!wrap||!canvas)return;
+  const w=canvas.offsetWidth,h=canvas.offsetHeight;
+  wrap.scrollLeft=canvas.offsetLeft+x/a.w*w-wrap.clientWidth/2;
+  wrap.scrollTop=canvas.offsetTop+y/a.h*h-wrap.clientHeight/2;
+}
+function fieldMapSetZoom(next,clientX,clientY){
+  const wrap=$("field-map-canvas-wrap"),canvas=$("field-fullmap-canvas");
+  if(!wrap||!canvas||!fieldState.mapOpen)return;
+  const r=canvas.getBoundingClientRect(),wr=wrap.getBoundingClientRect();
+  const px=clientX??(wr.left+wrap.clientWidth/2),py=clientY??(wr.top+wrap.clientHeight/2);
+  const fx=Math.max(0,Math.min(1,(px-r.left)/Math.max(1,r.width))),fy=Math.max(0,Math.min(1,(py-r.top)/Math.max(1,r.height)));
+  fieldMapZoom=Math.max(.5,Math.min(4,next));fieldDrawFullMap();
+  const after=canvas.getBoundingClientRect();
+  wrap.scrollLeft+=after.left+fx*after.width-px;
+  wrap.scrollTop+=after.top+fy*after.height-py;
+}
+function fieldBindMapZoom(){
+  const wrap=$("field-map-canvas-wrap");
+  $("field-map-zoom-in").onclick=()=>fieldMapSetZoom(fieldMapZoom*1.25);
+  $("field-map-zoom-out").onclick=()=>fieldMapSetZoom(fieldMapZoom/1.25);
+  $("field-map-zoom-fit").onclick=()=>fieldMapSetZoom(1);
+  $("field-map-zoom-center").onclick=()=>{const p=fieldPlayerTile();fieldMapCenter(p.tx+.5,p.ty+.5);};
+  wrap.addEventListener("wheel",e=>{if(!fieldState.mapOpen)return;e.preventDefault();fieldMapSetZoom(fieldMapZoom*(e.deltaY<0?1.2:1/1.2),e.clientX,e.clientY);},{passive:false});
+  // Native scrolling works for touch and scrollbars; click coordinates stay relative to canvas.
+  window.addEventListener("resize",()=>{if(fieldState.mapOpen)fieldDrawFullMap();});
+}
+function fieldRenderPartyHud(){
+  const box=$("field-party-hud");if(!box)return;
+  const members=getParty().map(c=>({id:c.id,name:c.name,lv:typeof characterLevels!=="undefined"?characterLevels[c.id]||1:1,hp:Math.max(0,c.hp),maxHp:effectiveStats(c).maxHp,sp:Math.max(0,c.sp),maxSp:c.maxSp}));
+  const key=JSON.stringify(members);if(box.dataset.renderKey===key)return;box.dataset.renderKey=key;
+  box.style.setProperty("--party-count",Math.max(1,members.length));
+  const gauge=(label,value,max,cls)=>`<div class="field-party-gauge"><span>${label}</span><div class="${cls}-track"><div class="${cls}-fill" style="width:${Math.min(100,Math.max(0,value/Math.max(1,max)*100))}%"></div></div><b>${value}/${max}</b></div>`;
+  box.innerHTML=members.map(c=>`<article class="field-party-member${c.hp<=0?" field-party-dead":""}"><div class="field-party-name"><strong>${esc(c.name)}</strong><small>Lv.${c.lv}</small></div>${gauge("HP",c.hp,c.maxHp,"hp")}${gauge("SP",c.sp,c.maxSp,"sp")}</article>`).join("");
 }
 function fieldToggleFullMap(force) {
   const full = $("field-fullmap"); if (!full) return;
@@ -220,7 +269,7 @@ function fieldToggleFullMap(force) {
   if (open && (fieldState.lock && !fieldState.mapOpen)) return;
   full.hidden = !open; fieldState.mapOpen = open;
   fieldInput.keys.clear(); fieldInput.pad.clear();
-  if (open) fieldDrawFullMap();
+  if (open) {fieldDrawFullMap();requestAnimationFrame(()=>{if(fieldState.mapOpen)fieldDrawFullMap();});}
   if (typeof sound === "function") sound(open ? "select" : "back");
 }
 
@@ -228,8 +277,23 @@ function fieldToggleFullMap(force) {
 const FIELD_MANUAL_ICONS=Object.freeze({stairs_up:"上り階段",stairs_down:"下り階段",chest:"宝箱",chest_open:"開封済み宝箱",save:"セーブ・導きの灯",gather_herb:"採取",gather_ore:"採掘",gather_wood:"伐採",event:"イベント・NPC",inspect:"仕掛け・調査",door:"扉",locked_door:"鍵付き扉",marker:"隠し通路・目印",foe:"FOE",strong_enemy:"強敵",boss:"ボス"});
 function fieldManualMap(a){const key=a.n+"-"+a.f+((a.f>=4)?":"+String(fieldState.expedition||0):"");fieldState.manualIcons??={};return fieldState.manualIcons[key]??={};}
 function fieldBindManualMap(){
- const select=$("field-map-tool"),canvas=$("field-fullmap-canvas");
- select.replaceChildren();
- for(const [id,label] of [...Object.entries(FIELD_MANUAL_ICONS),["erase","消しゴム"]]){const o=document.createElement("option");o.value=id;o.textContent=label;select.append(o);}
- canvas.addEventListener("click",e=>{if(!fieldState.mapOpen)return;const a=fieldArea(),r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const x=Math.floor((e.clientX-r.left)*a.w/r.width),y=Math.floor((e.clientY-r.top)*a.h/r.height);if(x<0||y<0||x>=a.w||y>=a.h)return;const marks=fieldManualMap(a),key=x+","+y;if(select.value==="erase")delete marks[key];else if(Object.hasOwn(FIELD_MANUAL_ICONS,select.value))marks[key]=select.value;fieldDrawFullMap();fieldDrawMinimap();persistAutoSave();});
+ const palette=$("field-map-palette"),canvas=$("field-fullmap-canvas");
+ if(!palette||!canvas)return;
+ let selected="stairs_up";
+ for(const [id,label] of [...Object.entries(FIELD_MANUAL_ICONS),["erase","消しゴム"]]){
+  const b=document.createElement("button");b.type="button";b.dataset.mapIcon=id;b.setAttribute("aria-pressed",String(id===selected));b.title=label;
+  if(id==="erase"){const mark=document.createElement("span");mark.className="field-map-erase";mark.textContent="×";b.append(mark);}
+  else{const img=new Image();img.src="assets/map-icons/"+id+".png";img.alt="";img.onerror=()=>{img.replaceWith(document.createTextNode("◇"));};b.append(img);}
+  const name=document.createElement("small");name.textContent=label;b.append(name);palette.append(b);
+  b.onclick=()=>{selected=id;palette.querySelectorAll("button").forEach(el=>el.setAttribute("aria-pressed",String(el===b)));};
+ }
+ canvas.addEventListener("click",e=>{
+  if(!fieldState.mapOpen)return;
+  const a=fieldArea(),r=canvas.getBoundingClientRect();if(!a||!r.width||!r.height)return;
+  const x=Math.floor((e.clientX-r.left)*a.w/r.width),y=Math.floor((e.clientY-r.top)*a.h/r.height);
+  if(x<0||y<0||x>=a.w||y>=a.h)return;
+  const marks=fieldManualMap(a),key=x+","+y;
+  if(selected==="erase")delete marks[key];else if(Object.hasOwn(FIELD_MANUAL_ICONS,selected))marks[key]=selected;
+  fieldDrawFullMap();fieldDrawMinimap();persistAutoSave();
+ });
 }
