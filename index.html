@@ -44,7 +44,7 @@
   <script src="./field/field-random-maze.js?v=20261116-01" defer></script>
   <script src="./field/f1-review-layout-v6.js" defer></script>
   <script src="./field.js?v=20261124-v6" defer></script>
-  <script src="./field/field-render.js?v=20261126-map-close" defer></script>
+  <script src="./field/field-render.js?v=20261126-mapzoom-party" defer></script>
   <script src="./field/field-movement-foe.js?v=20261126-hud" defer></script>
   <script src="./field/field-dialog.js?v=20261107-01" defer></script>
   <script src="./field/field-interactions.js?v=20261126-victory" defer></script>
@@ -360,6 +360,46 @@ body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:1
 #opening-status{min-height:1em;color:#e7bd9d}
 @media(orientation:landscape) and (pointer:coarse) and (max-height:600px){#opening.active,#start-select.active{padding:10px max(12px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}#opening .opening-panel{gap:10px}#opening h1{font-size:clamp(32px,6vw,60px)}.opening-select-panel{gap:8px}.opening-select-panel header{padding-bottom:4px}.opening-select-panel h2{font-size:24px}#opening-save-list .opening-save-card{min-height:75px;padding:8px;gap:4px}#opening-save-list .opening-save-card strong{font-size:15px}#opening-save-list .opening-save-card span{font-size:13px}#opening-start,#opening-new{min-height:42px;font-size:16px;padding:6px 24px}}
 </style>
+<style id="field-map-zoom-party-hud">
+body[data-screen="field"] #field{--party-h:90px}
+body[data-screen="field"] #field-party-hud{position:absolute;left:var(--hud-edge);right:var(--hud-edge);bottom:var(--hud-edge);z-index:35;display:grid;grid-template-columns:repeat(var(--party-count,4),minmax(0,1fr));gap:6px;height:var(--party-h);box-sizing:border-box;pointer-events:none}
+#field-party-hud .field-party-member{min-width:0;display:grid;align-content:center;gap:5px;padding:7px 10px;background:#091722ed;border:1px solid #7299b3;border-radius:4px;box-shadow:0 3px 12px #0008;color:#e7f1fa;box-sizing:border-box}
+#field-party-hud .field-party-name{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0}
+#field-party-hud .field-party-name strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(12px,1.2vw,18px)}
+#field-party-hud .field-party-name small{font-size:11px;color:#aac6d5;white-space:nowrap}
+#field-party-hud .field-party-gauge{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:5px;align-items:center;font-size:11px;line-height:1.2}
+#field-party-hud .field-party-gauge b{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:11px}
+#field-party-hud .hp-track,#field-party-hud .sp-track{height:8px;min-width:0;overflow:hidden;margin:0;background:#293946;border-radius:2px}
+#field-party-hud .hp-fill,#field-party-hud .sp-fill{height:100%;transition:width .15s}
+#field-party-hud .field-party-dead{opacity:.6;border-color:#a66060}
+body[data-screen="field"] #field-inventory-open,body[data-screen="field"] #field-danger{bottom:calc(var(--hud-edge) + var(--party-h) + 8px)!important;top:auto!important}
+#field #field-fullmap:not([hidden]){display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;grid-template-columns:minmax(0,1fr);align-items:stretch!important;justify-items:stretch!important;align-content:stretch!important;height:auto;min-height:0;max-height:none;overflow:hidden}
+#field-fullmap #field-map-workspace{height:100%;align-items:stretch;grid-template-rows:minmax(0,1fr);overflow:hidden}
+#field-fullmap #field-map-canvas-wrap{position:relative;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y}
+#field-fullmap #field-fullmap-canvas{flex:none;margin:auto;max-width:none;max-height:none;touch-action:pan-x pan-y}
+#field-fullmap #field-map-tools{height:auto;min-height:0;overflow:auto;align-self:stretch}
+#field-fullmap .field-fullmap-head{min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#field-fullmap .field-map-zoom-controls{display:flex;align-items:center;gap:5px;flex:none}
+#field-fullmap .field-map-zoom-controls button{min-width:40px;min-height:40px;padding:4px 9px;font-size:14px}
+#field-map-zoom-value{min-width:42px;text-align:center;white-space:nowrap;color:#c9e6f2;font-variant-numeric:tabular-nums}
+@media(max-width:700px) and (orientation:portrait){#field-fullmap #field-map-workspace{grid-template-rows:minmax(0,1fr) minmax(110px,30%)}}
+@media(orientation:landscape) and (pointer:coarse) and (max-height:600px){
+ body[data-screen="field"] #field{--party-h:64px}
+ body[data-screen="field"] #field-party-hud{gap:3px;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right))}
+ #field-party-hud .field-party-member{padding:4px;gap:3px}
+ #field-party-hud .field-party-name strong{font-size:11px}
+ #field-party-hud .field-party-name small,#field-party-hud .field-party-gauge b,#field-party-hud .field-party-gauge{font-size:10px}
+ #field-party-hud .field-party-gauge{grid-template-columns:17px minmax(0,1fr) auto;gap:3px}
+ #field-party-hud .hp-track,#field-party-hud .sp-track{height:6px}
+ body[data-screen="field"] #field-inventory-open{bottom:auto!important;top:55px!important}
+ body[data-screen="field"] #field-pad{bottom:calc(var(--party-h) + var(--hud-edge) + 6px)!important}
+ #field #field-fullmap:not([hidden]){grid-template-rows:auto minmax(0,1fr)!important}
+ #field-fullmap .field-fullmap-head{flex-wrap:wrap!important;gap:4px}
+ #field-fullmap .field-map-zoom-controls{gap:3px}
+ #field-fullmap .field-map-zoom-controls button{min-height:36px;min-width:32px;padding:3px 6px;font-size:12px}
+ #field-fullmap #field-fullmap-close{min-width:105px!important;font-size:13px!important}
+}
+</style>
 </head>
 <body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
@@ -554,6 +594,7 @@ body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:1
             <div class="field-dialog-choices" hidden></div>
           </div>
         </div>
+        <section id="field-party-hud" aria-label="探索中のパーティーの体力・SP"></section>
         <div id="field-pad" class="field-pad" aria-label="移動パッド">
           <div class="field-dpad">
             <button type="button" data-dir="up" aria-label="上">▲</button>
