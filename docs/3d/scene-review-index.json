@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "reviews": [
+    {
+      "id": "b5-abyss-temple",
+      "version": "V6-r2",
+      "floor": 5,
+      "title": "第5層 魔王城 V6",
+      "author": "Claude",
+      "updated_at": "2026-11-26T04:07:11Z",
+      "source_sha": "9d5fa4eb9fec9faf470207729dd8fa786a54dfae",
+      "pr": 828,
+      "public_review": true,
+      "approval": "NOT_APPROVED",
+      "kind": "scene",
+      "images": [
+        {
+          "path": "docs/3d/b5v6-review/r2/6-15F-throne-hall.jpg",
+          "label": "15F 魔王の間（改訂2）"
+        },
+        {
+          "path": "docs/3d/b5v6-review/r2/5-15F-approach.jpg",
+          "label": "15F 参道（改訂2）"
+        },
+        {
+          "path": "docs/3d/b5v6-review/r2/3-13F-abyss-arcade.jpg",
+          "label": "13F 奈落の開廊（改訂2）"
+        },
+        {
+          "path": "docs/3d/b5v6-review/r2/4-14F-abyss-arcade.jpg",
+          "label": "14F 奈落の開廊（改訂2）"
+        },
+        {
+          "path": "docs/3d/b5v6-review/r2/1-15F-start-stairs.jpg",
+          "label": "15F 開始階段（改訂2）"
+        },
+        {
+          "path": "docs/3d/b5v6-review/r2/2-15F-sign.jpg",
+          "label": "15F 碑（改訂2）"
+        },
+        {
+          "path": "docs/3d/b5v6-review/1-13F-corridor.jpg",
+          "label": "13F 回廊"
+        },
+        {
+          "path": "docs/3d/b5v6-review/2-13F-breach-city.jpg",
+          "label": "13F 遠景"
+        },
+        {
+          "path": "docs/3d/b5v6-review/3-13F-swords.jpg",
+          "label": "13F 剣の群れ"
+        },
+        {
+          "path": "docs/3d/b5v6-review/4-14F-temple.jpg",
+          "label": "14F 神殿"
+        },
+        {
+          "path": "docs/3d/b5v6-review/5-14F-knight.jpg",
+          "label": "14F 騎士像"
+        },
+        {
+          "path": "docs/3d/b5v6-review/6-15F-maze.jpg",
+          "label": "15F 迷宮"
+        },
+        {
+          "path": "docs/3d/b5v6-review/7-15F-cathedral.jpg",
+          "label": "15F 大聖堂"
+        }
+      ],
+      "assets": [
+        {
+          "label": "全高壁・束ね柱・天井・床",
+          "path": "field/b5v6/b5v6-architecture.js"
+        },
+        {
+          "label": "戦場の残骸",
+          "path": "field/b5v6/b5v6-war-props.js"
+        },
+        {
+          "label": "騎士像",
+          "path": "field/b5v6/b5v6-knight-statue.js"
+        },
+        {
+          "label": "旗",
+          "path": "field/b5v6/b5v6-banners.js"
+        },
+        {
+          "label": "シャンデリア",
+          "path": "field/b5v6/b5v6-chandelier.js"
+        },
+        {
+          "label": "灯具",
+          "path": "field/b5v6/b5v6-fixtures.js"
+        },
+        {
+          "label": "炎・霧・光線",
+          "path": "field/b5v6/b5v6-vfx.js"
+        },
+        {
+          "label": "遠景",
+          "path": "field/b5v6/b5v6-distant-city.js"
+        },
+        {
+          "label": "植生",
+          "path": "field/b5v6/b5v6-overgrowth.js"
+        },
+        {
+          "label": "固有オブジェクト",
+          "path": "field/b5v6/b5v6-kit.js"
+        },
+        {
+          "label": "材質",
+          "path": "field/b5v6/b5v6-materials.js"
+        },
+        {
+          "label": "配置",
+          "path": "field/b5v6/b5v6-layout.js"
+        }
+      ],
+      "design": "docs/3d/B5_ABYSS_TEMPLE_V6_DESIGN.md",
+      "preview": "preview/b5v6-asset-lab.html"
+    }
+  ]
+}
