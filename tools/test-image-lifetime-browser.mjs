@@ -19,6 +19,32 @@ try{
     await page.waitForFunction(s=>{const i=document.querySelector(s);return i&&i.complete&&i.naturalWidth>0;},selector);
     return loc.count();
   };
+  // Real pointer actions, not direct showScreen calls: catch bubbling and overlap regressions.
+  const menuButton=page.locator('#list-button'),listMenu=page.locator('#list-menu');
+  const press=async loc=>{if(viewport.width<1000)await loc.tap({timeout:5000});else await loc.click({timeout:5000});};
+  await press(menuButton);
+  assert.equal(await listMenu.isVisible(),true,'menu did not open');
+  assert.equal(await menuButton.getAttribute('aria-expanded'),'true');
+  const menuGeometry=await page.evaluate(()=>{
+    const rect=id=>document.getElementById(id).getBoundingClientRect();
+    const b=rect('list-button'),m=rect('list-menu'),g=document.querySelector('.gold-display').getBoundingClientRect();
+    return {buttonLeft:b.left,buttonRight:b.right,buttonBottom:b.bottom,goldRight:g.right,menuTop:m.top,menuRight:m.right,menuLeft:m.left,viewportWidth:innerWidth};
+  });
+  assert.ok(menuGeometry.goldRight<=menuGeometry.buttonLeft+1,'gold overlaps menu button');
+  assert.ok(menuGeometry.menuTop>=menuGeometry.buttonBottom-1,'menu overlaps trigger');
+  assert.ok(menuGeometry.menuRight<=menuGeometry.viewportWidth&&menuGeometry.menuLeft>=0,'menu outside viewport');
+  await press(menuButton);
+  assert.equal(await listMenu.isVisible(),false,'menu did not close');
+  await press(menuButton);
+  await press(page.locator('#compendium-menu-button'));
+  assert.equal(await page.locator('body').getAttribute('data-screen'),'compendium');
+  await press(page.locator('.main-nav button[data-screen="home"]'));
+  assert.equal(await page.locator('body').getAttribute('data-screen'),'home');
+  await press(menuButton);
+  await press(page.locator('#load-button'));
+  assert.equal(await page.locator('#load-dialog').isVisible(),true,'load dialog did not open');
+  await press(page.locator('#load-dialog-close'));
+  assert.equal(await page.locator('#load-dialog').isVisible(),false);
   const home=await inspect('#home-party img');
   const townBackground=await page.evaluate(async()=>{
     const style=getComputedStyle(document.querySelector('#home .home-poster-background'));
@@ -152,7 +178,7 @@ try{
   await page.screenshot({path:'status-profile-'+viewport.width+'.png'});
   await page.evaluate(()=>document.getElementById('field-inventory-dialog').close());
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }

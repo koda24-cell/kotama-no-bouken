@@ -31,6 +31,10 @@ body[data-screen="home"] #home-party{position:absolute;z-index:1;left:var(--home
 #home-party .home-member-label strong{font-size:clamp(12px,1.4vw,22px)}
 #home-party .home-member-label span{font-size:11px}
 body[data-screen="home"] .game>.topbar{position:absolute;top:10px;right:14px;z-index:8;display:flex;align-items:center;gap:8px;background:transparent;border:0;box-shadow:none;padding:0;width:auto;max-width:none}
+/* Keep the compact home header's menu button in normal flow, next to GOLD. */
+body[data-screen="home"] .game>.topbar{z-index:20;flex-wrap:nowrap;min-height:42px;overflow:visible}
+body[data-screen="home"] .topbar #list-button{position:relative!important;top:auto!important;right:auto!important;flex:0 0 48px;order:2;pointer-events:auto}
+body[data-screen="home"] .topbar #list-menu{top:calc(100% + 8px)!important;right:0!important;max-height:calc(100dvh - 75px);overflow-y:auto;pointer-events:auto}
 body[data-screen="home"] .topbar .logo{display:none}
 body[data-screen="home"] .topbar .gold-display{background:#0d1725b0;padding:4px 10px;border:0;white-space:nowrap}
 body[data-screen="home"] .game>.footer-controls{position:absolute;bottom:8px;left:12px;z-index:7;max-width:calc(var(--home-menu-width) - 16px);background:transparent;border:0;box-shadow:none;padding:0;font-size:11px;pointer-events:none}
