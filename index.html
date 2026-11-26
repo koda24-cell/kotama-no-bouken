@@ -36,7 +36,7 @@
   <script src="./data/levels.js?v=20261106-15" defer></script>
   <script src="./data/story.js?v=20261109-02" defer></script>
   <script src="./battle-ext.js?v=20261110-01" defer></script>
-  <script src="./script.js?v=20261126-profile-v2" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
+  <script src="./script.js?v=20261126-home-poster" defer onerror="document.addEventListener('DOMContentLoaded',function(){var m=document.getElementById('system-message');if(m)m.textContent='JavaScriptを読み込めません。index.html・style.css・script.jsを同じフォルダに置いてください。';});"></script>
   <script src="./tutorial.js?v=20261124-tutorial2" defer></script>
   <script src="./admin-tools.js?v=20261126-level-instant" defer></script>
   <script src="./analyze-panel.js?v=20261109-01" defer></script>
@@ -511,6 +511,7 @@ body[data-screen="field"] #field-inventory-open,body[data-screen="field"] #field
  #field-status-detail .field-status-art::after{background:linear-gradient(0deg,#08141ef5 0%,#08141e99 55%,transparent 80%)}
 }
 </style>
+<link rel="stylesheet" href="./css/17-home-poster.css?v=20261126-home-poster">
 </head>
 <body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
@@ -553,24 +554,20 @@ body[data-screen="field"] #field-inventory-open,body[data-screen="field"] #field
 <section id="start-select" class="screen" aria-label="セーブデータ選択">
  <div class="opening-select-panel"><header><h2>セーブデータ</h2><button id="opening-back" type="button">タイトルに戻る</button></header><p>続きから冒険を再開するデータを選択してください。</p><div id="opening-save-list"></div><button id="opening-new" type="button">＋ 新規作成</button><p id="opening-status" role="status"></p></div>
 </section>
-<section id="home" class="screen">
-        <div class="page-heading">
-
-
-          <p>仲間を編成して、モンスターとの戦いに挑もう。</p>
+<section id="home" class="screen" aria-label="ホーム">
+        <div class="home-poster-background" aria-hidden="true"></div>
+        <div id="home-party" class="home-party" aria-label="編成中の仲間"></div>
+        <div class="home-menu">
+          <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
+          <div class="home-actions">
+            <button id="start-button" class="primary-button">冒険へ出発</button>
+            <button id="field-resume-button" type="button" hidden onclick="resumeFieldGame()">探索を再開</button>
+            <div id="home-nav-slot"></div>
+            <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
+            <p id="start-warning" class="warning" role="alert"></p>
+          </div>
         </div>
-
-        <div class="home-title-logo" role="img" aria-label="コタマのぼうけん">コタマのぼうけん</div>
-        <div id="home-party" class="home-party"></div>
-
-        <div class="home-actions">
-          <button id="start-button" class="primary-button">
-            START
-          </button><button id="field-resume-button" type="button" hidden onclick="resumeFieldGame()">探索を再開</button>
-          <p id="start-warning" class="warning" role="alert"></p>
-          <button id="event-gallery-button" class="secondary-button">冒険の記録</button>
-          <section id="event-gallery" class="event-gallery" hidden></section>
-        </div>
+        <section id="event-gallery" class="event-gallery" hidden></section>
       </section>
 
       <!-- モンスター図鑑 -->
