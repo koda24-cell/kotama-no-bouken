@@ -157,7 +157,7 @@ function wallOccluded(a, from, to, radius=1.5) {
   return [-radius,0,radius].every(x=>[-radius,0,radius].every(z=>blocked(to.x+x,to.z+z)));
 }
 const wallCullEnabled=new URLSearchParams(location.search).get('wallCull')==='1';
-let wallCullCacheKey='', wallCullCache=new Map();
+let wallCullCacheKey='', wallCullCache=new Map(), wallCullObjects=[];
 function updateWallOcclusion(a){
   if(!wallCullEnabled)return;
   const camera=g.camera.position;
@@ -167,7 +167,7 @@ function updateWallOcclusion(a){
   for(const v of g.foes.values()){
     if(wallOccluded(a,camera,v.grp.position,Math.max(2,v.sp.scale.x/2))){v.grp.visible=false;hidden++;}
   }
-  for(const o of g.world.children){
+  for(const o of wallCullObjects){
     const tile=o.userData.wallCullTile;
     if(!tile)continue;
     const k=tile.join(',');
@@ -177,12 +177,12 @@ function updateWallOcclusion(a){
     else if(!hide&&o.userData.wallCullHidden){o.visible=true;delete o.userData.wallCullHidden;}
     if(o.userData.wallCullHidden)terrain++;
   }
-  g.wallCullStats={hiddenFoes:hidden,hiddenTerrain:terrain,cachedTiles:wallCullCache.size,enabled:true};
+  g.wallCullStats={hiddenFoes:hidden,hiddenTerrain:terrain,cachedTiles:wallCullCache.size,trackedObjects:wallCullObjects.length,enabled:true};
 }
 function updatePool(center, force) {
-  const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`;
+  const key = `${Math.round(center.x / 2)},${Math.round(center.z / 2)}`+(wallCullEnabled?`:${wallCullCacheKey}`:'');
   if (!force && key === g.lastLightKey) return; g.lastLightKey = key;
-  const list = g.lights.filter((L) => !L.off).map((L) => ({ L, d: L.world.distanceToSquared(center) })).filter(e=>!PHONE_VIEW||e.d<=PHONE_LIGHT_RANGE**2).sort((a, b) => a.d - b.d);
+  const list = g.lights.filter((L) => !L.off && !(wallCullEnabled && L.owner?.userData.wallCullHidden && L.world.distanceToSquared(center) > (L.range*2+CELL)**2)).map((L) => ({ L, d: L.world.distanceToSquared(center) })).filter(e=>!PHONE_VIEW||e.d<=PHONE_LIGHT_RANGE**2).sort((a, b) => a.d - b.d);
   g.pool.forEach((p, i) => { const e = list[i]; if (!e) { p.intensity = 0; return; } p.position.copy(e.L.world); p.color.setHex(e.L.color); p.intensity = e.L.intensity * 2.4; p.distance = e.L.range * 2.0; });
 }
 
@@ -199,8 +199,9 @@ function limitPhoneTextures(scene){
   scene.traverse(obj=>{for(const mat of [].concat(obj.material||[]))for(const tex of Object.values(mat)){
     if(!tex?.isTexture||seen.has(tex)||tex.isCompressedTexture||tex.isDataTexture||tex.isCubeTexture||tex.isVideoTexture)continue;
     seen.add(tex);const img=tex.image,w=img?.naturalWidth||img?.width,h=img?.naturalHeight||img?.height;
-    if(!w||!h||Math.max(w,h)<=1024)continue;
-    try{const canvas=document.createElement('canvas'),scale=1024/Math.max(w,h);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d');if(!ctx)continue;ctx.drawImage(img,0,0,canvas.width,canvas.height);tex.image=canvas;tex.needsUpdate=true;}catch(error){console.warn('[field-3d] texture resize skipped',error);}
+    const cap=tex===mat.normalMap||tex===mat.roughnessMap||tex===mat.metalnessMap?512:1024;
+    if(!w||!h||Math.max(w,h)<=cap)continue;
+    try{const canvas=document.createElement('canvas'),scale=cap/Math.max(w,h);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d');if(!ctx)continue;ctx.drawImage(img,0,0,canvas.width,canvas.height);tex.image=canvas;tex.needsUpdate=true;}catch(error){console.warn('[field-3d] texture resize skipped',error);}
   }});return scene;
 }
 function load(file) {
@@ -242,7 +243,7 @@ function place(parent, src, x, y, z, ry = 0, s = 1) {
   o.traverse((m) => {
     m.matrixAutoUpdate = false;
     const b1 = m.userData && m.userData.b1;
-    if (b1 && b1.lights) for (const L of b1.lights) { const e = { ...L, world: new THREE.Vector3(...L.pos).applyMatrix4(m.matrixWorld), off: false }; g.lights.push(e); ls.push(e); }
+    if (b1 && b1.lights) for (const L of b1.lights) { const e = { ...L, world: new THREE.Vector3(...L.pos).applyMatrix4(m.matrixWorld), off: false, owner:o }; g.lights.push(e); ls.push(e); }
   });
   o.userData.lights = ls;
   return o;
@@ -473,6 +474,7 @@ async function buildFloor() {
   }   // 第1階層の組み立てここまで
   report(95,'初回描画待ち');
   g.sig = doorSig(a);
+  wallCullObjects=g.world.children.filter(o=>o.userData.wallCullTile); wallCullCache.clear();wallCullCacheKey='';
   g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';
   for (const e of g.entries) syncEntry(e, S);
   showBadge('');
