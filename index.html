@@ -51,7 +51,7 @@
   <script src="./field/field-puzzles.js?v=20261107-10" defer></script>
   <script src="./field/field-navigation.js?v=20261116-rm1" defer></script>
   <script src="./field/field-persistence.js?v=20261126-am-pm" defer></script>
-  <script type="module" src="./field/field-3d-view.js?v=20261126-image-release"></script>
+  <script type="module" src="./field/field-3d-view.js?v=20261126-field-hud-load"></script>
 
   <script src="./monster-compendium.js?v=20261126-image-release" defer></script>
   <script src="./battle-formation-ext.js?v=20261109-01" defer></script>
@@ -164,25 +164,25 @@ body[data-screen="field"] #field .field-hud{flex:none}
 body[data-screen="field"] #field{display:block!important;overflow:hidden!important;box-sizing:border-box}
 body[data-screen="field"] #field-viewport{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;aspect-ratio:auto!important}
 body[data-screen="field"] #field .field-hud{position:absolute!important;top:12px;left:12px;right:auto;z-index:35;max-width:calc(100% - 24px);width:max-content;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0;padding:8px 12px;background:rgba(9,22,31,.83);border:1px solid #a5b7ad66;border-radius:6px;box-sizing:border-box}
-body[data-screen="field"] #field-map-rail{position:absolute!important;inset:auto 16px 16px auto!important;z-index:20;width:clamp(145px,15vw,220px)!important;max-width:40vw;margin:0!important;box-sizing:border-box;background:rgba(9,22,31,.83);padding:8px;border-radius:6px}
+body[data-screen="field"] #field-map-rail{position:absolute!important;inset:16px 16px auto auto!important;z-index:20;width:clamp(145px,15vw,220px)!important;max-width:40vw;margin:0!important;box-sizing:border-box;background:rgba(9,22,31,.83);padding:8px;border-radius:6px}
 body[data-screen="field"] #field-map-rail .field-minimap{width:100%!important;height:auto!important;aspect-ratio:1;display:block}
 body[data-screen="field"] #field-map-rail .field-map-hint{display:none}
-@media(max-width:700px){body[data-screen="field"] #field-map-rail{right:8px!important;bottom:8px!important;width:120px!important}body[data-screen="field"] #field-minimap-legend{display:none}body[data-screen="field"] #field .field-hud{top:8px;left:8px;font-size:12px}}
+@media(max-width:700px){body[data-screen="field"] #field-map-rail{right:8px!important;top:8px!important;bottom:auto!important;width:120px!important}body[data-screen="field"] #field-minimap-legend{display:none}body[data-screen="field"] #field .field-hud{top:8px;left:8px;font-size:12px}}
 </style>
 
 <style id="field-independent-hud">
 body[data-screen="field"] #field .field-hud{display:contents!important}
 body[data-screen="field"] #field{--map-w:clamp(145px,15vw,220px);--hud-edge:16px}
-body[data-screen="field"] #field-location{position:absolute;top:var(--hud-edge);left:var(--hud-edge);z-index:35;display:grid;justify-items:start;gap:5px;padding:12px 16px;border-left:2px solid #9acbd4;background:linear-gradient(90deg,#08151ee6,#08151e66,transparent);pointer-events:none}
+body[data-screen="field"] #field-location{position:absolute;top:var(--hud-edge);left:var(--hud-edge);z-index:35;display:grid;grid-template-columns:minmax(0,auto) auto;align-items:center;justify-items:start;gap:5px 12px;max-width:calc(100% - var(--map-w) - 3 * var(--hud-edge));padding:12px 16px;border-left:2px solid #9acbd4;background:linear-gradient(90deg,#08151ee6,#08151e66,transparent);pointer-events:none}
 body[data-screen="field"] #field-location strong{font-size:clamp(15px,1.6vw,23px);color:#eef8fc;letter-spacing:.08em;white-space:normal}
-body[data-screen="field"] #field-floor-label{border:0;background:none;padding:0;color:#a8c7d5;letter-spacing:.15em}
-body[data-screen="field"] #field-clock{position:absolute;top:var(--hud-edge);right:var(--hud-edge);z-index:35;padding:8px 12px;background:#0a1724d9;border-bottom:1px solid #79a9bd;color:#e5f2fa;font-size:18px;letter-spacing:.08em}
+body[data-screen="field"] #field-floor-label{grid-column:1;grid-row:2;border:0;background:none;padding:0;color:#a8c7d5;letter-spacing:.15em}
+body[data-screen="field"] #field-clock{position:static;grid-column:2;grid-row:1;justify-self:start;padding:5px 8px;background:#0a1724d9;border-bottom:1px solid #79a9bd;color:#e5f2fa;font-size:18px;letter-spacing:.08em}
 body[data-screen="field"] #field-inventory-open{position:absolute;bottom:var(--hud-edge);left:var(--hud-edge);z-index:35;display:flex;align-items:center;gap:12px;padding:12px 18px;background:linear-gradient(120deg,#203747,#101923);color:#eef7ff;border:1px solid #7ba6b9;border-radius:3px;box-shadow:0 4px 18px #0008;font-weight:700;letter-spacing:.08em;cursor:pointer}
 #field-inventory-open svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.5}
 #field-inventory-open small{display:block;color:#9ebdcd;font-size:9px;letter-spacing:.2em;text-align:left}
 #field-inventory-open:hover,#field-inventory-open:focus-visible{background:#294659;outline:2px solid #d0f1ff}
-body[data-screen="field"] #field-map-rail{width:var(--map-w)!important;right:var(--hud-edge)!important;bottom:var(--hud-edge)!important}
-body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-edge) + var(--map-w) + 12px);bottom:var(--hud-edge);z-index:35;width:clamp(100px,12vw,164px);height:auto;box-sizing:border-box;padding:12px;border:1px solid currentColor;border-radius:4px;background:#08151eea;box-shadow:0 3px 18px #0009;animation:none;display:grid;gap:8px;text-align:center}
+body[data-screen="field"] #field-map-rail{width:var(--map-w)!important;right:var(--hud-edge)!important;top:var(--hud-edge)!important;bottom:auto!important}
+body[data-screen="field"] #field-danger{position:absolute;right:var(--hud-edge);bottom:var(--hud-edge);z-index:35;width:clamp(100px,12vw,164px);height:auto;box-sizing:border-box;padding:12px;border:1px solid currentColor;border-radius:4px;background:#08151eea;box-shadow:0 3px 18px #0009;animation:none;display:grid;gap:8px;text-align:center}
 #field-danger .danger-label{font-size:11px;letter-spacing:.08em;color:#d9e5ed}
 #field-danger .danger-state{font-size:clamp(14px,1.6vw,22px);font-weight:800;color:inherit}
 #field-danger .danger-meter{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
@@ -193,7 +193,7 @@ body[data-screen="field"] #field-danger{position:absolute;right:calc(var(--hud-e
 #field-inventory-dialog nav button{background:#142330;border:1px solid #496579;color:#dbeaf5;border-radius:2px;letter-spacing:.06em}
 #field-inventory-dialog nav button[aria-current=true]{background:#29485c;color:#f2fbff;border-color:#9acbd4;box-shadow:inset 3px 0 #b2e5f4}
 #field-inventory-list,#field-menu-detail{background:#101c29!important;border-color:#58768a77!important}
-@media(max-width:700px){body[data-screen="field"] #field{--map-w:120px;--hud-edge:8px}body[data-screen="field"] #field-danger{padding:7px;gap:5px;right:calc(var(--hud-edge) + var(--map-w) + 6px)}body[data-screen="field"] #field-inventory-open{padding:8px;gap:5px;font-size:11px}body[data-screen="field"] #field-location{max-width:65%;padding:8px}body[data-screen="field"] #field-clock{font-size:13px}}
+@media(max-width:700px){body[data-screen="field"] #field{--map-w:120px;--hud-edge:8px}body[data-screen="field"] #field-danger{padding:7px;gap:5px;right:var(--hud-edge)}body[data-screen="field"] #field-inventory-open{padding:8px;gap:5px;font-size:11px}body[data-screen="field"] #field-location{padding:8px;gap:3px 6px}body[data-screen="field"] #field-clock{font-size:13px}}
 @media(max-width:380px){body[data-screen="field"] #field-inventory-open{bottom:150px}}
 </style>
 
@@ -333,7 +333,7 @@ body[data-screen="field"] #field-minimap-legend{font-size:10px;gap:5px}
  #field-inventory-dialog[open],#victory-screen[open]{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important}
 }
 </style>
-  <link id="mobile-landscape-css" rel="stylesheet" href="./css/16-mobile-landscape.css?v=20261126-map-close">
+  <link id="mobile-landscape-css" rel="stylesheet" href="./css/16-mobile-landscape.css?v=20261126-field-hud-load">
 <style id="opening-layout">
 body:is([data-screen="opening"],[data-screen="start-select"]){margin:0;padding:0!important;background:#071019}
 body:is([data-screen="opening"],[data-screen="start-select"]) .game{width:100%;max-width:none;min-height:100dvh;margin:0;padding:0}
@@ -536,7 +536,7 @@ body:is([data-screen="opening"],[data-screen="start-select"]) .game>main{width:1
       <!-- [FIELD] フィールド探索（見下ろし型の自由移動・ランダムエンカウント・会話）。仕様：docs/field-and-story/FIELD_SPEC.md -->
       <section id="field" class="screen field-screen" data-area="1" data-theme="forest" aria-label="フィールド">
         <div class="field-hud"><button id="field-inventory-open" type="button" onclick="openFieldInventory()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v13H3z M3 8l2-4h14l2 4 M3 13h18 M10 11h4v5h-4z"/></svg><span><small>INVENTORY</small>インベントリ</span></button>
-          <span id="field-clock">8 AM</span><div id="field-location"><strong id="field-area-name">はじまりの樹海</strong></div>
+          <div id="field-location"><strong id="field-area-name">はじまりの樹海</strong><span id="field-clock">8 AM</span></div>
           <span id="field-hint" class="field-hint">移動：矢印/WASD・パッド（1マスずつ）　調べる：Z/Enter・A</span>
           <button id="field-home-button" class="field-home-button" type="button">ホームへ</button>
         </div>
