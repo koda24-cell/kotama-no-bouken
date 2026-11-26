@@ -1058,10 +1058,10 @@ function buildEquipmentState(savedEquipment,migrateStarterGear=true){
   for(const cid of EXT_REAR_IDS){if(!clean[cid]?.armor)clean[cid].armor="linen-robe";}
   return clean;
 }
-function createSaveData(){return {saveVersion:12,formationRows:window.kotamaBattleExportRows?.(),/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
+function createSaveData(){return {saveVersion:12,formationRows:window.kotamaBattleExportRows?.(),/* [FIELD] saveVersion 11: gathering state */levelExp:(typeof levelSerialize==="function"?levelSerialize():undefined),/* [LEVEL] */field:(typeof fieldSerialize==="function"?fieldSerialize():undefined),/* [FIELD] */tutorial:JSON.parse(JSON.stringify(tutorialState)),enemyEncounterCounts:{...enemyEncounterCounts},bgmUnlocks:{...bgmUnlocks},state:{gold:state.gold,party:[...state.party],maxUnlockedStage:state.maxUnlockedStage||1,firstStageStarted:state.firstStageStarted===true,unlockedJobs:[...(state.unlockedJobs||[])]},inventory:{...inventory},equipment:JSON.parse(JSON.stringify(equipment)),materials:{...materials},weaponLevels:{...weaponLevels},growth:JSON.parse(JSON.stringify(growth)),characterLevels:{...characterLevels},unlockedSkills:JSON.parse(JSON.stringify(unlockedSkills)),skillLevels:JSON.parse(JSON.stringify(skillLevels)),legacyTreeBonuses:JSON.parse(JSON.stringify(legacyTreeBonuses)),trainingPoints:{...trainingPoints},stageCleared:{...stageCleared},stageEntered:{...stageEntered},stageSkillPointAwarded:JSON.parse(JSON.stringify(stageSkillPointAwarded)),compendium:JSON.parse(JSON.stringify(compendium)),monsterRecords:(typeof compendiumSerialize==="function"?compendiumSerialize():undefined),adminCompendiumReveal:typeof adminCompendiumReveal!=="undefined"&&adminCompendiumReveal===true,/* [COMPENDIUM] */eventRead:{...eventRead},hiddenBossFirstClear,achievementUnlocked:{...achievementUnlocked},totalEnemyDefeats,bestRanks:{...bestRanks},jobVictoryRoster:[...jobVictoryRoster],battleSpeed,audioSettings:{bgmEnabled:$("bgm-toggle")?.checked??true,seEnabled:$("se-toggle")?.checked??true,bgmVolume,seVolume},combatants:characters.map(c=>({id:c.id,hp:c.hp,sp:c.sp}))};}
 
 function persistAutoSave(){if(state.screen==="opening"||state.screen==="start-select")return false;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));return true;}catch(error){console.warn("オートセーブに失敗:",error);return false;}}
-function createBattleStartSnapshot(){return {game:createSaveData(),battle:{encounterMode:!!battleState.encounterMode,fieldEnemyId:battleState.fieldEnemyId||null,fieldFoeKey:battleState.fieldFoeKey||null,/* [FIELD] */stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges},formationRows:(typeof window.kotamaBattleExportRows==="function"?window.kotamaBattleExportRows():undefined)}};}
+function createBattleStartSnapshot(){return {game:createSaveData(),battle:{encounterMode:!!battleState.encounterMode,fieldEnemyId:battleState.fieldEnemyId||null,fieldFoeKey:battleState.fieldFoeKey||null,/* [FIELD] */stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,adminBossId:battleState.adminBossId||null,maxStage:battleState.maxStage,enemy:JSON.parse(JSON.stringify(battleState.enemy)),bossBgmChoice:battleState.bossBgmChoice,unionGauges:{...battleState.unionGauges},formationRows:(typeof window.kotamaBattleExportRows==="function"?window.kotamaBattleExportRows():undefined)}};}
 function migrateLegacySlot(){if(localStorage.getItem("kotamaSaveSlot1"))return;const old=localStorage.getItem("fantasyRpgSave");if(!old)return;try{const game=JSON.parse(old);localStorage.setItem("kotamaSaveSlot1",JSON.stringify({savedAt:new Date().toISOString(),game,battle:null}));}catch(e){}}
 function openSaveDialog(){migrateLegacySlot();renderSaveSlots("save");$("save-dialog").hidden=false;$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");}
 function openLoadDialog(){if(state.screen==="battle"&&battleState.busy&&$("battle-result")?.hidden){setSystemMessage("戦闘処理中はロードできません。行動選択中に操作してください。");return;}migrateLegacySlot();renderSaveSlots("load");$("load-dialog").hidden=false;$("list-menu").hidden=true;$("list-button")?.setAttribute("aria-expanded","false");}
@@ -1069,7 +1069,7 @@ function startNewGameFromLoad(){if(!window.confirm("最初からゲームを開�
 function saveProgressLabel(slot){if(slot?.battle?.encounterMode)return `${FIELD_AREAS?.[slot.game?.field?.area]?.name||"フィールド"}（雑魚戦の開始地点）`;/* [FIELD] */if(slot?.battle)return `STAGE ${slot.battle.stage}（戦闘開始地点）`;const reached=Object.keys(slot?.game?.stageEntered||{}).map(Number).filter(n=>Number.isFinite(n)&&n>0);const last=reached.length?Math.max(...reached):Math.max(0,(Number(slot?.game?.state?.maxUnlockedStage)||1)-1);return last?`STAGE ${last} 到達`:"冒険開始前";}
 function renderSaveSlots(mode){const box=$(mode==="save"?"save-slot-list":"load-slot-list");if(!box)return;box.innerHTML=[1,2].map(n=>{let d=null;try{d=JSON.parse(localStorage.getItem(`kotamaSaveSlot${n}`)||"null");}catch(e){}const g=d?.game||null,stamp=d?.savedAt?new Date(d.savedAt).toLocaleString("ja-JP"):"未保存",stage=g?saveProgressLabel(d):"データなし",exists=!!g;return `<article class="save-slot"><div><strong>セーブデータ ${n}</strong><p>${exists?stamp:"空きスロット"}</p><small>${stage}</small></div><button type="button" data-slot="${n}" ${mode==="load"&&!exists?"disabled":""}>${mode==="save"?(exists?"上書き保存":"保存する"):"ロード"}</button></article>`;}).join("");box.querySelectorAll("[data-slot]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.slot);if(mode==="save"){let old=null;try{old=JSON.parse(localStorage.getItem(`kotamaSaveSlot${n}`)||"null");}catch(e){}if(old&&!window.confirm(`セーブデータ${n}を上書きしますか？`))return;const inBattle=state.screen==="battle"&&battleStartSnapshot&&$("battle-result")?.hidden;const snap=inBattle?{...battleStartSnapshot,battle:{...battleStartSnapshot.battle,formationRows:(typeof window.kotamaBattleExportRows==="function"?window.kotamaBattleExportRows():undefined)}}:{game:createSaveData(),battle:null};localStorage.setItem(`kotamaSaveSlot${n}`,JSON.stringify({...snap,savedAt:new Date().toISOString()}));$("save-dialog").hidden=true;setSystemMessage(`セーブデータ${n}に保存しました。${inBattle?"ロードすると現在の戦闘開始地点から再開します。":""}`);sound("select");}else loadSaveSlot(n);});}
 function saveGame(){openSaveDialog();}
-function loadSaveSlot(n){const raw=localStorage.getItem(`kotamaSaveSlot${n}`);if(!raw)return;let slot;try{slot=JSON.parse(raw);}catch(e){setSystemMessage("セーブデータを読み込めませんでした。");return;}if(!window.confirm(`セーブデータ${n}をロードしますか？現在の進行状況は失われる可能性があります。`))return;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(slot.game));loadGame();if(slot.battle){battleState.hiddenBossMode=!!slot.battle.hiddenBossMode;battleState.maxStage=slot.battle.maxStage||5;battleState.stage=slot.battle.stage;pendingBattleResumeEnemy=slot.battle.enemy;resetTransientBattleState();battleState.encounterMode=!!slot.battle.encounterMode;battleState.fieldEnemyId=slot.battle.fieldEnemyId||null;battleState.fieldFoeKey=slot.battle.fieldFoeKey||null;/* [FIELD] */battleState.bossBgmChoice=slot.battle.bossBgmChoice||null;battleState.unionGauges={...Object.fromEntries(characters.map(c=>[c.id,0])),...(slot.battle.unionGauges||{})};if(typeof window.kotamaBattleImportRows==="function")window.kotamaBattleImportRows(slot.battle.formationRows);beginStage();}else showScreen("home");$("load-dialog").hidden=true;setSystemMessage(`セーブデータ${n}をロードしました。`);}catch(e){setSystemMessage("ロードに失敗しました。");}}
+function loadSaveSlot(n){const raw=localStorage.getItem(`kotamaSaveSlot${n}`);if(!raw)return;let slot;try{slot=JSON.parse(raw);}catch(e){setSystemMessage("セーブデータを読み込めませんでした。");return;}if(!window.confirm(`セーブデータ${n}をロードしますか？現在の進行状況は失われる可能性があります。`))return;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(slot.game));loadGame();if(slot.battle){battleState.hiddenBossMode=!!slot.battle.hiddenBossMode;battleState.maxStage=slot.battle.maxStage||5;battleState.stage=slot.battle.stage;pendingBattleResumeEnemy=slot.battle.enemy;resetTransientBattleState();battleState.adminBossId=slot.battle.adminBossId||null;battleState.encounterMode=!!slot.battle.encounterMode;battleState.fieldEnemyId=slot.battle.fieldEnemyId||null;battleState.fieldFoeKey=slot.battle.fieldFoeKey||null;/* [FIELD] */battleState.bossBgmChoice=slot.battle.bossBgmChoice||null;battleState.unionGauges={...Object.fromEntries(characters.map(c=>[c.id,0])),...(slot.battle.unionGauges||{})};if(typeof window.kotamaBattleImportRows==="function")window.kotamaBattleImportRows(slot.battle.formationRows);beginStage();}else showScreen("home");$("load-dialog").hidden=true;setSystemMessage(`セーブデータ${n}をロードしました。`);}catch(e){setSystemMessage("ロードに失敗しました。");}}
 
 function loadGame(){try{
   const d=JSON.parse(localStorage.getItem("fantasyRpgSave")||"null");
@@ -1115,7 +1115,8 @@ function loadGame(){try{
 function createEnemy(stage){
   if(battleState.hiddenBossMode){const h=JSON.parse(JSON.stringify(hiddenBossData));return {...h,maxHp:h.hp,_breakMax:260,_breakCurrent:260};}
   const d=enemyData[stage-1];
-  {const variant=extPickEnemyVariant(stage);if(variant)return variant;}// [EXT] STAGE1〜3の敵バリエーション
+  if(battleState.adminBossId==="variant:snowdrift-boss"){const snow=JSON.parse(JSON.stringify(SNOWDRIFT_BOSS_DATA));return {...snow,maxHp:snow.hp,variantId:"snowdrift-boss"};}
+  if(!battleState.adminBossId){const variant=extPickEnemyVariant(stage);if(variant)return variant;}// [EXT] STAGE1〜3の敵バリエーション
   if(stage===2){
     const count=3+Math.floor(Math.random()*3);
     const members=Array.from({length:count},(_,i)=>({id:`goblin-${i+1}`,name:"ゴブリン",hp:d.hp,maxHp:d.hp,attack:d.attack,defense:d.defense,spDefense:Math.floor(d.defense/2),gold:d.gold,sprite:d.sprite,image:d.image,actionName:d.actionName,alive:true}));
@@ -1127,9 +1128,9 @@ function resetTransientBattleState(){
   extResetBattle();burnedTurns={};mageCompressionStacks.mage=0;goblinCharging=false;goblinTeamAttackUsed=false;goblinTeamAttackPending=false;defenseDownFresh=new Set();lastEnemyAttackMissed=false;specialOmenShown={};
   for(const c of characters){c._defenseDown=0;c._defenseDownTurns=0;for(const key of ["_stunTurns","stunTurns","_actionDisabledTurns","actionDisabledTurns"])if(key in c)c[key]=0;for(const key of ["_stunned","stunned","actionDisabled"])if(key in c)c[key]=false;}
   battleState.wolfEvasionTurns=0;battleState.wolfHalfHpEvasionUsed=false;battleState.wolfLastTargetId=null;battleState.wolfClones=[];battleState.wolfDisplayOrder=[];battleState.wolfCloneTurns=0;battleState.wolfCloneLastTargetId=null;battleState.wolfSplitPending=false;battleState.tauntTarget=null;battleState.enemyStunned=false;battleState.defenseCampTurns=0;battleState.magicGuardActive=false;battleState.fullGuardActive=false;battleState.knightFullGuardCooldown=0;battleState.aegisActive=false;battleState.bossBgmChoice=null;
-  battleState.encounterMode=false;battleState.fieldEnemyId=null;battleState.fieldEnemyGroup=null;battleState.fieldFoeKey=null;// [FIELD]
+  battleState.encounterMode=false;battleState.fieldEnemyId=null;battleState.fieldEnemyGroup=null;battleState.fieldFoeKey=null;battleState.adminBossId=null;// [FIELD]
 }
-function startBattle(stage=1){battleState._samuraiFocus={target:null,hits:0};battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.stage=Math.max(1,Math.min(state.maxUnlockedStage||1,Number(stage)||1));battleState.unionGauges={...Object.fromEntries(characters.map(c=>[c.id,0]))};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
+function startBattle(stage=1,options={}){battleState._samuraiFocus={target:null,hits:0};battleBgmSelections={};stageIntroStoryPending=false;maouIntroBgmPersistent=false;battleState.tutorialMode=false;state.firstStageStarted=true;try{localStorage.setItem("fantasyRpgSave",JSON.stringify(createSaveData()));}catch(e){}retryContext=null;battleState.hiddenBossMode=false;battleState.maxStage=5;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.adminBossId=options.adminBossId||null;battleState.stage=Math.max(1,Math.min(battleState.adminBossId?5:(state.maxUnlockedStage||1),Number(stage)||1));battleState.unionGauges={...Object.fromEntries(characters.map(c=>[c.id,0]))};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
 async function beginStageCore(){
   extResetBattle();// [EXT]
   const resumedBattle=!!pendingBattleResumeEnemy;
@@ -1183,19 +1184,19 @@ async function beginStageCore(){
 
   const stageEventIds={1:"forest-intro",2:"goblin-intro",3:"wolf-intro",4:"dragon-intro",5:"maou-intro"};
   const introEvent=stageEvents.find(e=>e.id===stageEventIds[battleState.stage]&&!e.trigger);
-  stageIntroStoryPending=!battleState.encounterMode&&!!(introEvent&&!eventRead[introEvent.id]);// [FIELD]
+  stageIntroStoryPending=!battleState.adminBossId&&!battleState.encounterMode&&!!(introEvent&&!eventRead[introEvent.id]);// [FIELD]
   maouIntroBgmPersistent=false;
   battleStartSnapshot=createBattleStartSnapshot();
   showScreen("battle");
   renderBattle();
   const commandBox=$("battle-commands");
   if(commandBox){commandBox.inert=false;renderActionMenu(true);commandBox.inert=true;}
-  if(!battleState.hiddenBossMode&&!battleState.encounterMode){await new Promise(resolve=>playStageEvent(battleState.stage,resolve));}// [FIELD]
+  if(!battleState.adminBossId&&!battleState.hiddenBossMode&&!battleState.encounterMode){await new Promise(resolve=>playStageEvent(battleState.stage,resolve));}// [FIELD]
   stageIntroStoryPending=false;
   maouIntroBgmPersistent=false;
   if($("bgm-toggle")?.checked)startBgm();
   renderBattle();
-  if(battleState.stage===1&&!battleState.encounterMode)pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
+  if(battleState.enemy?.name==="スライム"&&battleState.stage===1&&!battleState.encounterMode)pushEvent("スライムは物理攻撃が効きにくいようだ……SP攻撃を試そう！");
   const overlay=$("stage-transition");
   if(battleState.encounterMode){arena?.classList.remove("stage-arrival-pending");await wait(250);}// [FIELD] 雑魚戦はステージ名の暗転を出さない
   else if(overlay){
@@ -2300,7 +2301,7 @@ function finishDefeat(){
   playSe("assets/se/haiboku/おやすみ");
   battleState.busy=true;
   battleState.stageFinished=true;
-  retryContext={stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode};
+  retryContext={stage:battleState.stage,hiddenBossMode:!!battleState.hiddenBossMode,adminBossId:battleState.adminBossId||null};
   $("battle-commands").hidden=true;$("battle-commands").replaceChildren();
   $("battle-bottom")?.classList.add("result-shown");
   $("battle-support").hidden=true;
@@ -2319,6 +2320,7 @@ function startStageFromRetryContext(){
   const context={...retryContext};retryContext=null;
   resetTransientBattleState();
   battleState.hiddenBossMode=context.hiddenBossMode;
+  battleState.adminBossId=context.adminBossId||null;
   battleState.maxStage=context.hiddenBossMode?6:5;
   battleState.stage=context.stage;
   battleState.koCount=0;battleState.rankResult=null;
@@ -2328,7 +2330,7 @@ function startStageFromRetryContext(){
 }
 function retrySameStage(){if(!retryContext)return;startStageFromRetryContext();}
 function goFormationForRetry(){if(!retryContext)return;showScreen("formation");setSystemMessage("編成・装備を調整し、「決定」を押すと同じステージを再開します。");}
-function startHiddenBoss(){if(!hiddenBossUnlocked())return;battleBgmSelections={};stageIntroStoryPending=false;retryContext=null;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.hiddenBossMode=true;battleState.stage=6;battleState.maxStage=6;battleState.unionGauges={...Object.fromEntries(characters.map(c=>[c.id,0]))};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
+function startHiddenBoss(options={}){if(options.admin!==true&&!hiddenBossUnlocked())return;battleBgmSelections={};stageIntroStoryPending=false;retryContext=null;resetTransientBattleState();battleState.koCount=0;battleState.rankResult=null;battleState.hiddenBossMode=true;battleState.stage=6;battleState.maxStage=6;battleState.unionGauges={...Object.fromEntries(characters.map(c=>[c.id,0]))};getParty().forEach(c=>{c.hp=effectiveStats(c).maxHp;c.sp=c.maxSp;});beginStage();}
 function nextStage(){if(battleState.encounterMode&&typeof fieldReturnFromBattle==="function"){fieldReturnFromBattle();return;}// [FIELD]
 if(battleState.hiddenBossMode){showScreen("home");return;}if(battleState.stage>=battleState.maxStage){showScreen("clear");return;}if(typeof fieldEnterArea==="function"){fieldEnterArea(battleState.stage+1,{afterBoss:true});return;}// [FIELD] ボス撃破後は次のエリアのフィールドへ
 battleState.stage++;beginStage();}

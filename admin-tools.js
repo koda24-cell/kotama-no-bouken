@@ -82,6 +82,26 @@ function adminBindBattleControls(){
 window.kotamaAdminEncounterSettings ||= { disableRandom:false, forceNext:false, selected:{} };
 function adminEncounterSettings(){return window.kotamaAdminEncounterSettings;}
 function adminEncounterEnemyRows(){return Object.entries(FIELD_ENEMIES||{}).filter(([,e])=>!e.foe).map(([id,e])=>{const count=Number(adminEncounterSettings().selected[id])||0;return `<label class="admin-encounter-enemy"><span><input type="checkbox" data-admin-enemy="${esc(id)}" ${count>0?"checked":""}> ${esc(e.name)}</span><input type="number" min="0" max="8" step="1" value="${count}" data-admin-enemy-count="${esc(id)}" aria-label="${esc(e.name)}の出現数"></label>`;}).join("");}
+function adminBossEntries(){
+ return monsterCompendiumEntries().filter(e=>e.category==="boss"||e.category==="hidden");
+}
+function adminBossCanStart(){
+ return (state.screen==="home"||state.screen==="field")&&!(state.screen==="field"&&fieldState.lock)&&!(tutorialState.started&&!tutorialState.completed)&&getParty().length>0;
+}
+function adminBossSection(){
+ const options=adminBossEntries().map(e=>'<option value="'+esc(e.id)+'">'+esc((/^boss-\d+$/.test(e.id)?`第${e.id.slice(5)}階層 ${FIELD_AREAS[e.id.slice(5)]?.name||""}`:e.where)+"："+e.name)+'</option>').join("");
+ return '<section class="admin-section"><h3>階層・隠しボスとの戦闘</h3><label class="admin-select-row">ボス<select id="admin-boss-select">'+options+'</select></label><div class="admin-actions"><button type="button" id="admin-boss-launch" '+(adminBossCanStart()?"":"disabled")+'>選択したボスと戦闘開始</button></div><p class="admin-note">ホームまたは探索中に、未解放でも選択したボスに直接挑戦できます。勝利時は通常の報酬・討伐・ステージ進行が反映されます。チュートリアル中は使用できません。</p></section>';
+}
+function adminStartBoss(id){
+ const entry=adminBossEntries().find(e=>e.id===id);
+ if(!entry||!adminBossCanStart())return false;
+ if(!window.confirm(entry.name+"に挑戦しますか？ 勝利時は通常の進行・報酬が反映されます。"))return false;
+ $("kotama-admin-close")?.click();
+ if(state.screen==="field"){fieldInput.keys.clear();fieldInput.pad.clear();}
+ if(id==="hidden-boss")startHiddenBoss({admin:true});
+ else startBattle(id==="variant:snowdrift-boss"?1:Number(id.slice(5)),{adminBossId:id});
+ return true;
+}
 function adminRenderEncounter(){
  const cfg=adminEncounterSettings(),selected=Object.entries(cfg.selected).filter(([,n])=>Number(n)>0),total=selected.reduce((n,[,count])=>n+Number(count),0),summary=selected.map(([id,count])=>`${FIELD_ENEMIES[id]?.name||id} × ${count}`).join(" ／ ")||"未選択";
  return `<section class="admin-section"><h3>フィールド遭遇制御</h3>
@@ -92,10 +112,11 @@ function adminRenderEncounter(){
  <div class="admin-encounter-list">${adminEncounterEnemyRows()}</div>
  <div class="admin-encounter-summary"><strong>現在の編成（合計 ${total}体）</strong><span>${esc(summary)}</span></div>
  <div class="admin-actions"><button type="button" id="admin-encounter-launch">今すぐこの編成で戦闘開始</button></div>
- <p class="admin-note">※今すぐ開始はフィールド探索中のみ使用できます。通常の敵テーブルやFOE配置は変更しません。</p></section>`;
+ <p class="admin-note">※今すぐ開始はフィールド探索中のみ使用できます。通常の敵テーブルやFOE配置は変更しません。</p></section>${adminBossSection()}`;
 }
 function adminBindEncounterControls(){
  const content=$("kotama-admin-content");if(!content)return;
+ $("admin-boss-launch")?.addEventListener("click",()=>adminStartBoss($("admin-boss-select")?.value));
  $("admin-disable-random")?.addEventListener("change",e=>{adminEncounterSettings().disableRandom=e.target.checked;});
  $("admin-force-next")?.addEventListener("change",e=>{adminEncounterSettings().forceNext=e.target.checked;});
  content.querySelectorAll("[data-admin-enemy]").forEach(el=>el.addEventListener("change",()=>{const id=el.dataset.adminEnemy,cfg=adminEncounterSettings();if(el.checked)cfg.selected[id]=Math.max(1,Number(cfg.selected[id])||1);else delete cfg.selected[id];renderAdminPanel();}));
@@ -131,7 +152,7 @@ function adminRenderPlayer(){
 function adminRenderProgress(){
   const names=["樹海の入り口","ゴブリンの森","霧の森","炎竜の巣","魔王の城"];
   const stages=names.map((name,i)=>{const n=i+1,boss=["スライム","ゴブリン","オオカミ","ドラゴン","魔王"][i];return `<article class="admin-card"><h3>STAGE ${n}：${name}</h3>${adminRow("解放状態",n<=(state.maxUnlockedStage||1)?"解放済み":"未解放")}${adminRow("到達記録",stageEntered[n]?"到達済み":"未到達")}${adminRow("クリア記録",stageCleared[n]?"クリア済み":"未クリア")}${adminRow(`${boss} 討伐記録`,compendium[boss]?.defeated?"討伐済み":"未討伐")}</article>`;}).join("");
-  return `<div class="admin-section"><h3>進行状況</h3>${adminRow("現在の解放上限",`STAGE ${state.maxUnlockedStage||1}`)}${adminRow("最初のステージ開始",state.firstStageStarted?"開始済み":"未開始")}${adminRow("討伐数",totalEnemyDefeats)}<p class="admin-note">討伐記録（図鑑）とステージクリア・解放フラグを別々に表示しています。</p></div><div class="admin-grid">${stages}</div>`;
+  return `<div class="admin-section"><h3>図鑑の管理</h3><div class="admin-actions"><button type="button" id="admin-compendium-reveal" ${state.screen==="battle"||adminCompendiumReveal?"disabled":""}>図鑑を全開放</button><button type="button" id="admin-compendium-restore" ${state.screen==="battle"||!adminCompendiumReveal?"disabled":""}>通常表示に戻す</button></div><p class="admin-note">${adminCompendiumReveal?"全開放中":"通常表示"}：全敵の名前・画像・能力・行動を表示します。討伐数・実績・階層進行は変更せず、表示設定のみセーブします。</p><h3>進行状況</h3>${adminRow("現在の解放上限",`STAGE ${state.maxUnlockedStage||1}`)}${adminRow("最初のステージ開始",state.firstStageStarted?"開始済み":"未開始")}${adminRow("討伐数",totalEnemyDefeats)}<p class="admin-note">討伐記録（図鑑）とステージクリア・解放フラグを別々に表示しています。</p></div><div class="admin-grid">${stages}</div>`;
 }
 function adminRenderBattle(){
   const enemy=battleState.enemy;const party=characters.map(c=>`<article class="admin-card"><h3>${esc(c.name)}</h3>${adminRow("HP / SP",`${c.hp} / ${c.sp}`)}${adminRow("状態",[c._stunTurns>0?`スタン ${c._stunTurns}`:"",c._actionDisabledTurns>0?`行動不能 ${c._actionDisabledTurns}`:"",burnedTurns[c.id]>0?`やけど ${burnedTurns[c.id]}`:"",c._defenseDownTurns>0?`防御低下 ${c._defenseDownTurns}`:""].filter(Boolean).join("・")||"なし")}</article>`).join("");
@@ -150,6 +171,9 @@ function renderAdminPanel(){
   $("kotama-admin-panel")?.querySelectorAll("[data-admin-tab]").forEach(b=>b.classList.toggle("active",b.dataset.adminTab===adminActiveTab));
   if(adminActiveTab==="player")$("admin-unlock-all-jobs")?.addEventListener("click",()=>{if(state.screen==="battle")return;const locked=characters.filter(c=>!extIsJobAvailable(c));if(!locked.length||!window.confirm("未解放キャラを全員解放しますか？"))return;const count=locked.filter(c=>extUnlockJob(c.id)).length;const saved=persistAutoSave();renderAll();renderAdminPanel();setSystemMessage(count+"人を解放しました。"+(saved?"":" オートセーブに失敗しました。"));});
   if(adminActiveTab==="player")content.querySelectorAll("[data-admin-level]").forEach(b=>b.onclick=()=>{if(state.screen==="battle")return;const c=getCharacter(b.dataset.adminLevel);if(!c)return;const old=characterLevels[c.id]||1,d=Number(b.dataset.delta),n=d?old+d:Number(b.parentElement.querySelector("input").value);if(!Number.isInteger(n)||n<1||n>99){alert("Lv.1〜99を指定してください。");return;}if(n===old)return;characterLevels[c.id]=n;if(typeof levelExp!=="undefined")levelExp[c.id]=0;const st=effectiveStats(c);c.hp=Math.min(c.hp,st.maxHp);c.sp=Math.min(c.sp,st.maxSp);persistAutoSave();renderAll();renderAdminPanel();});
+  if(adminActiveTab==="progress"){
+    for(const [id,value] of [["admin-compendium-reveal",true],["admin-compendium-restore",false]])$(id)?.addEventListener("click",()=>{if(state.screen==="battle")return;adminCompendiumReveal=value;const saved=persistAutoSave();renderAll();renderAdminPanel();setSystemMessage((value?"図鑑を全開放しました。":"図鑑を通常表示に戻しました。")+(saved?"":" セーブに失敗しました。"));});
+  }
   if(adminActiveTab==="encounter")adminBindEncounterControls();
   if(adminActiveTab==="battle")adminBindBattleControls();
   if(adminActiveTab==="save"){

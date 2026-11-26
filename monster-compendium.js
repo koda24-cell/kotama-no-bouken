@@ -16,6 +16,8 @@
      初期化し、旧 compendium・迷宮の遭遇回数から分かる範囲だけ引き継ぐ。
    ============================================================ */
 const monsterRecords = {};
+// Developer reveal is presentation-only, saved separately from real defeat records.
+let adminCompendiumReveal = false;
 
 const MONSTER_CATEGORY_LABELS = { boss: "ステージボス", hidden: "隠しボス", normal: "迷宮の通常敵", variant: "亜種", foe: "FOE" };
 const MONSTER_CATEGORY_ORDER = ["boss", "hidden", "normal", "foe", "variant"];
@@ -108,6 +110,7 @@ function compendiumSerialize() {
 
 // ロード。旧セーブ（monsterRecords なし）でもエラーにせず、分かる範囲だけ引き継ぐ。
 function compendiumDeserialize(d) {
+  adminCompendiumReveal = d?.adminCompendiumReveal === true;
   for (const key of Object.keys(monsterRecords)) delete monsterRecords[key];
   const saved = d && typeof d.monsterRecords === "object" && d.monsterRecords ? d.monsterRecords : null;
   if (saved) {
@@ -149,12 +152,14 @@ function monsterCardHtml(entry, r, legacy) {
   // ステージボスと隠しボスは、従来どおり名前キーの compendium で表示する（隠しボス条件と表示を一致させるため）。
   const encountered = legacy ? !!legacy.encountered : !!r?.encountered;
   const defeated = legacy ? !!legacy.defeated : !!r?.defeated;
+  const revealed = adminCompendiumReveal || defeated;
+  const named = adminCompendiumReveal || encountered;
   const d = entry.data() || {};
   const img = d.image;
-  const art = defeated && img ? `<img loading="lazy" decoding="async" src="${esc(img)}" alt="${esc(entry.name)}" onerror="this.remove()">` : `<span>${encountered ? "影" : "?"}</span>`;
+  const art = revealed && img ? `<img loading="lazy" decoding="async" src="${esc(img)}" alt="${esc(entry.name)}" onerror="this.remove()">` : `<span>${encountered ? "影" : "?"}</span>`;
   let body;
-  if (!encountered) body = "未遭遇";
-  else if (!defeated) body = "名前のみ登録（討伐すると詳細が解放されます）";
+  if (!named) body = "未遭遇";
+  else if (!revealed) body = "名前のみ登録（討伐すると詳細が解放されます）";
   else {
     const stats = [`HP ${d.hp ?? d.maxHp ?? "?"}`, `ATK ${d.attack ?? "?"}`, `DEF ${d.defense ?? "?"}`];
     if (Number.isFinite(d.spAttack)) stats.push(`SP攻撃 ${d.spAttack}`);
@@ -162,7 +167,7 @@ function monsterCardHtml(entry, r, legacy) {
     body = [stats.join(" ／ "), `属性：${esc(d.element || "無属性")}`, `弱点：${esc(monsterListText(d.weaknesses))} ／ 耐性：${esc(monsterListText([...(d.resistances || []), ...(d.physicalResistances || [])]))}`, ...monsterDescription(d, entry).map(esc)].join("<br>");
   }
   const counts = !legacy && r && encountered ? `　遭遇 ${r.encounters || 0} ／ 討伐 ${r.defeats || 0}` : "";
-  return `<article class="compendium-card compendium-${entry.category} ${defeated ? "unlocked" : ""}" data-monster-id="${esc(entry.id)}"><div class="compendium-art">${art}</div><span class="compendium-category">${esc(MONSTER_CATEGORY_LABELS[entry.category])}</span><h3>${encountered ? esc(entry.name) : "？？？？"}</h3><p>${body}</p><small>${defeated ? "討伐済み" : encountered ? "未討伐" : "未発見"}${counts}</small></article>`;
+  return `<article class="compendium-card compendium-${entry.category} ${revealed ? "unlocked" : ""}" data-monster-id="${esc(entry.id)}"><div class="compendium-art">${art}</div><span class="compendium-category">${esc(MONSTER_CATEGORY_LABELS[entry.category])}</span><h3>${named ? esc(entry.name) : "？？？？"}</h3><p>${body}</p><small>${defeated ? "討伐済み" : adminCompendiumReveal ? "管理者開放・未討伐" : encountered ? "未討伐" : "未発見"}${counts}</small></article>`;
 }
 function renderMonsterCompendium() {
   const box = $("compendium-list"); if (!box) return;
@@ -178,7 +183,7 @@ function renderMonsterCompendium() {
   const bossNames = compendiumNames().slice(0, 5);
   const allDone = entries.filter(e => (e.legacyName ? compendium[e.legacyName]?.defeated : monsterRecords[e.id]?.defeated)).length;
   const progress = $("compendium-progress");
-  if (progress) progress.textContent = `ボス ${bossNames.filter(n => compendium[n]?.defeated).length} / 5 討伐 ／ 全体 ${allDone} / ${entries.length}`;
+  if (progress) progress.textContent = `ボス ${bossNames.filter(n => compendium[n]?.defeated).length} / 5 討伐 ／ 全体 ${allDone} / ${entries.length}${adminCompendiumReveal ? " ／ 管理者全開放中" : ""}`;
   const unlock = $("hidden-boss-unlock");
   if (unlock) {
     unlock.innerHTML = hiddenBossUnlocked() ? `<h3>隠しステージ解放！</h3><p>「混沌の幻影」への挑戦条件を達成しました。</p><button id="hidden-boss-start" class="primary-button">隠しボスに挑戦</button>` : '<h3>隠しステージ</h3><p>解放条件：魔王・ドラゴン討伐、ステージボス図鑑（5種）80%以上</p>';
