@@ -62,13 +62,36 @@ try{
     try{
       document.getElementById('field-area-name').textContent='第1階層 はじまりの樹海';
       const rect=id=>{const r=document.getElementById(id).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width};};
-      return {field:rect('field'),map:rect('field-map-rail'),name:rect('field-area-name'),clock:rect('field-clock')};
+      fieldRenderPartyHud();
+      const party=rect('field-party-hud'),inventory=rect('field-inventory-open'),danger=rect('field-danger');
+      const partyCount=document.querySelectorAll('#field-party-hud .field-party-member').length;
+      const first=getParty()[0],hp=first.hp;
+      first.hp=Math.max(0,hp-1);fieldRenderPartyHud();
+      const hpUpdated=document.querySelector('#field-party-hud .field-party-gauge b').textContent.startsWith(first.hp+'/');
+      first.hp=hp;fieldRenderPartyHud();
+      fieldToggleFullMap(true);
+      const workspace=rect('field-map-workspace'),wrap=rect('field-map-canvas-wrap'),header=document.querySelector('.field-fullmap-head').getBoundingClientRect();
+      const fit=rect('field-fullmap-canvas').width;
+      document.getElementById('field-map-zoom-in').click();
+      const zoomed=rect('field-fullmap-canvas').width;
+      document.getElementById('field-map-zoom-fit').click();
+      const reset=rect('field-fullmap-canvas').width;
+      fieldToggleFullMap(false);
+      return {field:rect('field'),map:rect('field-map-rail'),name:rect('field-area-name'),clock:rect('field-clock'),party,inventory,danger,partyCount,hpUpdated,workspace,wrap,headerBottom:header.bottom,fit,zoomed,reset};
     }finally{field.classList.remove('active');home.classList.add('active');document.body.dataset.screen=old;}
   });
   assert.ok(fieldLayout.map.top-fieldLayout.field.top<40,'map not top-right');
   assert.ok(fieldLayout.field.right-fieldLayout.map.right<40,'map not aligned right');
   assert.ok(fieldLayout.clock.left>=fieldLayout.name.right-1,'clock must be right of title');
   assert.ok(fieldLayout.clock.right<=fieldLayout.map.left+1,'clock and map overlap');
+  assert.equal(fieldLayout.partyCount,home);
+  assert.equal(fieldLayout.hpUpdated,true);
+  assert.ok(fieldLayout.inventory.bottom<=fieldLayout.party.top+1,'inventory overlaps party');
+  assert.ok(fieldLayout.danger.bottom<=fieldLayout.party.top+1,'danger overlaps party');
+  assert.ok(fieldLayout.wrap.bottom>=fieldLayout.field.bottom-50,'map does not fill available height');
+  assert.ok(fieldLayout.wrap.top<=fieldLayout.headerBottom+35,'unused space above map');
+  assert.ok(fieldLayout.fit>0&&fieldLayout.zoomed>fieldLayout.fit,'zoom did not enlarge canvas');
+  assert.equal(fieldLayout.reset,fieldLayout.fit);
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
   results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,pageErrors:errors});
   assert.deepEqual(errors,[]);
