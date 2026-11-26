@@ -103,7 +103,7 @@ try{
     const select=document.getElementById('field-status-character');
     select.selectedIndex=1;select.dispatchEvent(new Event('change'));
     const switched=dlg.querySelector('.field-status-art-caption strong').textContent;
-    return {art:rect(art),info:rect(info),initial,switched,portrait:!!portrait,skills:dlg.querySelectorAll('.field-status-skill-row').length,gear:dlg.querySelectorAll('.field-status-gear-row').length,scrollable:info.scrollHeight>info.clientHeight};
+    return {art:rect(dlg.querySelector('.field-status-art')),info:rect(dlg.querySelector('.field-status-info')),initial,switched,portrait:!!portrait,skills:dlg.querySelectorAll('.field-status-skill-row').length,gear:dlg.querySelectorAll('.field-status-gear-row').length,scrollable:dlg.querySelector('.field-status-info').scrollHeight>dlg.querySelector('.field-status-info').clientHeight};
   });
   assert.ok(profile.art.left>=profile.info.right-1,'profile art not to right');
   assert.ok(profile.art.width>profile.info.width,'art should dominate layout');
