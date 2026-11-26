@@ -274,7 +274,7 @@ function makePiece(name, parts, opts = {}) {
 }
 // v8 の造形を迷宮の装飾部品として再利用する。旧GLBのマップ用キットは維持する。
 // v8 は洞窟全体の座標に配置されているため、各メッシュを独立して原点に戻す。
-const B2_V8_GLB = './assets/b2_cavern_v8.glb';
+const B2_V8_GLB = './assets/models/floor2/b2_cavern_v8.glb';
 let v8DecorationsPromise = null;
 async function loadV8Decorations() {
   // 同じセッションで階層を行き来しても5MB超のGLBを繰り返し解析しない。

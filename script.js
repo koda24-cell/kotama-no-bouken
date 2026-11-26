@@ -1830,7 +1830,7 @@ function showHitEffect(kind="slash",targetNode=null){
     sprite.alt="";
     sprite.decoding="async";
     sprite.onerror=()=>sprite.remove();
-    sprite.src="assets/"+assetName;
+    sprite.src="assets/vfx/battle-gifs/"+assetName;
     fx.appendChild(sprite);
   }
   const heavy=["samurai","blunt","flame","lightning"].includes(safeKind);
