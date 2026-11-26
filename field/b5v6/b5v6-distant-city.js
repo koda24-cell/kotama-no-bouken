@@ -127,6 +127,9 @@ export function createB5V6DistantCity({ center = new THREE.Vector3(), radius = [
           vec3 c = texture2D(uMap, vUv).rgb;
           float edge = smoothstep(0.0, 0.06, vUv.x) * smoothstep(1.0, 0.94, vUv.x) * smoothstep(0.0, 0.25, vUv.y);
           c *= uGain * edge * (0.92 + 0.08 * sin(uTime * 0.7 + vWp.x));
+          // ビルの壁面を下から上へゆっくり走る光の帯（ライトアップの演出）
+          float band = fract(uTime * 0.035 + fract(vWp.x * 0.013) );
+          c *= 1.0 + 0.9 * smoothstep(0.06, 0.0, abs(vUv.y - band)) ;
           // 加算なので、霞は「暗くする」方向に効かせる
           float d = length(vWp.xz - uCenter.xz);
           c *= mix(1.0, 0.35, smoothstep(50.0, 170.0, d)) * mix(1.0, 0.25, smoothstep(-10.0, -70.0, vWp.y));
