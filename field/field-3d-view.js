@@ -295,7 +295,7 @@ async function buildFloor() {
   showBadge('3D表示を準備中…');
   const area = Number(fieldState.area);
   // Release the previous stratum before loading another one, avoiding peak overlap.
-  if(g.envArea!==area){await releaseFloorResources();}
+  if(g.envArea!==area){await releaseFloorResources();if(token!==g.buildToken||curKey()!==key)return;}
   let th = null;
   if (area === 2 || area === 3 || area === 4 || area === 5) {
     try { th = await retryLoad(()=>area === 2 ? loadTheme2() : area === 3 ? loadTheme3() : loadTheme45(area)); }
@@ -441,8 +441,9 @@ async function buildFloor() {
   }   // 第1階層の組み立てここまで
   report(95,'初回描画待ち');
   g.sig = doorSig(a);
-  g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';
   for (const e of g.entries) await scheduleEntrySync(e, S);
+  if(token!==g.buildToken||curKey()!==key)return;
+  g.builtKey = key; g.buildingKey = ''; g.lastThemeTick=0; g.cam.ready = false; g.lastLightKey = '';g.lastEntrySync=0;
   showBadge('');
   applyMode();
 }
@@ -728,14 +729,14 @@ function frame() {
   if (!fieldOk() || document.hidden || document.body.dataset.screen!=='field') return;
   if (!active()) { if (g.canvas && !g.canvas.hidden) applyMode(); if (eligible() && !g.buildingKey && g.builtKey !== curKey()) build(); return; }
   const now = performance.now();
-  if (g.maxFps && now - g.lastRender < 1000 / g.maxFps) return;
+  if (g.maxFps && now - g.lastRender < 1000 / g.maxFps - .5) return;
   g.lastRender = now;
   observeFrame(now);
-  const dt = g.lastT ? Math.min(PHONE_VIEW ? 0.1 : g.maxFps ? 1 : 0.05, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
+  const dt = g.lastT ? Math.min(PHONE_VIEW ? 0.1 : g.maxFps ? 1 : 0.1, (now - g.lastT) / 1000) : 0.016; g.lastT = now;
   mount();
   const a = fieldArea();
   if (doorSig(a) !== g.sig && !g.buildingKey) { g.builtKey = ''; startFloorBuild(); return; }
-  for (const e of g.entries) scheduleEntrySync(e);
+  if(!g.lastEntrySync||now-g.lastEntrySync>=100){g.lastEntrySync=now;for (const e of g.entries) scheduleEntrySync(e);}
   syncFoes(now);
   updateCamera(dt);
   g.natureV6?.update(g.camera.position.x,g.camera.position.z);
