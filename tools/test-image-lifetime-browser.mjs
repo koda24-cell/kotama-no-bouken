@@ -92,8 +92,30 @@ try{
   assert.ok(fieldLayout.wrap.top<=fieldLayout.headerBottom+35,'unused space above map');
   assert.ok(fieldLayout.fit>0&&fieldLayout.zoomed>fieldLayout.fit,'zoom did not enlarge canvas');
   assert.equal(fieldLayout.reset,fieldLayout.fit);
+  const profile=await page.evaluate(()=>{
+    const dlg=document.getElementById('field-inventory-dialog');
+    dlg.dataset.menuTab='field-inventory-status-tab';
+    renderFieldCharacterStatus();dlg.showModal();
+    const art=dlg.querySelector('.field-status-art'),info=dlg.querySelector('.field-status-info');
+    const rect=el=>{const r=el.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
+    const initial=art.querySelector('.field-status-art-caption strong').textContent;
+    const portrait=art.querySelector('img');
+    const select=document.getElementById('field-status-character');
+    select.selectedIndex=1;select.dispatchEvent(new Event('change'));
+    const switched=dlg.querySelector('.field-status-art-caption strong').textContent;
+    return {art:rect(art),info:rect(info),initial,switched,portrait:!!portrait,skills:dlg.querySelectorAll('.field-status-skill-row').length,gear:dlg.querySelectorAll('.field-status-gear-row').length,scrollable:info.scrollHeight>info.clientHeight};
+  });
+  assert.ok(profile.art.left>=profile.info.right-1,'profile art not to right');
+  assert.ok(profile.art.width>profile.info.width,'art should dominate layout');
+  assert.ok(profile.art.height>150,'art height too small');
+  assert.ok(profile.initial!==profile.switched,'character did not switch');
+  assert.ok(profile.portrait&&profile.skills>0&&profile.gear>0);
+  await page.locator('#field-status-detail .field-status-art img').first().waitFor({state:'visible'});
+  await page.waitForFunction(()=>{const i=document.querySelector('#field-status-detail .field-status-art img');return i?.complete&&i.naturalWidth>0;});
+  await page.screenshot({path:'status-profile-'+viewport.width+'.png'});
+  await page.evaluate(()=>document.getElementById('field-inventory-dialog').close());
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
