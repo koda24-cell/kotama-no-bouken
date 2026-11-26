@@ -228,6 +228,13 @@ export function createTheme(api) {
       }
     }
     for(const cell of machineCells)occupied.add(cell);
+    // Solid map cells normally hide their missing terrain behind opaque buildings.
+    // Open-front courts need a real floor under their tree/stairs and rear bays.
+    for(const key of stairCells){
+      const [x,z]=key.split(',').map(Number),ground=add(cube,soil,x*CELL,-.13,z*CELL,4.04,.25,4.04);
+      const b=new THREE.Box3().setFromObject(ground);
+      ground.userData.f3Bounds={min:b.min.toArray(),max:b.max.toArray(),ownerCells:courtOwners.get(key)};
+    }
     const pilotWall=(x,z)=>v2&&ch(x,z)==='#'&&!machineCells.has(`${x},${z}`)&&!stairCells.has(`${x},${z}`);
     const wall = (x, z) => x >= 0 && z >= 0 && x < a.w && z < a.h && ch(x, z) === '#' && !reserved.has(`${x},${z}`)&&!pilotWall(x,z);
     stats = { mode: 'b3-industrial-trial', floor: a.key, motifs: {}, quality: g.high ? 'high' : 'low',groundSpecies:3,artRevision:v2?'V2 city structural revision, work in progress':'V1',representativeFacadeCount:0,serviceTowers:machineCells.size,reusedStairCourtyard:stairCourtCount,reclaimedTreeCourtyard:treeCourtCount,cedarSourceVerified:cedarVerified,reusedTransitStop:transitCourtCount };
