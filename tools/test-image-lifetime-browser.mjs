@@ -223,7 +223,7 @@ try{
   assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
   const adminBossLaunch=true;
   const enemyPortraits=await page.evaluate(async()=>{
-    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png"};
+    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png","stray-slime":"e16ff5a5-7daf-4a04-a823-3ab68e474647.png"};
     const result=[];
     const oldEnemy=battleState.enemy,oldMode=battleState.encounterMode,oldReveal=adminCompendiumReveal;
     try{
@@ -242,10 +242,18 @@ try{
         await art.decode();
         result.push({id,file,width:art.naturalWidth,height:art.naturalHeight});
       }
+      const path=enemyData[0].image;
+      if(path!=='assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png')throw Error('Incorrect slime mapping');
+      const bossCard=document.querySelector('[data-monster-id="boss-1"] img');
+      if(!bossCard||bossCard.getAttribute('src')!==path)throw Error('Incorrect slime compendium mapping');
+      battleState.encounterMode=false;battleState.enemy={...enemyData[0],maxHp:enemyData[0].hp};renderBattle();
+      const slimeArt=document.querySelector('#battle-enemy .enemy-image');
+      if(!slimeArt||slimeArt.dataset.enemyImage!==path)throw Error('Incorrect slime battle portrait');
+      await slimeArt.decode();result.push({id:'boss-1',file:path.split('/').pop(),width:slimeArt.naturalWidth,height:slimeArt.naturalHeight});
       return result;
     }finally{battleState.enemy=oldEnemy;battleState.encounterMode=oldMode;adminCompendiumReveal=oldReveal;renderBattle();renderMonsterCompendium();}
   });
-  assert.equal(enemyPortraits.length,3);
+  assert.equal(enemyPortraits.length,5);
   assert.ok(enemyPortraits.every(x=>x.width>0&&x.height>0));
   results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,enemyPortraits,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);

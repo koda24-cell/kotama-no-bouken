@@ -12,7 +12,7 @@
    ・image は仮。専用画像ができたら差し替える（ファイル名は半角英数字）。
    ------------------------------------------------------------ */
 const FIELD_ENEMIES = {
-  "stray-slime": { name:"はぐれスライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["打撃"], hp:380, attack:36, spAttack:20, defense:6, spDefense:24, gold:6, exp:14, speed:60, dropAs:"スライム", image:"assets/monsters/suraimu.png", sprite:"slime",
+  "stray-slime": { name:"はぐれスライム", element:"無属性", weaknesses:["炎","氷","雷","聖"], resistances:[], physicalResistances:["打撃"], hp:380, attack:36, spAttack:20, defense:6, spDefense:24, gold:6, exp:14, speed:60, dropAs:"スライム", image:"assets/monsters/e16ff5a5-7daf-4a04-a823-3ab68e474647.png", sprite:"slime",
     ai:[ { name:"体当たり", weight:70, kind:"phys", power:1.0 }, { name:"ねばねば", weight:30, kind:"phys", power:.7, status:{ type:"defenseDown", chance:.45, turns:2, power:4 } } ] },
   "mushroom": { name:"キノコもどき", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:400, attack:30, spAttack:32, defense:9, spDefense:12, gold:7, exp:16, speed:48, image:"assets/monsters/毒胞子を放つキノコもどき.png", sprite:"slime",
     ai:[ { name:"頭突き", weight:55, kind:"phys", power:1.0 }, { name:"しびれ胞子", weight:45, all:true, kind:"sp", power:.55, status:{ type:"poison", chance:.3, turns:3, power:.05 } } ] },

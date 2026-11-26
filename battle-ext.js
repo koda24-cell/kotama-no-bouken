@@ -725,7 +725,7 @@ function extPickEnemyVariant(stage) {
   if (!list || battleState.tutorialMode || battleState.hiddenBossMode || !stageCleared[stage] || Math.random() >= .5) return null;
   const v = JSON.parse(JSON.stringify(list[Math.floor(Math.random() * list.length)]));
   const base = enemyData[stage - 1];
-  return { ...v, image: base.image, maxHp: v.hp, spDefense: Number.isFinite(v.spDefense) ? v.spDefense : Math.floor(v.defense / 2), compendiumAs: v.baseName, dropAs: v.baseName };
+  return { ...v, image: base.variantImage || base.image, maxHp: v.hp, spDefense: Number.isFinite(v.spDefense) ? v.spDefense : Math.floor(v.defense / 2), compendiumAs: v.baseName, dropAs: v.baseName };
 }
 function extWeightedPick(list) {
   const total = list.reduce((n, a) => n + (a.weight || 1), 0);
