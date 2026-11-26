@@ -222,7 +222,32 @@ try{
   await page.waitForFunction(()=>state.screen==='battle'&&battleState.stage===3&&battleState.enemy?.name==='オオカミ'&&!battleState.busy,{},{timeout:30000});
   assert.equal(await page.evaluate(()=>state.maxUnlockedStage),1);
   const adminBossLaunch=true;
-  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,fieldLayout,profile,pageErrors:errors});
+  const enemyPortraits=await page.evaluate(async()=>{
+    const expected={"mushroom":"毒胞子を放つキノコもどき.png","mist-bat":"33710b53-8af8-4ef3-b69b-a204696db496.png","ore-crab":"氷晶をまとった鉱石ガニ.png"};
+    const result=[];
+    const oldEnemy=battleState.enemy,oldMode=battleState.encounterMode,oldReveal=adminCompendiumReveal;
+    try{
+      adminCompendiumReveal=true;renderMonsterCompendium();
+      battleState.encounterMode=true;
+      for(const [id,file] of Object.entries(expected)){
+        const path='assets/monsters/'+file;
+        const unit=fieldCreateEnemy(id,1);
+        if(unit.image!==path)throw Error('Incorrect battle mapping: '+id);
+        const card=document.querySelector('[data-monster-id="field:'+id+'"] img');
+        if(!card||card.getAttribute('src')!==path)throw Error('Incorrect compendium mapping: '+id);
+        const probe=new Image();probe.src=path;await probe.decode();
+        battleState.enemy=unit;renderBattle();
+        const art=document.querySelector('#battle-enemy .enemy-image');
+        if(!art||art.dataset.enemyImage!==path)throw Error('Incorrect battle portrait: '+id);
+        await art.decode();
+        result.push({id,file,width:art.naturalWidth,height:art.naturalHeight});
+      }
+      return result;
+    }finally{battleState.enemy=oldEnemy;battleState.encounterMode=oldMode;adminCompendiumReveal=oldReveal;renderBattle();renderMonsterCompendium();}
+  });
+  assert.equal(enemyPortraits.length,3);
+  assert.ok(enemyPortraits.every(x=>x.width>0&&x.height>0));
+  results.push({viewport,cycles:3,homePortraits:home,homePoster,townBackground,menuGeometry,menuClickVerified:true,backgroundReferenceReleased:true,adminLevel:levelTest,adminTest,adminBossLaunch,enemyPortraits,fieldLayout,profile,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
