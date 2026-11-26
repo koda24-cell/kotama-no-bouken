@@ -22,7 +22,7 @@
 
 ## 大容量ファイル・アーカイブ
 
-`assets/floor4_Part1_Models.zip`（約16.4MB）、`assets/floor4_Part2_Textures.zip`（約13.9MB）、`assets/3d/dungeons/b2_water_source/models/floor2-water-source-quality-v3.zip`（約0.1MB）はアーカイブ形式。展開済み素材との一致・ゲーム実行時参照・制作元データの有無を未検証のため保持。
+`assets/3d/dungeons/b4_dragonfire/models/floor4_Part1_Models.zip`（約16.4MB）、`assets/3d/dungeons/b4_dragonfire/textures/floor4_Part2_Textures.zip`（約13.9MB）、`assets/3d/dungeons/b2_water_source/models/floor2-water-source-quality-v3.zip`（約0.1MB）はアーカイブ形式。展開済み素材との一致・ゲーム実行時参照・制作元データの有無を未検証のため保持。
 
 **注意:** Gitの通常削除だけでは過去コミット中の大容量データは消えない。履歴書き換えは共同開発のブランチ・PRを壊し得るため、実施しない。
 
