@@ -472,6 +472,44 @@ body[data-screen="field"] #field-inventory-open,body[data-screen="field"] #field
 }
 @media (max-width:600px) and (orientation:portrait){#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{grid-template-columns:1fr;grid-template-rows:minmax(100px,40%) minmax(0,1fr)}#field-status-detail .field-status-art{grid-row:1}#field-status-detail .field-status-info{grid-row:2;border-right:0;border-top:2px solid var(--profile-accent)}}
 </style>
+<style id="field-status-fullbleed-v3">
+/* One continuous background, no artwork panel or dividing frame. */
+#field-inventory-dialog[open][data-menu-tab="field-inventory-status-tab"]{isolation:isolate;overflow:hidden}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav,
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch,
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-return-to-exploration{position:relative;z-index:5}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"]>nav button{background:#10212cbb;border-color:#81979566}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] .field-status-switch{border:0;background:transparent}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail{display:block;position:static;border:0;background:none;overflow:visible;min-height:0;flex:1}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-art{position:fixed;inset:0;z-index:0;width:100%;height:100%;min-height:0;pointer-events:none;background:radial-gradient(ellipse at 70% 32%,#3c5368,#172b3a 65%,#101a24)}
+#field-status-detail .field-status-art::before{opacity:.65}
+#field-status-detail .field-status-art::after{border:0;clip-path:none;background:linear-gradient(90deg,#08141ef5 0%,#08141ed9 26%,#08141e80 43%,#08141e12 66%,transparent 100%),linear-gradient(0deg,#08141ed9 0%,transparent 27%,transparent 83%,#08141eb3 100%)}
+#field-status-detail .field-status-art-grid{border:0;clip-path:none}
+#field-status-detail .field-status-art img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center 25%;filter:none}
+#field-status-detail .field-status-wordmark{left:38%;top:13%;z-index:3;font-size:clamp(52px,12vw,190px);opacity:.48}
+#field-status-detail .field-status-art-code{top:16%;right:3%}
+#field-status-detail .field-status-art-caption{left:43%;right:3%;bottom:11%;z-index:4}
+#field-status-detail .field-status-art-caption strong{font-size:clamp(36px,7.6vw,132px)}
+#field-status-detail .field-status-art-caption span{background:transparent;padding:0;color:var(--profile-accent)}
+#field-status-detail .field-status-art-mark{bottom:12%}
+#field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-info{position:relative;z-index:4;width:clamp(240px,39%,560px);height:100%;min-height:0;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;background:transparent;border:0;padding:clamp(10px,1.5vw,22px);text-shadow:0 1px 4px #050d14}
+#field-status-detail .field-status-info .field-status-stats>div,#field-status-detail .field-status-info .field-status-gear-row,#field-status-detail .field-status-info .field-status-skill-row{background:transparent;border:0;padding:4px 2px}
+#field-status-detail .field-status-info .field-status-stats>div{border-bottom:1px solid #d9e7dd22}
+#field-status-detail .field-status-info .field-status-name,#field-status-detail .field-status-info h4{border-color:#d5f65b55}
+#field-status-detail .field-status-info progress{border:0}
+#field-status-detail .field-status-info .field-status-actions button{background:#10212c88;border-color:#b0ceaa88}
+@media(max-height:600px) and (orientation:landscape){
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-info{width:clamp(205px,42%,400px);padding:6px 10px}
+ #field-status-detail .field-status-art-caption{left:46%;bottom:13%}
+ #field-status-detail .field-status-art-caption strong{font-size:clamp(28px,7vw,70px)}
+ #field-status-detail .field-status-art-code{top:20%}
+}
+@media(max-width:600px) and (orientation:portrait){
+ #field-inventory-dialog[data-menu-tab="field-inventory-status-tab"] #field-status-detail .field-status-info{width:100%;height:62%;margin-top:38%;background:linear-gradient(0deg,#08141ef5,#08141ebd);padding:10px}
+ #field-status-detail .field-status-art-caption{left:5%;bottom:auto;top:25%}
+ #field-status-detail .field-status-art::after{background:linear-gradient(0deg,#08141ef5 0%,#08141e99 55%,transparent 80%)}
+}
+</style>
 </head>
 <body data-screen="opening">
   <div id="kotama-3d-loading" hidden role="status" aria-live="polite" aria-label="3Dマップ読み込み中">
