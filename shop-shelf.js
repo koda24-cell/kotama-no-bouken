@@ -1,6 +1,8 @@
 /* Shop presentation only. Original purchase, sale, filters and comparison handlers remain authoritative. */
 (() => {
   "use strict";
+  // Fill only with approved, existing project assets. Empty slots make no requests.
+  window.KotamaShopArt = window.KotamaShopArt || { merchant: null, items: {} };
   const baseRender = renderShop;
   let selectedKey = "", lastContext = "";
   const merchant = () => {
@@ -16,8 +18,8 @@
     // Future item illustrations use existing item ID, no guessed file requests.
     const image=window.KotamaShopArt?.items?.[key];
     if(typeof image==="string"&&image.startsWith("./assets/")) {
-      const img=document.createElement("img");img.src=image;img.alt="";img.loading="lazy";img.decoding="async";
-      img.onload=()=>{art.replaceChildren(img);};img.onerror=()=>img.remove();
+      const img=document.createElement("img");img.alt="";img.loading="lazy";img.decoding="async";img.hidden=false;img.style.position="absolute";img.style.opacity="0";
+      img.onload=()=>{img.style.position="";img.style.opacity="";art.replaceChildren(img);};img.onerror=()=>img.remove();art.append(img);img.src=image;
     }
     return art;
   };
@@ -60,7 +62,7 @@
     if(empty)shelf.append(empty);
     else if(!cards.length){const note=document.createElement("p");note.className="empty-note";note.textContent=box.textContent||"商品がありません。";shelf.append(note);}
     const img=window.KotamaShopArt?.merchant;
-    if(typeof img==="string"&&img.startsWith("./assets/")){const el=document.createElement("img");el.src=img;el.alt="店主";el.decoding="async";el.onload=()=>portrait.replaceChildren(el);}
+    if(typeof img==="string"&&img.startsWith("./assets/")){const el=document.createElement("img");el.alt="店主";el.decoding="async";el.onload=()=>portrait.replaceChildren(el);el.onerror=()=>el.remove();portrait.append(el);el.src=img;}
     box.replaceChildren(shelf,counter);select();
     const gold=document.getElementById("shop-shelf-gold");if(gold)gold.textContent=state.gold.toLocaleString("ja-JP")+" G";
     const tabs=document.getElementById("shop-category-tabs");tabs?.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.classList.contains("active"))));
