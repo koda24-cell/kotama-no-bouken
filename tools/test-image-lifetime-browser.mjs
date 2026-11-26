@@ -103,9 +103,11 @@ try{
     const select=document.getElementById('field-status-character');
     select.selectedIndex=1;select.dispatchEvent(new Event('change'));
     const switched=dlg.querySelector('.field-status-art-caption strong').textContent;
-    return {art:rect(dlg.querySelector('.field-status-art')),info:rect(dlg.querySelector('.field-status-info')),initial,switched,portrait:!!portrait,skills:dlg.querySelectorAll('.field-status-skill-row').length,gear:dlg.querySelectorAll('.field-status-gear-row').length,scrollable:dlg.querySelector('.field-status-info').scrollHeight>dlg.querySelector('.field-status-info').clientHeight};
+    return {art:rect(dlg.querySelector('.field-status-art')),info:rect(dlg.querySelector('.field-status-info')),dialog:rect(dlg),initial,switched,portrait:!!portrait,skills:dlg.querySelectorAll('.field-status-skill-row').length,gear:dlg.querySelectorAll('.field-status-gear-row').length,scrollable:dlg.querySelector('.field-status-info').scrollHeight>dlg.querySelector('.field-status-info').clientHeight};
   });
-  assert.ok(profile.art.left>=profile.info.right-1,'profile art not to right');
+  assert.ok(Math.abs(profile.art.left-profile.dialog.left)<3 && Math.abs(profile.art.top-profile.dialog.top)<3,'art must begin at dialog edge');
+  assert.ok(profile.art.width>=profile.dialog.width-3&&profile.art.height>=profile.dialog.height-3,'art must cover entire dialog');
+  assert.ok(profile.info.left>=profile.art.left&&profile.info.right<profile.art.right,'info must overlay artwork');
   assert.ok(profile.art.width>profile.info.width,'art should dominate layout');
   assert.ok(profile.art.height>150,'art height too small');
   assert.ok(profile.initial!==profile.switched,'character did not switch');
