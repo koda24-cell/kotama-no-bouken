@@ -37,8 +37,25 @@ try{
   await navigate('home');
   assert.equal(await page.evaluate(()=>getComputedStyle(document.getElementById('battle')).getPropertyValue('--battle-floor-art').trim()),'none');
   assert.equal(await inspect('#home-party img'),home);
+  const levelTest=await page.evaluate(()=>{
+    adminActiveTab='player';adminPanelMarkup();renderAdminPanel();
+    const original=characterLevels.kotama||1;
+    const oldConfirm=window.confirm;
+    let confirmations=0;
+    window.confirm=()=>{confirmations++;return false;};
+    try {
+      const click=d=>document.querySelector('[data-admin-level="kotama"][data-delta="'+d+'"]').click();
+      const input=()=>document.querySelector('[data-level-input="kotama"]');
+      input().value='10';click(0);const set=characterLevels.kotama;
+      click(1);const up=characterLevels.kotama;
+      click(-1);const down=characterLevels.kotama;
+      input().value=String(original);click(0);
+      return {set,up,down,confirmations,restored:characterLevels.kotama===original};
+    }finally{window.confirm=oldConfirm;}
+  });
+  assert.deepEqual(levelTest,{set:10,up:11,down:10,confirmations:0,restored:true});
   await page.screenshot({path:'image-lifetime-'+viewport.width+'.png'});
-  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,pageErrors:errors});
+  results.push({viewport,cycles:3,homePortraits:home,backgroundReferenceReleased:true,adminLevel:levelTest,pageErrors:errors});
   assert.deepEqual(errors,[]);
   await page.close();
  }
