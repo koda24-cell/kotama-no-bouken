@@ -18,7 +18,7 @@ const FIELD_ENEMIES = {
     ai:[ { name:"頭突き", weight:55, kind:"phys", power:1.0 }, { name:"しびれ胞子", weight:45, all:true, kind:"sp", power:.55, status:{ type:"poison", chance:.3, turns:3, power:.05 } } ] },
   "forest-goblin": { name:"森ゴブリン", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:720, attack:54, spAttack:20, defense:12, spDefense:6, gold:12, exp:62, speed:72, dropAs:"ゴブリン", image:"assets/monsters/goburinn.webp", sprite:"goblin",
     ai:[ { name:"棍棒", weight:65, kind:"phys", power:1.0 }, { name:"石投げ", weight:35, kind:"phys", power:.9, target:"rear" } ] },
-  "goblin-scout": { name:"ゴブリンの斥候", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:600, attack:57, spAttack:20, defense:9, spDefense:6, gold:12, exp:64, speed:95, dropAs:"ゴブリン", image:"assets/monsters/goburinn.webp", sprite:"goblin",
+  "goblin-scout": { name:"ゴブリンの斥候", element:"無属性", weaknesses:["炎","斬撃"], resistances:[], hp:600, attack:57, spAttack:20, defense:9, spDefense:6, gold:12, exp:64, speed:95, dropAs:"ゴブリン", image:"assets/monsters/dcebcee7-80cb-4260-8ded-3680ee605f6b.png", sprite:"goblin",
     ai:[ { name:"素早い突き", weight:55, kind:"phys", power:1.0 }, { name:"毒ナイフ", weight:45, kind:"phys", power:.8, status:{ type:"poison", chance:.5, turns:3, power:.06 } } ] },
   "mist-bat": { name:"霧コウモリ", element:"無属性", weaknesses:["雷","炎"], resistances:[], hp:980, attack:66, spAttack:48, defense:16, spDefense:14, gold:18, exp:140, speed:105, image:"assets/monsters/33710b53-8af8-4ef3-b69b-a204696db496.png", sprite:"wolf",
     ai:[ { name:"吸血", weight:55, kind:"phys", power:1.0, drain:.4 }, { name:"超音波", weight:45, all:true, kind:"sp", power:.55, status:{ type:"paralysis", chance:.22, turns:1 } } ] },
