@@ -5,6 +5,13 @@ on:
       - feature/gpt-field-status-large-20261126
     paths:
       - tools/test-image-lifetime-browser.mjs
+      - css/17-home-poster.css
+      - .github/workflows/browser-image-lifetime.yml
+  pull_request:
+    branches: [development]
+    paths:
+      - css/17-home-poster.css
+      - tools/test-image-lifetime-browser.mjs
       - .github/workflows/browser-image-lifetime.yml
   workflow_dispatch:
 permissions:
@@ -31,4 +38,5 @@ jobs:
             browser-image-lifetime-report.json
             image-lifetime-*.png
             status-profile-*.png
+            home-poster-*.png
           retention-days: 14
