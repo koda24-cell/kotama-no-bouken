@@ -365,8 +365,19 @@ export function createTheme(api) {
             const scale=Math.min(3.9/along,.45/depth,1.05/ss.y);holder.scale.setScalar(scale);holder.position.set(ex-cc.x*scale+dx*.28,-b.min.y*scale,ez-cc.z*scale+dz*.28);root.add(holder);holder.updateMatrixWorld(true);
             const bb=new THREE.Box3().setFromObject(holder),record={key:'ruin-courtyard:closed-railing',min:bb.min.toArray(),max:bb.max.toArray(),overhead:false};edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
           }else{
-            const backing=add(cube,stone,ex+dx*.03,6,ez+dz*.03,4.04,12,.16,ry),bb=new THREE.Box3().setFromObject(backing);
-            backing.userData.f3Bounds={min:bb.min.toArray(),max:bb.max.toArray(),ownerCells:courtOwners.get(boundaryKey)};
+            // Both the street and the court see complete, closed architectural
+            // bays. A bare twelve-metre backing panel read as an unfinished wall.
+            for(let face=0;face<2;face++){
+              const holder=new THREE.Group(),model=industrial.models.get('v2_courtyard_facade').clone(true);
+              model.rotation.y=ry+face*Math.PI;holder.add(model);
+              const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
+              const scale=4.01/(dx?s.z:s.x),sx=dx?.70/s.x:scale,sz=dz?.70/s.z:scale;
+              holder.scale.set(sx,scale,sz);
+              holder.position.set(ex+dx*(.40+face*.75)-c.x*sx,-b.min.y*scale,ez+dz*(.40+face*.75)-c.z*sz);
+              root.add(holder);holder.updateMatrixWorld(true);
+              const bb=new THREE.Box3().setFromObject(holder),record={key:'ruin-courtyard:architectural-return',min:bb.min.toArray(),max:bb.max.toArray(),ownerCells:courtOwners.get(boundaryKey),overhead:false};
+              edgePlacements.push(record);holder.traverse(o=>{if(o.isMesh)o.userData.f3Bounds=record;});
+            }
           }
           continue;
         }

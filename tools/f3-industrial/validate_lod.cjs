@@ -13,5 +13,5 @@ const digest=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('h
   rows.push({id,lod:variant.lod,triangles:variant.triangle_equivalent,sourceTriangles:m.original_triangle_equivalent,sha256:file.sha256,...v.issues});
   if(v.issues.numErrors)throw Error('Invalid GLB '+id+' '+variant.lod);
  }}
- const out=path.resolve('docs/reviews/f3-industrial-final/lod-validation.json');fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify({scope:'Actual archived rigid LOD GLBs, not runtime adoption or visual acceptance',models:rows.length/3,variants:rows},null,2));console.log(JSON.stringify(rows.map(({id,lod,numErrors,numWarnings})=>({id,lod,errors:numErrors,warnings:numWarnings}))));
+ const out=path.resolve(process.env.LOD_VALIDATION_OUT||'docs/reviews/f3-industrial-final/lod-validation.json');fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify({scope:'Actual archived rigid LOD GLBs, not runtime adoption or visual acceptance',models:rows.length/3,variants:rows},null,2));console.log(JSON.stringify(rows.map(({id,lod,numErrors,numWarnings})=>({id,lod,errors:numErrors,warnings:numWarnings}))));
 })().catch(e=>{console.error(e);process.exitCode=1});

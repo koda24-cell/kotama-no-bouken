@@ -129,8 +129,10 @@ const lodCheck=await page.evaluate(()=>{
  const {g}=__test3d,camera=g.camera.clone();let groups=0,invalid=0,nearTriangles=0,farTriangles=0;
  g.world.traverse(o=>{if(!o.isLOD)return;groups++;const p=o.getWorldPosition(camera.position);camera.position.copy(p);camera.updateMatrixWorld();o.update(camera);if(o.getCurrentLevel()!==0)invalid++;
  const near=o.levels[0].object,far=o.levels[1].object;
- nearTriangles+=(near.geometry.index?.count||near.geometry.attributes.position.count)/3*near.count;
- if(far.isMesh)farTriangles+=(far.geometry.index?.count||far.geometry.attributes.position.count)/3*far.count;
+ // Visibility compaction may set draw count to zero for an off-screen bucket.
+ // Compare the retained instance allocation, not the current camera's draw count.
+ nearTriangles+=(near.geometry.index?.count||near.geometry.attributes.position.count)/3*near.instanceMatrix.count;
+ if(far.isMesh)farTriangles+=(far.geometry.index?.count||far.geometry.attributes.position.count)/3*far.instanceMatrix.count;
  camera.position.x+=100;camera.updateMatrixWorld();o.update(camera);if(o.getCurrentLevel()!==1)invalid++;o.update(g.camera);
  });return {groups,invalid,nearTriangles,farTriangles};
 });logs.push({lodCheck});
