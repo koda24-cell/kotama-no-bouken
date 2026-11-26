@@ -20,6 +20,9 @@ import { createTempleMaterials, makeTempleFacePicker, buildTempleTrims, buildCei
 import { createB5Dressing, isB5Hall, compactB5Static } from './b5-scene-dressing.js';
 import { createB5DistantFogBackground } from './b5-distant-fog-background.js';
 import { createB5ArcaneSparks, createB5PathEdgeMist } from './b5-vfx-presets.js';
+import { createB5V6Scene } from './b5v6/b5v6-scene.js';
+// 5層 V6（2026-11-26 Claude, 未承認の試作）。?b5v6=0 か localStorage kotama.b5v6=off で従来表示に戻す
+const B5V6_ON = (() => { try { return new URLSearchParams(location.search).get('b5v6') !== '0' && localStorage.getItem('kotama.b5v6') !== 'off'; } catch (_) { return true; } })();
 // 4層専用の配置物はページ全体で1組（g.world に置かれ、読み込みキャッシュの部品と同じ扱い）
 const DRAGON_HEAD_YAW = -Math.PI / 2;
 let B4_KIT = null;
@@ -33,6 +36,9 @@ export function createTheme(api, area) {
     : magma
     // 2026-11-20 user: 暗い → 赤・オレンジ系で見やすく。熱い空気（暖色の霧）と溶岩の照り返し（下からの赤）
     ? { background: 0x401608, fog: { color: 0x74300f, density: 0.015 }, hemi: { sky: 0xffc49c, ground: 0xc04a1c, high: 4.4, low: 4.8 } }
+    : area === 5 && B5V6_ON
+    // 5層 V6：黒い神殿。霧で通路の奥を溶かし、光は篝火とろうそくで作る
+    ? { background: 0x050409, fog: { color: 0x120f1c, density: 0.042 }, hemi: { sky: 0x8f8ca8, ground: 0x231f2b, high: 1.5, low: 2.0 } }
     : { background: 0x050514, fog: { color: 0x10102a, density: 0.022 }, hemi: { sky: 0x9d9bd6, ground: 0x292541, high: 1.75, low: 2.05 } };
   function rockTexture(seed) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
@@ -167,6 +173,7 @@ export function createTheme(api, area) {
   }
   // Visual-only backdrop: follows the camera, remains behind physical walls,
   // and never modifies collision, visibility, map cells or saved state.
+  let b5v6 = null;
   let b5Fog = null, b5FogTexture = null, b5FogBuild = 0, b5Sparks = null, b5EdgeMist = null;
   const b5FogPath = './field/assets/b5-distant/facade020c-windows.png';
   function installB5Fog() {
@@ -230,6 +237,7 @@ export function createTheme(api, area) {
 
     for (let ty = 0; ty < a.h; ty++) for (let tx = 0; tx < a.w; tx++) {
       if (wallCell(tx, ty)) continue;
+      if (b5 && B5V6_ON) continue;   // V6 は床・壁・天井を b5v6 で作る
       const x = tx * CELL, z = ty * CELL, c = ch(tx, ty);
       if (magma && c === '~') {
         // 通れない深い溶岩（ユーザー指示 2026-11-21：通れる浅い溶岩と見分けられるように）。床より 0.55 m 沈んだ流れる溶岩＋黒い岸
@@ -407,7 +415,11 @@ export function createTheme(api, area) {
       volcanicDetail=addB4VolcanicDetail({root,map:a,ch,wallCell,hash,CELL,plan:b4Plan,surfaces});
       lights.push(...volcanicDetail.lights);g.lights.push(...volcanicDetail.lights);
     }
-    if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
+    if (b5 && B5V6_ON) {
+      const scene = await createB5V6Scene({ root: buildRoot, a, ch, wallCell, hash, CELL, g, lights, objects: a.objects });
+      if (root !== buildRoot) { scene.dispose(); return; }
+      b5v6 = scene;
+    } else if (b5) { dressing = createB5Dressing({ root, a, ch, wallCell, hash, CELL, hall }); installB5Fog(); }
     batchStatic();
     if (chasmPlan) chasms = buildChasms({ root: buildRoot, plan: chasmPlan, CELL, hash, trimMaterial: temple.boulder, wallMaterial: temple.wall, lights, gLights: g.lights, isWalk: (x, y) => x >= 0 && y >= 0 && x < a.w && y < a.h && !wallCell(x, y) });
     if (temple) { templeTrims = buildTempleTrims(buildRoot, templeFaces, temple, hash, a.f === 2 ? 8.2 : 4.2); templeBeams = buildCeilingBeams(buildRoot, templeTiles, temple, CELL, a.f === 2 ? 8.1 : 4.05); }
@@ -506,6 +518,7 @@ export function createTheme(api, area) {
   }
   function dispose({ final = false } = {}) {
     clearB5Fog();
+    b5v6?.dispose(); b5v6 = null;
     if (!magma) {
       const geometries = new Set(), materials = new Set(), textures = new Set();
       for (const model of ownedModels) model.traverse(o => {
@@ -542,6 +555,7 @@ export function createTheme(api, area) {
     }
   }
   function tick(dt, now, camera) {
+    b5v6?.update(now, g.camera);
     if (b5Fog && g.camera) {
       const eye = g.camera;
       const forward = new THREE.Vector3(0,0,-1).applyQuaternion(eye.quaternion);
@@ -580,5 +594,5 @@ export function createTheme(api, area) {
     }
     return false;
   }
-  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info }, decor: templeDecor?.info, rocks: rockPass?.info || null } } : {}) }) };
+  return { area, env: ENV, build, dispose, tick, sync, info: () => ({ placed: !!root, ornaments, mode: 'map-driven-3d', landmarkState, dressing: dressing?.info(), b5v6: b5v6?.info(), ...(magma ? { scenery: { mines:b4Plan?.mines || [], vista:b4Plan?.vista || null, detail:volcanicDetail?.info, props: b4Dressing?.info() || null, chasms: chasms?.info, vault: { hall: vaultHall?.info, sanctum: vaultSanctum?.info }, decor: templeDecor?.info, rocks: rockPass?.info || null } } : {}) }) };
 }
