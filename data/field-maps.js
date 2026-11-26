@@ -30,32 +30,43 @@ const FIELD_AREAS = {
       // [PUZZLE] 仕掛け（1F：レバーで鉄格子の扉が開く）
       e: { kind: "switch", id: "a1-lever", name: "古いレバー", sprite: "pz-lever", puzzle: "a1-lever-gate", onWall: true },
       f: { kind: "door", id: "a1-gate", name: "鉄格子の扉", sprite: "pz-door", puzzle: "a1-lever-gate" },
-      g: { kind: "cache", id: "a1-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a1-lever-gate" }
+      g: { kind: "cache", id: "a1-cache", name: "古い宝箱", sprite: "pz-cache", puzzle: "a1-lever-gate" },
+      h: {"kind":"npc","id":"a1-trial-guard","name":"試験担当衛兵","sprite":"npc-woodcutter","scene":"a1-trial-guard"},
+      i: {"kind":"npc","id":"a1-resting","name":"休憩中の冒険者","sprite":"npc-woodcutter","scene":"a1-resting"},
+      j: {"kind":"npc","id":"a1-gatherer","name":"採取中の冒険者","sprite":"npc-girl","scene":"a1-gatherer"},
+      k: {"kind":"npc","id":"a1-lost","name":"道に迷った新人","sprite":"npc-girl","scene":"a1-lost"},
+      l: {"kind":"npc","id":"a1-wounded","name":"負傷した冒険者","sprite":"npc-woodcutter","scene":"a1-wounded"},
+      m: {"kind":"npc","id":"a1-patrol-1f","name":"巡回衛兵","sprite":"npc-woodcutter","scene":"a1-patrol-1f"},
+      n: {"kind":"npc","id":"a1-guard-rest","name":"休憩中の衛兵","sprite":"npc-woodcutter","scene":"a1-guard-rest"},
+      o: {"kind":"event","id":"a1-record","name":"古い探索記録","sprite":"ev-stump","event":"a1-record","hidden":false},
+      p: {"kind":"event","id":"a1-supply","name":"","sprite":"ev-hidden","event":"a1-supply","hidden":true},
+      q: {"kind":"door","id":"a1-hidden-shortcut","name":"不自然な壁","sprite":"pz-door","hidden":true,"openScene":"a1-shortcut-open"},
+      r: {"kind":"event","id":"a1-camp","name":"放置された野営跡","sprite":"ev-stump","event":"a1-camp","hidden":false}
     },
     floors: [
       { encounter: { min: 16, max: 28, scale: 1.0, table: [ { enemy: "stray-slime", weight: 45 }, { enemy: "mushroom", weight: 20 }, { enemy: "fire-slime", weight: 18 }, { enemy: "poison-slime", weight: 17 } ] },
         chests: [ { item: "potion", count: 2 }, { gold: 40 } ], gathers: [ ["slime_jelly", 60], ["monster_hide", 25], ["goblin_cloth", 15] ],
-        foes: [ { enemy: "foe-bear", path: [[25, 14], [25, 9]] } ], map: [
+        foes: [], map: [
         "###########################",
         "#G#.....................#c#",
-        "#.#.#.#.###.###########.#.#",
+        "#.#.#.#.###.#q#########.#.#",
         "#...#.#.#...#....*.>#...#.#",
         "#####.#.#.###.###***#.###.#",
         "#.....#...#......***#.#...#",
-        "#.#########..*###.###.#.#.#",
+        "#.#####k##o..*###.##l.#.#.#",
         "#.#.......#**...#...#...#.#",
-        "#.#.###.#.#####.###.#####.#",
-        "#*.*..#.#.....#.#...#...#.#",
-        "#..*###.#####.#.#.###.#.#.#",
-        "#*.*..#.....#.#.#.....#.#.#",
+        "#.#.###.#.#####.p##.#####.#",
+        "#*.*..#.#.....m.#...#...#.#",
+        "#..*#j#.#####.#.#.###.#.#.#",
+        "#*.*..#.....#.#.#.....#.n.#",
         "#####.#.###.#.#.#######.#.#",
         "#.....#.#...#T#.#.....#.#.#",
-        "#.#######.#.###.#.###.#.#.#",
+        "#.i######.#.###.#.###.#.#.#",
         "#.#.......#.#...#.#g#.#...#",
         "#.#.###.###.#.###.#.#.#####",
         "#.#.#.#.#G..#.....#.#...#T#",
-        "#.#.#.#.##e########f###.#.#",
-        "#E#...#...................#",
+        "#.#.#.r.##e########f###.#.#",
+        "#Eh...#...................#",
         "###########################"
       ] },
       { encounter: { min: 15, max: 26, scale: 1.15, table: [ { enemy: "stray-slime", weight: 25 }, { enemy: "mushroom", weight: 15 }, { enemy: "forest-goblin", weight: 20 }, { enemy: "goblin-scout", weight: 15 }, { enemy: "goblin-archer", weight: 15 }, { enemy: "goblin-shaman", weight: 10 } ] },
@@ -486,6 +497,9 @@ const FIELD_AREAS = {
    ・keyItem：報酬の代わりに手に入れる「だいじなもの」の名前（表示だけ。フラグで管理）。
    ------------------------------------------------------------ */
 const FIELD_SIDE_EVENTS = {
+  "a1-record": { scene: "a1-record", doneScene: "a1-record" },
+  "a1-supply": { scene: "a1-supply", reward: { items: [["potion", 1]] } },
+  "a1-camp": { scene: "a1-camp", doneScene: "a1-camp" },
   /* 第1階層 はじまりの樹海 */
   "a1-old-stump":   { scene: "side-a1-old-stump", doneScene: "side-a1-old-stump-done", keyItem: "木こりの手斧" },
   "a1-root-cache":  { scene: "side-a1-root-cache", reward: { gold: 30, items: [["potion", 2]] } },
