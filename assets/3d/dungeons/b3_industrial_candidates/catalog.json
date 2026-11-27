@@ -1037,6 +1037,27 @@
       "portableSha256": "0be5a433f2bad65a61b042f30b65a6677178f3589461f2aedbaaa840de8fa4c9"
     },
     {
+      "id": "v3_electric_cabinet",
+      "name": "実配線と回路を持つ風化制御盤",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_electric_cabinet/runtime/f3_v3_electric_cabinet.glb",
+      "sha256": "2910e393424a8bbd5fb7033d6c25759c32a0467d4e57ccf357f90968dc2d2de8",
+      "bytes": 333116,
+      "triangles": 6700,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_electric_cabinet/props/f3_v3_electric_cabinet.glb",
+      "embeddedOriginalBytes": 9661244,
+      "sizeMeters": [
+        1.5,
+        1.88,
+        1.2155
+      ],
+      "portableAuthoring": "v3_electric_cabinet/sources/f3_v3_electric_cabinet_authoring.blend",
+      "portableSha256": "2b4fcfad60a8a254adfd3508e474473d2d044aff79d9bfe467789c64565953cc"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1573,18 +1594,32 @@
       "file": "shared_textures/80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96.png",
       "sha256": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96",
       "bytes": 1277442
+    },
+    {
+      "file": "shared_textures/e8963358ce46a96cd63e78a5a950f06043231dfd2a7e31e4a9ed9d176ceac638.jpg",
+      "sha256": "e8963358ce46a96cd63e78a5a950f06043231dfd2a7e31e4a9ed9d176ceac638",
+      "bytes": 2335447
+    },
+    {
+      "file": "shared_textures/59554c019e3bf270cd59eae1ff4f105ba92383174d9b706120cc92de872751a6.jpg",
+      "sha256": "59554c019e3bf270cd59eae1ff4f105ba92383174d9b706120cc92de872751a6",
+      "bytes": 1960930
+    },
+    {
+      "file": "shared_textures/e767bef42b431106db00cfb50374dd399f8acfe8a8d05045ab2590593920a177.jpg",
+      "sha256": "e767bef42b431106db00cfb50374dd399f8acfe8a8d05045ab2590593920a177",
+      "bytes": 2598114
     }
   ],
   "totals": {
-    "individualParts": 35,
+    "individualParts": 36,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 70409572,
-    "sharedImageBytes": 56464668,
-    "embeddedOriginalBytes": 341063568
+    "runtimeGeometryBytes": 70742688,
+    "sharedImageBytes": 63359159,
+    "embeddedOriginalBytes": 350724812
   },
   "v3Pending": [
-    "v3_electric_cabinet",
     "v3_fluorescent_fixture",
     "v3_cable_pole",
     "v3_shutter_shop",

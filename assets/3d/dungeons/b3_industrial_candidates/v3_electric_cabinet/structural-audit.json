@@ -1,0 +1,39 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_electric_cabinet/props/f3_v3_electric_cabinet.glb",
+      "file_bytes": 9661244,
+      "glb_meshes": 3,
+      "total_mesh_primitives": 3,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 3,
+      "scene_primitive_instances": 3,
+      "estimated_scene_triangles": 6700,
+      "materials": 3,
+      "material_names": [
+        "f3_deep_crack",
+        "f3_weathered_concrete",
+        "utility_box_02"
+      ],
+      "mesh_names": [
+        "abandoned cable leaving cabinet",
+        "Cube",
+        "Cube.016"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 3,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
