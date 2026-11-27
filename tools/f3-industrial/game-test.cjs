@@ -156,6 +156,13 @@ const lodCheck=await page.evaluate(()=>{
  camera.position.x+=100;camera.updateMatrixWorld();o.update(camera);if(o.getCurrentLevel()!==1)invalid++;o.update(g.camera);
  });return {groups,invalid,nearTriangles,farTriangles};
 });logs.push({lodCheck});
+if(cityV3){
+ const cityLodCheck=await page.evaluate(()=>{const {g}=__test3d,position=g.camera.position.clone();let nearTriangles=0,proxyTriangles=0;
+  g.world.traverse(o=>{if(!o.isInstancedMesh)return;const n=(o.geometry.index?.count||o.geometry.attributes.position.count)/3*o.instanceMatrix.count;if(o.userData.cityLodRole==='near')nearTriangles+=n;if(o.userData.cityLodRole==='far')proxyTriangles+=n;});
+  g.theme.tick(.016,performance.now(),g.camera.position);const atPlayer={...g.theme.info().rigidLOD};g.camera.position.set(-10000,2,-10000);g.theme.tick(.016,performance.now(),g.camera.position);const remote={...g.theme.info().rigidLOD};g.camera.position.copy(position);g.theme.tick(.016,performance.now(),g.camera.position);return {nearTriangles,proxyTriangles,atPlayer,remote};
+ });
+ if(!cityLodCheck.atPlayer.nearBatches||!cityLodCheck.remote.farBatches||cityLodCheck.remote.nearBatches||cityLodCheck.nearTriangles<=cityLodCheck.proxyTriangles)throw Error('City rigid source/proxy distance transition failed');logs.push({cityLodCheck});
+}
 const lifecycle=[];
 for(const area of [1,3,1,3]) {
  await page.evaluate(n=>fieldEnterArea(n,{floor:0,adminSkip:true}),area);
