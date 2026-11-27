@@ -1,0 +1,1 @@
+"use strict";document.getElementById("result").textContent="JavaScript loaded";document.getElementById("button").addEventListener("click",()=>{document.getElementById("result").textContent="Interaction OK";});

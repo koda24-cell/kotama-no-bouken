@@ -1,0 +1,159 @@
+name: Cloudflare private preview preflight
+on:
+  push:
+    branches: [feature/gpt-cloudflare-private-preview-preflight-20261127]
+    paths:
+      - '.github/workflows/cloudflare-private-preview-preflight.yml'
+      - 'tools/cloudflare-preview/probe/**'
+  pull_request:
+    branches: [development]
+    paths:
+      - '.github/workflows/cloudflare-private-preview-preflight.yml'
+      - 'tools/cloudflare-preview/probe/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: cloudflare-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/cloudflare-preview/probe
+      - name: Validate harmless probe only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path("tools/cloudflare-preview/probe")
+          expected = {"index.html", "probe.css", "probe.js", "probe.svg"}
+          assert {p.name for p in root.iterdir()} == expected
+          for p in root.iterdir():
+              assert p.is_file() and not p.is_symlink() and 0 < p.stat().st_size < 16384
+          html = (root / "index.html").read_text()
+          assert all(x in html for x in ["probe.css", "probe.js", "probe.svg", "Dummy content only"])
+          print("Dummy probe structure OK; no game assets packaged.")
+          PY
+      - name: Cloudflare API read-only connection check
+        if: >-
+          github.repository == 'koda24-cell/kotama-no-bouken' &&
+          ((github.event_name != 'pull_request' && github.ref == 'refs/heads/feature/gpt-cloudflare-private-preview-preflight-20261127') ||
+          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.head.ref == 'feature/gpt-cloudflare-private-preview-preflight-20261127' &&
+          github.event.pull_request.base.ref == 'development'))
+        env:
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$CF_ACCOUNT" || -z "$CF_TOKEN" ]]; then
+            echo "::error::Cloudflare account ID or API token missing from Actions secrets. No deployment attempted."
+            exit 1
+          fi
+          if [[ ! "$CF_ACCOUNT" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            echo "::error::Invalid Cloudflare account ID format."
+            exit 1
+          fi
+          response="$(mktemp)"
+          trap 'rm -f "$response"' EXIT
+          code="$(curl --silent --show-error --proto '=https' --max-time 30 --output "$response" --write-out '%{http_code}' --header "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects?per_page=1")"
+          if [[ "$code" != 200 ]] || ! jq -e '.success == true and (.result | type == "array")' "$response" >/dev/null; then
+            echo "::error::Cloudflare Pages read-only API check failed (HTTP $code). Response withheld."
+            exit 1
+          fi
+          echo "Cloudflare Pages API reachable with supplied credentials. No project or deployment changed."
+          echo "Cloudflare API read-only preflight: PASS. Access policies, free plan and deployment not verified." >> "$GITHUB_STEP_SUMMARY"
+      - name: Prepare exact four-file static probe and pinned Wrangler
+        if: >-
+          github.repository == 'koda24-cell/kotama-no-bouken' &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.head.ref == 'feature/gpt-cloudflare-private-preview-preflight-20261127' &&
+          github.event.pull_request.base.ref == 'development'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=tools/cloudflare-preview/probe
+          test "$(git hash-object "$root/index.html")" = 1043d80826e083f56528b474bed4894b5337ba46
+          test "$(git hash-object "$root/probe.css")" = fe139db9956fb18d9bd1b34bf5a87679724c8a27
+          test "$(git hash-object "$root/probe.js")" = a46481e308c7f37f95e58a876f27bd967d105ced
+          test "$(git hash-object "$root/probe.svg")" = 4ca0b7f5e5309658ad35aeda98b1ae5e8db2650e
+          mkdir -p "$RUNNER_TEMP/kotama-cf-probe/site"
+          cp "$root"/{index.html,probe.css,probe.js,probe.svg} "$RUNNER_TEMP/kotama-cf-probe/site/"
+          cd "$RUNNER_TEMP/kotama-cf-probe"
+          npm install --no-audit --no-fund --save-exact wrangler@4.168.0
+          ./node_modules/.bin/wrangler --version
+      - name: Deploy only harmless static probe to dedicated Pages project
+        if: >-
+          github.repository == 'koda24-cell/kotama-no-bouken' &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.head.ref == 'feature/gpt-cloudflare-private-preview-preflight-20261127' &&
+          github.event.pull_request.base.ref == 'development'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_SEND_METRICS: 'false'
+          CI: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/kotama-cf-probe"
+          project=kotama-private-probe-20261127
+          production=probe-20261127
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects"
+          response="$(mktemp)"
+          trap 'rm -f "$response"' EXIT
+          request() {
+            curl --silent --show-error --proto '=https' --max-time 30 --output "$response" --write-out '%{http_code}' --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$@"
+          }
+          code="$(request "$api/$project")"
+          if [[ "$code" == 404 ]]; then
+            code="$(request --request POST --header 'Content-Type: application/json' --data '{"name":"kotama-private-probe-20261127","production_branch":"probe-20261127"}' "$api")"
+            [[ "$code" == 200 || "$code" == 201 ]] && jq -e '.success == true' "$response" >/dev/null || { echo "::error::Project creation failed HTTP $code"; exit 1; }
+            code="$(request "$api/$project")"
+          fi
+          [[ "$code" == 200 ]] || { echo "::error::Project lookup failed HTTP $code"; exit 1; }
+          jq -e --arg n "$project" --arg b "$production" '.success == true and .result.name == $n and .result.production_branch == $b and .result.source == null' "$response" >/dev/null
+          host="$(jq -er '.result.subdomain' "$response")"
+          [[ "$host" =~ ^kotama-private-probe-20261127[a-z0-9-]*\.pages\.dev$ ]]
+          if jq -e '.result.canonical_deployment != null or .result.latest_deployment != null' "$response" >/dev/null; then
+            echo "Existing probe deployment found; no overwrite or repeat deployment."
+          else
+            ./node_modules/.bin/wrangler pages deploy site --project-name="$project" --branch="$production" --commit-hash="$GITHUB_SHA"
+          fi
+          code="$(request "$api/$project")"
+          [[ "$code" == 200 ]] && jq -e '.success == true' "$response" >/dev/null
+          deploy="$(jq -er '.result.canonical_deployment.url // .result.latest_deployment.url' "$response")"
+          [[ "$deploy" == https://*."$host" || "$deploy" == https://"$host" ]]
+          echo "Probe production URL: https://$host"
+          echo "Probe deployment URL: $deploy"
+          echo "Static probe only; Access not configured or verified. No game assets, functions, billing change or custom domains."
+          {
+            echo "Production: https://$host"
+            echo "Deployment: $deploy"
+            echo "Access not verified; dummy data only."
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Read-only unauthenticated baseline. A public dummy is expected before Access.
+          for url in "https://$host" "$deploy"; do
+            for file in / /index.html /probe.css /probe.js /probe.svg; do
+              status="$(curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 20 --retry 5 --retry-all-errors --retry-max-time 120 --output "$response" --write-out '%{http_code}' "$url$file")"
+              echo "Unauthenticated baseline $url$file HTTP $status"
+              if [[ "$status" == 200 ]]; then
+                expected="${file#/}"
+                [[ -n "$expected" ]] || expected=index.html
+                cmp -s "$response" "site/$expected" || { echo "::error::Unexpected asset body"; exit 1; }
+              elif [[ "$status" == 301 || "$status" == 302 || "$status" == 307 || "$status" == 308 || "$status" == 401 || "$status" == 403 ]]; then
+                echo "Redirect or denial; not yet proof of Access."
+              else
+                echo "::error::Unexpected HTTP status $status"; exit 1
+              fi
+            done
+          done
