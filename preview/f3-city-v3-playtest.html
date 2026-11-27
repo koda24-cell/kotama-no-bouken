@@ -6,7 +6,7 @@
 const frame=document.getElementById('game'),status=document.getElementById('status');
 // Keep every game resource on the exact, tested revision. raw.githack may
 // return HTML while rejecting its subordinate JS/GLB requests.
-const reviewedRevision='bf178b2d5e6ff84ae178097b84b3c1e28feb12f7';
+const reviewedRevision='a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01';
 const useCDN=location.hostname.endsWith('githack.com')||new URLSearchParams(location.search).get('delivery')==='cdn';
 const gameRoot=useCDN?new URL('https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@'+reviewedRevision+'/'):new URL('../',location.href);
 let startedAt=0,startId=0;
