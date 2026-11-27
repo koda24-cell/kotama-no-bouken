@@ -13,6 +13,9 @@ def build(asset,e):
   for x in[-3.75,3.75]:
    beam('greenhouse column',(x,y,.25),(x,y,3.1),.18,.16)
    box('corroded base bearing',(x,y,.29),(.42,.42,.08),steel,.01)
+   box('roof rib column gusset',(x,y,3.0),(.24,.22,.30),rust,.012)
+   for zz in[2.93,3.07]:
+    bpy.ops.mesh.primitive_cylinder_add(vertices=6,radius=.019,depth=.035,location=(x,y-.13,zz),rotation=(math.pi/2,0,0));bpy.context.object.name='rib connection hex bolt';bpy.context.object.data.materials.append(steel)
    for dx in[-.14,.14]:
     bpy.ops.mesh.primitive_cylinder_add(vertices=6,radius=.025,depth=.04,location=(x+dx,y,.35));bpy.context.object.data.materials.append(steel)
   return pts
@@ -28,13 +31,13 @@ def build(asset,e):
   ribs=[arch(y)for y in[-3.9,0,3.9]]
   for i in[0,3,6,9,12,15,18]:
    for j in range(2):beam('continuous longitudinal roof purlin',ribs[j][i],ribs[j+1][i],.065,.07)
-  glass=bpy.data.materials.new('filthy greenhouse remaining glass');glass.use_nodes=True;p=glass.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(.18,.27,.23,1);p.inputs['Roughness'].default_value=.40;p.inputs['Transmission Weight'].default_value=.32
+  glass=bpy.data.materials.new('filthy greenhouse remaining glass');glass.use_nodes=True;p=glass.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(.18,.27,.23,1);p.inputs['Roughness'].default_value=.65;p.inputs['Transmission Weight'].default_value=.18
   for side in[-1,1]:
    beam('joined upper greenhouse side rail',(side*3.75,-4,3.1),(side*3.75,4,3.1),.07,.08)
    for yy in[-3.9,0,3.9]:box('deep individual column footing',(side*3.75,yy,.22),(.65,.65,.44),concrete,.03)
   # Broken roof triangles retain actual thickness via solidify; roof mostly open.
   for k in range(12):
-   i=rng.choice([2,3,4,13,14,15]);j=rng.randrange(2);a=Vector(ribs[j][i]);b=Vector(ribs[j+1][i]);d=Vector(ribs[j][i+1]);points=[a,b,a+(d-a)*.7+(b-a)*.18]
+   i=rng.choice([2,3,4,13,14,15]);j=rng.randrange(2);t=rng.randrange(4)/4;a=Vector(ribs[j][i]).lerp(Vector(ribs[j+1][i]),t);b=a+Vector((0,3.9/4,0));d=Vector(ribs[j][i+1]).lerp(Vector(ribs[j+1][i+1]),t);points=[a,b,a+(d-a)*.7+(b-a)*.18]
    mesh=bpy.data.meshes.new('roof shard');mesh.from_pydata(points,[],[(0,1,2)]);mesh.update();o=bpy.data.objects.new('remaining broken roof glazing',mesh);bpy.context.collection.objects.link(o);mesh.materials.append(glass);o.modifiers.new('glass physical thickness','SOLIDIFY').thickness=.008
   roots(-3.2,1,.2);rubble(-3.2,1,.25)
  elif asset=='v3_greenhouse_gate':
