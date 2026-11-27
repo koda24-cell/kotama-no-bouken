@@ -3,124 +3,112 @@
   "blender": "5.3.0",
   "files": {
     "manifest.json": {
-      "bytes": 6947,
-      "sha256": "3a74771452e48fcea17205ad95a3f234524b35eb85125ceb4444df4c7800c267"
+      "bytes": 6299,
+      "sha256": "6f5855b15150ec6e895a15ee855ef7e8ee786d361054575fca203bc44599c93d"
     },
     "metrics/f3_v3_whiteflower_atlas.json": {
-      "bytes": 1330,
-      "sha256": "d2dfbe95d25c9021cfec715acff3f5dfdd1bdc4f1662f27fe670ca288b43110f"
+      "bytes": 1329,
+      "sha256": "485f31ea4ba87f3930eb830212b14eaa7860cf0878e7d1d15f8b2e3da616e456"
     },
     "props/f3_v3_whiteflower_atlas.glb": {
-      "bytes": 7400452,
-      "sha256": "24904cfa9dea7a20a64e324635dd4f1260bbfe8b7121fe529c936533e0d1f075"
+      "bytes": 1294324,
+      "sha256": "427010fd131ce34f625be794e87ffc2aed3e370fe15cec9e8ce95ab6ae9cb3fe"
     },
     "renders/f3_v3_whiteflower_atlas/angle.png": {
-      "bytes": 404194,
-      "sha256": "bf380badc0b0066d6393fc81d3dd94e17d1824d39d9caef6fe52c4325d41ebd6"
+      "bytes": 448855,
+      "sha256": "fe16b36d56c915a8d0fb53fdb59fb9676a63da1e249a6138807ee0cd36f2e9cf"
     },
     "renders/f3_v3_whiteflower_atlas/back.png": {
-      "bytes": 393110,
-      "sha256": "acbc854846649bdbf955170a74073ff5b7e4cd4f9c4874d0e51bfea2ce665cc1"
+      "bytes": 436517,
+      "sha256": "4657042390ff2a30bc91c70b1ed82958b0d5cafa09506dcc64d09bd5b16b0dad"
     },
     "renders/f3_v3_whiteflower_atlas/front.png": {
-      "bytes": 394220,
-      "sha256": "24a991c9c307c17e6db18420986c46907a758d7ced81ef0d96cd573b5a59478d"
+      "bytes": 440359,
+      "sha256": "6e13d91d88c757243cba07b1f90efc3442d99364fc5461189ee4c6e880342ea3"
     },
     "renders/f3_v3_whiteflower_atlas/side.png": {
-      "bytes": 407934,
-      "sha256": "2fb2fe411d7d4208ce7f9e917dbf812fef2d9db1a68b5b32d369272019d1555c"
+      "bytes": 432120,
+      "sha256": "a8c9760f2f188ede46f4e6ae8a68884e671698778a05f880313d31bb34fd977e"
     },
     "renders/f3_v3_whiteflower_atlas/top.png": {
-      "bytes": 402394,
-      "sha256": "e3ff8bf55182094f50a1e17c9f1d7d0a148159b2a71eef5e89a2138ea5b4fcef"
+      "bytes": 501807,
+      "sha256": "0bc2695538188f0fb1f7816ab938dd658856cef86bcb0eb6bfabbc8964f68ed2"
     },
     "runtime/f3_v3_whiteflower_atlas.glb": {
-      "bytes": 4445100,
-      "sha256": "64d9654b3ccf43794528a1e53d87160fdba49635e8aee030a1b764f696763f50"
+      "bytes": 17400,
+      "sha256": "28c10fff6cc7b42e5495e68c0f7aa4584a7922240d30116230fbaa2e298517f7"
     },
     "security/all-texture-inputs.log": {
       "bytes": 292,
-      "sha256": "2bb6e29d69b68bd18349f8fa400d7e5f007f4559f821ccb936727535446457ea"
+      "sha256": "acb07cc92f04c13f830260367aabc23c23a864810d97e16ed6b04a64182bcdf2"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "120797763ab1e63e68f05afa64614513591a05809171adf6ae6d46035f3ad97a"
+      "sha256": "e0a56f0b156c1d69dcb078b9ddc823fbbcaf29fc7b6e2005fc9e0d77150e3d74"
     },
     "security/licensed-complete-source.log": {
       "bytes": 289,
-      "sha256": "4285b92d3c990f0906c7043fb372702eac12da79b4b5961c0db79a45f0f83647"
+      "sha256": "3623e31f4a644c50c44063ea22751fdf17cca5502934585f71751384e2288bbd"
     },
     "security/licensed-input-0.log": {
       "bytes": 291,
-      "sha256": "95b8b3467fe986cdeb6ebec19ceaf2fefbb1cb469a3ae8bf82f5ad8d352fbd14"
+      "sha256": "ba684959ff229b7f918db22c936e63a71844c1019be61aec2cd41899acc54665"
     },
     "security/licensed-input-1.log": {
       "bytes": 289,
-      "sha256": "3b29fd17b4211503bc4b60ee4cdbc3484ec01d185f3dfbd385c00e456d6d7da3"
+      "sha256": "45f85ea5d1c712eaf9df60634dc075d74da2162f6e0197131e198d27573f7f4c"
     },
     "security/licensed-input-2.log": {
       "bytes": 293,
-      "sha256": "c4792d0702e7e7215821e0daf2d4799c58c08be794f92b6ce84480756b179825"
+      "sha256": "5fb9e24b755c644e966901e3af55b56ad879624098db9c900a38931e2da63340"
     },
     "security/licensed-input-3.log": {
       "bytes": 293,
-      "sha256": "a51a590c10542dc46614bcbfced2d19e4bd70efb6cb8d1854b840c99fec2f46d"
+      "sha256": "1c9b036ba0afda9da63a4e18b2531cf1861ca33d7cf43aacc8a4acea496c7874"
     },
     "security/licensed-input-4.log": {
       "bytes": 293,
-      "sha256": "26a656d730ecceaa6b7fc13351b90ca05de119c656add73adab71da23d16fe98"
+      "sha256": "1614c48f03f241d23707309190d0fe90c3c7ae98e95797bf3f62813cfa29f695"
     },
     "security/licensed-input-5.log": {
       "bytes": 289,
-      "sha256": "1dfbb69cb93777cb24abd9dc3713aa3f0fd80969a03eb5ab840820388a6e0081"
+      "sha256": "5e81cb78f1d7501db1f2eeac0fee0b3416156abe97de3101fa2cd2bc56a8e46c"
     },
     "security/licensed-input-6.log": {
       "bytes": 291,
-      "sha256": "24ee3e1da3425aebf4e75466deefec35bd71947fb7b1a48e0b4099a8772f6b21"
+      "sha256": "234b82aea9a1cf947adbda5158cefb5d39c61cb7f0f421b4e854598d9f8e8b25"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "debefb7aa56b572108dd07ea37362e352de41826963a218dc8fd7615ef91bc1e"
+      "sha256": "2a4eb4f6eedbc07ae7048bfa208664e753b21f5d7e444e01078dea27d7afb2e2"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "31ef616739129b7c4e573b0408e82bd16d637d712f128502170953259f6060d4"
+      "sha256": "f45ef8f16b52fce49688db4d2895c0e5c2f98a7aac05ba4c842093908fa5cede"
     },
     "security/source.log": {
       "bytes": 294,
-      "sha256": "7221fbe2202c2344fe3222d5015a1e2c93d1a4e6d85fff2c0efeb593502e27ca"
+      "sha256": "d36631c44fcde2a998279171fb8fda0121ff3542ca36d13358f2f158f3cedfa9"
     },
     "security/v3-source.log": {
       "bytes": 292,
-      "sha256": "f6768b48561b48622245591494c470c601c9e0485cf42b36ad973912ec2b37dd"
+      "sha256": "5f3662ef01c203518bf3fc7c87b54303b432b16d7b2492ba2c4cf6e9cfa57212"
     },
-    "shared_textures/678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64.png": {
-      "bytes": 695621,
-      "sha256": "678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64"
-    },
-    "shared_textures/9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171.png": {
-      "bytes": 455611,
-      "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171"
-    },
-    "shared_textures/ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a.jpg": {
-      "bytes": 501286,
-      "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a"
-    },
-    "shared_textures/b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a.png": {
-      "bytes": 1302944,
-      "sha256": "b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a"
+    "shared_textures/36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429.png": {
+      "bytes": 1276952,
+      "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429"
     },
     "sources/authoring-portability.json": {
       "bytes": 2977,
-      "sha256": "757bd73ce9b8c9a4e1231422267f0a1c7d6a44df99a1d4798b83c853f95fbf3d"
+      "sha256": "f45183a8d2e6fe1471b652b068713b27e06a935bf27062e006b105edbf43be40"
     },
     "sources/f3_v3_whiteflower_atlas.blend": {
-      "bytes": 13796913,
-      "sha256": "2c8f98fbd87e36e4d52a3484aee6ea406e942a8203fdae3bdeb09d1e3ed33c02"
+      "bytes": 14857443,
+      "sha256": "676f6f2045a4c8a4419ac0af6754b36e2df87ba96efde0376f774d4f24b038d2"
     },
     "sources/f3_v3_whiteflower_atlas_authoring.blend": {
-      "bytes": 13797739,
-      "sha256": "ad91ba39a7752c1e0c3b5c1c91794c828a7439b05c3246edf9e4d67e74122659"
+      "bytes": 14858695,
+      "sha256": "dee626ade96ea484c55918b5191856ffcc71dd769461b3f6a6e8db7688dc8de1"
     },
     "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
       "bytes": 8773,
@@ -191,32 +179,32 @@
       "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a"
     },
     "sources/whiteflower-atlas-provenance.json": {
-      "bytes": 360,
-      "sha256": "90ff8a689501dc9a5f727b74d3d568cd9105268c91db191cc15b16488ff225b2"
+      "bytes": 741,
+      "sha256": "357a43c22cbaf8093b42cdaf01dd9113c8ab958765029821c10c098c5f51c255"
     },
     "sources/whiteflower-bake-view-0.png": {
-      "bytes": 105337,
-      "sha256": "9ec59c036cfc7c7342292494d0f6ff4ea9df677c1e7ad0a6979b9f92ddd824b1"
+      "bytes": 139981,
+      "sha256": "1801bf94805af9888a0b8c328bfe3b37103bfa16386e658aeaa56653edaf69bd"
     },
     "sources/whiteflower-bake-view-1.png": {
-      "bytes": 102459,
-      "sha256": "e7f2ba80510baff7231d37a1a1dd4780c674de0c13bf172fe2f85bca05762fc5"
+      "bytes": 137062,
+      "sha256": "d7bdb353fc7fe982dc8a31e7753252b9bc6a7494adb3da07b383749b72e1c83f"
     },
     "sources/whiteflower-bake-view-2.png": {
-      "bytes": 100232,
-      "sha256": "47c149bace9753fab6b553a074e037d8f521278b03b2145d511e75c99c2043ed"
+      "bytes": 144790,
+      "sha256": "e7512ea3522d2d9eae61a5e785db31c09ea6bec84c88d9009c20a7623790cfee"
     },
     "sources/whiteflower-bake-view-3.png": {
-      "bytes": 137602,
-      "sha256": "cbe00c9c5da6083832ef1e567e951c4b1ac1c9732c56dee6d1742c75c5ccc2a5"
+      "bytes": 246625,
+      "sha256": "a6c7520b264d93f0ca7e3f48e22fdc78ab701ce94f0a6dce89564da6d8a6aa58"
     },
     "sources/whiteflower-four-view-atlas.png": {
-      "bytes": 455611,
-      "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171"
+      "bytes": 1276952,
+      "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429"
     },
     "structural-audit.json": {
-      "bytes": 1148,
-      "sha256": "efcb1a3e51b1126eb8f2f6c941c254f236d3a0bba234030e42eef1e09c2e5a55"
+      "bytes": 1104,
+      "sha256": "c94392bbbf63bbdea73375618a595dfff9d7b8078cfd73e0fc0eb622836e42c6"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,

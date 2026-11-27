@@ -853,20 +853,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_whiteflower_atlas/runtime/f3_v3_whiteflower_atlas.glb",
-      "sha256": "64d9654b3ccf43794528a1e53d87160fdba49635e8aee030a1b764f696763f50",
-      "bytes": 4445100,
-      "triangles": 101629,
-      "sourceCommit": "3935892412fefc15356cd03b1660989aa9e5211e",
-      "workflowRun": "45955096132",
+      "sha256": "28c10fff6cc7b42e5495e68c0f7aa4584a7922240d30116230fbaa2e298517f7",
+      "bytes": 17400,
+      "triangles": 128,
+      "sourceCommit": "12f5819700aeadf3321b048b29907979e61ee002",
+      "workflowRun": "45956483722",
       "embeddedOriginal": "v3_whiteflower_atlas/props/f3_v3_whiteflower_atlas.glb",
-      "embeddedOriginalBytes": 7400452,
+      "embeddedOriginalBytes": 1294324,
       "sizeMeters": [
         1.4,
-        1.05,
+        0.3838,
         1.4
       ],
       "portableAuthoring": "v3_whiteflower_atlas/sources/f3_v3_whiteflower_atlas_authoring.blend",
-      "portableSha256": "ad91ba39a7752c1e0c3b5c1c91794c828a7439b05c3246edf9e4d67e74122659"
+      "portableSha256": "dee626ade96ea484c55918b5191856ffcc71dd769461b3f6a6e8db7688dc8de1"
     }
   ],
   "sharedImages": [
@@ -1374,15 +1374,20 @@
       "file": "shared_textures/9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171.png",
       "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171",
       "bytes": 455611
+    },
+    {
+      "file": "shared_textures/36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429.png",
+      "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429",
+      "bytes": 1276952
     }
   ],
   "totals": {
     "individualParts": 26,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 62944900,
-    "sharedImageBytes": 53910274,
-    "embeddedOriginalBytes": 291413692
+    "runtimeGeometryBytes": 58517200,
+    "sharedImageBytes": 55187226,
+    "embeddedOriginalBytes": 285307564
   },
   "v3Pending": [
     "v3_riveted_span",

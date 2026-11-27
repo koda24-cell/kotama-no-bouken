@@ -2,21 +2,21 @@
   "status": "NOT_APPROVED",
   "assetName": "v3_whiteflower_atlas",
   "asset": {
-    "bytes": 7400452,
-    "sha256": "24904cfa9dea7a20a64e324635dd4f1260bbfe8b7121fe529c936533e0d1f075",
-    "tris": 101629,
-    "verts": 79779,
-    "meshes": 4,
-    "drawCalls": 4,
+    "bytes": 1294324,
+    "sha256": "427010fd131ce34f625be794e87ffc2aed3e370fe15cec9e8ce95ab6ae9cb3fe",
+    "tris": 128,
+    "verts": 280,
+    "meshes": 2,
+    "drawCalls": 2,
     "materials": [
-      "flower_heliophila",
+      "pale cream pollen",
       "v3 whiteflower atlas MASK"
     ],
-    "textureCount": 4,
-    "textureBytes": 2955462,
+    "textureCount": 1,
+    "textureBytes": 1276952,
     "sizeMeters": [
       1.4,
-      1.05,
+      0.3838,
       1.4
     ],
     "bboxMin": [
@@ -26,7 +26,7 @@
     ],
     "bboxMax": [
       0.7,
-      1.05,
+      0.3838,
       0.7
     ],
     "extensions": [],
@@ -40,8 +40,8 @@
     "category": "props",
     "desc_ja": "白い花の透過アトラス群落",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "3935892412fefc15356cd03b1660989aa9e5211e",
-    "workflowRun": "45955096132",
+    "sourceCommit": "12f5819700aeadf3321b048b29907979e61ee002",
+    "workflowRun": "45956483722",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v3_whiteflower_atlas.blend",
     "renderedFrom": "final alpha-MASK GLB reimport",
@@ -160,30 +160,15 @@
   ],
   "runtime": {
     "file": "f3_v3_whiteflower_atlas.glb",
-    "sourceSha256": "24904cfa9dea7a20a64e324635dd4f1260bbfe8b7121fe529c936533e0d1f075",
-    "sha256": "64d9654b3ccf43794528a1e53d87160fdba49635e8aee030a1b764f696763f50",
-    "bytes": 4445100,
-    "embeddedOriginalBytes": 7400452,
+    "sourceSha256": "427010fd131ce34f625be794e87ffc2aed3e370fe15cec9e8ce95ab6ae9cb3fe",
+    "sha256": "28c10fff6cc7b42e5495e68c0f7aa4584a7922240d30116230fbaa2e298517f7",
+    "bytes": 17400,
+    "embeddedOriginalBytes": 1294324,
     "images": [
       {
-        "file": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a.jpg",
-        "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a",
-        "bytes": 501286
-      },
-      {
-        "file": "b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a.png",
-        "sha256": "b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a",
-        "bytes": 1302944
-      },
-      {
-        "file": "678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64.png",
-        "sha256": "678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64",
-        "bytes": 695621
-      },
-      {
-        "file": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171.png",
-        "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171",
-        "bytes": 455611
+        "file": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429.png",
+        "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429",
+        "bytes": 1276952
       }
     ],
     "geometryAndMaterialDataUnchanged": true,
