@@ -642,5 +642,205 @@
       4.3
     ],
     "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_straight_access_stair",
+    "name": "連結踊り場付き直線鉄骨階段",
+    "dimensions": [
+      2.4,
+      8,
+      4.3
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_catwalk_junction",
+    "name": "支持された歩廊分岐踊り場",
+    "dimensions": [
+      3.6,
+      3.6,
+      4.3
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_riveted_span",
+    "name": "梁柱を繋ぐリベット鉄骨橋",
+    "dimensions": [
+      8,
+      3.2,
+      5
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_structural_corner",
+    "name": "厚い廃ビルの接合角",
+    "dimensions": [
+      4,
+      4,
+      3.2
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_deep_window_bay",
+    "name": "奥壁・側壁を持つ凹んだ窓区画",
+    "dimensions": [
+      4,
+      1.2,
+      3.2
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_spalled_wall",
+    "name": "剥落と鉄筋と落下片の壁",
+    "dimensions": [
+      4,
+      1.2,
+      3.2
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_collapsed_storey",
+    "name": "崩落した階床と露出鉄骨",
+    "dimensions": [
+      7,
+      4,
+      4
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_leaning_facade",
+    "name": "傾いた廃ビル区画",
+    "dimensions": [
+      6,
+      4,
+      10
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_greenhouse_bay",
+    "name": "腐食した廃植物館トラス",
+    "dimensions": [
+      8,
+      4,
+      8
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_greenhouse_gate",
+    "name": "根が割った植物館の入口",
+    "dimensions": [
+      6,
+      3,
+      5
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_sunken_colonnade",
+    "name": "水没した都市の柱廊",
+    "dimensions": [
+      7,
+      4,
+      5
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_sunken_shopfront",
+    "name": "水中の店舗と窓",
+    "dimensions": [
+      5,
+      2,
+      4
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_derelict_car",
+    "name": "錆と欠損と内装を持つ廃車",
+    "dimensions": [
+      2,
+      4.5,
+      1.7
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_electric_cabinet",
+    "name": "実配線と回路を持つ風化制御盤",
+    "dimensions": [
+      1.4,
+      0.8,
+      2
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_fluorescent_fixture",
+    "name": "壊れた蛍光灯と吊り金具",
+    "dimensions": [
+      1.4,
+      0.4,
+      0.5
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_cable_pole",
+    "name": "碍子と引込部を持つ電柱",
+    "dimensions": [
+      3,
+      2,
+      8
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_shutter_shop",
+    "name": "巻取り機構と折れたシャッター",
+    "dimensions": [
+      4,
+      1,
+      3.2
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_rubble_bank",
+    "name": "苔と堆積を持つ瓦礫群落",
+    "dimensions": [
+      4,
+      3,
+      1.4
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_asphalt_heave",
+    "name": "浮き上がった舗装と露出路盤",
+    "dimensions": [
+      4,
+      4,
+      0.5
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
+  },
+  {
+    "id": "v3_whiteflower_atlas",
+    "name": "白い花の透過アトラス群落",
+    "dimensions": [
+      1.5,
+      1.5,
+      0.7
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
   }
 ]

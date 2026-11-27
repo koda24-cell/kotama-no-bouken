@@ -720,6 +720,48 @@
       "bytes": 7532428,
       "embeddedOriginalBytes": 7532428,
       "sourceApprovalManifest": "assets/models/floor3/double_flight/stairs_v10.manifest.json"
+    },
+    {
+      "id": "v3_memory_monument",
+      "name": "八メートルの記憶のモニュメント",
+      "existingUpgrade": true,
+      "revisionOf": "v2_memory_statue",
+      "file": "v3_memory_monument/runtime/f3_v3_memory_monument.glb",
+      "sha256": "99980cce86877a92939d5f9313265bb9ff457adb4b4bcf98e11a0fe03d2e84d7",
+      "bytes": 1837724,
+      "triangles": 31711,
+      "sourceCommit": "3bf09b1200b534911fe216fd25e36202f448b30d",
+      "workflowRun": "45950675969",
+      "embeddedOriginal": "v3_memory_monument/props/f3_v3_memory_monument.glb",
+      "embeddedOriginalBytes": 19783132,
+      "sizeMeters": [
+        7.4,
+        7.9,
+        6.8
+      ],
+      "portableAuthoring": "v3_memory_monument/sources/f3_v3_memory_monument_authoring.blend",
+      "portableSha256": "a2252bb4a5833c709a6e95172a1d214d29c3b4f674d437f7b79b3f166a264ebf"
+    },
+    {
+      "id": "v3_switchback_stair",
+      "name": "支持柱・踊り場付き折返し鉄骨階段",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_switchback_stair/runtime/f3_v3_switchback_stair.glb",
+      "sha256": "f532e184d6024700f5af66dc4937f62dd3f47d86770a957f2a09594a5bd37cf6",
+      "bytes": 9256740,
+      "triangles": 69868,
+      "sourceCommit": "88da9effe5a9e87fbc82269595bf02db7907925b",
+      "workflowRun": "45951697520",
+      "embeddedOriginal": "v3_switchback_stair/props/f3_v3_switchback_stair.glb",
+      "embeddedOriginalBytes": 11745996,
+      "sizeMeters": [
+        3.79,
+        4.5878,
+        6.94
+      ],
+      "portableAuthoring": "v3_switchback_stair/sources/f3_v3_switchback_stair_authoring.blend",
+      "portableSha256": "088d6a575711eaf881fbcc4cecd272010e64603f10f19d594039e8a91a54cde1"
     }
   ],
   "sharedImages": [
@@ -1210,11 +1252,34 @@
     }
   ],
   "totals": {
-    "individualParts": 20,
-    "existingUpgrades": 13,
+    "individualParts": 21,
+    "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 37590200,
+    "runtimeGeometryBytes": 48684664,
     "sharedImageBytes": 50954812,
-    "embeddedOriginalBytes": 225498096
-  }
+    "embeddedOriginalBytes": 257027224
+  },
+  "v3Pending": [
+    "v3_straight_access_stair",
+    "v3_catwalk_junction",
+    "v3_riveted_span",
+    "v3_structural_corner",
+    "v3_deep_window_bay",
+    "v3_spalled_wall",
+    "v3_collapsed_storey",
+    "v3_leaning_facade",
+    "v3_greenhouse_bay",
+    "v3_greenhouse_gate",
+    "v3_sunken_colonnade",
+    "v3_sunken_shopfront",
+    "v3_derelict_car",
+    "v3_electric_cabinet",
+    "v3_fluorescent_fixture",
+    "v3_cable_pole",
+    "v3_shutter_shop",
+    "v3_rubble_bank",
+    "v3_asphalt_heave",
+    "v3_whiteflower_atlas"
+  ],
+  "v3Complete": false
 }

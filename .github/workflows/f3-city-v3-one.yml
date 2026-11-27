@@ -33,7 +33,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feature/f3-city-v3-20261127
-          sparse-checkout: /assets/3d/dungeons/b3_industrial_candidates/
+          sparse-checkout: |
+            /assets/3d/dungeons/b3_industrial_candidates/
+            /tools/f3-industrial/
+            /tools/f3-city-v3/
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
@@ -63,6 +66,7 @@ jobs:
           logs=list(base.rglob('output.log'));assert len(logs)==1
           shutil.copytree(logs[0].parent,dst/'security'/'shared-gateway',dirs_exist_ok=True)
           PY
+          python3 tools/f3-city-v3/update_catalog.py
           git config user.name 'F1 asset archive'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add assets/3d/dungeons/b3_industrial_candidates
