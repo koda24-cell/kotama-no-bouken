@@ -58,7 +58,7 @@ export function createTheme(api){
   materials.push(m);return m;
  }
  function batch(){
-  root.updateMatrixWorld(true);const meshes=[];root.traverse(o=>{if(o.isMesh){let dynamic=false;for(let p=o;p;p=p.parent)if(p.userData.cityDynamic)dynamic=true;if(!dynamic)meshes.push(o);}});const groups=new Map();
+  root.updateMatrixWorld(true);const meshes=[];root.traverseVisible(o=>{if(o.isMesh){let dynamic=false;for(let p=o;p;p=p.parent)if(p.userData.cityDynamic)dynamic=true;if(!dynamic)meshes.push(o);}});const groups=new Map();
   for(const o of meshes){let role='',bucket=null;for(let p=o;p&&p!==root;p=p.parent){if(p.userData.cityLodRole)role=p.userData.cityLodRole;if(p.userData.cityBucket)bucket=p.userData.cityBucket;}
    const p=new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);o.userData.cityLodRole=role;o.userData.cityBucket=bucket;
    const k=[...(bucket||[Math.floor(p.x/16),Math.floor(p.z/16)]),role,o.geometry.uuid,o.material.uuid].join(':');if(!groups.has(k))groups.set(k,[]);groups.get(k).push(o);
@@ -132,7 +132,7 @@ export function createTheme(api){
      const variation=hash(x*7+level,z,893),variant=level===0&&variation>.74&&bundle.models.has('v3_shutter_shop')?'v3_shutter_shop':variation<.13&&bundle.models.has('v3_spalled_wall')?'v3_spalled_wall':'v3_deep_window_bay',source=bundle.models.get(variant);
      stats.facades=stats.facades||{};stats.facades[variant]=(stats.facades[variant]||0)+1;
      const holder=new THREE.Group(),o=source.clone(true);holder.userData.cityLodRole='near';holder.userData.cityBucket=[Math.floor(px/8),Math.floor(pz/8)];o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
-     o.traverse(m=>{if(m.isMesh&&m.material?.name==='v2_exposed_infill_brick')m.visible=false;});
+     o.traverse(m=>{if(m.isMesh&&level>0&&m.material?.name==='f3_exposed_aggregate')m.visible=false;});
      const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,depth=dx?s.x:s.z,depthScale=single?Math.min(scale,1.95/depth):1.0/depth,sx=dx?depthScale:scale,sz=dz?depthScale:scale,offset=single?1.70:2-depth*depthScale/2;
      holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*offset-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*offset-center.z*sz);root.add(holder);
      // Closed, recessed far proxy. Original meshes, UVs and near detail are intact.
@@ -164,7 +164,7 @@ export function createTheme(api){
   stats.crossings=crossings;
   // Electrical/service continuity follows the fronts, not isolated ornaments.
   for(const f of fronts){
-   const {x,z,dx,dz,h,ry}=f,px=x*4,pz=z*4,sx=px+dx*2.27,sz=pz+dz*2.27;
+   const {x,z,dx,dz,ry}=f,px=x*4,pz=z*4,sx=px+dx*2.27,sz=pz+dz*2.27,h=plan.heightWorld(sx,sz);
    const upper=h+5.8;
    for(const off of[-.13,.13]){
     const points=[];for(let k=0;k<=5;k++){const t=k/5;const wx=sx+dz*(t-.5)*4,wz=sz-dx*(t-.5)*4;points.push([wx,plan.heightWorld(wx,wz)+5.8-.12*Math.sin(t*Math.PI)+off,wz]);}
@@ -173,7 +173,7 @@ export function createTheme(api){
    if(bundle.models.has('v3_fluorescent_fixture')&&hash(x,z,83)>.6)model('v3_fluorescent_fixture',sx,h+3.4,sz,{ry,scale:.85});
    const rare=hash(x,z,89),id=rare>.96?'v3_electric_cabinet':rare>.93?'v3_shutter_shop':rare>.88?'v3_spalled_wall':rare>.80?'v3_rubble_bank':null;
    if(id&&bundle.models.has(id))model(id,sx+dx*.12,h,sz+dz*.12,{ry,maxWidth:dx?.65:3.2,maxDepth:dz?.65:3.2});
-   if(hash(x,z,122)>.92&&bundle.models.has('v3_cable_pole'))model('v3_cable_pole',sx+dz*1.5,h,sz-dx*1.5,{scale:.85});
+   if(hash(x,z,122)>.92&&bundle.models.has('v3_cable_pole'))model('v3_cable_pole',sx+dz*1.5,plan.heightWorld(sx+dz*1.5,sz-dx*1.5),sz-dx*1.5,{scale:.85});
   }
   // Dense, irregular edge ecology; the centre 1.8m movement strip stays clear.
   const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Verified grass catalog unavailable');
