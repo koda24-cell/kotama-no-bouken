@@ -1,0 +1,55 @@
+{
+  "bytes": 7803100,
+  "sha256": "971ae5c4433d2c75e36dae6e32ab9eaf7b546dbc085ea04d2bebfd93b8852830",
+  "tris": 5436,
+  "verts": 11130,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 15,
+  "textureBytes": 7227123,
+  "sizeMeters": [
+    7.5397,
+    3.9397,
+    4.7227
+  ],
+  "bboxMin": [
+    -3.6593,
+    -0.0797,
+    -3.318
+  ],
+  "bboxMax": [
+    3.8803,
+    3.86,
+    1.4048
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_greenhouse_gate",
+  "file": "props/f3_v3_greenhouse_gate.glb",
+  "category": "props",
+  "desc_ja": "\u6839\u304c\u5272\u3063\u305f\u690d\u7269\u9928\u306e\u5165\u53e3",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+  "workflowRun": "45957518181",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_greenhouse_gate.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_greenhouse_gate/front.png",
+    "renders/f3_v3_greenhouse_gate/back.png",
+    "renders/f3_v3_greenhouse_gate/side.png",
+    "renders/f3_v3_greenhouse_gate/angle.png",
+    "renders/f3_v3_greenhouse_gate/top.png"
+  ]
+}

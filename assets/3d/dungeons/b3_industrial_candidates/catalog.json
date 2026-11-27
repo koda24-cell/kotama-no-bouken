@@ -848,6 +848,27 @@
       "portableSha256": "abd34673b7360c6b2a9e6f54fae7388b34e604695f17868ea3cee4f5f8b24c5b"
     },
     {
+      "id": "v3_greenhouse_gate",
+      "name": "根が割った植物館の入口",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_greenhouse_gate/runtime/f3_v3_greenhouse_gate.glb",
+      "sha256": "3b999491bbea5ec3318cac8e1f659c7707377aa41914c04f57b93b0e9728314a",
+      "bytes": 576384,
+      "triangles": 5436,
+      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflowRun": "45957518181",
+      "embeddedOriginal": "v3_greenhouse_gate/props/f3_v3_greenhouse_gate.glb",
+      "embeddedOriginalBytes": 7803100,
+      "sizeMeters": [
+        7.5397,
+        3.9397,
+        4.7227
+      ],
+      "portableAuthoring": "v3_greenhouse_gate/sources/f3_v3_greenhouse_gate_authoring.blend",
+      "portableSha256": "95c098ba6324dde5951c0ecde27e714f727b064cffeeeebdb48ca79caadd1d8d"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1382,12 +1403,12 @@
     }
   ],
   "totals": {
-    "individualParts": 26,
+    "individualParts": 27,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 58482776,
+    "runtimeGeometryBytes": 59059160,
     "sharedImageBytes": 55187226,
-    "embeddedOriginalBytes": 285273140
+    "embeddedOriginalBytes": 293076240
   },
   "v3Pending": [
     "v3_riveted_span",
@@ -1395,7 +1416,6 @@
     "v3_spalled_wall",
     "v3_collapsed_storey",
     "v3_leaning_facade",
-    "v3_greenhouse_gate",
     "v3_sunken_colonnade",
     "v3_sunken_shopfront",
     "v3_derelict_car",
