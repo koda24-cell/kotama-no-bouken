@@ -995,6 +995,27 @@
       "portableSha256": "1aa4b755423bd660a2a0d5d07c695aefdbb265d10edfe998f79a4feacb69efd9"
     },
     {
+      "id": "v3_sunken_shopfront",
+      "name": "水中の店舗と窓",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_sunken_shopfront/runtime/f3_v3_sunken_shopfront.glb",
+      "sha256": "13e43b00f30eb5688c840f2eba98dd14af3b43554bbcac057ab39d9aba2a67d7",
+      "bytes": 635564,
+      "triangles": 4968,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_sunken_shopfront/props/f3_v3_sunken_shopfront.glb",
+      "embeddedOriginalBytes": 7862284,
+      "sizeMeters": [
+        5.5,
+        3.49,
+        2.9499
+      ],
+      "portableAuthoring": "v3_sunken_shopfront/sources/f3_v3_sunken_shopfront_authoring.blend",
+      "portableSha256": "364103255a6f2da817aa7ad875cd4a23819d496ad5a6f1a60aa002b84a92bc35"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1534,15 +1555,14 @@
     }
   ],
   "totals": {
-    "individualParts": 33,
+    "individualParts": 34,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 65930000,
+    "runtimeGeometryBytes": 66565564,
     "sharedImageBytes": 56464668,
-    "embeddedOriginalBytes": 326829608
+    "embeddedOriginalBytes": 334691892
   },
   "v3Pending": [
-    "v3_sunken_shopfront",
     "v3_derelict_car",
     "v3_electric_cabinet",
     "v3_fluorescent_fixture",
