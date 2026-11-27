@@ -1121,6 +1121,27 @@
       "portableSha256": "aade71ff565d096a0ae090bcc3db2521945fe344f3fa98321fe12e762fa5919f"
     },
     {
+      "id": "v3_rubble_bank",
+      "name": "苔と堆積を持つ瓦礫群落",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_rubble_bank/runtime/f3_v3_rubble_bank.glb",
+      "sha256": "5eb2e7903848de8278b3670231d1f9a4e1d3564754a450bf36d7bd099f26f330",
+      "bytes": 913776,
+      "triangles": 7272,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_rubble_bank/props/f3_v3_rubble_bank.glb",
+      "embeddedOriginalBytes": 5706768,
+      "sizeMeters": [
+        4.3329,
+        1.3166,
+        3.12
+      ],
+      "portableAuthoring": "v3_rubble_bank/sources/f3_v3_rubble_bank_authoring.blend",
+      "portableSha256": "89330ef881ceb296356241b261808c8295c8115ce863fa17a98f876a106b691d"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1675,15 +1696,14 @@
     }
   ],
   "totals": {
-    "individualParts": 39,
+    "individualParts": 40,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 71910632,
+    "runtimeGeometryBytes": 72824408,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 364245300
+    "embeddedOriginalBytes": 369952068
   },
   "v3Pending": [
-    "v3_rubble_bank",
     "v3_asphalt_heave"
   ],
   "v3Complete": false
