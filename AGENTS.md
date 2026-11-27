@@ -126,3 +126,9 @@ Build a separately versioned original rear cranium first, then own temporal/ear/
 - **手動更新専用（2026-11-28 ユーザー方針）**: development や main への push・PR マージで確認サイトを更新しない。明示的な「確認サイトを更新して」の依頼時のみ `preview/refresh` の refresh-stamp を変更して配信。緊急停止は変数 `KOTAMA_GAME_PREVIEW_ENABLED` を `true` 以外に。通常の開発・素材制作 Actions は変更しない。
 - 配信ファイルは `tools/cloudflare-preview/build_runtime_bundle.py` が runtime の参照から選別する。新しい素材が表示されない場合は run の Artifact `bundle-report` の `missing_references` を確認し、選別ツールを直す（日本語・空白入りファイル名も対象）。
 - 詳細: `docs/CLOUDFLARE_ACCESS_SETUP.md`。
+
+
+## 非公開化と無料制作環境の分離（2026-11-28）
+- 移行前に [PRIVATE_GAME_AND_PUBLIC_TOOLING_MIGRATION.md](docs/PRIVATE_GAME_AND_PUBLIC_TOOLING_MIGRATION.md) を確認する。ゲーム本体・未公開素材は非公開側、公開側は公開可能な汎用ツールと許可済み素材のみ。private caller は public reusable workflow でも private 枠を消費する。
+- 非公開のコード・入力・出力・ログ・鍵を公開Actionsや公開進捗サイトへ流さない。既存 private 制作repoを一括公開しない。公式サイト・進捗サイト・素材復旧・無料枠の移行条件を確認するまで visibility は変更しない。追加課金・main変更・PC実行を勝手に行わない。
+- 確認サイトはユーザーが更新を希望したときだけ更新（#861）。今の制作環境を維持しながら段階的に分離する。
