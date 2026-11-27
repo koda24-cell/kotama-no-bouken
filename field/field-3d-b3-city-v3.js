@@ -114,7 +114,7 @@ export function createTheme(api){
     const car=model('v3_derelict_car',px+dx*.7,h+.015,pz+dz*.7,{ry,scale:1});if(car)stats.edgePlacements.push(shiftedBounds(car,'garage-car:'+x+':'+z));continue;
    }
    if(plan.tags[x+','+z]==='root-planter'){box('root lifted conservatory planter',concrete,px,h+.4,pz,3.8,.8,3.8);continue;}
-   if(plan.monument&&x>=15&&x<=19&&z>=9&&z<=13){box('monument precinct solid foundation',concrete,px,h-.2,pz,4.025,.4,4.025);continue;}
+   if(plan.monument&&x>=15&&x<=19&&z>=9&&z<=13){box('monument precinct solid foundation',concrete,px,h+.275,pz,4.025,.95,4.025);continue;}
    if(!closed(x,z)){floor(x,z);continue;}
    const adjacent=DIR_ORDER.filter(d=>{const[dx,dz]=DIR_VEC[d];return open(x+dx,z+dz);});if(!adjacent.length)continue;
    const h0=Math.min(h,...adjacent.map(d=>{const[dx,dz]=DIR_VEC[d];return plan.height(x+dx,z+dz);}));
@@ -214,6 +214,14 @@ export function createTheme(api){
    const wx=(room.x0-.45+hash(k,4,930)*(room.x1-room.x0+.9))*4,wz=(room.z0-.45+hash(k,7,931)*(room.z1-room.z0+.9))*4,species=tufts[k%tufts.length],plant=new THREE.Mesh(species.geometry,species.material);
    plant.position.set(wx,plan.heightWorld(wx,wz)+.015,wz);plant.rotation.y=hash(k,3,932)*6.28;plant.scale.setScalar(.38+hash(k,9,933)*.55);root.add(plant);plants++;
   }
+  if(plan.monument){
+   const cx=plan.monument.center[0]*4,cz=plan.monument.center[1]*4;
+   for(let z=9;z<=13;z++)for(let x=15;x<=19;x++)for(let k=0;k<(g.high?112:80);k++){
+    const wx=x*4+(hash(x*71+k,z,941)-.5)*4,wz=z*4+(hash(x,z*37+k,942)-.5)*4;if(Math.abs(wx-cx)<4.15&&Math.abs(wz-cz)<3.85)continue;
+    model('v3_whiteflower_atlas',wx,.75+plan.heightWorld(wx,wz),wz,{ry:hash(x+k,z,943)*6.28,scale:.48+hash(x,z+k,944)*.4});flowers++;
+   }
+   for(let k=0;k<3;k++)box('monument garden approach step',concrete,cx,.125+k*.25,54.84-k*.34,3.0,.25,.40);
+  }
   stats.groundPlants=plants;stats.whiteFlowerPatches=flowers;
   // Greenhouse frame sockets and submerged ruins are structural landmarks.
   for(const room of plan.rooms)if(room.type==='greenhouse'){
@@ -233,7 +241,7 @@ export function createTheme(api){
    const e={o,kind:o.kind,obj:null,state:null,ry,groundY:y,at:new THREE.Vector3(x,y+1.6,z)};
    if(o.kind==='npc'&&o.id==='statue'){
     if(!bundle.models.has('v3_memory_monument'))throw Error('Monument has not passed the V3 source intake');
-    e.obj=place(g.world,bundle.models.get('v3_memory_monument'),plan.monument.center[0]*4,y,plan.monument.center[1]*4,0,1);e.at.set(x,y+4,z);
+    e.obj=place(g.world,bundle.models.get('v3_memory_monument'),plan.monument.center[0]*4,y+.75,plan.monument.center[1]*4,0,1);e.at.set(x,y+4.75,z);
    }else if(o.kind==='npc')e.obj=place(g.world,await load(npcFile(o)),x,y,z,ry);
    else if(o.kind==='stairs'){
     e.obj=place(g.world,o.dir==='down'?S.stairsDown:S.stairsUp,x,y,z,ry,1);
