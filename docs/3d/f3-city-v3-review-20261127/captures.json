@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "images": [
+    {
+      "file": "docs/3d/f3-city-v3-review-20261127/7f-light-court.png",
+      "sha256": "e6039017713601bffa95a11c0a94d525890ebb6face34b9e449fc78cd26ad14b",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "game_source_sha": "2c0c63df115864f2e6c7ffb5ac8996cbed270008",
+      "capture": "Chromium actual Three.js game, SwiftShader",
+      "kind": "scene",
+      "author": "Codex",
+      "approval": "NOT_APPROVED",
+      "public_review": true
+    },
+    {
+      "file": "docs/3d/f3-city-v3-review-20261127/8f-connected-stairs.png",
+      "sha256": "08a7dd5c8f232ddde72b43b337cbc13fbafe7580d5d23aab3c00a3d71cc62fe3",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "game_source_sha": "2c0c63df115864f2e6c7ffb5ac8996cbed270008",
+      "capture": "Chromium actual Three.js game, SwiftShader",
+      "kind": "scene",
+      "author": "Codex",
+      "approval": "NOT_APPROVED",
+      "public_review": true
+    },
+    {
+      "file": "docs/3d/f3-city-v3-review-20261127/8f-greenhouse.png",
+      "sha256": "8a0c7fcdf3540eb4b5495fc7353dedec93a369d9912366cfed1a4578c623a2bc",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "game_source_sha": "a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01",
+      "capture": "Chromium actual Three.js game, SwiftShader",
+      "kind": "scene",
+      "author": "Codex",
+      "approval": "NOT_APPROVED",
+      "public_review": true
+    },
+    {
+      "file": "docs/3d/f3-city-v3-review-20261127/9f-submerged-city.png",
+      "sha256": "bc71a276d2b42453b2ea4a6a6f70bb431c6013614431090fce06b7719ca7a93c",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "game_source_sha": "2c0c63df115864f2e6c7ffb5ac8996cbed270008",
+      "capture": "Chromium actual Three.js game, SwiftShader",
+      "kind": "scene",
+      "author": "Codex",
+      "approval": "NOT_APPROVED",
+      "public_review": true
+    },
+    {
+      "file": "docs/3d/f3-city-v3-review-20261127/9f-white-monument.png",
+      "sha256": "391adf0e25c6b3849f7369f57232b25ef91db2b86d5f7afc9e832d8c032d8fcf",
+      "dimensions": [
+        1280,
+        800
+      ],
+      "game_source_sha": "2c0c63df115864f2e6c7ffb5ac8996cbed270008",
+      "capture": "Chromium actual Three.js game, SwiftShader",
+      "kind": "scene",
+      "author": "Codex",
+      "approval": "NOT_APPROVED",
+      "public_review": true
+    },
+    {
+      "file": "docs/3d/f3-city-v3-review-20261127/mobile-white-court.png",
+      "sha256": "a8853b43e1e64047236bd3134d58af5be8451b8108c02e37c214cdf3c03c68bd",
+      "dimensions": [
+        844,
+        390
+      ],
+      "game_source_sha": "a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01",
+      "capture": "Chromium actual Three.js game, SwiftShader",
+      "kind": "scene",
+      "author": "Codex",
+      "approval": "NOT_APPROVED",
+      "public_review": true
+    }
+  ],
+  "note": "The only gameplay scene difference between the two captures is 0.25m conservatory footing settlement. No reference images or compositing."
+}
