@@ -625,5 +625,15 @@
     "status": "DESIGNED_NOT_RENDERED",
     "existingUpgrade": true,
     "revisionOf": "v2_memory_statue"
+  },
+  {
+    "id": "v3_switchback_stair",
+    "name": "支持柱・踊り場付き折返し鉄骨階段",
+    "dimensions": [
+      3.6,
+      7.3,
+      4.3
+    ],
+    "status": "DESIGNED_NOT_RENDERED"
   }
 ]

@@ -35,4 +35,7 @@ def build(asset,e):
    patch=box('sheltered moss on chipped ledge',(x,y,.315),(.18+e['rng'].random()*.34,.18,.025),e['moss'],.02)
    patch.rotation_euler.z=e['rng'].random()*2
   (c.OUT/'sources/monument-v3-provenance.json').write_text(json.dumps({'status':'NOT_APPROVED','asset':'gothic_statue','license':'CC0','sourceURL':'https://polyhaven.com/a/gothic_statue','originalVertices':count,'verticesRemoved':0,'uvPreserved':True,'sculptHeightMeters':6.4,'plinthHeightMeters':1.5,'design':'Large civic monument in white flower court; interaction anchor at front edge, not on a blocking route'},indent=2))
+ elif asset in ['v3_switchback_stair','v3_straight_access_stair','v3_catwalk_junction']:
+  from stairs_v3 import build as stairs
+  stairs(asset,e)
  else:raise ValueError('Asset not implemented: '+asset)
