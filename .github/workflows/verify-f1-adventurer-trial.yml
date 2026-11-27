@@ -1,0 +1,36 @@
+name: Verify F1 adventurer trial
+on:
+  push:
+    branches:
+      - feature/gpt-f1-adventurer-trial-20261126
+    paths:
+      - 'data/field-maps.js'
+      - 'data/story.js'
+      - 'field/field-interactions.js'
+      - 'field/field-navigation.js'
+      - 'tools/world-tree/test_f1_adventurer_trial.cjs'
+      - '.github/workflows/verify-f1-adventurer-trial.yml'
+  pull_request:
+    paths:
+      - 'data/field-maps.js'
+      - 'data/story.js'
+      - 'field/field-interactions.js'
+      - 'field/field-navigation.js'
+      - 'tools/world-tree/test_f1_adventurer_trial.cjs'
+      - '.github/workflows/verify-f1-adventurer-trial.yml'
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          node --check data/field-maps.js
+          node --check data/story.js
+          node --check field/field-interactions.js
+          node --check field/field-navigation.js
+          node tools/world-tree/test_f1_adventurer_trial.cjs

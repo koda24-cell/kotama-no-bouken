@@ -57,7 +57,8 @@ async function fieldEnterArea(n, opts = {}) {
     if (!opts.adminSkip && f === 0) await fieldPlayStageIntro(FIELD_AREAS[n].stage);
     if ($("bgm-toggle")?.checked) startBgm();
     fieldState.lock = false;
-    if (!opts.adminSkip && f === 0) await fieldPlayScene(FIELD_AREAS[n].enterScene);
+    if (!opts.adminSkip && n === 1 && f === 0) { if (!fieldA1TrialPassed()) await fieldPlayScene("a1-trial-start"); }
+    else if (!opts.adminSkip && f === 0) await fieldPlayScene(FIELD_AREAS[n].enterScene);
     if (!opts.adminSkip && n === 1 && f === 0 && !fieldState.flags["labyrinth-tutorial"]) await fieldPlayScene("labyrinth-tutorial");
   } finally { fieldState.lock = false; }
   persistAutoSave();
