@@ -28,6 +28,7 @@ if(process.env.F3_ASSET_SNAPSHOT)await context.route('**/assets/3d/dungeons/b3_i
 await page.addInitScript(v3=>{window.KotamaIndustrialPlaytest=true;window.KotamaCityV3Playtest=v3;},cityV3);
 await page.goto('http://localhost:8773/index.html?f3industrial=1');
 await page.waitForFunction(()=>window.KotamaField3D);
+if(mobile){await page.locator('#kotama-orientation-gate').waitFor({state:'visible'});await page.screenshot({timeout:120000,path:out+'/mobile-portrait-rotation.png'});await page.setViewportSize({width:844,height:390});await page.locator('#kotama-orientation-gate').waitFor({state:'hidden'});}
 await page.evaluate(()=>{try{tutorialFinish();tutorialClose();}catch{};if(typeof tutorialState!=='undefined'){tutorialState.phase='complete';tutorialState.completed=true;tutorialState.started=false;}document.querySelectorAll('#tutorial-overlay').forEach(e=>e.hidden=true);document.body.classList.remove('tutorial-active','tutorial-home-focus');state.firstStageStarted=true;state.maxUnlockedStage=5;window.persistAutoSave=()=>true;});
 await page.evaluate(()=>fieldEnterArea(3,{floor:0,adminSkip:true}));
 await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.placed,null,{timeout:120000});
