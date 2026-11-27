@@ -1100,6 +1100,27 @@
       "portableSha256": "6ea4dc2fc6b20f59d1ae34bfcd574d60985ce42cb584d9768b55e126eb43935b"
     },
     {
+      "id": "v3_shutter_shop",
+      "name": "巻取り機構と折れたシャッター",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_shutter_shop/runtime/f3_v3_shutter_shop.glb",
+      "sha256": "10748460acc0ed220dfb2122d663032b4eb49eceb184569eebff77fb2b074873",
+      "bytes": 492156,
+      "triangles": 3900,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_shutter_shop/props/f3_v3_shutter_shop.glb",
+      "embeddedOriginalBytes": 5415120,
+      "sizeMeters": [
+        4.05,
+        3.2,
+        0.92
+      ],
+      "portableAuthoring": "v3_shutter_shop/sources/f3_v3_shutter_shop_authoring.blend",
+      "portableSha256": "aade71ff565d096a0ae090bcc3db2521945fe344f3fa98321fe12e762fa5919f"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1654,15 +1675,14 @@
     }
   ],
   "totals": {
-    "individualParts": 38,
+    "individualParts": 39,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 71418476,
+    "runtimeGeometryBytes": 71910632,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 358830180
+    "embeddedOriginalBytes": 364245300
   },
   "v3Pending": [
-    "v3_shutter_shop",
     "v3_rubble_bank",
     "v3_asphalt_heave"
   ],

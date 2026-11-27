@@ -1,0 +1,54 @@
+{
+  "bytes": 5415120,
+  "sha256": "43fa684094582fce66ab95d34d462934b6e9c7d1747668905cde7f11d94cd1ea",
+  "tris": 3900,
+  "verts": 9606,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_deep_crack",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 4923307,
+  "sizeMeters": [
+    4.05,
+    3.2,
+    0.92
+  ],
+  "bboxMin": [
+    -2.025,
+    0.0,
+    -0.47
+  ],
+  "bboxMax": [
+    2.025,
+    3.2,
+    0.45
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_shutter_shop",
+  "file": "props/f3_v3_shutter_shop.glb",
+  "category": "props",
+  "desc_ja": "\u5dfb\u53d6\u308a\u6a5f\u69cb\u3068\u6298\u308c\u305f\u30b7\u30e3\u30c3\u30bf\u30fc",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_shutter_shop.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_shutter_shop/front.png",
+    "renders/f3_v3_shutter_shop/back.png",
+    "renders/f3_v3_shutter_shop/side.png",
+    "renders/f3_v3_shutter_shop/angle.png",
+    "renders/f3_v3_shutter_shop/top.png"
+  ]
+}
