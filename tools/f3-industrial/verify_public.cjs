@@ -26,6 +26,7 @@ const {chromium}=require('/workspace/work/browser/node_modules/playwright-core')
   const legacy=floor===2?['reused_stairs_v10']:['native_abandonedTransitStop'];
   const expected=v3?15+(floor===1?2:floor===2?4:0):catalog.assets.filter(a=>(floor===2||a.id!=='v2_memory_statue')&&(!a.id.startsWith('native_')&&!a.id.startsWith('reused_stairs_')||legacy.includes(a.id))).length;
   assert.equal(report.result.models,expected);assert.match(report.result.artRevision,v3?/^V3/:/^V2/);assert.equal(report.result.storageIsolated,true);assert.deepEqual(errors,[]);
+  if(v3)assert.equal(await page.evaluate(()=>document.querySelector('#game').contentWindow.KotamaField3D.themeInfo().v3Complete),true);
   await page.evaluate(()=>{document.querySelector('#game').contentWindow.requestAnimationFrame=()=>0});await page.waitForTimeout(150);
   const cdp=await context.newCDPSession(page),s=await cdp.send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(out,'public.png'),Buffer.from(s.data,'base64'));await cdp.detach();report.passed=true;
  }finally{clearInterval(progress);try{report.finalState=await page.evaluate(()=>({title:document.title,status:document.querySelector('#status')?.textContent,childError:document.querySelector('#game')?.contentWindow?.KotamaIndustrialPlaytestError,theme:document.querySelector('#game')?.contentWindow?.KotamaField3D?.themeInfo()}));}catch(e){report.diagnosticError=e.message}fs.writeFileSync(path.join(out,'public-verification.json'),JSON.stringify(report,null,2));await browser.close()}

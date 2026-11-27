@@ -231,7 +231,9 @@ export function createTheme(api){
   stats.groundPlants=plants;stats.whiteFlowerPatches=flowers;
   // Greenhouse frame sockets and submerged ruins are structural landmarks.
   for(const room of plan.rooms)if(room.type==='greenhouse'){
-   for(let z=room.z0+.5;z<=room.z1;z+=2)for(let x=room.x0+.5;x<=room.x1;x+=2)model('v3_greenhouse_bay',x*4,plan.height(x,z),z*4,{scale:1});
+   // Settle the footings into the reclaimed soil. The retained source's
+   // irregular rubble reaches 0.66m; this keeps it below the 0.5m body lane.
+   for(let z=room.z0+.5;z<=room.z1;z+=2)for(let x=room.x0+.5;x<=room.x1;x+=2)model('v3_greenhouse_bay',x*4,plan.height(x,z)-.25,z*4,{scale:1});
    model('v3_greenhouse_gate',(room.x0-1)*4,plan.height(room.x0-1,13),13*4,{ry:Math.PI/2});
   }
   if(plan.water.length){
