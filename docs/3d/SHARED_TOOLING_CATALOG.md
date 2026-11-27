@@ -591,3 +591,11 @@
 - A trial-only rigid facade LOD keeps original source geometry and UVs for near views. Eight-metre owning buckets switch to closed far proxies with recessed dark backs and concrete frames (28m desktop /14m low); grass cards remain specialized, not decimated. Implemented in field-3d-b3-city-v3.js; full near/far screenshot and final source-count verification pending. No claim of physical-device FPS.
 - Full current-scene triangle checking found two cable crossarms intersecting a sloped standing corridor because their ground used the wall minimum. Fix uses the actual local street height. Upper-storey fallen rubble is hidden with traverseVisible-aware batching. Revised combined-city geometry checks pending.
 - Latest landscape-mobile gameplay checkpoint passes touch one tile/one turn,3.2m actual ascent, puzzle/chest/gather/save/stairs and two resource cycles with stable88 geometries/213textures. Existing portrait orientation gate is verified before rotation. Stationary shader clock advances. These are software Chromium checks, not mobile hardware FPS or final art acceptance.
+
+
+### 第3層V3 最終検証・固定画像の直接掲載（2026-11-27 / Codex）
+- 制作PR851は正式採用前。22点を個別制作・5方向確認、ClamAV入出力検査、最終実GLB検査でエラー/警告0。共有実GLB監査run45978652872:22点302251三角形。近景原形状を保持した距離切替は実ブラウザで確認したが、実機FPSは未測定。
+- ゲーム確認ソース `a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01`。PC全操作と当該修正の再検査、最終タッチ全階・昇降/仕掛け/保存/往復の検査、実CDN全階、初回画像ホスト503からの回復、分離コード全ホスト503時の起動停止、石像の対話、通常モードの候補素材取得0を実検証。元の植物館干渉6件と修正後0件を別々に保存し、失敗記録を隠さない。
+- 6枚の自作Three.js PNGを先にゲームGitへ保存（固定画像コミット `deb952c28c6d0e597066d05f6ccd7b2e1ddca6cd`）、scene-review-indexへ後から登録。画像はソフトウェア描画の実ゲームで、参考Pinや概念画ではない。V2/B5の記録を保持。
+- [最終検査記録](F3_CITY_V3_REVIEW_20261127.md)、[設計](F3_CITY_V3_DESIGN_20261127.md)、[証拠JSON](../reviews/f3-city-v3-final/verification-summary.json)。独立進捗台帳へ個別22点110枚も制作者が直接登録（データコミットf47e661）。情報共有のみ。ゲームコード/正式素材をこのPRで昇格しない。
+- [実公開URL・新規ブラウザでHTTP200/起動/SHA一致/セーブ分離/例外0を確認済み](https://raw.githack.com/koda24-cell/kotama-no-bouken/3e4dc60dd611ba09f29b6d928f4f59a9174b4dfa/preview/f3-city-v3-playtest.html)。取得成功のモックなし。証明書例外は管理環境の検査ブラウザだけに限定。

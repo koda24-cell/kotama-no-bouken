@@ -1,0 +1,361 @@
+{
+  "scope": "Genuine CDN resource delivery through local launcher; direct raw.githack HTML availability checked separately",
+  "ignoreManagedProxyCertificate": true,
+  "floors": [
+    {
+      "status": "試験表示中・通常セーブへの保存なし",
+      "theme": {
+        "mode": "b3-city-v3-trial",
+        "artRevision": "V3 ruined city review - 22 individual assets",
+        "floor": "3-0",
+        "layoutVersion": "V3-20261127",
+        "objects": 12,
+        "terrainCells": 554,
+        "upperWalkCells": 254,
+        "stairCells": 51,
+        "skylineSealed": true,
+        "facades": {
+          "v3_deep_window_bay": 4776,
+          "v3_spalled_wall": 690,
+          "v3_shutter_shop": 264
+        },
+        "assetInstances": 1460,
+        "crossings": 50,
+        "groundPlants": 11964,
+        "whiteFlowerPatches": 0,
+        "placed": true,
+        "hardLaneVerification": {
+          "width": 1.8,
+          "bodyHeight": [
+            0.5,
+            2.05
+          ],
+          "candidates": 966,
+          "narrowPhaseObjects": 35,
+          "overlaps": []
+        },
+        "sourceMeshes": 119067,
+        "batches": 6068,
+        "rigidLOD": {
+          "nearBatches": 244,
+          "farBatches": 516,
+          "originalNearPreserved": true,
+          "proxy": "closed recessed concrete and dark window frames",
+          "distance": 28
+        },
+        "animationTime": 51.28720000000298,
+        "industrialAssets": {
+          "sourceHashesVerified": true,
+          "models": 15,
+          "catalogModels": 57,
+          "skippedUnusedModels": 42,
+          "materials": 15,
+          "textures": 27,
+          "sharedImages": 27,
+          "decodedImages": 27,
+          "estimatedDecodedImageBytes": 103809024
+        },
+        "v3Complete": true,
+        "pendingAssets": [],
+        "elevationRange": [
+          0,
+          3.2
+        ]
+      },
+      "childReadsNormalSave": false,
+      "randomSuppressed": true,
+      "builtKey": "3-0",
+      "opening": {
+        "ready": true,
+        "dir": "up",
+        "forwardWalkable": true,
+        "atOriginalStart": true,
+        "locked": false
+      }
+    },
+    {
+      "status": "試験表示中・通常セーブへの保存なし",
+      "theme": {
+        "mode": "b3-city-v3-trial",
+        "artRevision": "V3 ruined city review - 22 individual assets",
+        "floor": "3-1",
+        "layoutVersion": "V3-20261127",
+        "objects": 8,
+        "terrainCells": 579,
+        "upperWalkCells": 448,
+        "stairCells": 108,
+        "skylineSealed": true,
+        "facades": {
+          "v3_deep_window_bay": 4631,
+          "v3_spalled_wall": 709,
+          "v3_shutter_shop": 269
+        },
+        "assetInstances": 1391,
+        "crossings": 40,
+        "reusedCedar": {
+          "sourceSha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+          "instances": 2,
+          "sourceTriangles": 14712,
+          "status": "existing review source retained, no formal promotion"
+        },
+        "groundPlants": 12792,
+        "whiteFlowerPatches": 0,
+        "placed": true,
+        "hardLaneVerification": {
+          "width": 1.8,
+          "bodyHeight": [
+            0.5,
+            2.05
+          ],
+          "candidates": 956,
+          "narrowPhaseObjects": 44,
+          "overlaps": []
+        },
+        "sourceMeshes": 120549,
+        "batches": 6024,
+        "rigidLOD": {
+          "nearBatches": 231,
+          "farBatches": 504,
+          "originalNearPreserved": true,
+          "proxy": "closed recessed concrete and dark window frames",
+          "distance": 28
+        },
+        "animationTime": 23.078599999997767,
+        "industrialAssets": {
+          "sourceHashesVerified": true,
+          "models": 17,
+          "catalogModels": 57,
+          "skippedUnusedModels": 40,
+          "materials": 16,
+          "textures": 27,
+          "sharedImages": 27,
+          "decodedImages": 27,
+          "estimatedDecodedImageBytes": 103809024
+        },
+        "v3Complete": true,
+        "pendingAssets": [],
+        "elevationRange": [
+          0,
+          6.4
+        ]
+      },
+      "childReadsNormalSave": false,
+      "randomSuppressed": true,
+      "builtKey": "3-1",
+      "opening": {
+        "ready": true,
+        "dir": "right",
+        "forwardWalkable": true,
+        "atOriginalStart": true,
+        "locked": false
+      }
+    },
+    {
+      "status": "試験表示中・通常セーブへの保存なし",
+      "theme": {
+        "mode": "b3-city-v3-trial",
+        "artRevision": "V3 ruined city review - 22 individual assets",
+        "floor": "3-2",
+        "layoutVersion": "V3-20261127",
+        "objects": 6,
+        "terrainCells": 561,
+        "upperWalkCells": 215,
+        "stairCells": 166,
+        "skylineSealed": true,
+        "facades": {
+          "v3_deep_window_bay": 4243,
+          "v3_spalled_wall": 616,
+          "v3_shutter_shop": 241
+        },
+        "assetInstances": 6380,
+        "crossings": 35,
+        "groundPlants": 10320,
+        "whiteFlowerPatches": 5168,
+        "placed": true,
+        "hardLaneVerification": {
+          "width": 1.8,
+          "bodyHeight": [
+            0.5,
+            2.05
+          ],
+          "candidates": 902,
+          "narrowPhaseObjects": 31,
+          "overlaps": []
+        },
+        "sourceMeshes": 112292,
+        "batches": 5606,
+        "rigidLOD": {
+          "nearBatches": 175,
+          "farBatches": 480,
+          "originalNearPreserved": true,
+          "proxy": "closed recessed concrete and dark window frames",
+          "distance": 28
+        },
+        "animationTime": 26.8785,
+        "industrialAssets": {
+          "sourceHashesVerified": true,
+          "models": 19,
+          "catalogModels": 57,
+          "skippedUnusedModels": 38,
+          "materials": 17,
+          "textures": 31,
+          "sharedImages": 31,
+          "decodedImages": 31,
+          "estimatedDecodedImageBytes": 158334976
+        },
+        "v3Complete": true,
+        "pendingAssets": [],
+        "elevationRange": [
+          0,
+          3.2
+        ]
+      },
+      "childReadsNormalSave": false,
+      "randomSuppressed": true,
+      "builtKey": "3-2",
+      "opening": {
+        "ready": true,
+        "dir": "right",
+        "forwardWalkable": true,
+        "atOriginalStart": true,
+        "locked": false
+      },
+      "monument": {
+        "key": "npc:3:statue",
+        "near": "npc:3:statue",
+        "dialogOpened": true
+      }
+    }
+  ],
+  "errors": [],
+  "responses": [
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/admin-tools.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/data/field-maps.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b5v6/b5v6-architecture.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/battle-formation-ext.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b4-temple-arch.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b3-city-v2-clearance.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b5v6/b5v6-distant-city.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b4-fx12.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b5v6/b5v6-place.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b5v6/b5v6-vfx.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/battle-formation-ext.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/data/field-maps.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b4-fx12.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/assets/b5-abyss-ruin-silhouettes.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/admin-tools.js",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/b5v6/b5v6-distant-city.js",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/3d/dungeons/b3_industrial_candidates/shared_textures/1523a411ab82682606a29061fdb3f2302ed355c8804baf8861f187696d90f2a6.png",
+      "status": 403
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/3d/dungeons/b3_industrial_candidates/shared_textures/1523a411ab82682606a29061fdb3f2302ed355c8804baf8861f187696d90f2a6.png",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/3d/dungeons/b3_industrial_candidates/shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+      "status": 503
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/3d/dungeons/b3_industrial_candidates/shared_textures/7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc.jpg",
+      "status": 403
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/3d/dungeons/b3_industrial_candidates/shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+      "status": 503
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/3d/dungeons/b3_industrial_candidates/shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+      "status": 503
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/f3-city-v3-playtest-entry.js",
+      "status": 503
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/f3-city-v3-playtest-entry.js",
+      "status": 503
+    },
+    {
+      "url": "https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/field/f3-city-v3-playtest-entry.js",
+      "status": 503
+    }
+  ],
+  "requestFailures": [
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/8091ad13-a63c-469c-b31a-8c16f3d1d70d.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/map-icons/gather_wood.png",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E5%A4%9C%E9%97%87%E3%81%AB%E3%80%81%E9%A2%A8%E3%81%AB%E7%B4%9B%E3%82%8C%E3%81%A6.mp3",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E5%A4%9C%E9%97%87%E3%81%AB%E3%80%81%E9%A2%A8%E3%81%AB%E7%B4%9B%E3%82%8C%E3%81%A6.mp3",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://fastly.jsdelivr.net/gh/koda24-cell/kotama-no-bouken@a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01/assets/music/%E4%BB%95%E5%88%86%E3%81%91%E9%9B%A8/%E5%A4%9C%E9%97%87%E3%81%AB%E3%80%81%E9%A2%A8%E3%81%AB%E7%B4%9B%E3%82%8C%E3%81%A6.mp3",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "injectedFirstHostImage": "shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+  "isolationFailure": {
+    "iframeEmpty": true,
+    "gameStarted": false
+  },
+  "passed": true
+}
