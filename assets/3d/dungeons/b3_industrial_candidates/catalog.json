@@ -890,6 +890,27 @@
       "portableSha256": "bc18b670d32748c6c72b501cd8aa3ba89b7fd1072ce2ecb33776a32a512411c1"
     },
     {
+      "id": "v3_collapsed_storey",
+      "name": "崩落した階床と露出鉄骨",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_collapsed_storey/runtime/f3_v3_collapsed_storey.glb",
+      "sha256": "8ef72f7c26c259b5fc699a0f524f7d9d3cb62deab6080defaeb50a5c498c47da",
+      "bytes": 945496,
+      "triangles": 7486,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_collapsed_storey/props/f3_v3_collapsed_storey.glb",
+      "embeddedOriginalBytes": 5867856,
+      "sizeMeters": [
+        7.9562,
+        8.2541,
+        4.9162
+      ],
+      "portableAuthoring": "v3_collapsed_storey/sources/f3_v3_collapsed_storey_authoring.blend",
+      "portableSha256": "7b1ab75ccc4c050c171a0b51bafc465f3e856aca45d8d5745de300c0697a6e43"
+    },
+    {
       "id": "v3_greenhouse_bay",
       "name": "腐食した廃植物館トラス",
       "existingUpgrade": false,
@@ -1471,15 +1492,14 @@
     }
   ],
   "totals": {
-    "individualParts": 30,
+    "individualParts": 31,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 63594192,
+    "runtimeGeometryBytes": 64539688,
     "sharedImageBytes": 56464668,
-    "embeddedOriginalBytes": 309907328
+    "embeddedOriginalBytes": 315775184
   },
   "v3Pending": [
-    "v3_collapsed_storey",
     "v3_leaning_facade",
     "v3_sunken_colonnade",
     "v3_sunken_shopfront",
