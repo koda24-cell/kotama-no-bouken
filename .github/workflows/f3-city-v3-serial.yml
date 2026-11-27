@@ -2,7 +2,7 @@ name: F3 V3 serial asset production
 on:
   push:
     branches: [feature/f3-city-v3-20261127]
-    paths: [tools/f3-city-v3/assets_v3.py, tools/f3-city-v3/queue.json, tools/f3-industrial/build_one.py, tools/f3-industrial/parts.py, .github/workflows/f3-city-v3-serial.yml, .github/workflows/f3-city-v3-one.yml]
+    paths: [tools/f3-city-v3/queue.json]
 concurrency:
   group: f3-industrial-production
   cancel-in-progress: false
