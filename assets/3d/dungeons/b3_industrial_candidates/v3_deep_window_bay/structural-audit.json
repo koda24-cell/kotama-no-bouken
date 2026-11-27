@@ -1,0 +1,45 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_deep_window_bay/props/f3_v3_deep_window_bay.glb",
+      "file_bytes": 5570188,
+      "glb_meshes": 6,
+      "total_mesh_primitives": 6,
+      "scene_nodes": 7,
+      "scene_mesh_nodes": 6,
+      "scene_primitive_instances": 6,
+      "estimated_scene_triangles": 5100,
+      "materials": 6,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_deep_crack",
+        "f3_exposed_aggregate",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete",
+        "v3 exposed old infill"
+      ],
+      "mesh_names": [
+        "fractured pane",
+        "Cube.021",
+        "Cube.049",
+        "Cube.022",
+        "Cube",
+        "Cube.045"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 6,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 15,
+      "textures": 15,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

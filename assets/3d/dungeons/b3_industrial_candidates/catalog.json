@@ -804,6 +804,27 @@
       ],
       "portableAuthoring": "v3_catwalk_junction/sources/f3_v3_catwalk_junction_authoring.blend",
       "portableSha256": "b5621ab0d97a2d83618c0529eed40ad1c84669d255c7ab5842ca4afac9beb3b9"
+    },
+    {
+      "id": "v3_deep_window_bay",
+      "name": "奥壁・側壁を持つ凹んだ窓区画",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_deep_window_bay/runtime/f3_v3_deep_window_bay.glb",
+      "sha256": "c38c841dcd532d09229d10dec96801c6af30dbaf3fd064015f0a80a345322777",
+      "bytes": 626176,
+      "triangles": 5100,
+      "sourceCommit": "0d36aa3c09b82734efd8ca445ac3263f28c7bd18",
+      "workflowRun": "45953973126",
+      "embeddedOriginal": "v3_deep_window_bay/props/f3_v3_deep_window_bay.glb",
+      "embeddedOriginalBytes": 5570188,
+      "sizeMeters": [
+        4.0,
+        3.2475,
+        1.8952
+      ],
+      "portableAuthoring": "v3_deep_window_bay/sources/f3_v3_deep_window_bay_authoring.blend",
+      "portableSha256": "22028d5aa689bdcc8d265844326b0c078727a18be00512f669d4a27c96689cb0"
     }
   ],
   "sharedImages": [
@@ -1294,17 +1315,16 @@
     }
   ],
   "totals": {
-    "individualParts": 23,
+    "individualParts": 24,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 55988204,
+    "runtimeGeometryBytes": 56614380,
     "sharedImageBytes": 50954812,
-    "embeddedOriginalBytes": 269309264
+    "embeddedOriginalBytes": 274879452
   },
   "v3Pending": [
     "v3_riveted_span",
     "v3_structural_corner",
-    "v3_deep_window_bay",
     "v3_spalled_wall",
     "v3_collapsed_storey",
     "v3_leaning_facade",
