@@ -1079,6 +1079,27 @@
       "portableSha256": "f4ccd14d6823bd977c088fe2b78417e985d00af784a96c4dc120a50ddc3f6395"
     },
     {
+      "id": "v3_cable_pole",
+      "name": "碍子と引込部を持つ電柱",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_cable_pole/runtime/f3_v3_cable_pole.glb",
+      "sha256": "da738843203d7a121a2bef874cc9ed27f50e2781e5724ac2ab7dbe32d7dc084f",
+      "bytes": 563284,
+      "triangles": 4836,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_cable_pole/props/f3_v3_cable_pole.glb",
+      "embeddedOriginalBytes": 5486252,
+      "sizeMeters": [
+        2.2,
+        6.8027,
+        0.65
+      ],
+      "portableAuthoring": "v3_cable_pole/sources/f3_v3_cable_pole_authoring.blend",
+      "portableSha256": "6ea4dc2fc6b20f59d1ae34bfcd574d60985ce42cb584d9768b55e126eb43935b"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1633,15 +1654,14 @@
     }
   ],
   "totals": {
-    "individualParts": 37,
+    "individualParts": 38,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 70855192,
+    "runtimeGeometryBytes": 71418476,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 353343928
+    "embeddedOriginalBytes": 358830180
   },
   "v3Pending": [
-    "v3_cable_pole",
     "v3_shutter_shop",
     "v3_rubble_bank",
     "v3_asphalt_heave"
