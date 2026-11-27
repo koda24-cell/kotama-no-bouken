@@ -1,0 +1,113 @@
+name: Cloudflare private dev preview (development -> fixed URL)
+# Auto-deploys the game's runtime files from `development` to the private,
+# Access-protected Pages project. Fail-closed:
+#   1. does nothing unless repository variable KOTAMA_GAME_PREVIEW_ENABLED == 'true'
+#      (set only after the Access checks in docs/CLOUDFLARE_ACCESS_SETUP.md pass)
+#   2. the Access audit + unauthenticated gate must pass BEFORE upload
+#   3. only files selected by tools/cloudflare-preview/build_runtime_bundle.py ship
+#   4. the gate runs again AFTER upload; on failure the fixed URL is rolled back
+on:
+  push:
+    branches: [development]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'references/**'
+      - 'review-shots/**'
+      - 'render-output/**'
+      - 'prototypes/**'
+      - '_trash/**'
+
+permissions:
+  contents: read
+concurrency:
+  group: cloudflare-probe-deploy
+  cancel-in-progress: false
+jobs:
+  enabled:
+    if: github.repository == 'koda24-cell/kotama-no-bouken' && vars.KOTAMA_GAME_PREVIEW_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Game preview deployment enabled by repository variable."
+
+  gate-before:
+    needs: enabled
+    uses: ./.github/workflows/cloudflare-access-gate.yml
+    secrets: inherit
+    with:
+      paths: '/ /index.html /script.js /style.css /data/characters.js /assets/characters/kotama.webp'
+
+  deploy:
+    needs: gate-before
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      before: ${{ steps.up.outputs.before }}
+      after: ${{ steps.up.outputs.after }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          lfs: false
+      - name: Select runtime files (allowlist, size, LFS, internal-file exclusion)
+        run: |
+          set -euo pipefail
+          python3 tools/cloudflare-preview/build_runtime_bundle.py --repo . --out "$RUNNER_TEMP/site" --report "$RUNNER_TEMP/bundle-report.json"
+          python3 - "$RUNNER_TEMP/bundle-report.json" >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json, sys
+          r = json.load(open(sys.argv[1]))
+          print(f"Bundle: {r['file_count']} files, {r['total_bytes']/1e6:.1f} MB, "
+                f"missing refs {len(r['missing_references'])}, external {len(r['external_urls'])}")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-report
+          path: ${{ runner.temp }}/bundle-report.json
+          retention-days: 14
+      - name: Upload to private Pages project
+        id: up
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_SEND_METRICS: 'false'
+        run: |
+          set -euo pipefail
+          project=kotama-private-probe-20261127
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$project"
+          r="$(mktemp)"; trap 'rm -f "$r"' EXIT
+          code="$(curl --silent --show-error --proto '=https' --max-time 30 --output "$r" --write-out '%{http_code}' --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api")"
+          [[ "$code" == 200 ]]
+          before="$(jq -er '.result.canonical_deployment.id' "$r")"
+          branch="$(jq -er '.result.production_branch' "$r")"
+          cd "$RUNNER_TEMP" && npm install --no-audit --no-fund --save-exact wrangler@4.168.0 >/dev/null
+          ./node_modules/.bin/wrangler pages deploy site --project-name="$project" --branch="$branch" --commit-hash="$GITHUB_SHA"
+          sleep 10
+          curl --silent --show-error --proto '=https' --max-time 30 --output "$r" --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api"
+          after="$(jq -er '.result.canonical_deployment.id' "$r")"
+          [[ "$after" != "$before" ]]
+          echo "before=$before" >> "$GITHUB_OUTPUT"; echo "after=$after" >> "$GITHUB_OUTPUT"
+          echo "Deployed development ${GITHUB_SHA:0:12} -> deployment ${after:0:8}" >> "$GITHUB_STEP_SUMMARY"
+
+  gate-after:
+    needs: deploy
+    uses: ./.github/workflows/cloudflare-access-gate.yml
+    secrets: inherit
+    with:
+      paths: '/ /index.html /script.js /style.css /data/characters.js /assets/characters/kotama.webp'
+
+  rollback-on-failure:
+    needs: [deploy, gate-after]
+    if: always() && needs.deploy.result == 'success' && needs.gate-after.result != 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Roll fixed URL back to the previous deployment
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          BEFORE: ${{ needs.deploy.outputs.before }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/kotama-private-probe-20261127"
+          curl --fail --silent --show-error --proto '=https' --max-time 30 --request POST --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api/deployments/$BEFORE/rollback" >/dev/null
+          echo "::error::Post-deploy Access gate failed; fixed URL rolled back. The new deployment's own URL may still exist: delete it in the dashboard and set KOTAMA_GAME_PREVIEW_ENABLED=false until investigated."
+          exit 1
