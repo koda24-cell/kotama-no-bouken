@@ -3,15 +3,16 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_deep_window_bay/props/f3_v3_deep_window_bay.glb",
-      "file_bytes": 5584068,
-      "glb_meshes": 6,
-      "total_mesh_primitives": 6,
-      "scene_nodes": 7,
-      "scene_mesh_nodes": 6,
-      "scene_primitive_instances": 6,
+      "file_bytes": 5584964,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
       "estimated_scene_triangles": 5208,
-      "materials": 6,
+      "materials": 7,
       "material_names": [
+        "dirty fractured window glass",
         "f3_aged_brick_infill",
         "f3_bare_worn_steel",
         "f3_deep_crack",
@@ -20,8 +21,9 @@
         "f3_weathered_concrete"
       ],
       "mesh_names": [
-        "Cube.045",
         "fractured pane",
+        "Cube.045",
+        "Cube.043",
         "Cube.021",
         "Cube.050",
         "Cube.022",
@@ -33,7 +35,7 @@
       "alpha_materials": {
         "OPAQUE": 6,
         "MASK": 0,
-        "BLEND": 0
+        "BLEND": 1
       },
       "images": 15,
       "textures": 18,

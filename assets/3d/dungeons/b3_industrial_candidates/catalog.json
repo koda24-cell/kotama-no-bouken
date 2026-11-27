@@ -853,20 +853,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_deep_window_bay/runtime/f3_v3_deep_window_bay.glb",
-      "sha256": "d46e31726946313c13bb7254e385ecc2f12f42604f98a8e1732208078a6317fc",
-      "bytes": 640020,
+      "sha256": "7772595715a37561c50a42a7519e92ad2c5f4888aa0f64ab929006f7329622e5",
+      "bytes": 640912,
       "triangles": 5208,
-      "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
-      "workflowRun": "45974649926",
+      "sourceCommit": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+      "workflowRun": "45977005320",
       "embeddedOriginal": "v3_deep_window_bay/props/f3_v3_deep_window_bay.glb",
-      "embeddedOriginalBytes": 5584068,
+      "embeddedOriginalBytes": 5584964,
       "sizeMeters": [
         4.0,
         3.2377,
         1.915
       ],
       "portableAuthoring": "v3_deep_window_bay/sources/f3_v3_deep_window_bay_authoring.blend",
-      "portableSha256": "df7e79d48d989c1fe888b5dcee36e31a82e964ea6c6504429962e8cc11c25758"
+      "portableSha256": "ec5d4539e9305f94c373a5b6aeb792269e2b80af6ea0fd69555d96a3eaddbe58"
     },
     {
       "id": "v3_spalled_wall",
@@ -1720,9 +1720,9 @@
     "individualParts": 41,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 73462384,
+    "runtimeGeometryBytes": 73463276,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 376123140
+    "embeddedOriginalBytes": 376124036
   },
   "v3Pending": [],
   "v3Complete": true
