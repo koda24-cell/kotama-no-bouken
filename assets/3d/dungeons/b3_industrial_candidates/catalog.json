@@ -911,6 +911,27 @@
       "portableSha256": "7b1ab75ccc4c050c171a0b51bafc465f3e856aca45d8d5745de300c0697a6e43"
     },
     {
+      "id": "v3_leaning_facade",
+      "name": "傾いた廃ビル区画",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_leaning_facade/runtime/f3_v3_leaning_facade.glb",
+      "sha256": "b3efbaf848f516a7d1b92292c7f88d306104035e647ba50c3ea9b9890c0dee67",
+      "bytes": 933388,
+      "triangles": 7452,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_leaning_facade/props/f3_v3_leaning_facade.glb",
+      "embeddedOriginalBytes": 5855748,
+      "sizeMeters": [
+        6.4574,
+        7.4911,
+        4.5001
+      ],
+      "portableAuthoring": "v3_leaning_facade/sources/f3_v3_leaning_facade_authoring.blend",
+      "portableSha256": "b7c945da0f14d829370519cd6103908c37c22d443ed3a7eef70f60075ac3772a"
+    },
+    {
       "id": "v3_greenhouse_bay",
       "name": "腐食した廃植物館トラス",
       "existingUpgrade": false,
@@ -1492,15 +1513,14 @@
     }
   ],
   "totals": {
-    "individualParts": 31,
+    "individualParts": 32,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 64539688,
+    "runtimeGeometryBytes": 65473076,
     "sharedImageBytes": 56464668,
-    "embeddedOriginalBytes": 315775184
+    "embeddedOriginalBytes": 321630932
   },
   "v3Pending": [
-    "v3_leaning_facade",
     "v3_sunken_colonnade",
     "v3_sunken_shopfront",
     "v3_derelict_car",
