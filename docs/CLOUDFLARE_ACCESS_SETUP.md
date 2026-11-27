@@ -46,6 +46,14 @@ Cloudflare Zero Trust（Access）は Free プランでもカード登録が必�
 3. revision を上げて再度 `update`（更新後も認証維持・固定URL反映）→ `rollback`（戻った後も認証維持）。
 4. 合格後、PR #856 を development にマージ → `KOTAMA_GAME_PREVIEW_ENABLED=true` → 初回ゲーム配信と実プレイ確認。
 
+## 2026-11-27 23:00 初回ゲーム配信後の指摘と対応
+
+- ユーザー報告: BGMと画像が一部しか出ない／第1層3階が最新でない。
+- 原因1（確認済み）: 選別ツールの文字列パス検出が英数字のファイル名しか拾わず、日本語・空白入りの BGM・画像（`assets/music/戦闘/*.mp3`、`Final Battle Arc.mp3` 等）を落としていた → 修正。
+- 原因2（確認済み）: 第3層の `b3_industrial_candidates`（1.8GB）がフォルダ上限で丸ごと除外され、`catalog.json` 経由の読込が失敗 → 巨大フォルダは最上位の catalog/manifest JSON を同梱し、そこに列挙されたファイルを辿るよう修正。修正後: 966 ファイル / 約 1.0 GB（development 90cfa71）。
+- main にだけある「Add files via upload」の素材 31 件（BGM・GIF 等）は development のコードから参照されていないため、確認サイトの欠落原因ではない。
+- 第1層3階: development は #849 で聖域の森 F3（game-layout-v6）を有効化済みで、その参照ファイルは全て同梱済み。ユーザーの言う「最新」が未マージ PR の可能性 → 「development ＋選択 PR」を表示する仕組み（AGENTS.md「確認サイトを更新して」）を追加。
+
 ## 配信ファイル選別（`tools/cloudflare-preview/build_runtime_bundle.py`）
 
 `index.html` から HTML の src/href、CSS の url()/@import、JS の import と文字列パスを辿り、許可したトップ階層（`index.html` `style.css` `css/` `data/` `field/` `assets/` `shared-3d-library/`、ルートの .js/.css、runtime が import する `preview/` 内の個別ファイル）だけをコピーする。`docs/ references/ _trash/ tools/ prototypes/ render-output/ review-shots/ .github` と、アセット内の `verification/ renders/ metrics/ sources/`、`.md .py .blend .psd .zip .env .pem .key` 等は除外。実行時に `BASE + ファイル名` で組み立てる読込に対応するため、runtime JS 中のディレクトリ定数が指すフォルダの runtime 形式ファイルを含める（1フォルダ200MB上限）。25 MiB 超・LFS ポインタ・2万ファイル超・除外パス混入で失敗。

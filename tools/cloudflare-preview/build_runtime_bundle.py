@@ -40,7 +40,9 @@ MAX_FILES = 20000
 HTML_ATTR = re.compile(r"""\b(?:src|href|data-src|poster)\s*=\s*["']([^"'#]+)["']""", re.I)
 CSS_URL = re.compile(r"""url\(\s*["']?([^"')]+)["']?\s*\)|@import\s+["']([^"']+)["']""")
 JS_IMPORT = re.compile(r"""(?:import|export)\s[^'"]*?from\s*["']([^"']+)["']|import\s*\(\s*["']([^"']+)["']\s*\)|import\s+["']([^"']+)["']""")
-STR_PATH = re.compile(r"""["'`]((?:\./|\.\./|/)?[A-Za-z0-9_\-./%%]+\.(?:%s))(?:\?[^"'`]*)?["'`]""" % ASSET_EXT, re.I)
+# Any characters except quotes / template interpolation / whitespace-only:
+# file names in this repo include Japanese text and spaces (e.g. BGM).
+STR_PATH = re.compile(r"""["'`]((?:\./|\.\./|/)?[^"'`\n\r<>${}()]+?\.(?:%s))(?:\?[^"'`\n]*)?["'`]""" % ASSET_EXT, re.I)
 EXTERNAL = re.compile(r"""https?://[^\s"'`)<>]+""")
 
 
@@ -170,7 +172,12 @@ def scan(repo):
                                 picked.append(fr)
                                 size += os.path.getsize(os.path.join(root, n))
                     if size > MAX_DIR_BYTES:
-                        dir_skipped[c] = {"bytes": size, "from": rel}
+                        # Too big to ship whole: ship its top-level catalogue /
+                        # manifest JSON and follow the files that JSON lists.
+                        tops = [posixpath.join(c, n) for n in sorted(os.listdir(os.path.join(repo, c)))
+                                if n.endswith(".json") and os.path.isfile(os.path.join(repo, c, n))]
+                        dir_skipped[c] = {"bytes": size, "from": rel, "followed_json": tops}
+                        queue.extend(t for t in tops if t not in seen)
                         continue
                     dir_included[c] = {"files": len(picked), "bytes": size, "from": rel}
                     queue.extend(x for x in picked if x not in seen)
