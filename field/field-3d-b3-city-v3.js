@@ -188,7 +188,7 @@ export function createTheme(api){
     }
    }
    if(tag==='white-garden'&&bundle.models.has('v3_whiteflower_atlas')){
-    const n=g.high?48:30;for(let k=0;k<n;k++){const wx=px+(hash(x*71+k,z,421)-.5)*4,wz=pz+(hash(x,z*37+k,422)-.5)*4;
+    const n=g.high?112:80;for(let k=0;k<n;k++){const wx=px+(hash(x*71+k,z,421)-.5)*4,wz=pz+(hash(x,z*37+k,422)-.5)*4;
      model('v3_whiteflower_atlas',wx,plan.heightWorld(wx,wz),wz,{ry:hash(x+k,z,423)*6.28,scale:.48+hash(x,z+k,424)*.4});flowers++;}
    }
 

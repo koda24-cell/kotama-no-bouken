@@ -19,6 +19,7 @@
   if(f===1){
    const room={type:'greenhouse',x0:13,z0:11,x1:19,z1:15};rooms.push(room);
    for(let z=room.z0;z<=room.z1;z++)for(let x=room.x0;x<=room.x1;x++){grid[z][x]='.';tags[key(x,z)]='greenhouse';}
+   grid[13][12]='.';grid[13][11]='.';tags[key(12,13)]='greenhouse-entry';
    for(const [x,z]of[[14,12],[18,14]]){grid[z][x]='#';tags[key(x,z)]='root-planter';}
   }
   if(f===2){
