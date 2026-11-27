@@ -937,20 +937,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_whiteflower_atlas/runtime/f3_v3_whiteflower_atlas.glb",
-      "sha256": "28c10fff6cc7b42e5495e68c0f7aa4584a7922240d30116230fbaa2e298517f7",
-      "bytes": 17400,
-      "triangles": 128,
-      "sourceCommit": "12f5819700aeadf3321b048b29907979e61ee002",
-      "workflowRun": "45956483722",
+      "sha256": "e86d5a921de9688080212b9298484d73bb2c3bdf5f23e1f7033a350b06732e99",
+      "bytes": 2716,
+      "triangles": 8,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
       "embeddedOriginal": "v3_whiteflower_atlas/props/f3_v3_whiteflower_atlas.glb",
-      "embeddedOriginalBytes": 1294324,
+      "embeddedOriginalBytes": 1280132,
       "sizeMeters": [
         1.4,
         0.3838,
         1.4
       ],
       "portableAuthoring": "v3_whiteflower_atlas/sources/f3_v3_whiteflower_atlas_authoring.blend",
-      "portableSha256": "dee626ade96ea484c55918b5191856ffcc71dd769461b3f6a6e8db7688dc8de1"
+      "portableSha256": "a818fc16b6dfada409c0b098a532cc6b74b7eeb684f233f6e9ee75fbc80d8504"
     }
   ],
   "sharedImages": [
@@ -1463,15 +1463,20 @@
       "file": "shared_textures/36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429.png",
       "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429",
       "bytes": 1276952
+    },
+    {
+      "file": "shared_textures/80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96.png",
+      "sha256": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96",
+      "bytes": 1277442
     }
   ],
   "totals": {
     "individualParts": 30,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 63608876,
-    "sharedImageBytes": 55187226,
-    "embeddedOriginalBytes": 309921520
+    "runtimeGeometryBytes": 63594192,
+    "sharedImageBytes": 56464668,
+    "embeddedOriginalBytes": 309907328
   },
   "v3Pending": [
     "v3_collapsed_storey",

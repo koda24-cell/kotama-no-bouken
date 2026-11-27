@@ -3,112 +3,112 @@
   "blender": "5.3.0",
   "files": {
     "manifest.json": {
-      "bytes": 6299,
-      "sha256": "6f5855b15150ec6e895a15ee855ef7e8ee786d361054575fca203bc44599c93d"
+      "bytes": 6268,
+      "sha256": "6bf941f7f4a7638513e3b3f91de984d2d2b5aaa87580cf65922f0d76ed9e50af"
     },
     "metrics/f3_v3_whiteflower_atlas.json": {
-      "bytes": 1329,
-      "sha256": "485f31ea4ba87f3930eb830212b14eaa7860cf0878e7d1d15f8b2e3da616e456"
+      "bytes": 1301,
+      "sha256": "ac69de8a8cbf5483fcdffa484bae4cf0e01b29babbe2d24191e5ab9ef658a36f"
     },
     "props/f3_v3_whiteflower_atlas.glb": {
-      "bytes": 1294324,
-      "sha256": "427010fd131ce34f625be794e87ffc2aed3e370fe15cec9e8ce95ab6ae9cb3fe"
+      "bytes": 1280132,
+      "sha256": "7fcc2167b1a7a724ab2b28c8b3e921c405060e139acb84fe425bcda4523112d8"
     },
     "renders/f3_v3_whiteflower_atlas/angle.png": {
-      "bytes": 448855,
-      "sha256": "fe16b36d56c915a8d0fb53fdb59fb9676a63da1e249a6138807ee0cd36f2e9cf"
+      "bytes": 449649,
+      "sha256": "cb0cffb07297370f2b75980c6e1db67bac317cedf1daf88cd7c93776a1423de6"
     },
     "renders/f3_v3_whiteflower_atlas/back.png": {
-      "bytes": 436517,
-      "sha256": "4657042390ff2a30bc91c70b1ed82958b0d5cafa09506dcc64d09bd5b16b0dad"
+      "bytes": 438386,
+      "sha256": "ab1d5401550735b68d58b67316d648900d186609c1b8b72e159e5bfe6576b8a7"
     },
     "renders/f3_v3_whiteflower_atlas/front.png": {
-      "bytes": 440359,
-      "sha256": "6e13d91d88c757243cba07b1f90efc3442d99364fc5461189ee4c6e880342ea3"
+      "bytes": 441239,
+      "sha256": "cb487d4bfdbff9629b8e774198a169bd2cb7fb9df3237f17e128d82cc9783823"
     },
     "renders/f3_v3_whiteflower_atlas/side.png": {
-      "bytes": 432120,
-      "sha256": "a8c9760f2f188ede46f4e6ae8a68884e671698778a05f880313d31bb34fd977e"
+      "bytes": 433054,
+      "sha256": "4dfe3a3e4e0b9ac51835d2ce3d186fc9cd1f8ec50185f93cd3537444a6a9faf6"
     },
     "renders/f3_v3_whiteflower_atlas/top.png": {
-      "bytes": 501807,
-      "sha256": "0bc2695538188f0fb1f7816ab938dd658856cef86bcb0eb6bfabbc8964f68ed2"
+      "bytes": 503636,
+      "sha256": "4dbf02d33ed3c8082aef86663c132c340893f7b011a54e741c599357a664b141"
     },
     "runtime/f3_v3_whiteflower_atlas.glb": {
-      "bytes": 17400,
-      "sha256": "28c10fff6cc7b42e5495e68c0f7aa4584a7922240d30116230fbaa2e298517f7"
+      "bytes": 2716,
+      "sha256": "e86d5a921de9688080212b9298484d73bb2c3bdf5f23e1f7033a350b06732e99"
     },
     "security/all-texture-inputs.log": {
       "bytes": 292,
-      "sha256": "acb07cc92f04c13f830260367aabc23c23a864810d97e16ed6b04a64182bcdf2"
+      "sha256": "09b39d3ace3b0dae888f00f54620f38d87787be5d15fa78b6cdea23db98da440"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "e0a56f0b156c1d69dcb078b9ddc823fbbcaf29fc7b6e2005fc9e0d77150e3d74"
+      "sha256": "c6dc7f3153b783a8da1e9cac157d2d4674466ec8f122eb5342e0c9d77936e21f"
     },
     "security/licensed-complete-source.log": {
       "bytes": 289,
-      "sha256": "3623e31f4a644c50c44063ea22751fdf17cca5502934585f71751384e2288bbd"
+      "sha256": "6383203c668057087ab400a4e08b1355bf77bb52cbd5fec3a2a3184b26be4375"
     },
     "security/licensed-input-0.log": {
       "bytes": 291,
-      "sha256": "ba684959ff229b7f918db22c936e63a71844c1019be61aec2cd41899acc54665"
+      "sha256": "25c8633ead08bcc41659b618b8c0d87ab87d548c64743fc8d94a60747ab8e4fa"
     },
     "security/licensed-input-1.log": {
       "bytes": 289,
-      "sha256": "45f85ea5d1c712eaf9df60634dc075d74da2162f6e0197131e198d27573f7f4c"
+      "sha256": "17407a458fadfe9f873358b21d7dff1f60993877bdff405737a2764f36c5a93e"
     },
     "security/licensed-input-2.log": {
       "bytes": 293,
-      "sha256": "5fb9e24b755c644e966901e3af55b56ad879624098db9c900a38931e2da63340"
+      "sha256": "781f597658f8e3b9351e3dd02b421d81b6cee2a49a01a7e9f9f14faa044b023d"
     },
     "security/licensed-input-3.log": {
       "bytes": 293,
-      "sha256": "1c9b036ba0afda9da63a4e18b2531cf1861ca33d7cf43aacc8a4acea496c7874"
+      "sha256": "3161c9bcc183ac4f707d56dc8b6b4b1aeab868ef81b0195060bc493f0ef08945"
     },
     "security/licensed-input-4.log": {
       "bytes": 293,
-      "sha256": "1614c48f03f241d23707309190d0fe90c3c7ae98e95797bf3f62813cfa29f695"
+      "sha256": "69ce93ee19cbb470e81799117a8962944224b3863465a8693b383a7c28fc037a"
     },
     "security/licensed-input-5.log": {
       "bytes": 289,
-      "sha256": "5e81cb78f1d7501db1f2eeac0fee0b3416156abe97de3101fa2cd2bc56a8e46c"
+      "sha256": "2d50553f5fa5ae07f0e7eee35de05ed4c322a136d24de72ec5aca349b8b7db63"
     },
     "security/licensed-input-6.log": {
       "bytes": 291,
-      "sha256": "234b82aea9a1cf947adbda5158cefb5d39c61cb7f0f421b4e854598d9f8e8b25"
+      "sha256": "7274fc5e9c7b6eaf3e749c6bf05b1548f3f10b78e71c146f03809bea6885da8c"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "2a4eb4f6eedbc07ae7048bfa208664e753b21f5d7e444e01078dea27d7afb2e2"
+      "sha256": "01acc5d66cfd3eb2acf026598dad7d3a259cb7fee1183adbce0b0456936e3404"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "f45ef8f16b52fce49688db4d2895c0e5c2f98a7aac05ba4c842093908fa5cede"
+      "sha256": "abe38339b043fd9a5ec560903e32aca9f88f9b4bd00791a8bc06810db1b9e1cd"
     },
     "security/source.log": {
       "bytes": 294,
-      "sha256": "d36631c44fcde2a998279171fb8fda0121ff3542ca36d13358f2f158f3cedfa9"
+      "sha256": "69fb849b623414dd3f1345b13797b07b342175c6f303d1300632d7b330233e1f"
     },
     "security/v3-source.log": {
       "bytes": 292,
-      "sha256": "5f3662ef01c203518bf3fc7c87b54303b432b16d7b2492ba2c4cf6e9cfa57212"
+      "sha256": "22806cc54333c6ab53e9c68f9a9183def208a5a72ebce1651ed920b9e77a7538"
     },
-    "shared_textures/36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429.png": {
-      "bytes": 1276952,
-      "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429"
+    "shared_textures/80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96.png": {
+      "bytes": 1277442,
+      "sha256": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96"
     },
     "sources/authoring-portability.json": {
       "bytes": 2977,
-      "sha256": "f45183a8d2e6fe1471b652b068713b27e06a935bf27062e006b105edbf43be40"
+      "sha256": "f519388b29cd416bc60360850428ca075a05687ede8535fa3714bb82fd701768"
     },
     "sources/f3_v3_whiteflower_atlas.blend": {
-      "bytes": 14857443,
-      "sha256": "676f6f2045a4c8a4419ac0af6754b36e2df87ba96efde0376f774d4f24b038d2"
+      "bytes": 14858333,
+      "sha256": "9dfa93158c02a0bd535c2b037b90ee0dacc67f374894f47f0b3b4f7c6b5a8deb"
     },
     "sources/f3_v3_whiteflower_atlas_authoring.blend": {
-      "bytes": 14858695,
-      "sha256": "dee626ade96ea484c55918b5191856ffcc71dd769461b3f6a6e8db7688dc8de1"
+      "bytes": 14859121,
+      "sha256": "a818fc16b6dfada409c0b098a532cc6b74b7eeb684f233f6e9ee75fbc80d8504"
     },
     "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
       "bytes": 8773,
@@ -183,28 +183,28 @@
       "sha256": "357a43c22cbaf8093b42cdaf01dd9113c8ab958765029821c10c098c5f51c255"
     },
     "sources/whiteflower-bake-view-0.png": {
-      "bytes": 139981,
-      "sha256": "1801bf94805af9888a0b8c328bfe3b37103bfa16386e658aeaa56653edaf69bd"
+      "bytes": 140084,
+      "sha256": "263836b095752a65cbdde20637fd5f95037468926039b0694314e8e9dfaf2087"
     },
     "sources/whiteflower-bake-view-1.png": {
-      "bytes": 137062,
-      "sha256": "d7bdb353fc7fe982dc8a31e7753252b9bc6a7494adb3da07b383749b72e1c83f"
+      "bytes": 137211,
+      "sha256": "ee17a25408d2061f9f48617b3c13d847bc967b953b450d069edf56e9f9716a0c"
     },
     "sources/whiteflower-bake-view-2.png": {
-      "bytes": 144790,
-      "sha256": "e7512ea3522d2d9eae61a5e785db31c09ea6bec84c88d9009c20a7623790cfee"
+      "bytes": 144831,
+      "sha256": "c514c92150a6c47e475b90ef31b82a2a5c1e11cfc765a51b039b450c15c428de"
     },
     "sources/whiteflower-bake-view-3.png": {
-      "bytes": 246625,
-      "sha256": "a6c7520b264d93f0ca7e3f48e22fdc78ab701ce94f0a6dce89564da6d8a6aa58"
+      "bytes": 246657,
+      "sha256": "3b82fbdb8ab79df9853d8619d4bac1d98b8b6a5f474298645d11fa5802aecae1"
     },
     "sources/whiteflower-four-view-atlas.png": {
-      "bytes": 1276952,
-      "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429"
+      "bytes": 1277442,
+      "sha256": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96"
     },
     "structural-audit.json": {
-      "bytes": 1104,
-      "sha256": "c94392bbbf63bbdea73375618a595dfff9d7b8078cfd73e0fc0eb622836e42c6"
+      "bytes": 1053,
+      "sha256": "14d62a75f069b1d1574d081a46514450fb856c1262d398b3dfb581d3ebfc1aa2"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,

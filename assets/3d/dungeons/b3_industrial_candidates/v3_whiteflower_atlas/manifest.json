@@ -2,18 +2,17 @@
   "status": "NOT_APPROVED",
   "assetName": "v3_whiteflower_atlas",
   "asset": {
-    "bytes": 1294324,
-    "sha256": "427010fd131ce34f625be794e87ffc2aed3e370fe15cec9e8ce95ab6ae9cb3fe",
-    "tris": 128,
-    "verts": 280,
-    "meshes": 2,
-    "drawCalls": 2,
+    "bytes": 1280132,
+    "sha256": "7fcc2167b1a7a724ab2b28c8b3e921c405060e139acb84fe425bcda4523112d8",
+    "tris": 8,
+    "verts": 16,
+    "meshes": 1,
+    "drawCalls": 1,
     "materials": [
-      "pale cream pollen",
       "v3 whiteflower atlas MASK"
     ],
     "textureCount": 1,
-    "textureBytes": 1276952,
+    "textureBytes": 1277442,
     "sizeMeters": [
       1.4,
       0.3838,
@@ -40,8 +39,8 @@
     "category": "props",
     "desc_ja": "白い花の透過アトラス群落",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "12f5819700aeadf3321b048b29907979e61ee002",
-    "workflowRun": "45956483722",
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v3_whiteflower_atlas.blend",
     "renderedFrom": "final alpha-MASK GLB reimport",
@@ -160,15 +159,15 @@
   ],
   "runtime": {
     "file": "f3_v3_whiteflower_atlas.glb",
-    "sourceSha256": "427010fd131ce34f625be794e87ffc2aed3e370fe15cec9e8ce95ab6ae9cb3fe",
-    "sha256": "28c10fff6cc7b42e5495e68c0f7aa4584a7922240d30116230fbaa2e298517f7",
-    "bytes": 17400,
-    "embeddedOriginalBytes": 1294324,
+    "sourceSha256": "7fcc2167b1a7a724ab2b28c8b3e921c405060e139acb84fe425bcda4523112d8",
+    "sha256": "e86d5a921de9688080212b9298484d73bb2c3bdf5f23e1f7033a350b06732e99",
+    "bytes": 2716,
+    "embeddedOriginalBytes": 1280132,
     "images": [
       {
-        "file": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429.png",
-        "sha256": "36037cc3daa92f4abf9a22d81a91cf0575ff03a2413ebc10721823abe7bc7429",
-        "bytes": 1276952
+        "file": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96.png",
+        "sha256": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96",
+        "bytes": 1277442
       }
     ],
     "geometryAndMaterialDataUnchanged": true,

@@ -3,20 +3,18 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_whiteflower_atlas/props/f3_v3_whiteflower_atlas.glb",
-      "file_bytes": 1294324,
-      "glb_meshes": 2,
-      "total_mesh_primitives": 2,
+      "file_bytes": 1280132,
+      "glb_meshes": 1,
+      "total_mesh_primitives": 1,
       "scene_nodes": 2,
       "scene_mesh_nodes": 1,
       "scene_primitive_instances": 1,
       "estimated_scene_triangles": 8,
-      "materials": 2,
+      "materials": 1,
       "material_names": [
-        "pale cream pollen",
         "v3 whiteflower atlas MASK"
       ],
       "mesh_names": [
-        "Sphere.041",
         "photographic flower card"
       ],
       "skins": 0,
@@ -24,7 +22,7 @@
       "morph_target_meshes": 0,
       "alpha_materials": {
         "OPAQUE": 0,
-        "MASK": 2,
+        "MASK": 1,
         "BLEND": 0
       },
       "images": 1,
