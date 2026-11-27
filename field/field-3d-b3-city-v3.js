@@ -45,8 +45,8 @@ export function createTheme(api){
   }
   stats.hardLaneVerification={width:1.8,bodyHeight:[.5,2.05],candidates:hardCandidates.length,narrowPhaseObjects:tested,overlaps};
  }
- function animateCanopy(source){
-  const m=grassCutoutMaterialV6(source),previous=m.onBeforeCompile;m.customProgramCacheKey=()=> 'city-v3-canopy-wind';
+ function animateCanopy(source,white=false){
+  const m=grassCutoutMaterialV6(source),previous=m.onBeforeCompile;m.customProgramCacheKey=()=> 'city-v3-canopy-wind';if(white)m.color.multiplyScalar(1/.78);
   m.onBeforeCompile=shader=>{previous(shader);shader.uniforms.uCityWind=wind;shader.vertexShader='uniform float uCityWind;\n'+shader.vertexShader;
    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
     float phase=0.0;
@@ -167,7 +167,7 @@ export function createTheme(api){
   const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Verified grass catalog unavailable');
   const catalog=await nature.json(),tufts=[];
   for(const name of['sedge','fern','trifoliate']){const row=catalog.sources.find(a=>a.name===name),held=await retainFirstLayerSource(row.file,row.sha256);grassHeld.push(held);let source;held.source.updateMatrixWorld(true);held.source.traverse(o=>{if(o.isMesh)source=o;});tufts.push({geometry:geo(source.geometry.clone().applyMatrix4(source.matrixWorld)),material:animateCanopy(source.material)});}
-  if(bundle.models.has('v3_whiteflower_atlas')){const replaced=new Map();bundle.models.get('v3_whiteflower_atlas').traverse(o=>{if(o.isMesh){if(!replaced.has(o.material))replaced.set(o.material,animateCanopy(o.material));o.material=replaced.get(o.material);}});}
+  if(bundle.models.has('v3_whiteflower_atlas')){const replaced=new Map();bundle.models.get('v3_whiteflower_atlas').traverse(o=>{if(o.isMesh){if(!replaced.has(o.material))replaced.set(o.material,animateCanopy(o.material,true));o.material=replaced.get(o.material);}});}
   const mossGeometry=new THREE.BufferGeometry(),mossPositions=[0,.006,0],mossUV=[.5,.5],mossIndices=[];
   for(let k=0;k<16;k++){const angle=k*Math.PI/8,r=.80+hash(k,5,760)*.30;mossPositions.push(Math.cos(angle)*r,.004+hash(k,5,761)*.012,Math.sin(angle)*r);mossUV.push(.5+Math.cos(angle)*.5,.5+Math.sin(angle)*.5);}
   for(let k=0;k<16;k++)mossIndices.push(0,(k+1)%16+1,k+1);
