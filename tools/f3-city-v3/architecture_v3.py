@@ -37,6 +37,7 @@ def build(asset,e):
   box('sealed rear structural wall',(0,.46,1.6),(4,.16,3.2),concrete,.02)
   for x in[-1.85,0,1.85]:broken_slab('deep concrete window pier',(x,0,1.6),(.30,1.15,3.2))
   for z,h in[(.23,.46),(2.98,.44)]:broken_slab('bonded storey spandrel',(0,0,z),(4,1.15,h))
+  glass=bpy.data.materials.new('dirty fractured window glass');glass.use_nodes=True;glass.surface_render_method='DITHERED';gp=glass.node_tree.nodes.get('Principled BSDF');gp.inputs['Base Color'].default_value=(.22,.29,.28,1);gp.inputs['Metallic'].default_value=0;gp.inputs['Roughness'].default_value=.38;gp.inputs['Alpha'].default_value=.32
   for x in[-.925,.925]:
    box('recessed dark interior',(x,.34,1.65),(1.52,.08,2.15),dark,.005)
    for xx in[x-.74,x,x+.74]:box('steel glazing mullion',(xx,-.04,1.65),(.042,.08,2.13),rust,.004)
@@ -45,7 +46,7 @@ def build(asset,e):
    for k in range(3):
     # Opaque fragments read as dirt-backed broken glazing, never an open sky hole.
     xx=x-.55+k*.48;vertices=[(xx,-.075,2.66),(xx+.32,-.075,2.66),(xx+.15,-.075,2.24-rng.random()*.25)]
-    mesh=bpy.data.meshes.new('fractured pane');mesh.from_pydata(vertices,[],[(0,1,2)]);mesh.update();o=bpy.data.objects.new('remaining jagged window shard',mesh);bpy.context.collection.objects.link(o);mesh.materials.append(steel)
+    mesh=bpy.data.meshes.new('fractured pane');mesh.from_pydata(vertices,[],[(0,1,2)]);mesh.update();o=bpy.data.objects.new('remaining jagged window shard',mesh);bpy.context.collection.objects.link(o);mesh.materials.append(glass)
   rod('joined rainwater downpipe',(1.58,-.65,.12),(1.58,-.65,3.2),.045,rust,12)
   for z in[.5,2.5]:box('pipe wall bracket',(1.58,-.59,z),(.18,.21,.05),steel,.005)
   infill(-.8,-.59,.08,.95,.48)
