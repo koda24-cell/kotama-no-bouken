@@ -1,0 +1,29 @@
+{
+  "status": "NOT_APPROVED",
+  "reopened": true,
+  "vertices": 2103,
+  "packedImageSha256": {
+    "concrete_moss_normal.jpg": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+    "chipped_concrete_normal.jpg": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+    "asphalt_02_roughness.jpg": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712",
+    "concrete_moss_roughness.jpg": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c",
+    "f3_exposed_aggregate_010b21ab9520_normal.jpg": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710",
+    "rusty_iron_roughness.jpg": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3",
+    "f3_bare_worn_steel_8b421a61ea81_orm.jpg": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8",
+    "f3_deep_crack_9d554bcb78e9_orm.jpg": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb",
+    "f3_exposed_aggregate_010b21ab9520_basecolor.jpg": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c",
+    "f3_exposed_aggregate_010b21ab9520_orm.jpg": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098",
+    "rusty_iron_diffuse.jpg": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+    "chipped_concrete_diffuse.jpg": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+    "chipped_concrete_roughness.jpg": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc",
+    "f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57",
+    "asphalt_02_diffuse.jpg": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed",
+    "f3_deep_crack_9d554bcb78e9_basecolor.jpg": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1",
+    "concrete_moss_diffuse.jpg": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+    "rusty_iron_normal.jpg": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+    "f3_bare_worn_steel_8b421a61ea81_normal.jpg": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5",
+    "asphalt_02_normal.jpg": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
+    "f3_deep_crack_9d554bcb78e9_normal.jpg": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+  },
+  "blendSha256": "e8b79a94309e64fcea5d6b6e9e65b2754b50ec7689609645830dea5df3c59e5f"
+}

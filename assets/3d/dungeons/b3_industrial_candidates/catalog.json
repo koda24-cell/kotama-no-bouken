@@ -1142,6 +1142,27 @@
       "portableSha256": "89330ef881ceb296356241b261808c8295c8115ce863fa17a98f876a106b691d"
     },
     {
+      "id": "v3_asphalt_heave",
+      "name": "浮き上がった舗装と露出路盤",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_asphalt_heave/runtime/f3_v3_asphalt_heave.glb",
+      "sha256": "fe9a79b4537681629422b803c5960c148b3d2354b09ff58b770db08634d26ec0",
+      "bytes": 492952,
+      "triangles": 4034,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_asphalt_heave/props/f3_v3_asphalt_heave.glb",
+      "embeddedOriginalBytes": 6026008,
+      "sizeMeters": [
+        4.3662,
+        0.7868,
+        3.7277
+      ],
+      "portableAuthoring": "v3_asphalt_heave/sources/f3_v3_asphalt_heave_authoring.blend",
+      "portableSha256": "e8b79a94309e64fcea5d6b6e9e65b2754b50ec7689609645830dea5df3c59e5f"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1696,15 +1717,13 @@
     }
   ],
   "totals": {
-    "individualParts": 40,
+    "individualParts": 41,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 72824408,
+    "runtimeGeometryBytes": 73317360,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 369952068
+    "embeddedOriginalBytes": 375978076
   },
-  "v3Pending": [
-    "v3_asphalt_heave"
-  ],
-  "v3Complete": false
+  "v3Pending": [],
+  "v3Complete": true
 }
