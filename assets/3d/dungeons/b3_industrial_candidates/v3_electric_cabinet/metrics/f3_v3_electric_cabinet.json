@@ -1,0 +1,53 @@
+{
+  "bytes": 9661244,
+  "sha256": "f31b3b2e1fe80a762e520045192ba65b88241b45b6fe247795086b497233dae8",
+  "tris": 6700,
+  "verts": 5984,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_deep_crack",
+    "f3_weathered_concrete",
+    "utility_box_02"
+  ],
+  "textureCount": 9,
+  "textureBytes": 9328377,
+  "sizeMeters": [
+    1.5,
+    1.88,
+    1.2155
+  ],
+  "bboxMin": [
+    -0.75,
+    0.0,
+    -0.5
+  ],
+  "bboxMax": [
+    0.75,
+    1.88,
+    0.7155
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_electric_cabinet",
+  "file": "props/f3_v3_electric_cabinet.glb",
+  "category": "props",
+  "desc_ja": "\u5b9f\u914d\u7dda\u3068\u56de\u8def\u3092\u6301\u3064\u98a8\u5316\u5236\u5fa1\u76e4",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_electric_cabinet.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_electric_cabinet/front.png",
+    "renders/f3_v3_electric_cabinet/back.png",
+    "renders/f3_v3_electric_cabinet/side.png",
+    "renders/f3_v3_electric_cabinet/angle.png",
+    "renders/f3_v3_electric_cabinet/top.png"
+  ]
+}

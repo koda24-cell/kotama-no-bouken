@@ -1,0 +1,52 @@
+{
+  "bytes": 4521784,
+  "sha256": "d3462fe674b6d0d1e63ab219232532b5987d41d5f46e6dde07b876ec99005b1a",
+  "tris": 15736,
+  "verts": 40292,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2489421,
+  "sizeMeters": [
+    3.05,
+    2.0936,
+    8.2548
+  ],
+  "bboxMin": [
+    -1.525,
+    -0.3564,
+    -4.1274
+  ],
+  "bboxMax": [
+    1.525,
+    1.7372,
+    4.1274
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_riveted_span",
+  "file": "props/f3_v3_riveted_span.glb",
+  "category": "props",
+  "desc_ja": "\u6881\u67f1\u3092\u7e4b\u3050\u30ea\u30d9\u30c3\u30c8\u9244\u9aa8\u6a4b",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+  "workflowRun": "45957518181",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_riveted_span.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_riveted_span/front.png",
+    "renders/f3_v3_riveted_span/back.png",
+    "renders/f3_v3_riveted_span/side.png",
+    "renders/f3_v3_riveted_span/angle.png",
+    "renders/f3_v3_riveted_span/top.png"
+  ]
+}

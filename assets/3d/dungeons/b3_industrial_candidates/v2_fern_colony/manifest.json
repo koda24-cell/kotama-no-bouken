@@ -1,0 +1,258 @@
+{
+  "status": "NOT_APPROVED",
+  "assetName": "v2_fern_colony",
+  "asset": {
+    "bytes": 2093244,
+    "sha256": "0083c9aa96391a8c6d03746f80f9f0a94162d67b8b67301167012629a7c204a9",
+    "tris": 6232,
+    "verts": 4403,
+    "meshes": 1,
+    "drawCalls": 1,
+    "materials": [
+      "f3_v2_polyhaven_fern02"
+    ],
+    "textureCount": 3,
+    "textureBytes": 1842256,
+    "sizeMeters": [
+      2.0283,
+      0.4405,
+      0.9205
+    ],
+    "bboxMin": [
+      -0.9891,
+      0.0,
+      -0.4103
+    ],
+    "bboxMax": [
+      1.0392,
+      0.4405,
+      0.5103
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 0,
+    "id": "f3_v2_fern_colony",
+    "file": "props/f3_v2_fern_colony.glb",
+    "category": "props",
+    "desc_ja": "写真由来の葉と立体シルエットを持つシダ群落V2",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "3d4b00119ab06a34a0377402dda1f8f97550cb2d",
+    "workflowRun": "45416559718",
+    "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+    "source": "sources/f3_v2_fern_colony.blend",
+    "renderedFrom": "final alpha-MASK GLB reimport",
+    "renders": [
+      "renders/f3_v2_fern_colony/front.png",
+      "renders/f3_v2_fern_colony/back.png",
+      "renders/f3_v2_fern_colony/side.png",
+      "renders/f3_v2_fern_colony/angle.png",
+      "renders/f3_v2_fern_colony/top.png"
+    ]
+  },
+  "sequential": true,
+  "textureSources": [
+    {
+      "asset": "chipped_concrete",
+      "role": "diffuse",
+      "file": "chipped_concrete_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_diff_1k.jpg",
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "normal",
+      "file": "chipped_concrete_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_nor_gl_1k.jpg",
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "roughness",
+      "file": "chipped_concrete_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_rough_1k.jpg",
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "diffuse",
+      "file": "concrete_moss_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_diff_1k.jpg",
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "normal",
+      "file": "concrete_moss_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_nor_gl_1k.jpg",
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "roughness",
+      "file": "concrete_moss_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_rough_1k.jpg",
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "diffuse",
+      "file": "rusty_iron_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_diff_1k.jpg",
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "normal",
+      "file": "rusty_iron_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_nor_gl_1k.jpg",
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "roughness",
+      "file": "rusty_iron_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_rough_1k.jpg",
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "diffuse",
+      "file": "asphalt_02_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_diff_1k.jpg",
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "normal",
+      "file": "asphalt_02_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_nor_gl_1k.jpg",
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "roughness",
+      "file": "asphalt_02_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_rough_1k.jpg",
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712",
+      "license": "CC0"
+    },
+    {
+      "asset": "concrete_slab_wall",
+      "role": "diffuse",
+      "file": "concrete_slab_wall_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_slab_wall/concrete_slab_wall_diff_1k.jpg",
+      "sha256": "5eaccddc4c15dfcab06d6d7a79f1884bde76cf5eed9b892a188ec2acf373de72",
+      "license": "CC0"
+    },
+    {
+      "asset": "concrete_slab_wall",
+      "role": "normal",
+      "file": "concrete_slab_wall_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_slab_wall/concrete_slab_wall_nor_gl_1k.jpg",
+      "sha256": "7fdfe954fbff16da7888fe68b9b56ed1e0bb7e1d87c18ff4180e4073f74c71ba",
+      "license": "CC0"
+    },
+    {
+      "asset": "concrete_slab_wall",
+      "role": "roughness",
+      "file": "concrete_slab_wall_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_slab_wall/concrete_slab_wall_rough_1k.jpg",
+      "sha256": "0108afabf6b9ad59f9d63668e5a80be08435453fe382a7d749576d82f3b9fea8",
+      "license": "CC0"
+    },
+    {
+      "asset": "cracked_concrete_wall",
+      "role": "diffuse",
+      "file": "cracked_concrete_wall_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cracked_concrete_wall/cracked_concrete_wall_diff_1k.jpg",
+      "sha256": "f910cbaff5a0fbd778a8c41947ac826f2313e70e9b4077bc39221a417fa8d5b4",
+      "license": "CC0"
+    },
+    {
+      "asset": "cracked_concrete_wall",
+      "role": "normal",
+      "file": "cracked_concrete_wall_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cracked_concrete_wall/cracked_concrete_wall_nor_gl_1k.jpg",
+      "sha256": "d247bdc21f3d37eb514d058aaa3c2193a6955d12191d1190cedf5285985f8604",
+      "license": "CC0"
+    },
+    {
+      "asset": "cracked_concrete_wall",
+      "role": "roughness",
+      "file": "cracked_concrete_wall_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cracked_concrete_wall/cracked_concrete_wall_rough_1k.jpg",
+      "sha256": "0f18937de6a05b34797d2ddaac5a3996e922696431161d312b7304ac1b110312",
+      "license": "CC0"
+    },
+    {
+      "asset": "concrete_debris",
+      "role": "diffuse",
+      "file": "concrete_debris_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_debris/concrete_debris_diff_1k.jpg",
+      "sha256": "5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9",
+      "license": "CC0"
+    },
+    {
+      "asset": "concrete_debris",
+      "role": "normal",
+      "file": "concrete_debris_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_debris/concrete_debris_nor_gl_1k.jpg",
+      "sha256": "39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb",
+      "license": "CC0"
+    },
+    {
+      "asset": "concrete_debris",
+      "role": "roughness",
+      "file": "concrete_debris_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_debris/concrete_debris_rough_1k.jpg",
+      "sha256": "bbdf4da5c579b1d7282021e265a0bda3df87ca2cb9972f93d0caa5c3aeca47e4",
+      "license": "CC0"
+    }
+  ],
+  "runtime": {
+    "file": "f3_v2_fern_colony.glb",
+    "sourceSha256": "0083c9aa96391a8c6d03746f80f9f0a94162d67b8b67301167012629a7c204a9",
+    "sha256": "3973c1632a0ad3e2abc923d1b5ccc787022e26a8b066ae513b18533428e8ee5e",
+    "bytes": 251072,
+    "embeddedOriginalBytes": 2093244,
+    "images": [
+      {
+        "file": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621.jpg",
+        "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621",
+        "bytes": 367222
+      },
+      {
+        "file": "caa6f93c35228f8b9f5124907aad45d6e1e9644fb8048292e002ffc2b752668c.png",
+        "sha256": "caa6f93c35228f8b9f5124907aad45d6e1e9644fb8048292e002ffc2b752668c",
+        "bytes": 1146583
+      },
+      {
+        "file": "c50d6c139ccb5d13ba91e8192d2bab5c7cb00210742ca7c58573cb14788b6eea.png",
+        "sha256": "c50d6c139ccb5d13ba91e8192d2bab5c7cb00210742ca7c58573cb14788b6eea",
+        "bytes": 328451
+      }
+    ],
+    "geometryAndMaterialDataUnchanged": true,
+    "imageLayout": "../../shared_textures/<sha256>.jpg|png relative to candidate/<asset>/runtime/"
+  }
+}

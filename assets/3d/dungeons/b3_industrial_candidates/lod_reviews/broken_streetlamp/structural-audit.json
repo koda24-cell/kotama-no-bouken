@@ -1,0 +1,115 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-broken_streetlamp/comparison/lod0_NOT_APPROVED.glb",
+      "file_bytes": 4894016,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 588,
+      "materials": 5,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_deep_crack",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "torn power conductor",
+        "Cylinder",
+        "Cube.001",
+        "Cube.003",
+        "tapered curved streetlamp mast"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 15,
+      "textures": 15,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-broken_streetlamp/comparison/lod1_NOT_APPROVED.glb",
+      "file_bytes": 4873472,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 341,
+      "materials": 5,
+      "material_names": [
+        "f3_aged_rubber.001",
+        "f3_bare_worn_steel.001",
+        "f3_damp_concrete.001",
+        "f3_deep_crack.001",
+        "f3_oxidized_iron.001"
+      ],
+      "mesh_names": [
+        "torn power conductor.001",
+        "Cylinder.001",
+        "Cube.002",
+        "Cube.004",
+        "tapered curved streetlamp mast.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 15,
+      "textures": 15,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-broken_streetlamp/comparison/lod2_NOT_APPROVED.glb",
+      "file_bytes": 4855536,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 5,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 180,
+      "materials": 5,
+      "material_names": [
+        "f3_aged_rubber.002",
+        "f3_bare_worn_steel.002",
+        "f3_damp_concrete.002",
+        "f3_deep_crack.002",
+        "f3_oxidized_iron.002"
+      ],
+      "mesh_names": [
+        "torn power conductor.002",
+        "Cylinder.002",
+        "Cube.005",
+        "Cube.006",
+        "tapered curved streetlamp mast.002"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 15,
+      "textures": 15,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

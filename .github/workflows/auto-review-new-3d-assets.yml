@@ -16,8 +16,11 @@ on:
 permissions:
   contents: read
   actions: read
+  packages: read
 jobs:
   select:
+    # This task runs its Blender LOD reviews serially, via f3-industrial-review.yml.
+    if: github.head_ref != 'feature/f3-industrial-ruins-20261124' && github.head_ref != 'feature/f3-city-v3-20261127'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -70,7 +73,7 @@ jobs:
           if-no-files-found: warn
   rigid-review:
     needs: select
-    if: ${{ needs.select.outputs.count != '0' }}
+    if: ${{ needs.select.result == 'success' && needs.select.outputs.count != '' && needs.select.outputs.count != '0' }}
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -80,3 +83,4 @@ jobs:
       source_glb: ${{ matrix.source_glb }}
     permissions:
       contents: read
+      packages: read

@@ -1,0 +1,54 @@
+{
+  "bytes": 7588808,
+  "sha256": "1eb9218405ec1cccc88e1fb1b074f76583b956114b7ed0ed3b313cef6a7130b6",
+  "tris": 3460,
+  "verts": 7303,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_damp_concrete",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 7210273,
+  "sizeMeters": [
+    2.4,
+    5.6,
+    1.13
+  ],
+  "bboxMin": [
+    -1.2,
+    0.0,
+    -0.565
+  ],
+  "bboxMax": [
+    1.2,
+    5.6,
+    0.565
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_column_joint",
+  "file": "props/f3_column_joint.glb",
+  "category": "props",
+  "desc_ja": "\u9732\u51fa\u3057\u305f\u6881\u67f1\u63a5\u5408\u90e8",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "0e85bfd39b776642cff4a2acedc493b5efa7272e",
+  "workflowRun": "45331023029",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_column_joint.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_column_joint/front.png",
+    "renders/f3_column_joint/back.png",
+    "renders/f3_column_joint/side.png",
+    "renders/f3_column_joint/angle.png",
+    "renders/f3_column_joint/top.png"
+  ]
+}

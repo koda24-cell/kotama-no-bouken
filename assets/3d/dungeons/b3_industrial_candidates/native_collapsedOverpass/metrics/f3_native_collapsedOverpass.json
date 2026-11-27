@@ -1,0 +1,53 @@
+{
+  "bytes": 5053740,
+  "sha256": "380e87b401d0a5dd3dd3abbef827f1433dfde85e70ecde21fc55fa950fc3fc3e",
+  "tris": 1286,
+  "verts": 2815,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 9,
+  "textureBytes": 4905251,
+  "sizeMeters": [
+    8.3327,
+    4.9817,
+    3.312
+  ],
+  "bboxMin": [
+    -4.1567,
+    -0.1672,
+    -1.606
+  ],
+  "bboxMax": [
+    4.176,
+    4.8145,
+    1.706
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_native_collapsedOverpass",
+  "file": "props/f3_native_collapsedOverpass.glb",
+  "category": "props",
+  "desc_ja": "\u65e2\u5b58\u30fb\u5d29\u843d\u9ad8\u67b6\u306e\u8868\u9762\u3068\u63a5\u5408\u90e8\u5f37\u5316",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "624388b170f2210bd721145ac05e7d0576935fb0",
+  "workflowRun": "45367160754",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_native_collapsedOverpass.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_native_collapsedOverpass/front.png",
+    "renders/f3_native_collapsedOverpass/back.png",
+    "renders/f3_native_collapsedOverpass/side.png",
+    "renders/f3_native_collapsedOverpass/angle.png",
+    "renders/f3_native_collapsedOverpass/top.png"
+  ]
+}

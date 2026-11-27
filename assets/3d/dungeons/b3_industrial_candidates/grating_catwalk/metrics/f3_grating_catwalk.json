@@ -1,0 +1,52 @@
+{
+  "bytes": 3057688,
+  "sha256": "711822cf4194859fed9f87315b77237c4a65b4bdca5cdb2f8840a4a421ffde5b",
+  "tris": 4896,
+  "verts": 11148,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2489421,
+  "sizeMeters": [
+    4.0,
+    1.256,
+    1.8165
+  ],
+  "bboxMin": [
+    -2.0,
+    0.02,
+    -0.905
+  ],
+  "bboxMax": [
+    2.0,
+    1.276,
+    0.9115
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_grating_catwalk",
+  "file": "props/f3_grating_catwalk.glb",
+  "category": "props",
+  "desc_ja": "\u6b20\u640d\u30b0\u30ec\u30fc\u30c1\u30f3\u30b0\u6b69\u5eca",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_grating_catwalk.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_grating_catwalk/front.png",
+    "renders/f3_grating_catwalk/back.png",
+    "renders/f3_grating_catwalk/side.png",
+    "renders/f3_grating_catwalk/angle.png",
+    "renders/f3_grating_catwalk/top.png"
+  ]
+}

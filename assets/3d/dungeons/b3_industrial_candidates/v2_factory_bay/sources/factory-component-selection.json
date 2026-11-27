@@ -1,0 +1,146 @@
+{
+  "status": "NOT_APPROVED",
+  "author": "James Ray Cock",
+  "license": "CC0",
+  "selected": [
+    {
+      "name": "wall_window_tall_large_01",
+      "sourceVertices": 1222,
+      "placedAt": [
+        0,
+        0.18
+      ]
+    },
+    {
+      "name": "window_tall_large_01",
+      "sourceVertices": 1709,
+      "placedAt": [
+        0,
+        0.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        -1.5,
+        0.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        1.5,
+        0.18
+      ]
+    },
+    {
+      "name": "wall_window_tall_large_03",
+      "sourceVertices": 1190,
+      "placedAt": [
+        0,
+        3.18
+      ]
+    },
+    {
+      "name": "window_tall_large_03",
+      "sourceVertices": 6311,
+      "placedAt": [
+        0,
+        3.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        -1.5,
+        3.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        1.5,
+        3.18
+      ]
+    },
+    {
+      "name": "wall_window_tall_large_01",
+      "sourceVertices": 1222,
+      "placedAt": [
+        0,
+        6.18
+      ]
+    },
+    {
+      "name": "window_tall_large_01",
+      "sourceVertices": 1709,
+      "placedAt": [
+        0,
+        6.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        -1.5,
+        6.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        1.5,
+        6.18
+      ]
+    },
+    {
+      "name": "wall_window_tall_large_03",
+      "sourceVertices": 1190,
+      "placedAt": [
+        0,
+        9.18
+      ]
+    },
+    {
+      "name": "window_tall_large_03",
+      "sourceVertices": 6311,
+      "placedAt": [
+        0,
+        9.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        -1.5,
+        9.18
+      ]
+    },
+    {
+      "name": "wall_pier_standard_01",
+      "sourceVertices": 443,
+      "placedAt": [
+        1.5,
+        9.18
+      ]
+    },
+    {
+      "name": "crown_standard_standard_01",
+      "sourceVertices": 62,
+      "placedAt": [
+        0,
+        12.18
+      ]
+    }
+  ],
+  "kitOriginalKept": true,
+  "sourceUVPreserved": true,
+  "derivativeChanges": "Glazing faces removed from two source window variants; photographic materials tinted; own load-bearing volume and decay added."
+}

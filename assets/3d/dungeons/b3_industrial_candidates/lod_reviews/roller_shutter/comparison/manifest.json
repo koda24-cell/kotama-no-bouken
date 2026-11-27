@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/roller_shutter/props/f3_roller_shutter.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 4396,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 4396,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 3031820,
+          "sha256": "3ade7fbe14f8cae3ba20226fa16c0279c8d4dea40c7f19a41a537e6e7320aa67"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 270005,
+          "sha256": "6c6b32147e63f219145ab5475c889d4f4222f18d3b0888d591d516964d480668"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 258026,
+          "sha256": "505ceb6312b3bec93acff751a50703c5d66bd40b54bf1bd8dadccd73fba68520"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 277002,
+          "sha256": "a8d9f5f72ecbfdfcf64faa10481c57ee1ba7dae17b684062750f9d9944cbd820"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 256699,
+          "sha256": "dc4157aaf847b6e99f4a2b4385d57b878c2c62b9929511b9b65c84766d6c33ac"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 2417,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 2740084,
+          "sha256": "5e15b0a8646397459a5afcd604b7550ff639bafdbb60afe494d98f7fa8c302c4"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 269810,
+          "sha256": "d37677f0cc3dcc1f1a4a4ce016556cd77e324e3b03b638b351d8e8b42b35e763"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 257681,
+          "sha256": "a59b9e94e32126d97bd6717c4d8d8f0c29c8a97c00b18f1f922f7ac93de346bc"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 277056,
+          "sha256": "4687a6bd8e1adb559936a5fc372fa28803c787407a2410748d59017438bbe267"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 256699,
+          "sha256": "b87bc7acbf6c65140afb6be31012026fffaf40d55fc5315cc54b5a8403db4ce3"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 1099,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 2610152,
+          "sha256": "315e8d656657f3e6bf2f7bddb9d45fca1136af737ba63eebfbff1cc68fba36f1"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 268540,
+          "sha256": "9d3f88e19d450ebce03c92496a065b1bf03299492777f40b7d0429a360576f0b"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 257340,
+          "sha256": "1f456cca49b01a1705daa3e3fe3cff8eea6198aaed609e4051a30e089a8317e5"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 276704,
+          "sha256": "ed65e20ca18dc222064cec78aecb0e48fe33fbd0327b5fe756f1e406f2ff369a"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 256699,
+          "sha256": "9683b8d28f115ba632a041d39ea0f81b63848688d4d5b2f731432bec8b93eadf"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "a7c8974ee7fed10c5dc9ac7c45a7bb517e8cc0830d364f0aa36190c27ac03cda",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "roller_shutter",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}

@@ -72,6 +72,7 @@ function fieldArea(n = fieldState.area, f = fieldState.floor) {
   const def = FIELD_AREAS[n]; if (!def) return null;
   let floor = rnd ? rnd.floor : def.floors[f];
   if(n===1 && !rnd && typeof fieldFirstStratumReviewFloorV6==='function' && typeof window!=='undefined' && (window.KotamaSacredPlaytest===true || new URLSearchParams(location.search).get('f1sacred')==='1')) floor=fieldFirstStratumReviewFloorV6(def,floor,f);
+  if(n===3&&window.KotamaCityV3Playtest===true&&window.KotamaCityV3Layout)floor=window.KotamaCityV3Layout.create(f,floor).floor;
   const grid = floor.map.map(row => row.split(""));
   const h = grid.length, w = Math.max(...grid.map(r => r.length));
   const objects = []; let start = { tx: 1, ty: 1 }, up = null, down = null, chestIndex = 0;

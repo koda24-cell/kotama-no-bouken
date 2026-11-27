@@ -1,0 +1,49 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/broken_signal/props/f3_broken_signal.glb",
+      "file_bytes": 5036608,
+      "glb_meshes": 8,
+      "total_mesh_primitives": 8,
+      "scene_nodes": 9,
+      "scene_mesh_nodes": 8,
+      "scene_primitive_instances": 8,
+      "estimated_scene_triangles": 1540,
+      "materials": 8,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_dead_signal_2.28",
+        "f3_dead_signal_3.08",
+        "f3_deep_crack",
+        "f3_faded_safety_ochre",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "dangling supply cable",
+        "hanging broken lens retention wire",
+        "Cube",
+        "Cylinder",
+        "Cylinder.002",
+        "Cylinder.001",
+        "Cube.001",
+        "leaning tubular signal mast"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 8,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 24,
+      "textures": 24,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

@@ -1,0 +1,60 @@
+{
+  "bytes": 20366044,
+  "sha256": "d7bc907deab97b89a62372a2279bf275713d2b8ebe7e628a9dc2386af0e02356",
+  "tris": 33700,
+  "verts": 51324,
+  "meshes": 10,
+  "drawCalls": 10,
+  "materials": [
+    "f3_damp_concrete",
+    "f3_ivy_woody_stem",
+    "f3_lobed_ivy_veined",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete",
+    "modular_factory_facade_brick",
+    "modular_factory_facade_trim_01",
+    "modular_factory_facade_windows_glass",
+    "modular_factory_facade_windows",
+    "v2_factory_room_shadow"
+  ],
+  "textureCount": 27,
+  "textureBytes": 17682508,
+  "sizeMeters": [
+    3.465,
+    12.43,
+    3.449
+  ],
+  "bboxMin": [
+    -1.685,
+    0.085,
+    -1.56
+  ],
+  "bboxMax": [
+    1.78,
+    12.515,
+    1.889
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 186,
+  "id": "f3_v2_factory_bay",
+  "file": "props/f3_v2_factory_bay.glb",
+  "category": "props",
+  "desc_ja": "CC0\u5de5\u5834\u7a93\u67a0\u3092\u6d3b\u304b\u3057\u305f\u5d29\u843d\u5de5\u696d\u68dfV2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "81e69a86713c15ce38074c2e21f2b63dd04ca24c",
+  "workflowRun": "45423622575",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_factory_bay.blend",
+  "renderedFrom": "final alpha-MASK GLB reimport",
+  "renders": [
+    "renders/f3_v2_factory_bay/front.png",
+    "renders/f3_v2_factory_bay/back.png",
+    "renders/f3_v2_factory_bay/side.png",
+    "renders/f3_v2_factory_bay/angle.png",
+    "renders/f3_v2_factory_bay/top.png"
+  ]
+}

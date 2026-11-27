@@ -1,0 +1,51 @@
+{
+  "bytes": 1280132,
+  "sha256": "7fcc2167b1a7a724ab2b28c8b3e921c405060e139acb84fe425bcda4523112d8",
+  "tris": 8,
+  "verts": 16,
+  "meshes": 1,
+  "drawCalls": 1,
+  "materials": [
+    "v3 whiteflower atlas MASK"
+  ],
+  "textureCount": 1,
+  "textureBytes": 1277442,
+  "sizeMeters": [
+    1.4,
+    0.3838,
+    1.4
+  ],
+  "bboxMin": [
+    -0.7,
+    0.0,
+    -0.7
+  ],
+  "bboxMax": [
+    0.7,
+    0.3838,
+    0.7
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_whiteflower_atlas",
+  "file": "props/f3_v3_whiteflower_atlas.glb",
+  "category": "props",
+  "desc_ja": "\u767d\u3044\u82b1\u306e\u900f\u904e\u30a2\u30c8\u30e9\u30b9\u7fa4\u843d",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_whiteflower_atlas.blend",
+  "renderedFrom": "final alpha-MASK GLB reimport",
+  "renders": [
+    "renders/f3_v3_whiteflower_atlas/front.png",
+    "renders/f3_v3_whiteflower_atlas/back.png",
+    "renders/f3_v3_whiteflower_atlas/side.png",
+    "renders/f3_v3_whiteflower_atlas/angle.png",
+    "renders/f3_v3_whiteflower_atlas/top.png"
+  ]
+}

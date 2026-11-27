@@ -1,0 +1,23 @@
+{
+  "status": "NOT_APPROVED",
+  "referenceSource": "https://polyhaven.com/a/flower_heliophila",
+  "referenceLicense": "CC0",
+  "referenceAuthor": "Jenelle van Heerden",
+  "production": "Original modeled ivory petals and silver-green groundcover, source baked to RGBA; sparse licensed specimen preserved separately, not falsely described as the dense flower output",
+  "views": 4,
+  "resolution": [
+    2048,
+    512
+  ],
+  "originalVertices": 59689,
+  "originalSceneRetained": true,
+  "authoredFlowerCount": 42,
+  "croppedViewHeights": [
+    0.38377192982456143,
+    0.37575757575757573,
+    0.3723404255319149,
+    1.4461538461538461
+  ],
+  "cardTriangles": 8,
+  "wind": "Runtime vertex displacement with per-instance phase, alpha tested"
+}

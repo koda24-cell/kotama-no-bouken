@@ -229,7 +229,8 @@ function loadTheme2() {
 }
 function loadTheme3() {
   if (g.theme?.area === 3) return Promise.resolve(g.theme);
-  return import('./field-3d-b3-city.js?v=20261110-quality-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile }));
+  const industrial = window.KotamaIndustrialPlaytest === true || new URLSearchParams(location.search).get('f3industrial') === '1';
+  return import(window.KotamaCityV3Playtest===true?'./field-3d-b3-city-v3.js':industrial ? './field-3d-b3-industrial.js' : './field-3d-b3-city.js?v=20261110-quality-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES, viewFar, setEnvironment: env => applyEnv(3,env) }));
 }
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;
@@ -337,7 +338,7 @@ async function buildFloor() {
     const started=performance.now(), uncached=list.filter(f=>!g.cache.has(f)).length;
     await loadSharedAssets(list,concurrency,()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);});
     g.sharedLoadReport={area,total:list.length,uncached,concurrency,elapsedMs:Math.round(performance.now()-started)};
-    if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
+    if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc'&&!(area===3&&window.KotamaCityV3Playtest===true&&o.id==='statue')) await load(npcFile(o));
   } catch (e) {
     if(th&&th!==g.theme)try{th.dispose({final:true});}catch(_){} throw e;
   }
@@ -491,6 +492,7 @@ function addWater(x, z) {
 // 物の状態（開けた・採り尽くした・解いた・開いた）を見た目に反映する
 async function syncEntry(e, S) {
   const o = e.o, x = o.tx * CELL, z = o.ty * CELL;
+  const groundY=e.cityV3?(e.groundY||0):0;
   let st = '';
   if (o.kind === 'chest') st = fieldState.flags[o.key] ? 'open' : 'closed';
   else if (o.kind === 'cache') st = fieldState.flags[`puzzle:${o.puzzle}:reward`] ? 'open' : 'closed';
@@ -504,21 +506,21 @@ async function syncEntry(e, S) {
   S = S || {};
   if (g.theme && Number(fieldState.area) === g.theme.area && await g.theme.sync(e, st)) { if (!first) g.lastLightKey = ''; return; }
   const get = async (k) => S[k] || load(FILES[k]);
-  if (o.kind === 'chest' || o.kind === 'cache') { removeObj(e.obj); e.obj = place(g.world, await get(st === 'open' ? 'chestOpen' : 'chest'), x, 0, z, e.ry); }
+  if (o.kind === 'chest' || o.kind === 'cache') { removeObj(e.obj); e.obj = place(g.world, await get(st === 'open' ? 'chestOpen' : 'chest'), x, groundY, z, e.ry); }
   else if (o.kind === 'gather') {
-    if (!e.obj) { const kind = gatherDef(o).kind, k = kind === 'chop' ? 'logging' : kind === 'mine' ? 'mining' : 'herb'; e.obj = place(g.world, await get(k), x, 0, z, e.ry, 0.8); }
+    if (!e.obj) { const kind = gatherDef(o).kind, k = kind === 'chop' ? 'logging' : kind === 'mine' ? 'mining' : 'herb'; e.obj = place(g.world, await get(k), x, groundY, z, e.ry, 0.8); }
     dimObj(e.obj, st.endsWith('empty'));
   }
   else if (o.kind === 'switch') { for (const L of e.obj?.userData.lights || []) L.off = st === 'solved'; }
   else if (o.kind === 'door') {
     if (!e.obj) e.obj = place(g.world, await get('gate'), x, 0, z, e.ry, 1.15);
-    const y = st === 'open' ? 3.3 : 0;
+    const y = groundY+(st === 'open' ? 3.3 : 0);
     e.obj.position.y = y; e.obj.updateMatrix(); e.obj.updateMatrixWorld(true);   // matrixAutoUpdate=false なので行列を作り直す
   }
   else if (o.kind === 'event') {
     if (!e.obj) {
-      if (o.hidden) e.obj = place(g.world, await get('roots'), x, 0, z, e.ry, 0.45);
-      else e.obj = place(g.world, await get(o.sprite === 'ev-stump' ? 'stump' : 'mushrooms'), x, 0, z, e.ry, o.sprite === 'ev-stump' ? 0.6 : 0.8);
+      if (o.hidden) e.obj = place(g.world, await get('roots'), x, groundY, z, e.ry, 0.45);
+      else e.obj = place(g.world, await get(o.sprite === 'ev-stump' ? 'stump' : 'mushrooms'), x, groundY, z, e.ry, o.sprite === 'ev-stump' ? 0.6 : 0.8);
     }
     if (!o.hidden) dimObj(e.obj, st === 'done');
   }
@@ -586,6 +588,7 @@ function syncFoes(t) {
     const inB5Vision = Number(fieldState.area) !== 5 || fieldState.visible?.has(`${Math.floor(f.x / FIELD_TILE)},${Math.floor(f.y / FIELD_TILE)}`);
     v.grp.visible = !f.defeated && !!inB5Vision;
     const p = f.view || f, target = new THREE.Vector3(p.x / FIELD_TILE * CELL - CELL / 2, 0, (p.y - 4) / FIELD_TILE * CELL - CELL / 2);
+    target.y=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.heightAt?.(target.x,target.z)||0):0;
     if (!v.pos) v.pos = target.clone(); else v.pos.lerp(target, 0.25);
     v.grp.position.copy(v.pos);
     const chase = f.mode === 'chase', pulse = 0.5 + 0.5 * Math.sin(t / (chase ? 140 : 380));
@@ -603,11 +606,12 @@ function syncFoes(t) {
    ------------------------------------------------------------ */
 function camTarget() {
   const tx = Math.floor(fieldState.x / FIELD_TILE), ty = Math.floor(fieldState.y / FIELD_TILE), [dx, dy] = DIR_VEC[fieldState.dir] || DIR_VEC.down;
-  return { pos: new THREE.Vector3(tx * CELL - dx * BACK, EYE, ty * CELL - dy * BACK), yaw: DIR_YAW[fieldState.dir] ?? Math.PI };
+  const groundY=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.heightAt?.(tx*CELL,ty*CELL)||0):0,back=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?.25:BACK;
+  return { pos: new THREE.Vector3(tx * CELL - dx * back, EYE+groundY, ty * CELL - dy * back), yaw: DIR_YAW[fieldState.dir] ?? Math.PI, pitch:window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.pitchAt?.(tx,ty,fieldState.dir)??-.035):-.035 };
 }
 function updateCamera(dt) {
   const t = camTarget(), c = g.cam;
-  if (!c.ready) { c.pos.copy(t.pos); c.yaw = t.yaw; c.ready = true; }
+  if (!c.ready) { c.pos.copy(t.pos); c.yaw = t.yaw;c.pitch=t.pitch; c.ready = true; }
   const kp = 1 - Math.exp(-dt * 13), ky = 1 - Math.exp(-dt * 15);
   c.pos.lerp(t.pos, kp);
   let dyaw = t.yaw - c.yaw; while (dyaw > Math.PI) dyaw -= Math.PI * 2; while (dyaw < -Math.PI) dyaw += Math.PI * 2;
@@ -619,7 +623,7 @@ function updateCamera(dt) {
   const eye=resolveFirstLayerCameraV6(c.pos.x+bx,c.pos.z+bz,g.cameraPortals||[]);
   g.lastCameraClearanceAdjustments=eye.adjusted;
   g.camera.position.set(eye.x, c.pos.y + bob, eye.z);
-  g.camera.rotation.set(-0.035, c.yaw, 0, 'YXZ');
+  c.pitch+=(t.pitch-c.pitch)*kp;g.camera.rotation.set(c.pitch, c.yaw, 0, 'YXZ');
 }
 
 /* ------------------------------------------------------------

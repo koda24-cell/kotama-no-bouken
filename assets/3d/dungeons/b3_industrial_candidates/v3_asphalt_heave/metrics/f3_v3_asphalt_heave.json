@@ -1,0 +1,54 @@
+{
+  "bytes": 6026008,
+  "sha256": "05863daa936b469793e470c8399784a62ace75b4d21430026385fdec652cb0fe",
+  "tris": 4034,
+  "verts": 9605,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_broken_asphalt",
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_exposed_aggregate"
+  ],
+  "textureCount": 12,
+  "textureBytes": 5533381,
+  "sizeMeters": [
+    4.3662,
+    0.7868,
+    3.7277
+  ],
+  "bboxMin": [
+    -1.9949,
+    -0.2589,
+    -1.8655
+  ],
+  "bboxMax": [
+    2.3713,
+    0.528,
+    1.8622
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_asphalt_heave",
+  "file": "props/f3_v3_asphalt_heave.glb",
+  "category": "props",
+  "desc_ja": "\u6d6e\u304d\u4e0a\u304c\u3063\u305f\u8217\u88c5\u3068\u9732\u51fa\u8def\u76e4",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_asphalt_heave.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_asphalt_heave/front.png",
+    "renders/f3_v3_asphalt_heave/back.png",
+    "renders/f3_v3_asphalt_heave/side.png",
+    "renders/f3_v3_asphalt_heave/angle.png",
+    "renders/f3_v3_asphalt_heave/top.png"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "stage": "floor3",
+  "asset": "ruined_building",
+  "version": "v3",
+  "source_model": "PR256 existing geometry plus V2 additive pass",
+  "photo_pbr_source": "approved CC0 source photographs from assets/models/floor3/double_flight/textures",
+  "approval": "NOT_APPROVED",
+  "run_id": "44054029508",
+  "source_commit": "a106f0615675fc10387e86f7f620621902444d20",
+  "geometry_count": 934,
+  "embedded_images": 6,
+  "files": {
+    "ruined_building_v3.glb": {
+      "sha256": "61bc2aa36a3c66a875f8f22675ca87ec0ede8982ecb3c69ef98cbacbe7ebb50e",
+      "bytes": 7209044
+    },
+    "ruined_building_v3.blend": {
+      "sha256": "bebb72c29290dc8f20f2b7d10268b37bd1d9ee45160e08558235ef0e9abaed7b",
+      "bytes": 4574109
+    },
+    "ruined_building_v3-front.png": {
+      "sha256": "84dcb9bd1027bdb103b24ebca466b4d09e7bdf81ff8998cd68c823f25e26c4ae",
+      "bytes": 575187
+    },
+    "ruined_building_v3-side.png": {
+      "sha256": "075942cdabd62b6d072fce2e91d9b914d7464e6ef3716cc3380f6606312d0e66",
+      "bytes": 563321
+    },
+    "ruined_building_v3-angle.png": {
+      "sha256": "a5d919748e35cd0f7bcaaa3a7c97a23f966331eff0b6d183f2d839b225b5a478",
+      "bytes": 639806
+    }
+  }
+}

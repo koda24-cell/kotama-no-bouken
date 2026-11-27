@@ -1,0 +1,176 @@
+{
+  "status": "NOT_APPROVED",
+  "assetName": "v3_whiteflower_atlas",
+  "asset": {
+    "bytes": 1280132,
+    "sha256": "7fcc2167b1a7a724ab2b28c8b3e921c405060e139acb84fe425bcda4523112d8",
+    "tris": 8,
+    "verts": 16,
+    "meshes": 1,
+    "drawCalls": 1,
+    "materials": [
+      "v3 whiteflower atlas MASK"
+    ],
+    "textureCount": 1,
+    "textureBytes": 1277442,
+    "sizeMeters": [
+      1.4,
+      0.3838,
+      1.4
+    ],
+    "bboxMin": [
+      -0.7,
+      0.0,
+      -0.7
+    ],
+    "bboxMax": [
+      0.7,
+      0.3838,
+      0.7
+    ],
+    "extensions": [],
+    "animations": [],
+    "pointLights": 0,
+    "emitters": 0,
+    "valid": true,
+    "zeroTangentFallbackVertices": 0,
+    "id": "f3_v3_whiteflower_atlas",
+    "file": "props/f3_v3_whiteflower_atlas.glb",
+    "category": "props",
+    "desc_ja": "白い花の透過アトラス群落",
+    "approvalStatus": "NOT_APPROVED",
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429",
+    "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+    "source": "sources/f3_v3_whiteflower_atlas.blend",
+    "renderedFrom": "final alpha-MASK GLB reimport",
+    "renders": [
+      "renders/f3_v3_whiteflower_atlas/front.png",
+      "renders/f3_v3_whiteflower_atlas/back.png",
+      "renders/f3_v3_whiteflower_atlas/side.png",
+      "renders/f3_v3_whiteflower_atlas/angle.png",
+      "renders/f3_v3_whiteflower_atlas/top.png"
+    ]
+  },
+  "sequential": true,
+  "textureSources": [
+    {
+      "asset": "chipped_concrete",
+      "role": "diffuse",
+      "file": "chipped_concrete_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_diff_1k.jpg",
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "normal",
+      "file": "chipped_concrete_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_nor_gl_1k.jpg",
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "chipped_concrete",
+      "role": "roughness",
+      "file": "chipped_concrete_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/chipped_concrete/chipped_concrete_rough_1k.jpg",
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "diffuse",
+      "file": "concrete_moss_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_diff_1k.jpg",
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "normal",
+      "file": "concrete_moss_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_nor_gl_1k.jpg",
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "concrete_moss",
+      "role": "roughness",
+      "file": "concrete_moss_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_moss/concrete_moss_rough_1k.jpg",
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c",
+      "license": "CC0",
+      "reused": true
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "diffuse",
+      "file": "rusty_iron_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_diff_1k.jpg",
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "normal",
+      "file": "rusty_iron_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_nor_gl_1k.jpg",
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
+      "license": "CC0"
+    },
+    {
+      "asset": "rusty_iron",
+      "role": "roughness",
+      "file": "rusty_iron_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_iron/rusty_iron_rough_1k.jpg",
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "diffuse",
+      "file": "asphalt_02_diffuse.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_diff_1k.jpg",
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "normal",
+      "file": "asphalt_02_normal.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_nor_gl_1k.jpg",
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
+      "license": "CC0"
+    },
+    {
+      "asset": "asphalt_02",
+      "role": "roughness",
+      "file": "asphalt_02_roughness.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/asphalt_02/asphalt_02_rough_1k.jpg",
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712",
+      "license": "CC0"
+    }
+  ],
+  "runtime": {
+    "file": "f3_v3_whiteflower_atlas.glb",
+    "sourceSha256": "7fcc2167b1a7a724ab2b28c8b3e921c405060e139acb84fe425bcda4523112d8",
+    "sha256": "e86d5a921de9688080212b9298484d73bb2c3bdf5f23e1f7033a350b06732e99",
+    "bytes": 2716,
+    "embeddedOriginalBytes": 1280132,
+    "images": [
+      {
+        "file": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96.png",
+        "sha256": "80934c465fea40ee4a8623c9527e4f052f36cf1aaa2752bbe37b702890920f96",
+        "bytes": 1277442
+      }
+    ],
+    "geometryAndMaterialDataUnchanged": true,
+    "imageLayout": "../../shared_textures/<sha256>.jpg|png relative to candidate/<asset>/runtime/"
+  }
+}

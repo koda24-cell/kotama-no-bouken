@@ -21,6 +21,7 @@ def args_after_dash():
 parser = argparse.ArgumentParser()
 parser.add_argument("--source", required=True)
 parser.add_argument("--out", required=True)
+parser.add_argument("--export-tangents", action="store_true", help="Keep explicit normal-map tangent frames in review GLBs")
 parser.add_argument("--ratios", nargs=2, type=float, default=[0.55,0.25])
 opt = parser.parse_args(args_after_dash())
 src = Path(opt.source)
@@ -118,7 +119,7 @@ for level,ratio in [(0,1.0),(1,opt.ratios[0]),(2,opt.ratios[1])]:
     for ob in source_objects:ob.select_set(True)
     bpy.context.view_layer.objects.active=source_objects[0]
     glb=out/("lod%d_NOT_APPROVED.glb"%level)
-    bpy.ops.export_scene.gltf(filepath=str(glb.resolve()),export_format="GLB",use_selection=True)
+    bpy.ops.export_scene.gltf(filepath=str(glb.resolve()),export_format="GLB",use_selection=True,export_tangents=opt.export_tangents)
     png=[]
     for view,cam in cams.items():
         scene.camera=cam

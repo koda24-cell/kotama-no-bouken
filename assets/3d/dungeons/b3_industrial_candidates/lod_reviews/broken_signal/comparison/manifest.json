@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/broken_signal/props/f3_broken_signal.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 1540,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 1540,
+      "mesh_objects": 8,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 5036488,
+          "sha256": "f7a3dba4660d09b696178f4a39e5419006abede954f514422e0879f24262b5bc"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 265070,
+          "sha256": "32ad9247205eed2028e8e1befa91d7262e5996e3af7090c886c1830cab835b50"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 261912,
+          "sha256": "bbe58d4d326cb4fa422fe4141e331fc28b63174c073b6f0bb8ea64df5b041a37"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 267618,
+          "sha256": "c77e1acb775370e6819fa7778334b43269d0096c61a8bc729dc49588f5c13a22"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 258352,
+          "sha256": "e7a877e8ab2c4f4c3c60d2296189814f94ccf63f5d2c6c11492696fb40bfc6cc"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 893,
+      "mesh_objects": 8,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 5001456,
+          "sha256": "e56ae00e33aad67e76bd85fc5293d14c0a123c9108f00bac1d9c2420c14c9bdf"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 265102,
+          "sha256": "aa0bad16a5aa034dcc74368e62d227d098eb53b2d953a54297eff26e59960a88"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 262235,
+          "sha256": "43c9b894559654c7c4da67ff0bfab5d63e6b5dad3d1b51e8adbea698e864afe3"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 267782,
+          "sha256": "03b417989fef29bf591941d3b42e29339e6ec0d0a7357e5663a986b0bc981b04"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 258436,
+          "sha256": "10860bdad0e0d45325a30b623faba89d48753e8019ddf99ec9af7bb4d3f9e5d8"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 466,
+      "mesh_objects": 8,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 4956148,
+          "sha256": "27f810894cfcd8da87fdba372112fcdaabe5835e4c156a133834614a475c5907"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 264838,
+          "sha256": "d07efd787b99447e156a037bef4309a0a980885dfdb0aa39d16400751a5bc8a3"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 263044,
+          "sha256": "be7e021170fdcea8c0b37dc72049ecbc76b4b47c863267e2c2d49dc80e966cec"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 268584,
+          "sha256": "3af5d9d17d1b79f423ffcc3bfac564a2b592f67159ff2713ef35f52488b0f0d5"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 258358,
+          "sha256": "e2e3b481664849642ff4fbe202300c697b4c63e7c0b2385594e1367951f160c4"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "a3aa28659b5bb18942988cdbebe5b5d0530b9962036214e400abcd0cab714399",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "broken_signal",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}

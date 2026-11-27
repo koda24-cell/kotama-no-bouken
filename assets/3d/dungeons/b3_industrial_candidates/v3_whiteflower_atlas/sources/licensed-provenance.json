@@ -1,0 +1,54 @@
+{
+  "status": "NOT_APPROVED",
+  "supplier": "Poly Haven",
+  "resolution": "1k",
+  "asset": "flower_heliophila",
+  "assetURL": "https://polyhaven.com/a/flower_heliophila",
+  "license": "CC0",
+  "licenseURL": "https://polyhaven.com/license",
+  "files": [
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/files-api.json",
+      "url": "https://api.polyhaven.com/files/flower_heliophila",
+      "bytes": 36264,
+      "sha256": "46f64e9f3812b20107ad8c9915044caa4d338e6572250fdce2263fed8e1f5bca"
+    },
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/flower_heliophila_1k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/flower_heliophila/flower_heliophila_1k.gltf",
+      "bytes": 5983,
+      "sha256": "629274399d44a1a9c8666d7a341bf7c5b2083c3ec292166cb23419ff9eb192b1"
+    },
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_heliophila/flower_heliophila_nor_gl_1k.jpg",
+      "bytes": 501286,
+      "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a"
+    },
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_heliophila/flower_heliophila_arm_1k.jpg",
+      "bytes": 444561,
+      "sha256": "61c7a47fdf8ff0f5251c0f569588efefad7856b3b069d07c1c025d18a1420e22"
+    },
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_heliophila/flower_heliophila_diff_1k.jpg",
+      "bytes": 377527,
+      "sha256": "50a3eb8afd206eff0ea95ff73db7dc3ca9188d3e120d93a708d2a72790fa0240"
+    },
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/flower_heliophila.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/flower_heliophila/flower_heliophila.bin",
+      "bytes": 2519780,
+      "sha256": "dd5cba0ea1890ed9dc2e13e109551cefd069fe47bb34f8deb2b302af76b2bab1"
+    },
+    {
+      "file": "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_Alpha_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/flower_heliophila/flower_heliophila_alpha_1k.png",
+      "bytes": 41796,
+      "sha256": "5680fb3b96c6061844eb3bfefaa3f7f6fcba04197e0a9df37d947fdf3ad503f5"
+    }
+  ],
+  "originalSourceKept": true
+}

@@ -1,0 +1,133 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-broken_signal/comparison/lod0_NOT_APPROVED.glb",
+      "file_bytes": 5036488,
+      "glb_meshes": 8,
+      "total_mesh_primitives": 8,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 8,
+      "scene_primitive_instances": 8,
+      "estimated_scene_triangles": 1540,
+      "materials": 8,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_dead_signal_2.28",
+        "f3_dead_signal_3.08",
+        "f3_deep_crack",
+        "f3_faded_safety_ochre",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "dangling supply cable",
+        "hanging broken lens retention wire",
+        "Cube.001",
+        "Cylinder",
+        "Cylinder.002",
+        "Cylinder.001",
+        "Cube.002",
+        "leaning tubular signal mast"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 8,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 24,
+      "textures": 24,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-broken_signal/comparison/lod1_NOT_APPROVED.glb",
+      "file_bytes": 5001456,
+      "glb_meshes": 8,
+      "total_mesh_primitives": 8,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 8,
+      "scene_primitive_instances": 8,
+      "estimated_scene_triangles": 893,
+      "materials": 8,
+      "material_names": [
+        "f3_aged_rubber.001",
+        "f3_bare_worn_steel.001",
+        "f3_damp_concrete.001",
+        "f3_dead_signal_2.001",
+        "f3_dead_signal_3.001",
+        "f3_deep_crack.001",
+        "f3_faded_safety_ochre.001",
+        "f3_oxidized_iron.001"
+      ],
+      "mesh_names": [
+        "dangling supply cable.001",
+        "hanging broken lens retention wire.001",
+        "Cube.003",
+        "Cylinder.003",
+        "Cylinder.004",
+        "Cylinder.005",
+        "Cube.004",
+        "leaning tubular signal mast.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 8,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 24,
+      "textures": 24,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-broken_signal/comparison/lod2_NOT_APPROVED.glb",
+      "file_bytes": 4956148,
+      "glb_meshes": 8,
+      "total_mesh_primitives": 8,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 8,
+      "scene_primitive_instances": 8,
+      "estimated_scene_triangles": 466,
+      "materials": 8,
+      "material_names": [
+        "f3_aged_rubber.002",
+        "f3_bare_worn_steel.002",
+        "f3_damp_concrete.002",
+        "f3_dead_signal_2.002",
+        "f3_dead_signal_3.002",
+        "f3_deep_crack.002",
+        "f3_faded_safety_ochre.002",
+        "f3_oxidized_iron.002"
+      ],
+      "mesh_names": [
+        "dangling supply cable.002",
+        "hanging broken lens retention wire.002",
+        "Cube.005",
+        "Cylinder.006",
+        "Cylinder.007",
+        "Cylinder.008",
+        "Cube.006",
+        "leaning tubular signal mast.002"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 8,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 24,
+      "textures": 24,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

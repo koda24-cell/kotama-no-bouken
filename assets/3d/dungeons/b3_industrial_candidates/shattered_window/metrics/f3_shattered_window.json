@@ -1,0 +1,60 @@
+{
+  "bytes": 5115816,
+  "sha256": "370ef1dc716234d0d8d588a71dc6d361b22d3f985435b10c050caebfb476c0f9",
+  "tris": 1316,
+  "verts": 3166,
+  "meshes": 7,
+  "drawCalls": 7,
+  "materials": [
+    "f3_deep_crack",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete",
+    "lightly_weathered_clear_glass.001",
+    "lightly_weathered_clear_glass.002",
+    "lightly_weathered_clear_glass.003",
+    "lightly_weathered_clear_glass"
+  ],
+  "textureCount": 17,
+  "textureBytes": 4943690,
+  "sizeMeters": [
+    3.71,
+    3.12,
+    0.575
+  ],
+  "bboxMin": [
+    -1.855,
+    0.0,
+    -0.3
+  ],
+  "bboxMax": [
+    1.855,
+    3.12,
+    0.275
+  ],
+  "extensions": [
+    "KHR_materials_transmission",
+    "KHR_materials_ior"
+  ],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_shattered_window",
+  "file": "props/f3_shattered_window.glb",
+  "category": "props",
+  "desc_ja": "\u5272\u308c\u305f\u9244\u88fd\u7a93\u3068\u8170\u58c1",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_shattered_window.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_shattered_window/front.png",
+    "renders/f3_shattered_window/back.png",
+    "renders/f3_shattered_window/side.png",
+    "renders/f3_shattered_window/angle.png",
+    "renders/f3_shattered_window/top.png"
+  ]
+}

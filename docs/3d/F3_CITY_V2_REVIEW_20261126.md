@@ -47,4 +47,8 @@
 
 [最終版の試遊](https://raw.githack.com/koda24-cell/kotama-no-bouken/dad994710c9ed1068680d730241a38771ad8cc14/preview/f3-industrial-playtest.html) は実ブラウザでHTTP200、配信サービスの「Open the page」を押した先まで確認。V2/28モデルSHA一致/セーブ隔離/pageerror0で実描画を保存した。旧入口の成功を新URLの検証と取り違えない。実画像4枚とCRC・SHAは [確認用画像](f3-city-v2-review-20261126/publication.json)、全検査の証跡は `docs/reviews/f3-city-v2-*` に保存。制作PRは [#785](https://github.com/koda24-cell/kotama-no-bouken/pull/785)。
 
+確認用画像とscene-review-indexは資料のみの [PR848](https://github.com/koda24-cell/kotama-no-bouken/pull/848) でdevelopmentへ反映。独立確認サイトへの直接掲載は [PR21](https://github.com/koda24-cell/kotama-3d-progress/pull/21) でmainへ反映済み。ゲーム本体のmainとは別リポジトリで、承認状態はNOT_APPROVEDのまま。[確認サイトの固定公開版](https://raw.githack.com/koda24-cell/kotama-3d-progress/8522467ef2c8c6b71973dd06b4e011cecdd13726/index.html)。サイトのPRブラウザ検査は成功（run45801370261）、既存13画像と新規4画像の到達性を確認。全台帳を対象にした補助AI評価は美術承認や掲載の必須条件としていない。
+
+この確認サイトの公開版も実ブラウザでHTTP200→案内画面→新規4画像のdecode・拡大・Escape終了を確認し、既存13画像を保持、pageerror0。`docs/reviews/f3-city-v2-final/gallery-public.json` と実PNGに記録した。
+
 ソフトウェア描画による検査用2fps制限は製品の設定や実機性能の認定ではない。検査用Chromiumのみ管理proxyの証明書例外を使用する場合があり、配布ページではTLS検証を無効化していない。既存の4m地図に沿う反復、写真由来植物の近景負荷、モバイルの動的影省略などの制限がある。参考作品と同等の到達や美術承認を自動的に主張しない。

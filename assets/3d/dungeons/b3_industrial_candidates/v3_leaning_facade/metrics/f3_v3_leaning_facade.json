@@ -1,0 +1,54 @@
+{
+  "bytes": 5855748,
+  "sha256": "25bf4260eeb496e3b34af71510a260709ed8b8f4e040774975dfcfa8083cd547",
+  "tris": 7452,
+  "verts": 18351,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 4922704,
+  "sizeMeters": [
+    6.4574,
+    7.4911,
+    4.5001
+  ],
+  "bboxMin": [
+    -2.5712,
+    -0.4917,
+    -1.888
+  ],
+  "bboxMax": [
+    3.8862,
+    6.9993,
+    2.6121
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_leaning_facade",
+  "file": "props/f3_v3_leaning_facade.glb",
+  "category": "props",
+  "desc_ja": "\u50be\u3044\u305f\u5ec3\u30d3\u30eb\u533a\u753b",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_leaning_facade.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_leaning_facade/front.png",
+    "renders/f3_v3_leaning_facade/back.png",
+    "renders/f3_v3_leaning_facade/side.png",
+    "renders/f3_v3_leaning_facade/angle.png",
+    "renders/f3_v3_leaning_facade/top.png"
+  ]
+}

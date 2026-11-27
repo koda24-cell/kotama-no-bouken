@@ -1,0 +1,47 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/shattered_window/props/f3_shattered_window.glb",
+      "file_bytes": 5115816,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 1316,
+      "materials": 7,
+      "material_names": [
+        "f3_deep_crack",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete",
+        "lightly_weathered_clear_glass.001",
+        "lightly_weathered_clear_glass.002",
+        "lightly_weathered_clear_glass.003",
+        "lightly_weathered_clear_glass"
+      ],
+      "mesh_names": [
+        "Cube.010",
+        "Cube.004",
+        "Cube",
+        "single_detached_corner_shard.001",
+        "single_detached_corner_shard.002",
+        "single_detached_corner_shard.003",
+        "single_detached_corner_shard"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 17,
+      "textures": 17,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

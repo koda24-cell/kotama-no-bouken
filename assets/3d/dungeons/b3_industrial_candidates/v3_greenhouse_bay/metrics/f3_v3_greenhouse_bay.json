@@ -1,0 +1,59 @@
+{
+  "bytes": 9097876,
+  "sha256": "cb277be40bd23502bb1371bd0c1cdedb7ea2d90385914275a59eec9428f511c2",
+  "tris": 14836,
+  "verts": 36410,
+  "meshes": 7,
+  "drawCalls": 7,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete",
+    "filthy greenhouse remaining glass"
+  ],
+  "textureCount": 18,
+  "textureBytes": 7248868,
+  "sizeMeters": [
+    8.9559,
+    6.1594,
+    8.45
+  ],
+  "bboxMin": [
+    -4.8809,
+    0.0,
+    -4.225
+  ],
+  "bboxMax": [
+    4.075,
+    6.1594,
+    4.225
+  ],
+  "extensions": [
+    "KHR_materials_transmission"
+  ],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_greenhouse_bay",
+  "file": "props/f3_v3_greenhouse_bay.glb",
+  "category": "props",
+  "desc_ja": "\u8150\u98df\u3057\u305f\u5ec3\u690d\u7269\u9928\u30c8\u30e9\u30b9",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+  "workflowRun": "45977005320",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_greenhouse_bay.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_greenhouse_bay/front.png",
+    "renders/f3_v3_greenhouse_bay/back.png",
+    "renders/f3_v3_greenhouse_bay/side.png",
+    "renders/f3_v3_greenhouse_bay/angle.png",
+    "renders/f3_v3_greenhouse_bay/top.png"
+  ]
+}

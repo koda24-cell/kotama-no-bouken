@@ -1,0 +1,55 @@
+{
+  "bytes": 2619116,
+  "sha256": "6f158c0e2632009341483fe722912bdaeffb39204d46202e829e4bc5c508ecb8",
+  "tris": 1012,
+  "verts": 2042,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "aged ceramic lamp holders",
+    "dusty warm fluorescent glass",
+    "f3_bare_worn_steel",
+    "f3_deep_crack",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 9,
+  "textureBytes": 2506874,
+  "sizeMeters": [
+    1.55,
+    0.765,
+    0.299
+  ],
+  "bboxMin": [
+    -0.775,
+    -0.015,
+    -0.14
+  ],
+  "bboxMax": [
+    0.775,
+    0.75,
+    0.159
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_fluorescent_fixture",
+  "file": "props/f3_v3_fluorescent_fixture.glb",
+  "category": "props",
+  "desc_ja": "\u58ca\u308c\u305f\u86cd\u5149\u706f\u3068\u540a\u308a\u91d1\u5177",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_fluorescent_fixture.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_fluorescent_fixture/front.png",
+    "renders/f3_v3_fluorescent_fixture/back.png",
+    "renders/f3_v3_fluorescent_fixture/side.png",
+    "renders/f3_v3_fluorescent_fixture/angle.png",
+    "renders/f3_v3_fluorescent_fixture/top.png"
+  ]
+}

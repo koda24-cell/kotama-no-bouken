@@ -1,0 +1,13 @@
+name: F3 V3 actual source performance audit
+# Final revisions: glazed window, low conservatory roots and dark tire rubber.
+on:
+  push:
+    branches: [feature/f3-city-v3-20261127]
+    paths: [.github/workflows/f3-city-v3-audit.yml]
+permissions:
+  contents: read
+jobs:
+  sources:
+    uses: ./.github/workflows/shared-3d-performance-audit.yml
+    with:
+      asset_glob: assets/3d/dungeons/b3_industrial_candidates/v3_*/props/*.glb

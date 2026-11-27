@@ -1,0 +1,12 @@
+{
+  "result": {
+    "mode": "b3-ruined-city",
+    "fallbackReason": "Industrial asset hash mismatch: /assets/3d/dungeons/b3_industrial_candidates/shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
+    "far": 80,
+    "entries": 12,
+    "roots": 1,
+    "buildingKey": ""
+  },
+  "errors": [],
+  "candidateRequests": 32
+}

@@ -1,0 +1,51 @@
+{
+  "bytes": 4110712,
+  "sha256": "3ab3ec8070c82d382415e777a27c21a0925dd9be6a3cde2d06b76400c72bb9d2",
+  "tris": 34350,
+  "verts": 35030,
+  "meshes": 1,
+  "drawCalls": 1,
+  "materials": [
+    "f3_v2_polyhaven_periwinkle_plant"
+  ],
+  "textureCount": 3,
+  "textureBytes": 1940442,
+  "sizeMeters": [
+    1.4112,
+    0.423,
+    0.6623
+  ],
+  "bboxMin": [
+    -0.7282,
+    -0.0,
+    -0.3358
+  ],
+  "bboxMax": [
+    0.683,
+    0.423,
+    0.3266
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v2_wildflower_colony",
+  "file": "props/f3_v2_wildflower_colony.glb",
+  "category": "props",
+  "desc_ja": "\u98a8\u5316\u3057\u305f\u8def\u80a9\u306b\u6839\u4ed8\u304f\u5199\u771f\u7531\u6765\u306e\u91ce\u8349\u82b1V2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "69c2c50ca46bd06fb61afa2aaaa33af0e51ad559",
+  "workflowRun": "45432034546",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_wildflower_colony.blend",
+  "renderedFrom": "final alpha-MASK GLB reimport",
+  "renders": [
+    "renders/f3_v2_wildflower_colony/front.png",
+    "renders/f3_v2_wildflower_colony/back.png",
+    "renders/f3_v2_wildflower_colony/side.png",
+    "renders/f3_v2_wildflower_colony/angle.png",
+    "renders/f3_v2_wildflower_colony/top.png"
+  ]
+}

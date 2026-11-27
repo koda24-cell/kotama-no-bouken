@@ -1,0 +1,53 @@
+{
+  "bytes": 2676240,
+  "sha256": "551c9e7abfc41598a2d5bdddda6709c36512d2aaf97a9a481d1568edd96d52b5",
+  "tris": 1748,
+  "verts": 3170,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_aged_rubber",
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 9,
+  "textureBytes": 2508099,
+  "sizeMeters": [
+    4.21,
+    5.2073,
+    0.65
+  ],
+  "bboxMin": [
+    -2.105,
+    -0.0124,
+    -0.325
+  ],
+  "bboxMax": [
+    2.105,
+    5.195,
+    0.325
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_buckled_portal",
+  "file": "props/f3_buckled_portal.glb",
+  "category": "props",
+  "desc_ja": "\u5ea7\u5c48\u3057\u305f\u9244\u9aa8\u9580\u578b\u30d5\u30ec\u30fc\u30e0",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_buckled_portal.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_buckled_portal/front.png",
+    "renders/f3_buckled_portal/back.png",
+    "renders/f3_buckled_portal/side.png",
+    "renders/f3_buckled_portal/angle.png",
+    "renders/f3_buckled_portal/top.png"
+  ]
+}

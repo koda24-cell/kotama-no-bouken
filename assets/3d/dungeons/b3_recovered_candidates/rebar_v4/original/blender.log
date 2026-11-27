@@ -1,0 +1,23 @@
+Failed to create secure directory (/defaults): Operation not permitted
+rebar_v4_source:30: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+INFO Draco is available, use library at /blender/lib/libbf_intern_draco_bridge.so
+INFO MeshOptimizer is available, use library at /blender/lib/libbf_intern_meshopt_bridge.so
+02:52:26 | INFO: Starting glTF 2.0 export
+02:52:26 | INFO: Extracting primitive: bent_ribbed_rebar_mesh
+02:52:26 | INFO: Primitives created: 1
+02:52:26 | INFO: Finished glTF 2.0 export in 0.043764591217041016 s
+rebar_v4_source:109: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+00:01.699  image.write      | ERROR OpenImageIO write failed: Could not open file "/config/.cache/thumbnails/large/blender_1_5ab9e2a2ab9e1ac98b4982175781e150.png.png"
+00:08.397  render           | Saved: '/work/out/f3_rebar01/f3_rebar01_v4-front.png'
+
+Info: Saved as "f3_rebar01_v4.blend"
+F3_REBAR_RENDER_OK 4 front
+00:15.242  render           | Saved: '/work/out/f3_rebar01/f3_rebar01_v4-side.png'
+F3_REBAR_RENDER_OK 4 side
+00:21.739  render           | Saved: '/work/out/f3_rebar01/f3_rebar01_v4-angle.png'
+F3_REBAR_RENDER_OK 4 angle
+00:29.373  render           | Saved: '/work/out/f3_rebar01/f3_rebar01_v4-detail.png'
+F3_REBAR_V4_ALL_COMPLETE
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit

@@ -1,0 +1,33 @@
+{
+  "scope": "Actual local PR page and immutable remote game PNGs, no response mocks",
+  "managedProxyCertificateException": true,
+  "requestMethod": "Actual browser fetch; direct APIRequestContext has no managed outbound proxy route",
+  "legacyScenes": 13,
+  "newScenes": 4,
+  "normalRegistryCards": 66,
+  "samePageZoomClosed": true,
+  "images": [
+    {
+      "url": "https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d/docs/3d/f3-city-v2-review-20261126/7f-residential-street.png",
+      "sha256": "72ba39ac2a9b5b76bd0d5b897aea1d16ef74b300ce6ab82e80b8d2237ae63560",
+      "decoded": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d/docs/3d/f3-city-v2-review-20261126/8f-factory-street.png",
+      "sha256": "6a83f84f98e6c896bb4971dd464152176a117e68de42e830135329756d6f6993",
+      "decoded": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d/docs/3d/f3-city-v2-review-20261126/9f-reclaimed-plaza.png",
+      "sha256": "3c4ece04622ad3ba4eccaac650523b7eb267deedf30392d3ffe0488773609895",
+      "decoded": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/koda24-cell/kotama-no-bouken/8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d/docs/3d/f3-city-v2-review-20261126/public-entry.png",
+      "sha256": "1210ad104a6a1b38773a404c48cfc71f2fcc2c0ed75ada18266ba9b2b453eaf2",
+      "decoded": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

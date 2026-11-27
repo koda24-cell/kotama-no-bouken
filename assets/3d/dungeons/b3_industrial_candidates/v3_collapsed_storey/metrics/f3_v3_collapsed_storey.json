@@ -1,0 +1,54 @@
+{
+  "bytes": 5867856,
+  "sha256": "0fcfb75d46a65495ae0f83fbf1d1e5fc0e7be8e17e45928614cc87c0fec19233",
+  "tris": 7486,
+  "verts": 18599,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 4922704,
+  "sizeMeters": [
+    7.9562,
+    8.2541,
+    4.9162
+  ],
+  "bboxMin": [
+    -2.2483,
+    -1.2966,
+    -1.8621
+  ],
+  "bboxMax": [
+    5.7079,
+    6.9574,
+    3.0541
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 1,
+  "id": "f3_v3_collapsed_storey",
+  "file": "props/f3_v3_collapsed_storey.glb",
+  "category": "props",
+  "desc_ja": "\u5d29\u843d\u3057\u305f\u968e\u5e8a\u3068\u9732\u51fa\u9244\u9aa8",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+  "workflowRun": "45960157429",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_collapsed_storey.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_collapsed_storey/front.png",
+    "renders/f3_v3_collapsed_storey/back.png",
+    "renders/f3_v3_collapsed_storey/side.png",
+    "renders/f3_v3_collapsed_storey/angle.png",
+    "renders/f3_v3_collapsed_storey/top.png"
+  ]
+}

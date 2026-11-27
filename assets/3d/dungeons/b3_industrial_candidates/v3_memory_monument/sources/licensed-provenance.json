@@ -1,0 +1,48 @@
+{
+  "status": "NOT_APPROVED",
+  "supplier": "Poly Haven",
+  "resolution": "2k",
+  "asset": "gothic_statue",
+  "assetURL": "https://polyhaven.com/a/gothic_statue",
+  "license": "CC0",
+  "licenseURL": "https://polyhaven.com/license",
+  "files": [
+    {
+      "file": "sources/polyhaven_gothic_statue_original/files-api.json",
+      "url": "https://api.polyhaven.com/files/gothic_statue",
+      "bytes": 25412,
+      "sha256": "61a7b4048de324fe16d7e1daa5d6ec1f88177d561391e4247fb283ad16e796e9"
+    },
+    {
+      "file": "sources/polyhaven_gothic_statue_original/gothic_statue_2k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/gothic_statue/gothic_statue_2k.gltf",
+      "bytes": 2900,
+      "sha256": "589beb2aea6ab11eb3016f95f273acfabe1fdf436d3c6c5a7ad08662c937db75"
+    },
+    {
+      "file": "sources/polyhaven_gothic_statue_original/textures/gothic_statue_nor_gl_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/gothic_statue/gothic_statue_nor_gl_2k.jpg",
+      "bytes": 3282839,
+      "sha256": "e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a"
+    },
+    {
+      "file": "sources/polyhaven_gothic_statue_original/textures/gothic_statue_diff_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/gothic_statue/gothic_statue_diff_2k.jpg",
+      "bytes": 3663305,
+      "sha256": "afdc45a14314f4f51e690e974d7ac5918f8509e50da3df2b8aef2b7020b3b959"
+    },
+    {
+      "file": "sources/polyhaven_gothic_statue_original/textures/gothic_statue_arm_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/gothic_statue/gothic_statue_arm_2k.jpg",
+      "bytes": 3258126,
+      "sha256": "82e9c16943259aef27bef8f59a5bf296d645ba5e5c95248cc445c95e69845c4e"
+    },
+    {
+      "file": "sources/polyhaven_gothic_statue_original/gothic_statue.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/gothic_statue/gothic_statue.bin",
+      "bytes": 912484,
+      "sha256": "8608701ecff6b56e9fd9cddd130541f831ff8131a7758d54e7964af3d0152b9c"
+    }
+  ],
+  "originalSourceKept": true
+}

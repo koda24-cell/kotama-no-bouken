@@ -1,0 +1,48 @@
+{
+  "status": "NOT_APPROVED",
+  "supplier": "Poly Haven",
+  "resolution": "2k",
+  "asset": "utility_box_02",
+  "assetURL": "https://polyhaven.com/a/utility_box_02",
+  "license": "CC0",
+  "licenseURL": "https://polyhaven.com/license",
+  "files": [
+    {
+      "file": "sources/polyhaven_utility_box_02_original/files-api.json",
+      "url": "https://api.polyhaven.com/files/utility_box_02",
+      "bytes": 30222,
+      "sha256": "24991c59ddd5c7baeec0719be87d4534bfd0448580bffa09ca96cb6abffb4039"
+    },
+    {
+      "file": "sources/polyhaven_utility_box_02_original/utility_box_02_2k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/utility_box_02/utility_box_02_2k.gltf",
+      "bytes": 2764,
+      "sha256": "31abfd95a081532fcba40239cb9aa499c62394ae9b18e756ab49e8c4e1c5e4a7"
+    },
+    {
+      "file": "sources/polyhaven_utility_box_02_original/utility_box_02.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/utility_box_02/utility_box_02.bin",
+      "bytes": 199784,
+      "sha256": "0f0a3f8ecc0358e36e97120aa752c2456a78bf922671e6f77e402b0aa58ecfce"
+    },
+    {
+      "file": "sources/polyhaven_utility_box_02_original/textures/utility_box_02_nor_gl_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/utility_box_02/utility_box_02_nor_gl_2k.jpg",
+      "bytes": 2335447,
+      "sha256": "e8963358ce46a96cd63e78a5a950f06043231dfd2a7e31e4a9ed9d176ceac638"
+    },
+    {
+      "file": "sources/polyhaven_utility_box_02_original/textures/utility_box_02_diff_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/utility_box_02/utility_box_02_diff_2k.jpg",
+      "bytes": 1960930,
+      "sha256": "59554c019e3bf270cd59eae1ff4f105ba92383174d9b706120cc92de872751a6"
+    },
+    {
+      "file": "sources/polyhaven_utility_box_02_original/textures/utility_box_02_arm_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/utility_box_02/utility_box_02_arm_2k.jpg",
+      "bytes": 2598114,
+      "sha256": "e767bef42b431106db00cfb50374dd399f8acfe8a8d05045ab2590593920a177"
+    }
+  ],
+  "originalSourceKept": true
+}

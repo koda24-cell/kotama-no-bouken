@@ -1,0 +1,140 @@
+{
+  "approval": "NOT_APPROVED",
+  "generator": "V23 derived 3 geometry variants",
+  "run_id": "44686638121",
+  "commit": "2b75aa2fa644521f19f4df2928b6dfc04fda91b8",
+  "files": {
+    "small/f3_concrete_rubble_v29_small.glb": {
+      "bytes": 2680352,
+      "sha256": "d39199646d886050d73ba9fa7b23e62981813492adfac3bc8ab7331150c6a7c6"
+    },
+    "small/f3_concrete_rubble_v29_small.blend": {
+      "bytes": 608396,
+      "sha256": "ce70aae4916cd6db4548d2482d2510e590684da3dc9307140cdfd7cb283e6c69"
+    },
+    "small/f3_concrete_rubble_v29_small-front.png": {
+      "bytes": 294633,
+      "sha256": "3666818da6a144c793ca2f85dbcd99bffa5bc508cf8868f8d0a269689646597d"
+    },
+    "small/f3_concrete_rubble_v29_small-side.png": {
+      "bytes": 281549,
+      "sha256": "d03db530bbcf480f63dc38148139bbd07fa2f5d32d41efa8260dc5f0b26a7cd1"
+    },
+    "small/f3_concrete_rubble_v29_small-angle.png": {
+      "bytes": 300253,
+      "sha256": "c8ad8cdc19cf618a8b74db5328efa51e959206ac17d41cd33e3f4238c24a5aff"
+    },
+    "small/f3_concrete_rubble_v29_small-top.png": {
+      "bytes": 348703,
+      "sha256": "6a18e8316fd681b4c88cd04b7c74e589a9f08c6de78be3a88ab3dc18961fa909"
+    },
+    "small/f3_concrete_rubble_v29_small-fracture_detail.png": {
+      "bytes": 484602,
+      "sha256": "6b9e22223ec762355716e82129bf78888982cdadd7d02b8ffeb9902beb883e16"
+    },
+    "small/F3_RUBBLE01_V29_ALBEDO_512.png": {
+      "bytes": 367852,
+      "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae"
+    },
+    "small/F3_RUBBLE01_V29_ROUGHNESS_512.png": {
+      "bytes": 45908,
+      "sha256": "46b4bf85b41d96098644fa9928c175425ce0ec82c4c7db8528eb5b4ea1bde2f0"
+    },
+    "small/F3_RUBBLE01_V29_FRACTURE_ALBEDO_512.png": {
+      "bytes": 368245,
+      "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23"
+    },
+    "small/F3_RUBBLE01_V29_GRAIN_NORMAL_512.png": {
+      "bytes": 501219,
+      "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9"
+    },
+    "medium/f3_concrete_rubble_v29_medium.glb": {
+      "bytes": 2615996,
+      "sha256": "b5198a7e2581e475d85067b321c80e05211ae1a9efe870af585eb35a1e58c2e7"
+    },
+    "medium/f3_concrete_rubble_v29_medium.blend": {
+      "bytes": 607730,
+      "sha256": "449a02c01c44654d810a3cd6916864e1e135ad3fbc63773f87159ab604986280"
+    },
+    "medium/f3_concrete_rubble_v29_medium-front.png": {
+      "bytes": 346127,
+      "sha256": "cd9beebeb6d219d5d2f6f7a02f9756f51c1406df3ba79b7d814f14523fea19ef"
+    },
+    "medium/f3_concrete_rubble_v29_medium-side.png": {
+      "bytes": 336573,
+      "sha256": "d4291bf8cbfbf1f99a0a85abd4568f89933ce95a71ed50241c6d6d07d26808f8"
+    },
+    "medium/f3_concrete_rubble_v29_medium-angle.png": {
+      "bytes": 388005,
+      "sha256": "e64298b26e4070930fb9ed63bb780cca2ed7ca02d40e4b3bfa64734de56ab118"
+    },
+    "medium/f3_concrete_rubble_v29_medium-top.png": {
+      "bytes": 461456,
+      "sha256": "62d439d36071c93127ba8c39f01987e78e2db124b28719f1935b07aaea9aaef1"
+    },
+    "medium/f3_concrete_rubble_v29_medium-fracture_detail.png": {
+      "bytes": 587136,
+      "sha256": "04341f372f97dec41641b22cde13883682d392bb9e1275f7d2d468a0a273f9de"
+    },
+    "medium/F3_RUBBLE01_V29_ALBEDO_512.png": {
+      "bytes": 367852,
+      "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae"
+    },
+    "medium/F3_RUBBLE01_V29_ROUGHNESS_512.png": {
+      "bytes": 45908,
+      "sha256": "46b4bf85b41d96098644fa9928c175425ce0ec82c4c7db8528eb5b4ea1bde2f0"
+    },
+    "medium/F3_RUBBLE01_V29_FRACTURE_ALBEDO_512.png": {
+      "bytes": 368245,
+      "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23"
+    },
+    "medium/F3_RUBBLE01_V29_GRAIN_NORMAL_512.png": {
+      "bytes": 501219,
+      "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9"
+    },
+    "large/f3_concrete_rubble_v29_large.glb": {
+      "bytes": 2681948,
+      "sha256": "242ca3eb536cf96df8c4112760c58d099685aca0f95e7d1005e0874355ac292b"
+    },
+    "large/f3_concrete_rubble_v29_large.blend": {
+      "bytes": 608189,
+      "sha256": "d8c48e5b8925d8a5e3fead6189f802fb487327882e8399d04f027a9868b2c366"
+    },
+    "large/f3_concrete_rubble_v29_large-front.png": {
+      "bytes": 300374,
+      "sha256": "9d31e2c55b6836a57e6729863402bbeb3e60db36a18c11f789d372855a9e1458"
+    },
+    "large/f3_concrete_rubble_v29_large-side.png": {
+      "bytes": 288664,
+      "sha256": "e5f33f39a618d2ca9b1f7393bb959b63b278885aaab6913de8c462e81e0bcc58"
+    },
+    "large/f3_concrete_rubble_v29_large-angle.png": {
+      "bytes": 320815,
+      "sha256": "dea1a502b8aaf2cc6a7104ab5d1845f075ce7833531afbc5554cb017661ef0dc"
+    },
+    "large/f3_concrete_rubble_v29_large-top.png": {
+      "bytes": 375581,
+      "sha256": "46131046c5d90c0b15a3eec19de4dad5bbaa95e40c9f6d213768fc0b84878e69"
+    },
+    "large/f3_concrete_rubble_v29_large-fracture_detail.png": {
+      "bytes": 538432,
+      "sha256": "7910667189f9c5ad094570cb271c9a95d4e76e8ec21fb9e4c05b5e3dc0190530"
+    },
+    "large/F3_RUBBLE01_V29_ALBEDO_512.png": {
+      "bytes": 367852,
+      "sha256": "784b70ffd2bc4f90bf4389ee5cff3b92f3b046486bbefbbed564262f6324bbae"
+    },
+    "large/F3_RUBBLE01_V29_ROUGHNESS_512.png": {
+      "bytes": 45908,
+      "sha256": "46b4bf85b41d96098644fa9928c175425ce0ec82c4c7db8528eb5b4ea1bde2f0"
+    },
+    "large/F3_RUBBLE01_V29_FRACTURE_ALBEDO_512.png": {
+      "bytes": 368245,
+      "sha256": "23b81e5c8cf98dde65903dccc0d9e330e76dd96923ac325f39be65ec7e325e23"
+    },
+    "large/F3_RUBBLE01_V29_GRAIN_NORMAL_512.png": {
+      "bytes": 501219,
+      "sha256": "0dec9a1d516d837c63ca4c83b30ce09f70f6fc2ea26e27f2aa9437b17718b8e9"
+    }
+  }
+}

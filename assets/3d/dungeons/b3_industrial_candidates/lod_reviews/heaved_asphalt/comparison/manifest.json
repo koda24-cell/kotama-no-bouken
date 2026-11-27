@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/heaved_asphalt/props/f3_heaved_asphalt.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 1372,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 1372,
+      "mesh_objects": 4,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 8104104,
+          "sha256": "91f6f682f4ecc6f8e8bc942af92c4fcad56a6539adb8304d1f3afce98b29e771"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 262861,
+          "sha256": "a51b61a8e38e7f0bf7c1395974c606d660d5de7cf68bda49fe073f8fb3fece30"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 262083,
+          "sha256": "16530d893f81bc0a9d7fca9ebd238d1e19be136fe4370cd17bd3d793882bf858"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 268284,
+          "sha256": "e6177cc2c2d34f7585a5163b0fc42874f1277f74f96e44e7a243d0ee5a9169b6"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 267358,
+          "sha256": "dadeb049b04e041acbac1d64e5edd42b649f6f1b346fbf0b646c6f3f61a16f1d"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 788,
+      "mesh_objects": 4,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 8018476,
+          "sha256": "d7cb36443cee1278d00bea5927ebcdc883a16ba1fb45d4d84ac99822df8a79ad"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 262818,
+          "sha256": "09881a8cbacbd4784f354bc0e67669bbe934542c9491dfc93078ebdb3bfc03ef"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 262527,
+          "sha256": "9d058527a3f80784f11288d970f96d62e20c5a981cb78e26332b4aafc0d482b0"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 268159,
+          "sha256": "f7ffaeda14e09c87edfe7927f9b67d8247c24695fc0c9c97d2fa8e97db947f0c"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 267539,
+          "sha256": "c091d040278ab878c70dfe89193fb60d058b1ef93a1ec79275dccf6ed46a64b4"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 400,
+      "mesh_objects": 4,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 7979376,
+          "sha256": "9c8f3be0914d87e08eda42f38da61407367beaacaf97280663e68090f573d177"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 263330,
+          "sha256": "018a56fa7c902d380d8a65136546435570ae6262558075ce4de21934760f7cbb"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 263419,
+          "sha256": "1ad7d75a2046966ab6480702cfd99bc45fb0591844ea76227095a567b230429d"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 269142,
+          "sha256": "7ec370a21e130128a468a6ed7fddb925893a9f5d24d78ec86b95a8a8ccd56ca0"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 266778,
+          "sha256": "9a317579fee92f065fd7c680ec60dabf98cf16a90b59d46a97cd138c4f61048a"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "aee386a64570351de3e2b841410cf063ece5cec85e835e8f04a0de5107f7240d",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "heaved_asphalt",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}

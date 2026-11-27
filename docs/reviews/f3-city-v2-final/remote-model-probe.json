@@ -1,0 +1,34 @@
+{
+  "source": "812f343e965d94a37e869907697057f02d36459a",
+  "scope": "Four actual remote model byte probes, not a substitute for browser delivery verification",
+  "results": [
+    {
+      "id": "v2_courtyard_facade",
+      "status": 200,
+      "bytes": 3984120,
+      "sha256": "9ad401ffb7eb3128b5a2135f8f133b7549cafb8d60c8621fa198a076f8acb401",
+      "matches": true
+    },
+    {
+      "id": "v2_fern_colony",
+      "status": 200,
+      "bytes": 251072,
+      "sha256": "3973c1632a0ad3e2abc923d1b5ccc787022e26a8b066ae513b18533428e8ee5e",
+      "matches": true
+    },
+    {
+      "id": "v2_factory_bay",
+      "status": 200,
+      "bytes": 2684236,
+      "sha256": "a96f179e693b824196c4fb4b937f2ec8e27e004bcc31d86e6e13b9c41fd40738",
+      "matches": true
+    },
+    {
+      "id": "v2_wildflower_colony",
+      "status": 200,
+      "bytes": 2170356,
+      "sha256": "c0a529bbca406ad3629dcf4189f839f2f764c22cb049cffa5ec7dd6f21ef07e4",
+      "matches": true
+    }
+  ]
+}

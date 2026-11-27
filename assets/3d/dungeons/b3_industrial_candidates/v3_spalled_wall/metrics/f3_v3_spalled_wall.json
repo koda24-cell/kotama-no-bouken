@@ -1,0 +1,55 @@
+{
+  "bytes": 7376684,
+  "sha256": "d025034d621f4bf17f770c93b4c7b26bc835b258c516e55dfb3655fe400f5306",
+  "tris": 19788,
+  "verts": 48470,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "f3_aged_brick_infill",
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 4922704,
+  "sizeMeters": [
+    4.0,
+    3.2522,
+    1.602
+  ],
+  "bboxMin": [
+    -2.0,
+    -0.0522,
+    -0.425
+  ],
+  "bboxMax": [
+    2.0,
+    3.2,
+    1.177
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_spalled_wall",
+  "file": "props/f3_v3_spalled_wall.glb",
+  "category": "props",
+  "desc_ja": "\u5265\u843d\u3068\u9244\u7b4b\u3068\u843d\u4e0b\u7247\u306e\u58c1",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+  "workflowRun": "45974649926",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_spalled_wall.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_spalled_wall/front.png",
+    "renders/f3_v3_spalled_wall/back.png",
+    "renders/f3_v3_spalled_wall/side.png",
+    "renders/f3_v3_spalled_wall/angle.png",
+    "renders/f3_v3_spalled_wall/top.png"
+  ]
+}
