@@ -806,6 +806,27 @@
       "portableSha256": "b5621ab0d97a2d83618c0529eed40ad1c84669d255c7ab5842ca4afac9beb3b9"
     },
     {
+      "id": "v3_riveted_span",
+      "name": "梁柱を繋ぐリベット鉄骨橋",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_riveted_span/runtime/f3_v3_riveted_span.glb",
+      "sha256": "6c6ab069689731655c1535cf1162906d69091853d69a9fd6042cb4d2d2e0c22c",
+      "bytes": 2032532,
+      "triangles": 15736,
+      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflowRun": "45957518181",
+      "embeddedOriginal": "v3_riveted_span/props/f3_v3_riveted_span.glb",
+      "embeddedOriginalBytes": 4521784,
+      "sizeMeters": [
+        3.05,
+        2.0936,
+        8.2548
+      ],
+      "portableAuthoring": "v3_riveted_span/sources/f3_v3_riveted_span_authoring.blend",
+      "portableSha256": "1e66672fcaa9c42b8f3b77301281609bab20f81cf60b326b679c48a5e18e9d64"
+    },
+    {
       "id": "v3_deep_window_bay",
       "name": "奥壁・側壁を持つ凹んだ窓区画",
       "existingUpgrade": false,
@@ -1403,15 +1424,14 @@
     }
   ],
   "totals": {
-    "individualParts": 27,
+    "individualParts": 28,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 59059160,
+    "runtimeGeometryBytes": 61091692,
     "sharedImageBytes": 55187226,
-    "embeddedOriginalBytes": 293076240
+    "embeddedOriginalBytes": 297598024
   },
   "v3Pending": [
-    "v3_riveted_span",
     "v3_structural_corner",
     "v3_spalled_wall",
     "v3_collapsed_storey",
