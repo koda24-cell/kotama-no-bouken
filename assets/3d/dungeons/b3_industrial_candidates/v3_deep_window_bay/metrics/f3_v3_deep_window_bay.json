@@ -1,34 +1,34 @@
 {
-  "bytes": 5570188,
-  "sha256": "0ef40887e3584f086152da90bbd2fcdfd839bfbc87cf8dcc64d9645388ae5363",
-  "tris": 5100,
-  "verts": 12182,
+  "bytes": 5584068,
+  "sha256": "a43687b3ec40cb0165e9e0d2ab203e0277c5b31cad61c099ba4b63374ff77c77",
+  "tris": 5208,
+  "verts": 12455,
   "meshes": 6,
   "drawCalls": 6,
   "materials": [
+    "f3_aged_brick_infill",
     "f3_bare_worn_steel",
     "f3_deep_crack",
     "f3_exposed_aggregate",
     "f3_oxidized_iron",
-    "f3_weathered_concrete",
-    "v3 exposed old infill"
+    "f3_weathered_concrete"
   ],
   "textureCount": 15,
   "textureBytes": 4944449,
   "sizeMeters": [
     4.0,
-    3.2475,
-    1.8952
+    3.2377,
+    1.915
   ],
   "bboxMin": [
     -2.0,
-    -0.0475,
+    -0.0377,
     -0.575
   ],
   "bboxMax": [
     2.0,
     3.2,
-    1.3202
+    1.34
   ],
   "extensions": [],
   "animations": [],
@@ -41,8 +41,8 @@
   "category": "props",
   "desc_ja": "\u5965\u58c1\u30fb\u5074\u58c1\u3092\u6301\u3064\u51f9\u3093\u3060\u7a93\u533a\u753b",
   "approvalStatus": "NOT_APPROVED",
-  "sourceCommit": "0d36aa3c09b82734efd8ca445ac3263f28c7bd18",
-  "workflowRun": "45953973126",
+  "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+  "workflowRun": "45974649926",
   "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
   "source": "sources/f3_v3_deep_window_bay.blend",
   "renderedFrom": "reimported GLB",

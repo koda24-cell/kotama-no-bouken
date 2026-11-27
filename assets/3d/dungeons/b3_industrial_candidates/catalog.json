@@ -853,20 +853,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_deep_window_bay/runtime/f3_v3_deep_window_bay.glb",
-      "sha256": "c38c841dcd532d09229d10dec96801c6af30dbaf3fd064015f0a80a345322777",
-      "bytes": 626176,
-      "triangles": 5100,
-      "sourceCommit": "0d36aa3c09b82734efd8ca445ac3263f28c7bd18",
-      "workflowRun": "45953973126",
+      "sha256": "d46e31726946313c13bb7254e385ecc2f12f42604f98a8e1732208078a6317fc",
+      "bytes": 640020,
+      "triangles": 5208,
+      "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+      "workflowRun": "45974649926",
       "embeddedOriginal": "v3_deep_window_bay/props/f3_v3_deep_window_bay.glb",
-      "embeddedOriginalBytes": 5570188,
+      "embeddedOriginalBytes": 5584068,
       "sizeMeters": [
         4.0,
-        3.2475,
-        1.8952
+        3.2377,
+        1.915
       ],
       "portableAuthoring": "v3_deep_window_bay/sources/f3_v3_deep_window_bay_authoring.blend",
-      "portableSha256": "22028d5aa689bdcc8d265844326b0c078727a18be00512f669d4a27c96689cb0"
+      "portableSha256": "df7e79d48d989c1fe888b5dcee36e31a82e964ea6c6504429962e8cc11c25758"
     },
     {
       "id": "v3_spalled_wall",
@@ -1720,9 +1720,9 @@
     "individualParts": 41,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 73317360,
+    "runtimeGeometryBytes": 73331204,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 375978076
+    "embeddedOriginalBytes": 375991956
   },
   "v3Pending": [],
   "v3Complete": true
