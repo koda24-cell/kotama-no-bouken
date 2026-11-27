@@ -937,20 +937,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_greenhouse_bay/runtime/f3_v3_greenhouse_bay.glb",
-      "sha256": "1b0ec9ea81a83defcc284191d77852cabaaaeaca3cb8141b335c36dfb84c53dd",
-      "bytes": 1850996,
+      "sha256": "1f5089bb9d303e1eb7c118924311431d4c9cdcc0a85d1d6beceb9ecc42a174d3",
+      "bytes": 1849508,
       "triangles": 14836,
-      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
-      "workflowRun": "45957518181",
+      "sourceCommit": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+      "workflowRun": "45977005320",
       "embeddedOriginal": "v3_greenhouse_bay/props/f3_v3_greenhouse_bay.glb",
-      "embeddedOriginalBytes": 9099364,
+      "embeddedOriginalBytes": 9097876,
       "sizeMeters": [
-        8.9564,
+        8.9559,
         6.1594,
         8.45
       ],
       "portableAuthoring": "v3_greenhouse_bay/sources/f3_v3_greenhouse_bay_authoring.blend",
-      "portableSha256": "abd34673b7360c6b2a9e6f54fae7388b34e604695f17868ea3cee4f5f8b24c5b"
+      "portableSha256": "4ea21cc0531b730910fc61c067ab381470234992e0105298f5528a7294bc92a6"
     },
     {
       "id": "v3_greenhouse_gate",
@@ -1720,9 +1720,9 @@
     "individualParts": 41,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 73463276,
+    "runtimeGeometryBytes": 73461788,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 376124036
+    "embeddedOriginalBytes": 376122548
   },
   "v3Pending": [],
   "v3Complete": true
