@@ -18,15 +18,15 @@ def build(e):
  for o in objects:
   if not o.parent:o.matrix_world=transform@o.matrix_world
  bpy.context.view_layer.update()
- scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=20;scene.render.film_transparent=True;scene.render.resolution_x=512;scene.render.resolution_y=512;scene.render.resolution_percentage=100
+ scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=20;scene.cycles.device='CPU';scene.render.film_transparent=True;scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.render.use_border=False;scene.render.resolution_x=512;scene.render.resolution_y=512;scene.render.resolution_percentage=100
  world=scene.world or bpy.data.worlds.new('flower bake diffuse sky');scene.world=world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs[0].default_value=(.8,.85,.9,1);world.node_tree.nodes['Background'].inputs[1].default_value=.8
  camera_data=bpy.data.cameras.new('four view flower bake');camera=bpy.data.objects.new('flower bake camera',camera_data);scene.collection.objects.link(camera);scene.camera=camera;camera_data.type='ORTHO';camera_data.ortho_scale=max(size.x,size.y,size.z)*1.12
  light_data=bpy.data.lights.new('soft bake area','AREA');light_data.energy=350;light_data.shape='DISK';light_data.size=5;light=bpy.data.objects.new('soft bake area',light_data);scene.collection.objects.link(light);light.location=(0,-2,4)
  focus=Vector((0,0,size.z*.5));light.rotation_euler=(focus-light.location).to_track_quat('-Z','Y').to_euler()
  atlas=bpy.data.images.new('whiteflower four view RGBA atlas',width=2048,height=512,alpha=True);pixels=[0.]*(2048*512*4)
  for i,pos in enumerate([(0,-6,size.z*.65),(5,-4,size.z*.65),(-5,-4,size.z*.65),(0,0,7)]):
-  camera.location=pos;camera.rotation_euler=(focus-camera.location).to_track_quat('-Z','Y').to_euler();bpy.ops.render.render()
-  rgba=list(bpy.data.images['Render Result'].pixels)
+  camera.location=pos;camera.rotation_euler=(focus-camera.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(c.OUT/('sources/whiteflower-bake-view-'+str(i)+'.png'));bpy.ops.render.render(write_still=True)
+  rendered=bpy.data.images.load(scene.render.filepath,check_existing=False);rgba=list(rendered.pixels)
   assert len(rgba)==512*512*4
   for row in range(512):pixels[(row*2048+i*512)*4:(row*2048+i*512+512)*4]=rgba[row*512*4:(row+1)*512*4]
  atlas.pixels.foreach_set(pixels);atlas.update();atlas.filepath_raw=str(c.OUT/'sources/whiteflower-four-view-atlas.png');atlas.file_format='PNG';atlas.save();atlas.pack()
