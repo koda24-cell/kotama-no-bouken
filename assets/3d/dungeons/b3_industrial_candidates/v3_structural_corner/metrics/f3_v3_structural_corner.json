@@ -1,0 +1,52 @@
+{
+  "bytes": 5077584,
+  "sha256": "494d1e095ecb9398d1d195639b398cbddab9d3fdd46dde1f259501df11ae6b5f",
+  "tris": 1584,
+  "verts": 3752,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 6,
+  "textureBytes": 4884109,
+  "sizeMeters": [
+    1.5,
+    3.2,
+    1.5
+  ],
+  "bboxMin": [
+    -0.75,
+    0.0,
+    -0.75
+  ],
+  "bboxMax": [
+    0.75,
+    3.2,
+    0.75
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_structural_corner",
+  "file": "props/f3_v3_structural_corner.glb",
+  "category": "props",
+  "desc_ja": "\u539a\u3044\u5ec3\u30d3\u30eb\u306e\u63a5\u5408\u89d2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+  "workflowRun": "45957518181",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_structural_corner.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_structural_corner/front.png",
+    "renders/f3_v3_structural_corner/back.png",
+    "renders/f3_v3_structural_corner/side.png",
+    "renders/f3_v3_structural_corner/angle.png",
+    "renders/f3_v3_structural_corner/top.png"
+  ]
+}

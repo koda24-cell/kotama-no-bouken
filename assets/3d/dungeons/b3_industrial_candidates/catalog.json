@@ -827,6 +827,27 @@
       "portableSha256": "1e66672fcaa9c42b8f3b77301281609bab20f81cf60b326b679c48a5e18e9d64"
     },
     {
+      "id": "v3_structural_corner",
+      "name": "厚い廃ビルの接合角",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_structural_corner/runtime/f3_v3_structural_corner.glb",
+      "sha256": "38eb28772def1a857eddc531f9a75fe90625fcb243d78b3b980ed7ccad6f2a01",
+      "bytes": 193632,
+      "triangles": 1584,
+      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflowRun": "45957518181",
+      "embeddedOriginal": "v3_structural_corner/props/f3_v3_structural_corner.glb",
+      "embeddedOriginalBytes": 5077584,
+      "sizeMeters": [
+        1.5,
+        3.2,
+        1.5
+      ],
+      "portableAuthoring": "v3_structural_corner/sources/f3_v3_structural_corner_authoring.blend",
+      "portableSha256": "8a69cd72e744881f3238e51080280fb40433433e3815d38dd4233d839aa767d1"
+    },
+    {
       "id": "v3_deep_window_bay",
       "name": "奥壁・側壁を持つ凹んだ窓区画",
       "existingUpgrade": false,
@@ -1424,15 +1445,14 @@
     }
   ],
   "totals": {
-    "individualParts": 28,
+    "individualParts": 29,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 61091692,
+    "runtimeGeometryBytes": 61285324,
     "sharedImageBytes": 55187226,
-    "embeddedOriginalBytes": 297598024
+    "embeddedOriginalBytes": 302675608
   },
   "v3Pending": [
-    "v3_structural_corner",
     "v3_spalled_wall",
     "v3_collapsed_storey",
     "v3_leaning_facade",
