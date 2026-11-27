@@ -338,7 +338,7 @@ async function buildFloor() {
     const started=performance.now(), uncached=list.filter(f=>!g.cache.has(f)).length;
     await loadSharedAssets(list,concurrency,()=>{done++;report(20+50*done/list.length,`素材 ${done}/${list.length}`);showBadge(`3D表示を準備中… ${done}/${list.length}`);});
     g.sharedLoadReport={area,total:list.length,uncached,concurrency,elapsedMs:Math.round(performance.now()-started)};
-    if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc') await load(npcFile(o));
+    if(area===1||area===3)for (const o of a.objects) if (o.kind === 'npc'&&!(area===3&&window.KotamaCityV3Playtest===true&&o.id==='statue')) await load(npcFile(o));
   } catch (e) {
     if(th&&th!==g.theme)try{th.dispose({final:true});}catch(_){} throw e;
   }
