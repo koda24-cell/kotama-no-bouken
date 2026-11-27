@@ -10,7 +10,7 @@ export function createTheme(api){
  const {g,CELL,DIR_VEC,DIR_ORDER,FACE_YAW,place,load,npcFile,FILES}=api;
  const env={background:0xb9c5c2,fog:{color:0xb9c5c2,density:.027},hemi:{sky:0xe2e6dd,ground:0x435044,high:1.3,low:1.4}};
  let root,bundle,finish,plan,sun,water,shafts,sky,stats={},geometry=[],materials=[],batches=[],grassHeld=[],oldFar=g.camera.far;
- let oldShadow=null,lastShadow='',wind={value:0},windShaders=[],hardBounds=[];
+ let oldShadow=null,lastShadow='',wind={value:0},windShaders=[],hardBounds=[],hardCandidates=[];
  let boxes,cylinder;
  const modelCache=new Map(),heldPointLights=g.pool.slice(g.high?4:2);
  const hash=(x,z,s=1)=>{let n=Math.imul(x+s*53,374761393)^Math.imul(z+s*71,668265263);n=Math.imul(n^n>>>13,1274126177);return((n^n>>>16)>>>0)/4294967296;};
@@ -24,9 +24,27 @@ export function createTheme(api){
   const b=new THREE.Box3().setFromObject(holder),size=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
   if(maxWidth)scale=Math.min(scale,maxWidth/size.x);if(maxDepth)scale=Math.min(scale,maxDepth/size.z);
   holder.scale.setScalar(scale);holder.position.set(x-c.x*scale,y-(ground?b.min.y*scale:0),z-c.z*scale);root.add(holder);
-  stats.assetInstances=(stats.assetInstances||0)+1;return holder;
+  stats.assetInstances=(stats.assetInstances||0)+1;if(!['v2_fractured_road','v3_asphalt_heave','v3_whiteflower_atlas','v3_sunken_colonnade','v3_sunken_shopfront'].includes(id))hardCandidates.push({object:holder,id});return holder;
  }
  function shiftedBounds(o,id){o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o),record={key:id,min:b.min.toArray(),max:b.max.toArray()};hardBounds.push(record);return record;}
+ function verifyHardLanes(a,info){
+  const lanes=[];
+  for(let z=0;z<a.h;z++)for(let x=0;x<a.w;x++)if(info.open(x,z)){
+   const h=plan.height(x,z),px=x*4,pz=z*4;
+   lanes.push(new THREE.Box3(new THREE.Vector3(px-.9,h+.5,pz-.9),new THREE.Vector3(px+.9,h+2.05,pz+.9)));
+   for(const[dx,dz]of[[1,0],[0,1]])if(info.open(x+dx,z+dz)){
+    const other=plan.height(x+dx,z+dz);lanes.push(new THREE.Box3(new THREE.Vector3(px-.9,Math.min(h,other)+.5,pz-.9),new THREE.Vector3(px+dx*4+.9,Math.max(h,other)+2.05,pz+dz*4+.9)));
+   }
+  }
+  const overlaps=[],tri=new THREE.Triangle(),v=[tri.a,tri.b,tri.c];let tested=0;
+  for(const {object,id}of hardCandidates){
+   object.updateWorldMatrix(true,true);const bounds=new THREE.Box3().setFromObject(object),near=lanes.filter(b=>b.intersectsBox(bounds));if(!near.length)continue;tested++;
+   let hit=false;object.traverse(mesh=>{if(hit||!mesh.isMesh)return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index,n=index?index.count:p.count;
+    for(let i=0;i<n&&!hit;i+=3){for(let j=0;j<3;j++)v[j].fromBufferAttribute(p,index?index.getX(i+j):i+j).applyMatrix4(mesh.matrixWorld);if(near.some(b=>b.intersectsTriangle(tri)))hit=true;}
+   });if(hit)overlaps.push({id,position:object.position.toArray()});
+  }
+  stats.hardLaneVerification={width:1.8,bodyHeight:[.5,2.05],candidates:hardCandidates.length,narrowPhaseObjects:tested,overlaps};
+ }
  function animateCanopy(source){
   const m=grassCutoutMaterialV6(source),previous=m.onBeforeCompile;m.customProgramCacheKey=()=> 'city-v3-canopy-wind';
   m.onBeforeCompile=shader=>{previous(shader);shader.uniforms.uCityWind=wind;shader.vertexShader='uniform float uCityWind;\n'+shader.vertexShader;
@@ -198,6 +216,7 @@ export function createTheme(api){
    g.entries.push(e);
   }
   stats.objects=g.entries.length;stats.placed=true;
+  verifyHardLanes(a,info);
   sky=finish.sky();sky.userData.cityDynamic=true;root.add(sky);
   batch();
   sun=new THREE.DirectionalLight(0xffefd2,2.2);sun.position.set(-20,36,-18);sun.target.position.set(16,0,20);g.scene.add(sun,sun.target);
@@ -212,7 +231,7 @@ export function createTheme(api){
   water?.dispose();shafts?.dispose();water=shafts=null;sky=null;sun?.shadow.dispose();if(sun){sun.target.removeFromParent();sun.removeFromParent();sun=null;}
   if(oldShadow){g.renderer.shadowMap.enabled=oldShadow.enabled;g.renderer.shadowMap.type=oldShadow.type;oldShadow=null;}
   root?.removeFromParent();batches.forEach(o=>o.dispose());batches=[];geometry.forEach(o=>o.dispose());geometry=[];materials.forEach(o=>o.dispose());materials=[];grassHeld.forEach(o=>o.release());grassHeld=[];
-  bundle?.dispose();bundle=null;finish?.dispose();finish=null;heldPointLights.forEach(l=>{if(!l.parent)g.scene.add(l);});g.camera.far=oldFar;g.camera.updateProjectionMatrix();modelCache.clear();windShaders=[];hardBounds=[];root=null;stats={};plan=null;
+  bundle?.dispose();bundle=null;finish?.dispose();finish=null;heldPointLights.forEach(l=>{if(!l.parent)g.scene.add(l);});g.camera.far=oldFar;g.camera.updateProjectionMatrix();modelCache.clear();windShaders=[];hardBounds=[];hardCandidates=[];root=null;stats={};plan=null;
  }
  return {area:3,env,build,tick,dispose,heightAt:(x,z)=>plan?.heightWorld(x,z)||0,async sync(){return false;},info:()=>({...stats,industrialAssets:bundle?.info(),v3Complete:bundle?.catalog.v3Complete,pendingAssets:bundle?.catalog.v3Pending,elevationRange:plan?[0,plan.f===1?6.4:3.2]:null})};
 }
