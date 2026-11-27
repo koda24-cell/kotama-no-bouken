@@ -1,58 +1,47 @@
-# Cloudflare Access 設定・検証・自動配信 引継ぎ（2026-11-27, Claude）
+# Cloudflare 非公開開発版（パスワード認証）設定・検証・自動配信 引継ぎ（2026-11-27, Claude）
 
 PR #856（`feature/gpt-cloudflare-private-preview-preflight-20261127`）の続き。GPT・Claude・Codex 共通の引継ぎ資料。
 
-## 現在の状態（2026-11-27 21:00 JST 時点・実測のみ）
+## 方針変更（2026-11-27 22:10 JST、ユーザー決定）
 
-| 項目 | 状態 | 根拠 |
-|---|---|---|
-| ダミーサイト配信 | 済 | run 45993372597 |
-| 未認証アクセスの遮断 | **未達（不合格）** | run 45994360351、および 2026-11-27 に固定URLを外部から取得しダミー本文が返ることを確認 |
-| Zero Trust 組織（チーム名・Free プラン） | 未確認 | Claude からは Cloudflare に到達できない |
-| Access アプリ・ポリシー | 未作成 | — |
-| Access 用トークン / 許可メール Secret | 未登録 | — |
-| 設定・検証 Actions | 作成済み・**未実行** | 本資料「Actions 一覧」 |
-| ゲーム配信ファイル選別 | ローカル静的解析済み（development 01ffc860） | 本資料「配信ファイル選別」 |
-| ゲーム本体の配信 | **未実施（禁止中）** | Access 合格まで変数で無効化 |
+Cloudflare Zero Trust（Access）は Free プランでもカード登録が必須で、ユーザーはカード登録をしない判断をした。**Access/メールOTPは使わず、Pages Functions（advanced mode の `_worker.js`）によるパスワード認証**に切替えた。Access 用に作った setup workflow・`access_admin.py`・`access-config.json` は削除。
 
-## 無料プランの条件（公式・2026-11-27 確認）
+- 無料枠: Workers Free 1日 100,000 リクエスト（全リクエストが Worker を通る）。超過時はエラーになるだけで Free では課金されない。カード不要。
+- 仕組み: 各デプロイの出力に `tools/cloudflare-preview/worker/_worker.js` を同梱 → 固定URL・個別デプロイURL・ブランチ別名すべてで、ファイル配信前に Worker が認証。未ログインは 401 のログイン画面のみ。パスワード一致で HttpOnly/Secure/SameSite=Lax の HMAC 署名 Cookie（30日）。パスワード変更で全セッション失効。パスワード未設定なら全リクエスト 503（fail-closed）。
+- パスワードは GitHub Secret `PREVIEW_PASSWORD`（12文字以上）→ Actions が Pages プロジェクトの secret 環境変数へ登録。チャット・ログ・リポジトリに出さない。
+- 旧ダミーデプロイ（Worker なし）は認証なしで残るため、保護版の検証後に Actions が削除する。
+- 制約: メール単位の許可・拒否はできない（合言葉を知る人は閲覧可）。総当たり対策は長いパスワード＋失敗時0.8秒遅延のみ。
 
-- Zero Trust Free: 50ユーザーまで $0。超過・有料機能を使わない限り課金なし。
-- オンボーディングで支払い方法の登録を求められる場合がある（Free でも）。登録の可否はユーザー判断。有料プランは選ばない。
-- Pages の Access は「本番 `*.pages.dev`」と「プレビュー `*.<project>.pages.dev`」を**別アプリ**で保護する必要がある（Pages known issues）。
+## 現在の状態（実測のみ）
 
-## ユーザー作業（ブラウザ・最小限）
+| 項目 | 状態 |
+|---|---|
+| ダミーサイト配信 | 済（run 45993372597） |
+| 未認証アクセスの遮断 | **未達**（2026-11-27 時点で固定URLはダミー本文を返す） |
+| `PREVIEW_PASSWORD` Secret | 未登録 |
+| パスワード Worker | 作成・ローカル単体試験済み（未設定503 / 未ログイン401 / 偽Cookie401 / 誤パスワード401 / 正パスワード303+Cookie / 別パスワードのCookie401 / 外部リダイレクト拒否）。Cloudflare 上は未検証 |
+| ゲーム本体の配信 | **未実施（禁止中）** |
 
-1. **Zero Trust 有効化**: dash.cloudflare.com → Zero Trust → チーム名を決める → **Free** を選択。有料プランは選ばない。
-2. **ワンタイムPIN確認**: Zero Trust → Settings → Authentication → Login methods に「One-time PIN」があること（無ければ Add new → One-time PIN）。
-3. **Access 専用 API トークン作成**（既存の Pages トークンとは別。最小権限）:
-   - My Profile → API Tokens → Create Custom Token
-   - Account / **Access: Apps and Policies** / **Edit**
-   - Account / **Access: Organizations, Identity Providers, and Groups** / **Read**（任意。OTP 有無の自動確認用）
-   - Account Resources: 対象アカウントのみ。期限: 2026-12-27 程度
-4. **GitHub Secrets 追加**（Settings → Secrets and variables → Actions）:
-   - `CLOUDFLARE_ACCESS_TOKEN` … 手順3のトークン
-   - `ACCESS_ALLOWED_EMAILS` … 許可するメール（複数はカンマ区切り、最大5件）。**公開リポジトリなのでファイルには書かない**。ログにも出さない実装。
-5. Actions 実行後、**許可メールで** iPhone・PC から固定URLを開き、メールのコードでログイン → 「Interaction OK」、CSS/画像表示を確認。
-6. **許可していないメール**を入力 → コードが届かず閲覧できないことを確認。
+## ユーザー作業（これだけ）
+
+1. https://github.com/koda24-cell/kotama-no-bouken/settings/secrets/actions → New repository secret → Name `PREVIEW_PASSWORD`、Secret に12文字以上のパスワード（パスワード管理アプリ等に保存）。
+2. 登録を Claude/GPT に伝える → `update-check.json` の revision を上げて push。
+3. Actions 成功後、iPhone・PC で https://kotama-private-probe-20261127.pages.dev を開き、ログイン画面→パスワード→「Update check revision N」とボタン「Interaction OK」・画像表示を確認。誤パスワードで入れないことも確認。
 
 ## Actions 一覧
 
 | workflow | 起動 | 内容 |
 |---|---|---|
-| `cloudflare-access-setup.yml` | feature ブランチで `tools/cloudflare-preview/access-config.json` を変更して push（`revision` を +1） | 許可メールのみの再利用ポリシーを作成/更新し、固定URLとワイルドカードの2アプリに適用 → 監査 → 遮断ゲート |
-| `cloudflare-access-gate.yml` | 上記・各 workflow から呼出／自身の変更 push | ①設定監査（allow＋メール規則のみ、bypass・everyone・ドメイン/IP規則なし、Secret外のメールなし、両ホスト網羅）②未認証で全ホスト×全パスを取得し、**自組織の `*.cloudflareaccess.com/cdn-cgi/access/` へのリダイレクトのみ合格**。偽 Cookie 付きも検査。存在しないランダムサブドメインも検査。TLSエラー・通常リダイレクト・404・5xx は不合格 |
-| `cloudflare-probe-update-rollback.yml` | `tools/cloudflare-preview/update-check.json` を変更して push | `action: update` で刻印付きダミーを配信し固定URLの配信IDが切替ったことを API で確認、`action: rollback` で直前の本番配信へ戻す。前後でゲート実行 |
-| `cloudflare-dev-preview-deploy.yml` | development への push（docs 等除く）。**リポジトリ変数 `KOTAMA_GAME_PREVIEW_ENABLED=true` の時だけ** | ゲート合格 → 配信ファイル選別 → アップロード → 再ゲート。失敗時は固定URLを直前配信へロールバック |
-
-注意: `cloudflare-dev-preview-deploy.yml` は PR #856 が development にマージされて初めて有効になる。マージ前に `KOTAMA_GAME_PREVIEW_ENABLED` を設定しないこと。
+| `cloudflare-protected-probe.yml` | feature ブランチで `tools/cloudflare-preview/update-check.json`（revision +1）か worker を変更して push | `update`: パスワード登録 → Worker 付きダミー配信 → 新デプロイ検証 → 旧・未保護デプロイ削除 → 全ホスト検証。`rollback`: 直前の保護済みデプロイへ戻し全ホスト検証 |
+| `cloudflare-access-gate.yml`（名称は互換のため維持、中身はパスワードゲート） | 自身/`pages_gate.py` の変更 push、他 workflow から呼出 | 全デプロイの全ホスト×全パスを Cookie なし・偽 Cookie で取得し、Worker の 401 ログイン画面のみ合格（TLSエラー・リダイレクト・404・5xx・200 は不合格）。未使用ランダムサブドメインは 401/404 で可。各ホストで誤パスワード=401、正パスワード=ログイン後にファイル取得可を確認 |
+| `cloudflare-dev-preview-deploy.yml` | development への push。**変数 `KOTAMA_GAME_PREVIEW_ENABLED=true` の時だけ** | 事前ゲート → 配信ファイル選別＋Worker 同梱 → 配信 → 事後ゲート → 失敗時は固定URLを戻し新デプロイ削除 → 成功時は保護済みデプロイを最新5件に整理 |
 
 ## 検証の進め方（順番厳守）
 
-1. ユーザー作業 1〜4 → `access-config.json` の `revision` を上げて push → setup run が監査・ゲートとも PASS。
-2. ユーザー作業 5・6（ログイン可／拒否）を実施し結果を本資料に記録。
-3. `update-check.json` を `update` → スマホで刻印表示を確認 → `rollback` → 刻印が消えることを確認。両 run のゲート PASS を記録。
-4. 以上すべて合格後、PR #856 を development にマージ → `KOTAMA_GAME_PREVIEW_ENABLED=true` → 初回ゲーム配信 run とスマホ・PC 実プレイ確認。
+1. `PREVIEW_PASSWORD` 登録 → `update` 実行 → 全ホスト検証 PASS・旧デプロイ削除を run で確認。
+2. ユーザーのスマホ・PC 確認（ログイン可・誤パスワード不可・刻印表示）。
+3. revision を上げて再度 `update`（更新後も認証維持・固定URL反映）→ `rollback`（戻った後も認証維持）。
+4. 合格後、PR #856 を development にマージ → `KOTAMA_GAME_PREVIEW_ENABLED=true` → 初回ゲーム配信と実プレイ確認。
 
 ## 配信ファイル選別（`tools/cloudflare-preview/build_runtime_bundle.py`）
 
@@ -70,5 +59,5 @@ development `01ffc8604a47a68d0c6d1b59fc18b7146e65fea1` でのローカル実行�
 
 ## 未完了・未検証（完了と扱わない）
 
-- Zero Trust 組織作成、Access アプリ作成、遮断ゲート PASS、ログイン可否、更新・ロールバック後の認証維持、ゲーム配信と実プレイ — すべて未実施。
-- このブランチへの push 権限が今回の Claude セッションに無かったため、変更は PR #856 への適用待ち（パッチ）として渡した。
+- Cloudflare 上でのパスワード保護・旧デプロイ削除・ログイン可否・更新/ロールバック後の認証維持・ゲーム配信と実プレイ — すべて未実施（`PREVIEW_PASSWORD` 待ち）。
+- Access 案の調査記録（無料プランの条件・2アプリ必要）は git 履歴 88031b5 を参照。

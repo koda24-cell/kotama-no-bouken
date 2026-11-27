@@ -2,7 +2,7 @@
 
 Status: planning and repository tree audit only. No Cloudflare account, deployment, authentication or game runtime test has been verified. Do not publish real game data until access checks pass. No paid service, no change to main, no repository visibility change.
 
-2026-11-27 更新: Access 設定・監査・遮断ゲート・更新/ロールバック・development 自動配信の Actions と配信ファイル選別ツールを追加（未実行）。最新の状態とユーザー作業は `docs/CLOUDFLARE_ACCESS_SETUP.md` を参照。
+2026-11-27 更新: Zero Trust のカード必須により Access をやめ、Pages Functions のパスワード認証へ切替。検証 Actions と配信ファイル選別ツールを追加（未実行）。最新の状態とユーザー作業は `docs/CLOUDFLARE_ACCESS_SETUP.md` を参照。
 
 ## Source audit
 Development tree 536bb2f0f1013db9a80493c2088ba14ed5ad3055: Git tree response not truncated; 3,217 tracked blobs, 1,290,433,939 bytes total; zero tracked blobs above 26,214,400 bytes (25 MiB); largest tracked blob 20,939,944 bytes, assets/3d/dungeons/b1_sacred_forest_candidates/scene/sacred_forest_scene.glb. assets/ contains 1,570 blobs, 968,526,069 bytes. These are Git blob metadata, not deployed output or expanded LFS objects. Exclude build/research files. Do not use entire repository root as deployment output. Audit actual output separately before deployment.

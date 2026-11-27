@@ -1,18 +1,14 @@
-name: Cloudflare Access unauthenticated gate
-# Fail-closed check that every hostname of the private Pages project refuses
-# unauthenticated requests. Also callable from the setup / update / deploy
-# workflows (workflow_call) so nothing is deployed or reported as protected
-# without this gate passing.
+name: Cloudflare preview password gate
+# Read-only, fail-closed check of every hostname of the private Pages project:
+# unauthenticated (no cookie / forged cookie) requests must get the worker's
+# 401 login page, a wrong password must be refused, the correct password
+# (PREVIEW_PASSWORD secret) must open the files. Callable from other workflows.
 on:
   push:
     branches: [feature/gpt-cloudflare-private-preview-preflight-20261127]
     paths:
       - '.github/workflows/cloudflare-access-gate.yml'
-      - 'tools/cloudflare-preview/access_admin.py'
-      - 'tools/cloudflare-preview/access-config.json'
-  pull_request:
-    branches: [development]
-    paths: ['.github/workflows/cloudflare-access-gate.yml']
+      - 'tools/cloudflare-preview/pages_gate.py'
   workflow_dispatch:
   workflow_call:
     inputs:
@@ -25,109 +21,17 @@ permissions:
   contents: read
 jobs:
   gate:
-    if: >-
-      github.repository == 'koda24-cell/kotama-no-bouken' &&
-      (github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/feature/gpt-cloudflare-private-preview-preflight-20261127') ||
-      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.head.ref == 'feature/gpt-cloudflare-private-preview-preflight-20261127' &&
-      github.event.pull_request.base.ref == 'development') ||
-      (github.ref == 'refs/heads/development'))
+    if: github.repository == 'koda24-cell/kotama-no-bouken'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
-    env:
-      GATE_PATHS: ${{ inputs.paths || '/ /index.html /probe.css /probe.js /probe.svg' }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
           sparse-checkout: tools/cloudflare-preview
-      - name: Audit Access configuration (read-only)
-        id: audit
-        env:
-          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CF_ACCESS_TOKEN: ${{ secrets.CLOUDFLARE_ACCESS_TOKEN }}
-          ACCESS_ALLOWED_EMAILS: ${{ secrets.ACCESS_ALLOWED_EMAILS }}
-        run: python3 tools/cloudflare-preview/access_admin.py audit
-      - name: Enumerate probe hosts from Pages API
+      - name: Password gate on all hostnames
         env:
           CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json, os, re, secrets, urllib.request, urllib.parse
-          account=os.environ["CF_ACCOUNT"]
-          assert re.fullmatch(r"[a-fA-F0-9]{32}",account)
-          project="kotama-private-probe-20261127"
-          root=project+".pages.dev"
-          def get(suffix):
-              req=urllib.request.Request("https://api.cloudflare.com/client/v4/accounts/"+account+"/pages/projects/"+project+suffix, headers={"Authorization":"Bearer "+os.environ["CF_TOKEN"]})
-              with urllib.request.urlopen(req,timeout=25) as response:
-                  data=json.load(response)
-              assert data["success"] is True
-              return data
-          p=get("")["result"]
-          assert p["name"]==project and p["subdomain"]==root
-          assert not set(p.get("domains") or [])-{root}, "Unexpected custom domains; manual review required"
-          # root, the 10 most recent deployments with their aliases, the first
-          # known deployment, and a random never-used subdomain (proves the
-          # wildcard application covers hosts that do not exist yet)
-          hosts={root,"6c71c3ab."+root,"gate-"+secrets.token_hex(4)+"."+root}
-          rows=get("/deployments?per_page=10")["result"]
-          for d in rows:
-              for url in [d["url"],*(d.get("aliases") or [])]:
-                  h=urllib.parse.urlsplit(url if "://" in url else "https://"+url).hostname
-                  assert h and (h==root or h.endswith("."+root)), "Unexpected hostname"
-                  hosts.add(h)
-          with open(os.path.join(os.environ["RUNNER_TEMP"],"cf-probe-hosts"),"w") as f:
-              f.write("\n".join(sorted(hosts))+"\n")
-          print("Checking",len(hosts),"hostnames. No configuration changed.")
-          PY
-      - name: Request every path without login (no cookie and forged cookie)
-        env:
-          AUTH_DOMAIN: ${{ steps.audit.outputs.auth_domain }}
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import os, urllib.request, urllib.error, urllib.parse, concurrent.futures
-          class NoRedirect(urllib.request.HTTPRedirectHandler):
-              def redirect_request(self,*args,**kwargs):
-                  return None
-          auth_domain=os.environ.get("AUTH_DOMAIN","").lower()
-          assert auth_domain.endswith(".cloudflareaccess.com"), "Access organization not confirmed by audit"
-          hosts=open(os.path.join(os.environ["RUNNER_TEMP"],"cf-probe-hosts")).read().split()
-          paths=os.environ["GATE_PATHS"].split()
-          variants={"no-cookie":{}, "forged-cookie":{"Cookie":"CF_Authorization=forged.invalid.token"}}
-          def check(job):
-              host,path,variant=job
-              url="https://"+host+path
-              opener=urllib.request.build_opener(NoRedirect())
-              for attempt in range(3):
-                  try:
-                      req=urllib.request.Request(url,headers={"User-Agent":"Kotama-Access-Gate/2.0",**variants[variant]})
-                      try:
-                          response=opener.open(req,timeout=15)
-                      except urllib.error.HTTPError as e:
-                          response=e
-                      with response:
-                          status=response.code
-                          loc=urllib.parse.urlsplit(response.headers.get("Location",""))
-                          ok=(status in (302,303,307) and loc.scheme=="https" and (loc.hostname or "").lower()==auth_domain
-                              and loc.path.startswith("/cdn-cgi/access/"))
-                          # TLS errors, plain redirects, 404 and 5xx are NOT treated as protection
-                          return url,variant,status,("ACCESS_LOGIN" if ok else "UNVERIFIED_OR_PUBLIC"),ok
-                  except (OSError,urllib.error.URLError):
-                      if attempt==2:
-                          return url,variant,0,"NETWORK_OR_TLS_ERROR",False
-          jobs=[(h,p,v) for h in hosts for p in paths for v in variants]
-          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-              results=list(pool.map(check,jobs))
-          for url,variant,status,label,ok in results:
-              print(url,variant,status,label)
-          passed=all(x[4] for x in results)
-          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
-              f.write(f"Unauthenticated Access gate ({len(results)} requests): "+("PASS" if passed else "NOT PASSED")+"\n")
-              f.write("Signed-in viewing and refused-address checks are manual and recorded separately.\n")
-          raise SystemExit(0 if passed else 1)
-          PY
+          PREVIEW_PASSWORD: ${{ secrets.PREVIEW_PASSWORD }}
+        run: python3 tools/cloudflare-preview/pages_gate.py gate --paths "${{ inputs.paths || '/ /index.html /probe.css /probe.js /probe.svg' }}"

@@ -1,5 +1,5 @@
 {
-  "_note": "Drives .github/workflows/cloudflare-probe-update-rollback.yml. action=update deploys a stamped copy of the dummy probe to the fixed URL; action=rollback returns the fixed URL to the previous production deployment. Bump revision each time. Dummy files only; never game data.",
+  "_note": "Drives .github/workflows/cloudflare-protected-probe.yml. action=update deploys a stamped copy of the dummy probe with the password worker to the fixed URL; action=rollback returns the fixed URL to the previous production deployment. Bump revision each time. Dummy files only; never game data.",
   "action": "update",
-  "revision": 1
+  "revision": 2
 }
