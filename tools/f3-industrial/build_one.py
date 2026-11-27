@@ -9,6 +9,7 @@ def main():
  candidate=ROOT/'assets/3d/dungeons/b3_industrial_candidates';textures=candidate/'textures';textures.mkdir(parents=True,exist_ok=True)
  def scan(path,label):subprocess.run(['bash',str(ROOT/'tools/security/clamav_scan_gate.sh'),'scan',str(path),str(delivery/'security'/(label+'.log'))],check=True)
  scan(ROOT/'tools/f3-industrial','source');
+ if asset.startswith('v3_'):scan(ROOT/'tools/f3-city-v3','v3-source')
  if asset in ['shattered_window','rebar_rubble']:scan(ROOT/'assets/3d/dungeons/b3_recovered_candidates','recovered-inputs')
  scan(ROOT/'tools/f1-sacred-forest','shared-source');scan(ROOT/'tools/f1-layer-v4/render_asset.py','renderer-source')
  sources=[]
@@ -66,7 +67,11 @@ def main():
   bpy.context.view_layer.objects.active=obj
   modifier=obj.modifiers.new('localized edge spalling','BOOLEAN');modifier.operation='DIFFERENCE';modifier.solver='EXACT';modifier.object=cutter
   bpy.ops.object.modifier_apply(modifier=modifier.name);bpy.data.objects.remove(cutter,do_unlink=True);c.uv_world(obj)
- if asset=='v2_courtyard_facade':
+ if asset.startswith('v3_'):
+  sys.path.insert(0,str(ROOT/'tools/f3-city-v3'))
+  from assets_v3 import build
+  build(asset,dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,candidate=candidate,scan=scan))
+ elif asset=='v2_courtyard_facade':
   from courtyard_facade_v2 import build
   build(dict(c=c,bpy=bpy,box=box,rod=rod,scar=scar,pbr=pbr,concrete=concrete,moss=moss,rust=rust,asphalt=asphalt,fracture=fracture,dark=dark,steel=steel,rng=rng,Vector=Vector,textures=textures))
  elif asset=='v2_service_tower':

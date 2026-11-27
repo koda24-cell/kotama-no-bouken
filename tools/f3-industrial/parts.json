@@ -613,5 +613,17 @@
       1.7421,
       1.443
     ]
+  },
+  {
+    "id": "v3_memory_monument",
+    "name": "八メートルの記憶のモニュメント",
+    "dimensions": [
+      7.4,
+      6.8,
+      8.0
+    ],
+    "status": "DESIGNED_NOT_RENDERED",
+    "existingUpgrade": true,
+    "revisionOf": "v2_memory_statue"
   }
 ]
