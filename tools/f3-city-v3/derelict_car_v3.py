@@ -45,7 +45,7 @@ def build(e):
  box('cracked dashboard',(0,-.91,1.05),(1.5,.28,.17),dark,.04)
  bpy.ops.mesh.primitive_torus_add(major_segments=24,minor_segments=8,location=(-.39,-.69,1.19),rotation=(.9,0,0),major_radius=.16,minor_radius=.018);bpy.context.object.name='remaining steering wheel';bpy.context.object.data.materials.append(dark)
  # Four flattened tires, inset rims, lug holes and brake drums.
- rubber=bpy.data.materials.new('aged split tire rubber');rubber.diffuse_color=(.018,.020,.018,1);rubber.use_nodes=True;rubber.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.98
+ rubber=bpy.data.materials.new('aged split tire rubber');rubber.diffuse_color=(.018,.020,.018,1);rubber.use_nodes=True;rubber.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(.018,.020,.018,1);rubber.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.98
  for y in[-1.43,1.43]:
   for x in[-.95,.95]:
    bpy.ops.mesh.primitive_torus_add(major_segments=40,minor_segments=12,location=(x,y,.43),rotation=(0,math.pi/2,0),major_radius=.32,minor_radius=.105);o=bpy.context.object;o.name='flattened perished tire';o.data.materials.append(rubber)

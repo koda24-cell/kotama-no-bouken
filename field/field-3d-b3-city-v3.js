@@ -78,6 +78,7 @@ export function createTheme(api){
    'v3_catwalk_junction','v3_riveted_span','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
   boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
+  for(const m of bundle.materials)if(m.name==='aged split tire rubber')m.color.setRGB(.018,.020,.018);
   const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil,farDark=mat(new THREE.MeshStandardMaterial({color:new THREE.Color().setRGB(.025,.029,.026),roughness:.97}));concrete.color.multiplyScalar(.85);P.stone.color.multiplyScalar(.82);
   heldPointLights.forEach(l=>g.scene.remove(l));oldFar=g.camera.far;api.setEnvironment(env);g.camera.far=api.viewFar(60);g.camera.updateProjectionMatrix();
   // The opaque terrain bed remains below the submerged street, never on top of water.
