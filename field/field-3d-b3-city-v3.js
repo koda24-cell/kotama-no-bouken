@@ -83,6 +83,14 @@ export function createTheme(api){
   for(let z=0;z<a.h;z++)for(let x=0;x<a.w;x++){
    const c=info.ch(x,z),px=x*4,pz=z*4,h=plan.height(x,z);
    if(c==='~')continue;
+   if(plan.tags[x+','+z]==='car-niche'){
+    const garage=plan.garages.find(p=>p[0]===x&&p[1]===z),dx=garage[2],dz=garage[3],ry=Math.atan2(dx,dz);
+    box('recessed car alcove ground',concrete,px,h-.18,pz,4,.36,4);
+    box('closed garage back',concrete,px-dx*1.8,h+6,pz-dz*1.8,dx?.4:4,12,dz?.4:4);
+    for(const sign of[-1,1])box('thick garage side return',concrete,px+dz*sign*1.8,h+6,pz-dx*sign*1.8,dx?4:.4,12,dz?4:.4);
+    box('garage connected upper mass',concrete,px,h+7.5,pz,4,9,4);
+    const car=model('v3_derelict_car',px+dx*.7,h+.015,pz+dz*.7,{ry,scale:1});if(car)stats.edgePlacements.push(shiftedBounds(car,'garage-car:'+x+':'+z));continue;
+   }
    if(plan.tags[x+','+z]==='root-planter'){box('root lifted conservatory planter',concrete,px,h+.4,pz,3.8,.8,3.8);continue;}
    if(plan.monument&&x>=15&&x<=19&&z>=9&&z<=13){box('monument precinct solid foundation',concrete,px,h-.2,pz,4.025,.4,4.025);continue;}
    if(!closed(x,z)){floor(x,z);continue;}
@@ -155,14 +163,12 @@ export function createTheme(api){
     const n=g.high?48:30;for(let k=0;k<n;k++){const wx=px+(hash(x*71+k,z,421)-.5)*4,wz=pz+(hash(x,z*37+k,422)-.5)*4;
      model('v3_whiteflower_atlas',wx,plan.heightWorld(wx,wz),wz,{ry:hash(x+k,z,423)*6.28,scale:.48+hash(x,z+k,424)*.4});flowers++;}
    }
-   if(degree<3&&hash(x,z,317)>.95&&bundle.models.has('v3_derelict_car')){
-    const walls=DIR_ORDER.filter(d=>{const[dx,dz]=DIR_VEC[d];return closed(x+dx,z+dz);});if(walls.length){const[dx,dz]=DIR_VEC[walls[0]];model('v3_derelict_car',px+dx*3.05,plan.heightWorld(px+dx*3.05,pz+dz*3.05),pz+dz*3.05,{ry:dx?0:Math.PI/2,maxWidth:dx?1.5:3.8,maxDepth:dz?1.5:3.8});}
-   }
+
   }
   stats.groundPlants=plants;stats.whiteFlowerPatches=flowers;
   // Greenhouse frame sockets and submerged ruins are structural landmarks.
   for(const room of plan.rooms)if(room.type==='greenhouse'){
-   for(let z=room.z0;z<=room.z1;z+=2)for(let x=room.x0;x<=room.x1;x+=2)model('v3_greenhouse_bay',x*4,plan.height(x,z),z*4,{scale:1});
+   for(let z=room.z0+.5;z<=room.z1;z+=2)for(let x=room.x0+.5;x<=room.x1;x+=2)model('v3_greenhouse_bay',x*4,plan.height(x,z),z*4,{scale:1});
    model('v3_greenhouse_gate',(room.x0-1)*4,plan.height(room.x0-1,13),13*4,{ry:Math.PI/2});
   }
   if(plan.water.length){

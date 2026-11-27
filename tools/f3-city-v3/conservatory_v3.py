@@ -30,11 +30,8 @@ def build(asset,e):
    for j in range(2):beam('continuous longitudinal roof purlin',ribs[j][i],ribs[j+1][i],.065,.07)
   glass=bpy.data.materials.new('filthy greenhouse remaining glass');glass.use_nodes=True;p=glass.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(.18,.27,.23,1);p.inputs['Roughness'].default_value=.40;p.inputs['Transmission Weight'].default_value=.32
   for side in[-1,1]:
-   for y in[-2.7,-1.35,0,1.35,2.7]:
-    beam('vertical side glazing bar',(side*3.75,y,.65),(side*3.75,y,3.1),.045,.06)
-    if rng.random()>.45:box('dirt backed remaining side glass',(side*3.75,y,1.65),(.018,1.18,1.8),glass,0)
-   for z in[.6,1.75,3.1]:beam('joined greenhouse side rail',(side*3.75,-4,z),(side*3.75,4,z),.07,.08)
-   box('deep greenhouse foundation curb',(side*3.75,0,.22),(.65,8,.44),concrete,.03)
+   beam('joined upper greenhouse side rail',(side*3.75,-4,3.1),(side*3.75,4,3.1),.07,.08)
+   for yy in[-3.9,0,3.9]:box('deep individual column footing',(side*3.75,yy,.22),(.65,.65,.44),concrete,.03)
   # Broken roof triangles retain actual thickness via solidify; roof mostly open.
   for k in range(12):
    i=rng.choice([2,3,4,13,14,15]);j=rng.randrange(2);a=Vector(ribs[j][i]);b=Vector(ribs[j+1][i]);d=Vector(ribs[j][i+1]);points=[a,b,a+(d-a)*.7+(b-a)*.18]
@@ -45,9 +42,15 @@ def build(asset,e):
    o=box('fractured conservatory entrance pier',(x,0,1.8),(.8,1.3,3.6),concrete,.035);scar(o,(x,-.64,1.2),(.4,.36,.65),(.1,.2,.3));rubble(x,-.5,.02,12)
   box('deep entrance lintel',(0,0,3.62),(5.3,1.4,.48),concrete,.025)
   for x in[-1.65,1.65]:
+   before=set(bpy.data.objects)
    for z in[.25,2.85]:beam('door frame member',(x,-.22,z),(x*.05,-.22,z),.055,.065)
    beam('gate outer upright',(x,-.22,.25),(x,-.22,2.85),.055,.065)
    for k in range(6):xx=x*k/6;rod('rusted entrance gate bar',(xx,-.22,.25),(xx,-.22,2.85),.015,rust,10)
+   hinge=bpy.data.objects.new('open conservatory gate hinge',None);bpy.context.collection.objects.link(hinge);hinge.location=(x,-.22,0)
+   bpy.context.view_layer.update()
+   for o in set(bpy.data.objects)-before-{hinge}:
+    matrix=o.matrix_world.copy();o.parent=hinge;o.matrix_world=matrix
+   hinge.rotation_euler.z=math.copysign(math.radians(84),x)
   roots(2.2,.2,.15)
  elif asset in['v3_sunken_colonnade','v3_sunken_shopfront']:
   box('submerged foundation slab',(0,0,.15),(5.5,2.5,.3),concrete,.03)

@@ -55,11 +55,17 @@
    const[x,z]=dead.at(-1)||[w-2,h-2];grid[z][x]='j';const [dx,dz]=directions.find(([dx,dz])=>grid[z+dz]?.[x+dx]==='.')||[0,-1];grid[z+dz][x+dx]='i';
   }
   grid[h-2][1]=f===0?'E':'<';grid[1][w-2]=f===2?'B':'>';
+  // Non-walkable garage alcoves keep full-size cars out of the movement lane.
+  const garages=[];
+  for(let z=3;z<h-3;z++)for(let x=3;x<w-3;x++)if(grid[z][x]==='#'&&!tags[key(x,z)]&&!(f===2&&x>=14&&x<=20&&z>=8&&z<=14)&&rand()<.075&&garages.length<7&&garages.every(p=>Math.abs(p[0]-x)+Math.abs(p[1]-z)>6)){
+   const direction=directions.find(([dx,dz])=>grid[z+dz][x+dx]==='.');if(!direction)continue;
+   tags[key(x,z)]='car-niche';garages.push([x,z,...direction]);
+  }
   const ramp=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a)));
   function height(x,z){if(f===0)return 3.2*ramp(x,17,19);if(f===1)return 3.2*ramp(x,7,9)+3.2*ramp(x,23,25);return 3.2*ramp(x,3,5)-3.2*ramp(x,9,11)+3.2*ramp(x,25,27);}
   const foeNodes=[];for(let z=3;z<h-3;z++)for(let x=3;x<w-3;x++)if(grid[z][x]==='.'&&Math.abs(x-1)+Math.abs(z-(h-2))>10&&directions.some(([dx,dz])=>grid[z+dz][x+dx]==='.'&&grid[z+dz*2]?.[x+dx*2]==='.'))foeNodes.push([x,z]);
   const floor={...original,map:grid.map(r=>r.join('')),reviewKeyAliases:aliases,reviewChestRewards:rewards,foes:(original.foes||[]).map((o,i)=>{const[x,z]=foeNodes[Math.floor((i+1)*foeNodes.length/((original.foes||[]).length+1))],d=directions.find(([dx,dz])=>grid[z+dz][x+dx]==='.'&&grid[z+dz*2]?.[x+dx*2]==='.');return {...o,path:[[x,z],[x+d[0],z+d[1]],[x+d[0]*2,z+d[1]*2]]};}),cityV3:true};
-  const plan={version:'V3-20261127',f,w,h,floor,tags,water,rooms,height,heightWorld:(x,z)=>height(x/4,z/4),start:[1,h-2],end:[w-2,1],monument:f===2?{anchor:[17,13],center:[17,11],height:7.9}:null};
+  const plan={version:'V3-20261127',f,w,h,floor,tags,water,rooms,garages,height,heightWorld:(x,z)=>height(x/4,z/4),start:[1,h-2],end:[w-2,1],monument:f===2?{anchor:[17,13],center:[17,11],height:7.9}:null};
   cache.set(f,plan);return plan;
  }
  const api={create};root.KotamaCityV3Layout=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
