@@ -1,0 +1,315 @@
+{
+  "count": 22,
+  "source_audit_run": 45978652872,
+  "source_audit_sha": "1d53d22a7fd6fcfaa7528eb55beddb79b1769f35",
+  "assets": [
+    {
+      "id": "v3_asphalt_heave",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 4034,
+      "size_meters": [
+        4.3662,
+        0.7868,
+        3.7277
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "e0367ab4b84124c7b77b33762a0a30a3fd63b26d88cf0db4d3c251c7389c3dc5",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_asphalt_heave/runtime"
+    },
+    {
+      "id": "v3_cable_pole",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 4836,
+      "size_meters": [
+        2.2,
+        6.8027,
+        0.65
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "fb4f3b6eb7404246d289519a5f9a3db33ebe9af6d48fa40348bad6bf26b113e1",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_cable_pole/runtime"
+    },
+    {
+      "id": "v3_catwalk_junction",
+      "source_sha": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+      "workflow_run": "45952971246",
+      "triangles": 7556,
+      "size_meters": [
+        3.84,
+        4.2415,
+        3.84
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "a3ec1805d82e137e723f9e4f232bdaf09f6c6f1e10710098d4768ad3f96ea788",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_catwalk_junction/runtime"
+    },
+    {
+      "id": "v3_collapsed_storey",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 7486,
+      "size_meters": [
+        7.9562,
+        8.2541,
+        4.9162
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "44cef7252842d7f6fe2f0127085b343c683323139f7acc2eb87860c8b4b83f0b",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_collapsed_storey/runtime"
+    },
+    {
+      "id": "v3_deep_window_bay",
+      "source_sha": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+      "workflow_run": "45977005320",
+      "triangles": 5208,
+      "size_meters": [
+        4.0,
+        3.2377,
+        1.915
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "63dec517cd3c3f6ff42d60c4d58a6964983a99db0ee5bccc352eef7c59b2a837",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_deep_window_bay/runtime"
+    },
+    {
+      "id": "v3_derelict_car",
+      "source_sha": "266cf727b66b2730fe480a50862e1586718a39be",
+      "workflow_run": "45974748139",
+      "triangles": 31780,
+      "size_meters": [
+        2.124,
+        1.5828,
+        4.652
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "86f92129ccde03e4833147e349f146c219b99e5d772aa1f88c55593041fd70c0",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_derelict_car/runtime"
+    },
+    {
+      "id": "v3_electric_cabinet",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 6700,
+      "size_meters": [
+        1.5,
+        1.88,
+        1.2155
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "9cd6a8e84fc7f7d3b5a3080999ce3eba3d75a8cf86b62e061c91c62f6ccc60fa",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_electric_cabinet/runtime"
+    },
+    {
+      "id": "v3_fluorescent_fixture",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 1012,
+      "size_meters": [
+        1.55,
+        0.765,
+        0.299
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "da7f6acad1c411206e95d5eb612d54b26f9ca1f78622008fcbde576196525150",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_fluorescent_fixture/runtime"
+    },
+    {
+      "id": "v3_greenhouse_bay",
+      "source_sha": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+      "workflow_run": "45977005320",
+      "triangles": 14836,
+      "size_meters": [
+        8.9559,
+        6.1594,
+        8.45
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "5aaa52cad3ad299a2fdbf127376427eafec761c227505d8e8c693414a9ecb994",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_greenhouse_bay/runtime"
+    },
+    {
+      "id": "v3_greenhouse_gate",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 5436,
+      "size_meters": [
+        7.5397,
+        3.9397,
+        3.6767
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "d2583c576f5f318e1a224a46e9e0c618bd3fb9ea7591289858e4b1daa2920df4",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_greenhouse_gate/runtime"
+    },
+    {
+      "id": "v3_leaning_facade",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 7452,
+      "size_meters": [
+        6.4574,
+        7.4911,
+        4.5001
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "d8ef70b56ead9bcd3518917ee14df095c6d67261ddbe099883d9b96801028493",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_leaning_facade/runtime"
+    },
+    {
+      "id": "v3_memory_monument",
+      "source_sha": "3bf09b1200b534911fe216fd25e36202f448b30d",
+      "workflow_run": "45950675969",
+      "triangles": 31711,
+      "size_meters": [
+        7.4,
+        7.9,
+        6.8
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "6817ebc1ba259f2c7c09ddc7a6a62b4407a2490dc45745ed69b35ea7aec474d1",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_memory_monument/runtime"
+    },
+    {
+      "id": "v3_riveted_span",
+      "source_sha": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflow_run": "45957518181",
+      "triangles": 15736,
+      "size_meters": [
+        3.05,
+        2.0936,
+        8.2548
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "cf058fc6b5db4fab9ef85d7ef31785810cb0a57af2f0b0feb03e518831026bb1",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_riveted_span/runtime"
+    },
+    {
+      "id": "v3_rubble_bank",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 7272,
+      "size_meters": [
+        4.3329,
+        1.3166,
+        3.12
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "099999d5b0984c5f00298a5bd7c93e3cffbc3250778ad43ad2d3db2a8caa0320",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_rubble_bank/runtime"
+    },
+    {
+      "id": "v3_shutter_shop",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 3900,
+      "size_meters": [
+        4.05,
+        3.2,
+        0.92
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "fd01472f9746e6811d00b352ab114ff47fc36075e8cb3c02ff44c902438fd9fc",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_shutter_shop/runtime"
+    },
+    {
+      "id": "v3_spalled_wall",
+      "source_sha": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+      "workflow_run": "45974649926",
+      "triangles": 19788,
+      "size_meters": [
+        4.0,
+        3.2522,
+        1.602
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "79d0a9ba014fe5a3901c27189ee0d1822afb83a9ddb8fc6d8df0d62287a750cd",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_spalled_wall/runtime"
+    },
+    {
+      "id": "v3_straight_access_stair",
+      "source_sha": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+      "workflow_run": "45952971246",
+      "triangles": 47516,
+      "size_meters": [
+        2.69,
+        4.5863,
+        8.553
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "d6ba6a1990ded8ff2c20d856666b87a3c4fcc3a678b645da6bb1b9345e3aaa75",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_straight_access_stair/runtime"
+    },
+    {
+      "id": "v3_structural_corner",
+      "source_sha": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflow_run": "45957518181",
+      "triangles": 1584,
+      "size_meters": [
+        1.5,
+        3.2,
+        1.5
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "8252a12e2176718013bce8cffc6375fa5311ee585b20af405a5a5a01f9ba50a4",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_structural_corner/runtime"
+    },
+    {
+      "id": "v3_sunken_colonnade",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 3564,
+      "size_meters": [
+        5.5,
+        3.49,
+        2.7133
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "58dca1d384ba8acdceb2a158a712c7a171b673090be77db1e23cde3f962b9e55",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_sunken_colonnade/runtime"
+    },
+    {
+      "id": "v3_sunken_shopfront",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 4968,
+      "size_meters": [
+        5.5,
+        3.49,
+        2.9499
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "dfcd89e83f3573751545b3aaf594ce7abc0fbc9afeafd0fe0f29b92158d2a7f7",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_sunken_shopfront/runtime"
+    },
+    {
+      "id": "v3_switchback_stair",
+      "source_sha": "88da9effe5a9e87fbc82269595bf02db7907925b",
+      "workflow_run": "45951697520",
+      "triangles": 69868,
+      "size_meters": [
+        3.79,
+        4.5878,
+        6.94
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "5473eaed903363a39c30cfe0ed097ae30275fd659b1dcaf99c3c10cb4512513d",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_switchback_stair/runtime"
+    },
+    {
+      "id": "v3_whiteflower_atlas",
+      "source_sha": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflow_run": "45960157429",
+      "triangles": 8,
+      "size_meters": [
+        1.4,
+        0.3838,
+        1.4
+      ],
+      "status": "NOT_APPROVED",
+      "manifest_sha256": "6bf941f7f4a7638513e3b3f91de984d2d2b5aaa87580cf65922f0d76ed9e50af",
+      "runtime": "assets/3d/dungeons/b3_industrial_candidates/v3_whiteflower_atlas/runtime"
+    }
+  ]
+}

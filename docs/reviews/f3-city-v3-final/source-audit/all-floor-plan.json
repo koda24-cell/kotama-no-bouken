@@ -1,0 +1,227 @@
+{
+  "schema": "kotama-all-floor-optimization-plan-v1",
+  "source": "GLB structure only, not actual WebGL FPS/draw calls",
+  "approved_for_game_integration": false,
+  "approval_required": true,
+  "scope": "all present repository GLBs, floor6 or uncommitted models are not assumed to exist",
+  "floors": {
+    "floor3": {
+      "models": 22,
+      "triangles": 302251,
+      "primitive_instances": 86,
+      "candidate_modes": {
+        "foliage_or_transparency_review": 4,
+        "rigid_geometry_review": 17,
+        "transparency_specialized_review": 1
+      },
+      "high_priority": 0
+    }
+  },
+  "assets": [
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_asphalt_heave/props/f3_v3_asphalt_heave.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 4034,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_cable_pole/props/f3_v3_cable_pole.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 4836,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_catwalk_junction/props/f3_v3_catwalk_junction.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 7556,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_collapsed_storey/props/f3_v3_collapsed_storey.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 7486,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_deep_window_bay/props/f3_v3_deep_window_bay.glb",
+      "floor": "floor3",
+      "mode": "transparency_specialized_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 5208,
+      "primitive_instances": 7
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_derelict_car/props/f3_v3_derelict_car.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 31780,
+      "primitive_instances": 6
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_electric_cabinet/props/f3_v3_electric_cabinet.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 6700,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_fluorescent_fixture/props/f3_v3_fluorescent_fixture.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 1012,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_greenhouse_bay/props/f3_v3_greenhouse_bay.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "medium",
+      "triangles": 14836,
+      "primitive_instances": 7
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_greenhouse_gate/props/f3_v3_greenhouse_gate.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 5436,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_leaning_facade/props/f3_v3_leaning_facade.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 7452,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_memory_monument/props/f3_v3_memory_monument.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 31711,
+      "primitive_instances": 6
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_riveted_span/props/f3_v3_riveted_span.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 15736,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_rubble_bank/props/f3_v3_rubble_bank.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 7272,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_shutter_shop/props/f3_v3_shutter_shop.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 3900,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_spalled_wall/props/f3_v3_spalled_wall.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 19788,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_straight_access_stair/props/f3_v3_straight_access_stair.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 47516,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_structural_corner/props/f3_v3_structural_corner.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 1584,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_sunken_colonnade/props/f3_v3_sunken_colonnade.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 3564,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_sunken_shopfront/props/f3_v3_sunken_shopfront.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 4968,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_switchback_stair/props/f3_v3_switchback_stair.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 69868,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/v3_whiteflower_atlas/props/f3_v3_whiteflower_atlas.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 8,
+      "primitive_instances": 1
+    }
+  ],
+  "next_steps": [
+    "Keep source GLBs immutable and compare source/LOD screenshots",
+    "Use rigid LOD review only for static opaque eligible assets",
+    "Use leaf material batching and multiview impostors for vegetation",
+    "Keep water/magma/VFX and characters out of generic geometry simplification",
+    "Measure scene draw calls, frame time and visual popping in real Three.js before integration"
+  ]
+}

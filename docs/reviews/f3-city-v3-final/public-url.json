@@ -1,0 +1,184 @@
+{
+  "url": "https://raw.githack.com/koda24-cell/kotama-no-bouken/3e4dc60dd611ba09f29b6d928f4f59a9174b4dfa/preview/f3-city-v3-playtest.html",
+  "scope": "Actual raw.githack HTML and actual remote resources, no response mocks",
+  "ignoreManagedProxyCertificate": true,
+  "errors": [],
+  "requestFailures": [
+    {
+      "url": "https://server.ethicalads.io/api/v1/decision/?publisher=githackcom&ad_types=image-v1&div_ids=githack-other-ad&callback=ad_1795776407027_10128&keywords=&campaign_types=paid%7Cpublisher-house%7Ccommunity%7Chouse&format=jsonp&client_version=2.6.0&placement_index=0&url=https%3A%2F%2Fraw.githack.com%2Fkoda24-cell%2Fkotama-no-bouken%2F3e4dc60dd611ba09f29b6d928f4f59a9174b4dfa%2Fpreview%2Ff3-city-v3-playtest.html",
+      "error": "net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin"
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin"
+  ],
+  "httpStatus": 200,
+  "externalContentNotice": true,
+  "result": {
+    "mode": "b3-city-v3-trial",
+    "floor": "3-0",
+    "sourceHashesVerified": true,
+    "models": 15,
+    "artRevision": "V3 ruined city review - 22 individual assets",
+    "builtKey": "3-0",
+    "randomSuppressed": true,
+    "storageIsolated": true
+  },
+  "passed": true,
+  "finalState": {
+    "title": "遺跡都市｜実ゲーム試験",
+    "status": "試験表示中・通常セーブへの保存なし",
+    "theme": {
+      "mode": "b3-city-v3-trial",
+      "artRevision": "V3 ruined city review - 22 individual assets",
+      "floor": "3-0",
+      "layoutVersion": "V3-20261127",
+      "objects": 12,
+      "placements": [],
+      "edgePlacements": [
+        {
+          "key": "garage-car:11:6",
+          "min": [
+            40.97399978637695,
+            0.015000000000000013,
+            22.937999963760376
+          ],
+          "max": [
+            45.626000213623044,
+            1.597798808813095,
+            25.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:3:8",
+          "min": [
+            8.973999786376954,
+            0.015000000000000013,
+            30.937999963760376
+          ],
+          "max": [
+            13.626000213623048,
+            1.597798808813095,
+            33.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:30:9",
+          "min": [
+            118.37399978637696,
+            3.2150000000000003,
+            34.937999963760376
+          ],
+          "max": [
+            123.02600021362305,
+            4.797798808813095,
+            37.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:15:10",
+          "min": [
+            58.937999963760376,
+            0.015000000000000013,
+            38.373999786376956
+          ],
+          "max": [
+            61.062000036239624,
+            1.597798808813095,
+            43.02600021362305
+          ]
+        },
+        {
+          "key": "garage-car:22:13",
+          "min": [
+            86.37399978637696,
+            3.2150000000000003,
+            50.937999963760376
+          ],
+          "max": [
+            91.02600021362305,
+            4.797798808813095,
+            53.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:4:15",
+          "min": [
+            14.373999786376952,
+            0.015000000000000013,
+            58.937999963760376
+          ],
+          "max": [
+            19.026000213623046,
+            1.597798808813095,
+            61.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:17:16",
+          "min": [
+            66.93799996376038,
+            0.015000000000000013,
+            62.373999786376956
+          ],
+          "max": [
+            69.06200003623962,
+            1.597798808813095,
+            67.02600021362305
+          ]
+        }
+      ],
+      "terrainCells": 554,
+      "upperWalkCells": 254,
+      "stairCells": 51,
+      "skylineSealed": true,
+      "facades": {
+        "v3_deep_window_bay": 4776,
+        "v3_spalled_wall": 690,
+        "v3_shutter_shop": 264
+      },
+      "assetInstances": 1460,
+      "crossings": 50,
+      "groundPlants": 11964,
+      "whiteFlowerPatches": 0,
+      "placed": true,
+      "hardLaneVerification": {
+        "width": 1.8,
+        "bodyHeight": [
+          0.5,
+          2.05
+        ],
+        "candidates": 966,
+        "narrowPhaseObjects": 35,
+        "overlaps": []
+      },
+      "sourceMeshes": 119067,
+      "batches": 6068,
+      "rigidLOD": {
+        "nearBatches": 244,
+        "farBatches": 516,
+        "originalNearPreserved": true,
+        "proxy": "closed recessed concrete and dark window frames",
+        "distance": 28
+      },
+      "animationTime": 28.96089999999851,
+      "industrialAssets": {
+        "sourceHashesVerified": true,
+        "models": 15,
+        "catalogModels": 57,
+        "skippedUnusedModels": 42,
+        "materials": 15,
+        "textures": 27,
+        "sharedImages": 27,
+        "decodedImages": 27,
+        "estimatedDecodedImageBytes": 103809024
+      },
+      "v3Complete": true,
+      "pendingAssets": [],
+      "elevationRange": [
+        0,
+        3.2
+      ]
+    }
+  }
+}

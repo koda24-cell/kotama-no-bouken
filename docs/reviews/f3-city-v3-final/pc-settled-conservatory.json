@@ -1,0 +1,244 @@
+{
+  "logs": [
+    {
+      "mode": "b3-city-v3-trial",
+      "artRevision": "V3 ruined city review - 22 individual assets",
+      "floor": "3-1",
+      "layoutVersion": "V3-20261127",
+      "objects": 8,
+      "terrainCells": 579,
+      "upperWalkCells": 448,
+      "stairCells": 108,
+      "skylineSealed": true,
+      "facades": {
+        "v3_deep_window_bay": 4631,
+        "v3_spalled_wall": 709,
+        "v3_shutter_shop": 269
+      },
+      "assetInstances": 1391,
+      "crossings": 40,
+      "reusedCedar": {
+        "sourceSha256": "60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb",
+        "instances": 2,
+        "sourceTriangles": 14712,
+        "status": "existing review source retained, no formal promotion"
+      },
+      "groundPlants": 12792,
+      "whiteFlowerPatches": 0,
+      "placed": true,
+      "hardLaneVerification": {
+        "width": 1.8,
+        "bodyHeight": [
+          0.5,
+          2.05
+        ],
+        "candidates": 956,
+        "narrowPhaseObjects": 44,
+        "overlaps": []
+      },
+      "sourceMeshes": 120549,
+      "batches": 6024,
+      "rigidLOD": {
+        "nearBatches": 231,
+        "farBatches": 504,
+        "originalNearPreserved": true,
+        "proxy": "closed recessed concrete and dark window frames",
+        "distance": 28
+      },
+      "animationTime": 67.23780000000075,
+      "industrialAssets": {
+        "sourceHashesVerified": true,
+        "models": 17,
+        "catalogModels": 57,
+        "skippedUnusedModels": 40,
+        "materials": 16,
+        "textures": 27,
+        "sharedImages": 27,
+        "decodedImages": 27,
+        "estimatedDecodedImageBytes": 103809024
+      },
+      "v3Complete": true,
+      "pendingAssets": [],
+      "elevationRange": [
+        0,
+        6.4
+      ],
+      "edgePlacementCount": 7,
+      "edgePlacements": [
+        {
+          "key": "garage-car:6:6",
+          "min": [
+            22.937999963760376,
+            0.015000000000000013,
+            20.973999786376954
+          ],
+          "max": [
+            25.062000036239624,
+            1.597798808813095,
+            25.626000213623048
+          ]
+        },
+        {
+          "key": "garage-car:18:6",
+          "min": [
+            70.37399978637696,
+            3.2150000000000003,
+            22.937999963760376
+          ],
+          "max": [
+            75.02600021362305,
+            4.797798808813095,
+            25.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:26:9",
+          "min": [
+            102.37399978637696,
+            6.415,
+            34.937999963760376
+          ],
+          "max": [
+            107.02600021362305,
+            7.997798808813095,
+            37.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:20:11",
+          "min": [
+            78.37399978637696,
+            3.2150000000000003,
+            42.937999963760376
+          ],
+          "max": [
+            83.02600021362305,
+            4.797798808813095,
+            45.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:10:15",
+          "min": [
+            38.373999786376956,
+            3.2150000000000003,
+            58.937999963760376
+          ],
+          "max": [
+            43.02600021362305,
+            4.797798808813095,
+            61.062000036239624
+          ]
+        },
+        {
+          "key": "garage-car:18:16",
+          "min": [
+            70.37399978637696,
+            3.2150000000000003,
+            62.937999963760376
+          ],
+          "max": [
+            75.02600021362305,
+            4.797798808813095,
+            65.06200003623962
+          ]
+        },
+        {
+          "key": "garage-car:26:17",
+          "min": [
+            102.37399978637696,
+            6.415,
+            66.93799996376038
+          ],
+          "max": [
+            107.02600021362305,
+            7.997798808813095,
+            69.06200003623962
+          ]
+        }
+      ],
+      "edgeOverlaps": [],
+      "overlaps": [],
+      "entryKinds": [
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 33,
+          "ty": 1
+        },
+        {
+          "kind": "save",
+          "visible": true,
+          "tx": 3,
+          "ty": 5
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 25,
+          "ty": 9
+        },
+        {
+          "kind": "chest",
+          "visible": true,
+          "tx": 11,
+          "ty": 11
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 27,
+          "ty": 19
+        },
+        {
+          "kind": "gather",
+          "visible": true,
+          "tx": 13,
+          "ty": 23
+        },
+        {
+          "kind": "event",
+          "visible": true,
+          "tx": 1,
+          "ty": 27
+        },
+        {
+          "kind": "stairs",
+          "visible": true,
+          "tx": 1,
+          "ty": 29
+        }
+      ],
+      "stationaryAnimation": {
+        "before": {
+          "time": 279.49740000000224,
+          "tile": {
+            "tx": 16,
+            "ty": 15
+          }
+        },
+        "after": {
+          "time": 308.0711000000015,
+          "tile": {
+            "tx": 16,
+            "ty": 15
+          }
+        }
+      },
+      "performance": {
+        "frames": 0,
+        "fps": 0,
+        "calls": null,
+        "triangles": null,
+        "memory": {
+          "geometries": 99,
+          "textures": 99
+        }
+      }
+    }
+  ],
+  "errors": [
+    "Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ],
+  "failures": []
+}

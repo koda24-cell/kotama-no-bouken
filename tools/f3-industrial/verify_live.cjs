@@ -23,7 +23,12 @@ const server=http.createServer((q,r)=>{if(q.url==='/probe'){r.setHeader('Content
    assert.equal(record.childReadsNormalSave,false);assert.equal(record.randomSuppressed,true);assert.deepEqual(await snapshot(),initial);
    await page.evaluate(()=>{const w=document.querySelector('#game').contentWindow;w.localStorage.setItem('f3-normal-settings','inspection-only');w.eval('fieldInput.keys.clear();fieldInput.keys.add("ArrowRight");try{KotamaField3D.input(fieldArea(),performance.now())}finally{fieldInput.keys.clear()}');});
    assert.deepEqual(await snapshot(),initial);await page.waitForTimeout(700);await page.evaluate(()=>{document.querySelector('#game').contentWindow.requestAnimationFrame=()=>0;});await page.waitForTimeout(200);
-   const cdp=await context.newCDPSession(page),shot=await cdp.send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(OUT,'live-'+(7+floor)+'f.png'),Buffer.from(shot.data,'base64'));await cdp.detach();report.floors.push(record);console.log('live floor verified',7+floor);
+   const cdp=await context.newCDPSession(page),shot=await cdp.send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(OUT,'live-'+(7+floor)+'f.png'),Buffer.from(shot.data,'base64'));await cdp.detach();
+   if(v3&&floor===2){
+    record.monument=await page.evaluate(()=>document.querySelector('#game').contentWindow.eval('(()=>{const a=fieldArea(),o=a.objects.find(o=>o.kind==="npc"&&o.id==="statue"),p=fieldTileCenter(o.tx,o.ty+1);fieldState.x=p.x;fieldState.y=p.y;fieldState.dir="up";fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);fieldUpdateNear();const near=fieldState.nearKey;fieldActionPressed();return {key:o.key,near,dialogOpened:!!(fieldDialogTyping||fieldDialogAdvance||fieldChoiceState)};})()'));
+    assert.equal(record.monument.near,record.monument.key);assert.equal(record.monument.dialogOpened,true);assert.deepEqual(await snapshot(),initial);
+   }
+   report.floors.push(record);console.log('live floor verified',7+floor);
   }
   await context.route('**/field/'+entry,r=>r.fulfill({status:503,body:'Injected isolation-entry failure'}));await page.goto('http://127.0.0.1:8857/preview/'+launcher+'?delivery=cdn');
   await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('必要なファイルを取得できません'),null,{timeout:90000});report.isolationFailure=await page.evaluate(()=>({iframeEmpty:!document.querySelector('#game').getAttribute('srcdoc'),gameStarted:!!document.querySelector('#game').contentWindow.KotamaField3D}));assert.equal(report.isolationFailure.iframeEmpty,true);assert.equal(report.isolationFailure.gameStarted,false);assert.deepEqual(await snapshot(),initial);assert.deepEqual(errors,[]);report.passed=true;
