@@ -1058,6 +1058,27 @@
       "portableSha256": "2b4fcfad60a8a254adfd3508e474473d2d044aff79d9bfe467789c64565953cc"
     },
     {
+      "id": "v3_fluorescent_fixture",
+      "name": "壊れた蛍光灯と吊り金具",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_fluorescent_fixture/runtime/f3_v3_fluorescent_fixture.glb",
+      "sha256": "c872bdf3619abcb1d4c19022d19fd36e1f61525f6805dc7eaa87e04d97bca879",
+      "bytes": 112504,
+      "triangles": 1012,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_fluorescent_fixture/props/f3_v3_fluorescent_fixture.glb",
+      "embeddedOriginalBytes": 2619116,
+      "sizeMeters": [
+        1.55,
+        0.765,
+        0.299
+      ],
+      "portableAuthoring": "v3_fluorescent_fixture/sources/f3_v3_fluorescent_fixture_authoring.blend",
+      "portableSha256": "f4ccd14d6823bd977c088fe2b78417e985d00af784a96c4dc120a50ddc3f6395"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1612,15 +1633,14 @@
     }
   ],
   "totals": {
-    "individualParts": 36,
+    "individualParts": 37,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 70742688,
+    "runtimeGeometryBytes": 70855192,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 350724812
+    "embeddedOriginalBytes": 353343928
   },
   "v3Pending": [
-    "v3_fluorescent_fixture",
     "v3_cable_pole",
     "v3_shutter_shop",
     "v3_rubble_bank",

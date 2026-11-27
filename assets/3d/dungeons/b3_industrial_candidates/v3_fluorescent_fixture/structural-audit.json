@@ -1,0 +1,43 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_fluorescent_fixture/props/f3_v3_fluorescent_fixture.glb",
+      "file_bytes": 2619116,
+      "glb_meshes": 5,
+      "total_mesh_primitives": 5,
+      "scene_nodes": 6,
+      "scene_mesh_nodes": 5,
+      "scene_primitive_instances": 5,
+      "estimated_scene_triangles": 1012,
+      "materials": 5,
+      "material_names": [
+        "aged ceramic lamp holders",
+        "dusty warm fluorescent glass",
+        "f3_bare_worn_steel",
+        "f3_deep_crack",
+        "f3_oxidized_iron"
+      ],
+      "mesh_names": [
+        "Cube.002",
+        "one remaining dim fluorescent tube",
+        "broken dark fluorescent remnant",
+        "Cube.001",
+        "Cube"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 5,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 9,
+      "textures": 9,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
