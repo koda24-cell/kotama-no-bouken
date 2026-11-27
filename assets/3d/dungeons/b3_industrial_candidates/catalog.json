@@ -827,6 +827,27 @@
       "portableSha256": "22028d5aa689bdcc8d265844326b0c078727a18be00512f669d4a27c96689cb0"
     },
     {
+      "id": "v3_greenhouse_bay",
+      "name": "腐食した廃植物館トラス",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_greenhouse_bay/runtime/f3_v3_greenhouse_bay.glb",
+      "sha256": "05e547690df51180d5cc31c9a0601d16b5e14a18daebde16dd9c45dc78e9212a",
+      "bytes": 1885420,
+      "triangles": 15052,
+      "sourceCommit": "c99503f36c2d910aafd0f50d1d2a3afe68f209ab",
+      "workflowRun": "45955589363",
+      "embeddedOriginal": "v3_greenhouse_bay/props/f3_v3_greenhouse_bay.glb",
+      "embeddedOriginalBytes": 9133788,
+      "sizeMeters": [
+        8.9556,
+        6.1594,
+        8.22
+      ],
+      "portableAuthoring": "v3_greenhouse_bay/sources/f3_v3_greenhouse_bay_authoring.blend",
+      "portableSha256": "7a488ca36b6298b92a668f2966175369c1f559fdff752fc205bff136aea00952"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1356,12 +1377,12 @@
     }
   ],
   "totals": {
-    "individualParts": 25,
+    "individualParts": 26,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 61059480,
+    "runtimeGeometryBytes": 62944900,
     "sharedImageBytes": 53910274,
-    "embeddedOriginalBytes": 282279904
+    "embeddedOriginalBytes": 291413692
   },
   "v3Pending": [
     "v3_riveted_span",
@@ -1369,7 +1390,6 @@
     "v3_spalled_wall",
     "v3_collapsed_storey",
     "v3_leaning_facade",
-    "v3_greenhouse_bay",
     "v3_greenhouse_gate",
     "v3_sunken_colonnade",
     "v3_sunken_shopfront",
