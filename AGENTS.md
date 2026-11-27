@@ -122,7 +122,7 @@ Build a separately versioned original rear cranium first, then own temporal/ear/
 ## 「確認サイトを更新して」＝非公開開発版の更新手順（2026-11-27、GPT・Claude・Codex 共通）
 - 確認サイト（非公開開発版）: https://kotama-private-probe-20261127.pages.dev （パスワード認証。中身の一覧は `/preview-info.html`）。raw.githack に代わる動作確認URL。パスワードは GitHub Secret `PREVIEW_PASSWORD` にのみ存在し、チャット・ログ・リポジトリに書かない。
 - 中身は **development ＋ 選択した open PR**。選択は `tools/cloudflare-preview/preview-sources.json`（既定 `mode: label` → ラベル `preview` 付き PR。`all` で development 宛の全 open 非draft PR、`none` で development のみ）。競合する PR は自動で除外され、run の Summary と `/preview-info.html` に表示される。development・main には何もマージしない。
-- ユーザーに「確認サイトを更新して」と言われたら: (1) 指示された PR に `preview` ラベルを付ける（指示がなければ現状維持）、(2) `git push --force origin <development の最新SHA>:refs/heads/preview/refresh`、(3) workflow `Cloudflare private dev preview` の run を確認（gate-before / deploy / gate-after がすべて success）、(4) 含めた PR・除外した PR・run URL を報告。run 未確認で「更新した」と言わない。
+- ユーザーに「確認サイトを更新して」と言われたら: (1) 指示された PR に `preview` ラベルを付ける（指示がなければ現状維持）、(2) development の最新コミットの上で `tools/cloudflare-preview/refresh-stamp.txt` に現在時刻を書いた1コミットを作り、`git push --force origin HEAD:refs/heads/preview/refresh`（同じSHAをそのまま push しても workflow は起動しないため。実行時は常に最新の development を使う。run 46015813140 で動作確認済み）、(3) workflow `Cloudflare private dev preview` の run を確認（gate-before / deploy / gate-after がすべて success）、(4) 含めた PR・除外した PR・run URL を報告。run 未確認で「更新した」と言わない。
 - development への push でも自動更新される（docs 等のみの変更を除く）。停止はリポジトリ変数 `KOTAMA_GAME_PREVIEW_ENABLED` を `true` 以外に。
 - 配信ファイルは `tools/cloudflare-preview/build_runtime_bundle.py` が runtime の参照から選別する。新しい素材が表示されない場合は run の Artifact `bundle-report` の `missing_references` を確認し、選別ツールを直す（日本語・空白入りファイル名も対象）。
 - 詳細: `docs/CLOUDFLARE_ACCESS_SETUP.md`。
