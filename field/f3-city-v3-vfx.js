@@ -14,7 +14,7 @@ export function createCityV3Water(T,{cells,cellSize=4,y=-1.2,high=false}){
   fragmentShader:`uniform sampler2D tDiffuse;uniform vec3 color;uniform float time;varying vec4 reflectionUV;varying vec2 flowUV;
   void main(){vec4 q=reflectionUV;vec2 wave=vec2(sin(flowUV.x*2.1+flowUV.y*.7+time*.6),cos(flowUV.y*2.7-flowUV.x*.3+time*.4));q.xy+=wave*.0018*q.w;
    vec3 reflected=texture2DProj(tDiffuse,q).rgb;float ripple=sin(flowUV.x*8.+flowUV.y*4.+time*.9)*.012;
-   gl_FragColor=vec4(mix(color,reflected,.42)+ripple,.67);
+   gl_FragColor=vec4(mix(color,reflected,.42)+ripple,.52);
    #include <tonemapping_fragment>
    #include <colorspace_fragment>
   }`};

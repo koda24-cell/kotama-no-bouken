@@ -97,6 +97,12 @@ export function createTheme(api){
     box('opaque supported street deck',concrete,px,y-.20,pz,4.025,.40,4.025);
     if(!plan.tags[x+','+z]){const road=bundle.models.has('v3_asphalt_heave')&&hash(x,z,30)>.84?'v3_asphalt_heave':'v2_fractured_road';model(road,px,y+.018,pz,{ry:Math.floor(hash(x,z,29)*4)*Math.PI/2});}
    }
+   for(const d of DIR_ORDER){const[dx,dz]=DIR_VEC[d];if(info.ch(x+dx,z+dz)!=='~')continue;
+    const group=new THREE.Group();group.name='connected low canal guard';root.add(group);const created=[];
+    for(const level of[.44,.86]){const aa=[px+dx*1.72-dz*1.98,plan.heightWorld(px+dx*1.72-dz*1.98,pz+dz*1.72+dx*1.98)+level,pz+dz*1.72+dx*1.98],bb=[px+dx*1.72+dz*1.98,plan.heightWorld(px+dx*1.72+dz*1.98,pz+dz*1.72-dx*1.98)+level,pz+dz*1.72-dx*1.98];created.push(beam('continuous canal rail',steel,aa,bb,.04,.04));}
+    for(const along of[-1.65,1.65]){const xx=px+dx*1.72+dz*along,zz=pz+dz*1.72-dx*along,yy=plan.heightWorld(xx,zz);created.push(pipe('canal rail stanchion',steel,[xx,yy,zz],[xx,yy+.9,zz],.026));box('canal bridge bearing pier',concrete,xx,(yy-6.05)/2,zz,.25,yy+6.05,.25);}
+    for(const o of created)group.add(o);hardCandidates.push({object:group,id:'canal-guard'});
+   }
    if(y>=3.1&&open(x,z-1)&&open(x,z+1)&&closed(x-1,z)&&closed(x+1,z)&&hash(x,z,920)>.9)model('v3_catwalk_junction',px,y-3.2,pz);
    if(y>.5){
     for(const sx of[-1.72,1.72])for(const sz of[-1.72,1.72])if(hash(x,z,91)>.55)box('raised street load bearing pier',concrete,px+sx,y/2-.2,pz+sz,.25,y+.4,.25);
@@ -229,8 +235,8 @@ export function createTheme(api){
    model('v3_greenhouse_gate',(room.x0-1)*4,plan.height(room.x0-1,13),13*4,{ry:Math.PI/2});
   }
   if(plan.water.length){
-   water=createCityV3Water(THREE,{cells:plan.water,cellSize:4,y:-1.2,high:g.high});water.object.userData.cityDynamic=true;root.add(water.object);
-   for(let i=0;i<plan.water.length;i+=5){const[x,z]=plan.water[i];model(i%2?'v3_sunken_colonnade':'v3_sunken_shopfront',x*4,-5.3,z*4,{scale:.7,ry:hash(x,z,719)*6.28});}
+   water=createCityV3Water(THREE,{cells:plan.water,cellSize:4,y:-.25,high:g.high});water.object.userData.cityDynamic=true;root.add(water.object);
+   for(let i=0;i<plan.water.length;i+=5){const[x,z]=plan.water[i],ry=hash(x,z,719)*6.28;box('submerged masonry foundation',concrete,x*4,-4.525,z*4,3.9,3.05,1.8,ry);model(i%2?'v3_sunken_colonnade':'v3_sunken_shopfront',x*4,-3,z*4,{scale:.7,ry});}
   }
   const shaftSites=plan.rooms.map(room=>({x:(room.x0+room.x1)*2,z:(room.z0+room.z1)*2,y:plan.height((room.x0+room.x1)/2,(room.z0+room.z1)/2)}));
 
