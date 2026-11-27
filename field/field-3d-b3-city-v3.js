@@ -76,7 +76,7 @@ export function createTheme(api){
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
   boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
   const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil;concrete.color.multiplyScalar(.85);P.stone.color.multiplyScalar(.82);
-  heldPointLights.forEach(l=>g.scene.remove(l));oldFar=g.camera.far;g.camera.far=60;g.camera.updateProjectionMatrix();api.setEnvironment(env);
+  heldPointLights.forEach(l=>g.scene.remove(l));oldFar=g.camera.far;api.setEnvironment(env);g.camera.far=api.viewFar(60);g.camera.updateProjectionMatrix();
   // The opaque terrain bed remains below the submerged street, never on top of water.
   box('continuous submerged terrain',soil,(a.w-1)*2,-6.3,(a.h-1)*2,(a.w+2)*4,.5,(a.h+2)*4);
   const closed=(x,z)=>info.wallCell(x,z),open=(x,z)=>info.open(x,z),fronts=[];
@@ -117,15 +117,16 @@ export function createTheme(api){
    // Connected corners + an internal core are opaque at every yaw. Recesses
    // stop on the core, while their side depth remains a full metre.
    const height=16+3.2*Math.floor(hash(Math.floor(x/3),Math.floor(z/3),31)*3);
-   box('solid city block core',concrete,px,(height+h0)/2,pz,1.3,height-h0,1.3);
-   for(const sx of[-1.5,1.5])for(const sz of[-1.5,1.5])box('full depth bonded corner pier',concrete,px+sx,(height+h0)/2,pz+sz,1.02,height-h0,1.02);
+   box('solid city block core',concrete,px,h0+height/2,pz,1.3,height,1.3);
+   for(const sx of[-1.5,1.5])for(const sz of[-1.5,1.5])box('full depth bonded corner pier',concrete,px+sx,h0+height/2,pz+sz,1.02,height,1.02);
    box('continuous building footing',concrete,px,h0+.13,pz,4.04,.28,4.04);
    for(const d of adjacent){const[dx,dz]=DIR_VEC[d],ry=FACE_YAW[d]+Math.PI;
     fronts.push({x,z,dx,dz,h:h0,ry,streetX:x+dx,streetZ:z+dz});
-    const id='v3_deep_window_bay';
-    if(!bundle.models.has(id))continue;
-    const source=bundle.models.get(id),sourceSize=new THREE.Box3().setFromObject(source).getSize(new THREE.Vector3()),single=id==='v3_deep_window_bay',levels=single?Math.ceil(height/3.2):1;
+    if(!bundle.models.has('v3_deep_window_bay'))throw Error('Sealed V3 window bay is required');
+    const single=true,levels=Math.ceil(height/3.2);
     for(let level=0;level<levels;level++){
+     const variation=hash(x*7+level,z,893),variant=level===0&&variation>.74&&bundle.models.has('v3_shutter_shop')?'v3_shutter_shop':variation<.13&&bundle.models.has('v3_spalled_wall')?'v3_spalled_wall':'v3_deep_window_bay',source=bundle.models.get(variant);
+     stats.facades=stats.facades||{};stats.facades[variant]=(stats.facades[variant]||0)+1;
      const holder=new THREE.Group(),o=source.clone(true);o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
      o.traverse(m=>{if(m.isMesh&&m.material?.name==='v2_exposed_infill_brick')m.visible=false;});
      const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,depth=dx?s.x:s.z,depthScale=single?Math.min(scale,1.95/depth):1.0/depth,sx=dx?depthScale:scale,sz=dz?depthScale:scale,offset=single?1.70:2-depth*depthScale/2;
@@ -133,7 +134,8 @@ export function createTheme(api){
     }
     for(let k=0;k<height/3.2;k++)box('bonded horizontal floor slab',concrete,px+dx*1.55,h0+k*3.2+.10,pz+dz*1.55,dx?.9:4.04,.20,dz?.9:4.04);
    }
-   if(hash(x,z,24)>.89&&bundle.models.has('v3_collapsed_storey'))model('v3_collapsed_storey',px,height-1.5,pz,{maxWidth:3.8,maxDepth:3.8,ry:hash(x,z)*6.28});
+   if(hash(x,z,25)>.91&&bundle.models.has('v3_leaning_facade'))model('v3_leaning_facade',px,h0+height-1.4,pz,{maxWidth:3.8,maxDepth:3.8,ry:hash(x,z,26)*6.28});
+   if(hash(x,z,24)>.89&&bundle.models.has('v3_collapsed_storey'))model('v3_collapsed_storey',px,h0+height-1.5,pz,{maxWidth:3.8,maxDepth:3.8,ry:hash(x,z)*6.28});
   }
   // A street crossing carries load into both neighbouring solid blocks.
   let crossings=0;

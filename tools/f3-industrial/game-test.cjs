@@ -175,7 +175,7 @@ for(const x of logs){if(x.overlaps?.length)failures.push('scenery overlaps '+x.f
 if(controls.move.tile.tx!==(controlOrigin[0]+1)||controls.move.turn!==controls.before.turn+1||controls.turn.turn!==controls.move.turn||controls.bump.tile.tx!==(controlOrigin[0]+1)||controls.bump.turn!==controls.move.turn)failures.push('controls');
 if(!interactions.find(x=>x.kind==='chest')?.after.flag)failures.push('chest');
 if(!interactions.find(x=>x.kind==='gather')?.after.used)failures.push('gather');
-if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?(cityV3?60:44):48)))failures.push('lifecycle');
+if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?(cityV3?(mobile?24:60):44):(mobile?24:48))))failures.push('lifecycle');
 if(lifecycle[1].memory.geometries!==lifecycle[3].memory.geometries)failures.push('geometry leak');
 if(lifecycle[1].memory.textures!==lifecycle[3].memory.textures)failures.push('texture leak');
 if(!save.same)failures.push('save roundtrip');
