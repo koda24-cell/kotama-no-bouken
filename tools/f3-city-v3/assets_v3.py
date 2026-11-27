@@ -38,4 +38,6 @@ def build(asset,e):
  elif asset in ['v3_switchback_stair','v3_straight_access_stair','v3_catwalk_junction']:
   from stairs_v3 import build as stairs
   stairs(asset,e)
- else:raise ValueError('Asset not implemented: '+asset)
+ else:
+  from architecture_v3 import build as architecture
+  if not architecture(asset,e):raise ValueError('Asset not implemented: '+asset)
