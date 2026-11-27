@@ -1021,20 +1021,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_derelict_car/runtime/f3_v3_derelict_car.glb",
-      "sha256": "7f1a5c63d89c06076619de8754b2d06618e90cf973ed30cfa5be77626693578d",
-      "bytes": 3844008,
+      "sha256": "40d74c019d00d87e240fcc27eb57d853a8d020c52e2a8d90553aa15ae0c92bb0",
+      "bytes": 3844016,
       "triangles": 31780,
-      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
-      "workflowRun": "45960157429",
+      "sourceCommit": "266cf727b66b2730fe480a50862e1586718a39be",
+      "workflowRun": "45974748139",
       "embeddedOriginal": "v3_derelict_car/props/f3_v3_derelict_car.glb",
-      "embeddedOriginalBytes": 6371676,
+      "embeddedOriginalBytes": 6371684,
       "sizeMeters": [
         2.124,
         1.5828,
         4.652
       ],
       "portableAuthoring": "v3_derelict_car/sources/f3_v3_derelict_car_authoring.blend",
-      "portableSha256": "0be5a433f2bad65a61b042f30b65a6677178f3589461f2aedbaaa840de8fa4c9"
+      "portableSha256": "db8a8c76a6984d8667ceba767f10ed38f878e65e3b48088280e14e1b4928d630"
     },
     {
       "id": "v3_electric_cabinet",
@@ -1720,9 +1720,9 @@
     "individualParts": 41,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 73462376,
+    "runtimeGeometryBytes": 73462384,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 376123132
+    "embeddedOriginalBytes": 376123140
   },
   "v3Pending": [],
   "v3Complete": true

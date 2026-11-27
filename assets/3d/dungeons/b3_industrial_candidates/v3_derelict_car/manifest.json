@@ -2,8 +2,8 @@
   "status": "NOT_APPROVED",
   "assetName": "v3_derelict_car",
   "asset": {
-    "bytes": 6371676,
-    "sha256": "d69a47778422d0d8db18d0dda5bc16c4a1182e4664c5e803d4410e7ec934a5ec",
+    "bytes": 6371684,
+    "sha256": "c14a79f746d5992a1198ed2464bdd27d715b09b4b4fae5916ea5a167f2da92be",
     "tris": 31780,
     "verts": 75892,
     "meshes": 6,
@@ -44,8 +44,8 @@
     "category": "props",
     "desc_ja": "錆と欠損と内装を持つ廃車",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
-    "workflowRun": "45960157429",
+    "sourceCommit": "266cf727b66b2730fe480a50862e1586718a39be",
+    "workflowRun": "45974748139",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v3_derelict_car.blend",
     "renderedFrom": "reimported GLB",
@@ -164,10 +164,10 @@
   ],
   "runtime": {
     "file": "f3_v3_derelict_car.glb",
-    "sourceSha256": "d69a47778422d0d8db18d0dda5bc16c4a1182e4664c5e803d4410e7ec934a5ec",
-    "sha256": "7f1a5c63d89c06076619de8754b2d06618e90cf973ed30cfa5be77626693578d",
-    "bytes": 3844008,
-    "embeddedOriginalBytes": 6371676,
+    "sourceSha256": "c14a79f746d5992a1198ed2464bdd27d715b09b4b4fae5916ea5a167f2da92be",
+    "sha256": "40d74c019d00d87e240fcc27eb57d853a8d020c52e2a8d90553aa15ae0c92bb0",
+    "bytes": 3844016,
+    "embeddedOriginalBytes": 6371684,
     "images": [
       {
         "file": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5.jpg",

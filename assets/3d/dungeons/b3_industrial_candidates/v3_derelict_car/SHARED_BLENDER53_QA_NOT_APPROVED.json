@@ -4,63 +4,63 @@
   "files": {
     "manifest.json": {
       "bytes": 8739,
-      "sha256": "235be0bf63ccd5287ded42be479a79c4e29347c23572e3fc20aa30d75cb4be37"
+      "sha256": "86f92129ccde03e4833147e349f146c219b99e5d772aa1f88c55593041fd70c0"
     },
     "metrics/f3_v3_derelict_car.json": {
       "bytes": 1422,
-      "sha256": "b03c7ed48e72a61da217923890e0f6c8f0deb466ded30873f946cf84132bcb52"
+      "sha256": "5e1a43d744674e8d11773b946a6072f4d0ee4d1ead6c91b78531e4d766c02748"
     },
     "props/f3_v3_derelict_car.glb": {
-      "bytes": 6371676,
-      "sha256": "d69a47778422d0d8db18d0dda5bc16c4a1182e4664c5e803d4410e7ec934a5ec"
+      "bytes": 6371684,
+      "sha256": "c14a79f746d5992a1198ed2464bdd27d715b09b4b4fae5916ea5a167f2da92be"
     },
     "renders/f3_v3_derelict_car/angle.png": {
-      "bytes": 447431,
-      "sha256": "5d3efc8d799a0fbad5af79b66d8d07be1848eca27780fe091b93e4aa08ae1001"
+      "bytes": 441110,
+      "sha256": "2551041c0f344860482bedadd5225270470f4429dc787f005a97979afdf7c336"
     },
     "renders/f3_v3_derelict_car/back.png": {
-      "bytes": 445593,
-      "sha256": "ed6862f8646578258867c788be7829906d94204cf8ceab22fc540192587d1b66"
+      "bytes": 434412,
+      "sha256": "62bf9652a573c99ac6cf087e4e870882471d31b0fefd6c675914d81670d6d7c7"
     },
     "renders/f3_v3_derelict_car/front.png": {
-      "bytes": 470911,
-      "sha256": "90d063980186115b970bfebb5b96b417c84e6294314ae2543e83fb59b933a1dd"
+      "bytes": 461278,
+      "sha256": "8b786efb23edbc083a53130b4be35151806fee08acb672af3564c9da8273d790"
     },
     "renders/f3_v3_derelict_car/side.png": {
-      "bytes": 424001,
-      "sha256": "c7367cd5db0d2577929693e075e6196d93740ffd4225ed68bd787d771a3b25e0"
+      "bytes": 419197,
+      "sha256": "a17c952dc8c79e9f2d722cc76effc6ebd6dd295d617df6f7c0d6b3711cfb1271"
     },
     "renders/f3_v3_derelict_car/top.png": {
-      "bytes": 427493,
-      "sha256": "80df9963bfb9ef8aad74807a8ecdc2a6af383cfef02060de6177312f257b6db4"
+      "bytes": 421623,
+      "sha256": "e38b191567e36166cf9a3845e3c2552112fefb5956ae11854f6a38f1f144f4ec"
     },
     "runtime/f3_v3_derelict_car.glb": {
-      "bytes": 3844008,
-      "sha256": "7f1a5c63d89c06076619de8754b2d06618e90cf973ed30cfa5be77626693578d"
+      "bytes": 3844016,
+      "sha256": "40d74c019d00d87e240fcc27eb57d853a8d020c52e2a8d90553aa15ae0c92bb0"
     },
     "security/all-texture-inputs.log": {
       "bytes": 292,
-      "sha256": "d15c2cb1a8e8249e136a319735dc0a56371e20895a0c1c12484b02a50879396e"
+      "sha256": "fd0d8d561b1915daf31a37982d23c2abca9a2a5c5cdf0fc0f5dae3caa01d5936"
     },
     "security/existing-cc0-inputs.log": {
       "bytes": 289,
-      "sha256": "e3dae24d843f8fe1d9d412225a74287df71bff913b9cda802fa3f168c86e2686"
+      "sha256": "40bdd7d6395f61d4c6f10278e36d3f4be76d249342369c8aacfbd8062d657d52"
     },
     "security/renderer-source.log": {
       "bytes": 289,
-      "sha256": "1dfcd19eac8fbc17e4225c8f498d54b2c94a6261e41fcb559d304fe5ed2ff756"
+      "sha256": "38cd3addd79d6303dd7e7dc70acf58d8f655e155cbf611d4a5e250f30de13c90"
     },
     "security/shared-source.log": {
       "bytes": 294,
-      "sha256": "012d0b1d80d15a79ea3577254bff3a0b7c35adff57dd764d14f21c43e678c211"
+      "sha256": "b973466d92252f162aa19167b76e2e1c80e5eed674d0bb8a93482400fc766bdc"
     },
     "security/source.log": {
       "bytes": 294,
-      "sha256": "0fd0eaa11b8e12a16a26eedd0ac7b1b41610ab6a24293a6def112bda2c67f831"
+      "sha256": "278cc3ee362b92239291e00b2695c5f3a7f0eae6817cd8d3e277e7ba46d10a44"
     },
     "security/v3-source.log": {
       "bytes": 292,
-      "sha256": "a388039741d6cff9ca72ee6894c0d27906cd35c9dd464a7f2e15dd45ab2f6a1e"
+      "sha256": "bffb40f25816bff0798243751b86714789886e436dea58bc86ae05ece4186e61"
     },
     "shared_textures/04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg": {
       "bytes": 733167,
@@ -112,19 +112,19 @@
     },
     "sources/authoring-portability.json": {
       "bytes": 2445,
-      "sha256": "3363e781ab00d119a91bb5f5f70589b7f2bf5900cedaba7308f4770442e0768d"
+      "sha256": "38fc8e97b119b0e2cd7829b2d2783a696aa9bd638edc0f937b208867dd384af0"
     },
     "sources/derelict-car-design.json": {
       "bytes": 511,
       "sha256": "26d544d65e427e65ffc8128584298dbad98126d3b5868dab0822bca923ff555d"
     },
     "sources/f3_v3_derelict_car.blend": {
-      "bytes": 9358491,
-      "sha256": "a565dbbf98ae7ea0823fb4434a11fbe9219ba8ea8e4b05a174e7953e8a3c0f25"
+      "bytes": 9357638,
+      "sha256": "95abe482c9cb0f6346aed7697093e6a0cabadfef2e8976ad2645ac01b2486e3b"
     },
     "sources/f3_v3_derelict_car_authoring.blend": {
-      "bytes": 8908111,
-      "sha256": "0be5a433f2bad65a61b042f30b65a6677178f3589461f2aedbaaa840de8fa4c9"
+      "bytes": 8908117,
+      "sha256": "db8a8c76a6984d8667ceba767f10ed38f878e65e3b48088280e14e1b4928d630"
     },
     "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
       "bytes": 8773,
@@ -164,7 +164,7 @@
     },
     "structural-audit.json": {
       "bytes": 1327,
-      "sha256": "d8c6fd4bbadbc750b525b44d516c89fc78c296a25a19cff32b17d84b44d95593"
+      "sha256": "9dccccb262d266a64fb9ba8c09dd9efac86c6ab85779b558bc437dd8a5388312"
     },
     "textures/asphalt_02-api.json": {
       "bytes": 27252,
