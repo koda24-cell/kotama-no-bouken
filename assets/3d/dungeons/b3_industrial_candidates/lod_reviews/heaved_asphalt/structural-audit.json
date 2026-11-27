@@ -1,0 +1,109 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-heaved_asphalt/comparison/lod0_NOT_APPROVED.glb",
+      "file_bytes": 8104104,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 1372,
+      "materials": 4,
+      "material_names": [
+        "f3_broken_asphalt",
+        "f3_damp_concrete",
+        "f3_faded_safety_ochre",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cube.001",
+        "root lifting pavement",
+        "Cube.002",
+        "Cube.007"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-heaved_asphalt/comparison/lod1_NOT_APPROVED.glb",
+      "file_bytes": 8018476,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 788,
+      "materials": 4,
+      "material_names": [
+        "f3_broken_asphalt.001",
+        "f3_damp_concrete.001",
+        "f3_faded_safety_ochre.001",
+        "f3_weathered_concrete.001"
+      ],
+      "mesh_names": [
+        "Cube.003",
+        "root lifting pavement.001",
+        "Cube.004",
+        "Cube.005"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-heaved_asphalt/comparison/lod2_NOT_APPROVED.glb",
+      "file_bytes": 7979376,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 400,
+      "materials": 4,
+      "material_names": [
+        "f3_broken_asphalt.002",
+        "f3_damp_concrete.002",
+        "f3_faded_safety_ochre.002",
+        "f3_weathered_concrete.002"
+      ],
+      "mesh_names": [
+        "Cube.006",
+        "root lifting pavement.002",
+        "Cube.008",
+        "Cube.009"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

@@ -1,0 +1,57 @@
+{
+  "bytes": 7606280,
+  "sha256": "8f617ab8df0b9b005fd21a4d42da3f42eb5f1f3c37560371c8f249b7c0a91a07",
+  "tris": 3140,
+  "verts": 6378,
+  "meshes": 7,
+  "drawCalls": 7,
+  "materials": [
+    "f3_aged_rubber",
+    "f3_bare_worn_steel",
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_faded_safety_ochre",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 21,
+  "textureBytes": 7268696,
+  "sizeMeters": [
+    1.7301,
+    1.86,
+    1.0285
+  ],
+  "bboxMin": [
+    -1.0551,
+    0.0,
+    -0.35
+  ],
+  "bboxMax": [
+    0.675,
+    1.86,
+    0.6785
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_control_cabinet",
+  "file": "props/f3_control_cabinet.glb",
+  "category": "props",
+  "desc_ja": "\u6249\u304c\u958b\u3044\u305f\u8150\u98df\u5236\u5fa1\u76e4",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_control_cabinet.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_control_cabinet/front.png",
+    "renders/f3_control_cabinet/back.png",
+    "renders/f3_control_cabinet/side.png",
+    "renders/f3_control_cabinet/angle.png",
+    "renders/f3_control_cabinet/top.png"
+  ]
+}

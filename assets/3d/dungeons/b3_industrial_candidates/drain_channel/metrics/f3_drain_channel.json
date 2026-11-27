@@ -1,0 +1,53 @@
+{
+  "bytes": 5281936,
+  "sha256": "377ac85c2826c3d379ba8da6c1a1ee43ae17234ae276ed83342c66e0786122da",
+  "tris": 3024,
+  "verts": 7430,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_deep_crack",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 9,
+  "textureBytes": 4901562,
+  "sizeMeters": [
+    3.6,
+    0.33,
+    0.75
+  ],
+  "bboxMin": [
+    -1.8,
+    0.0,
+    -0.375
+  ],
+  "bboxMax": [
+    1.8,
+    0.33,
+    0.375
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_drain_channel",
+  "file": "props/f3_drain_channel.glb",
+  "category": "props",
+  "desc_ja": "\u571f\u7802\u306e\u8a70\u307e\u3063\u305f\u6392\u6c34\u6e9d",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_drain_channel.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_drain_channel/front.png",
+    "renders/f3_drain_channel/back.png",
+    "renders/f3_drain_channel/side.png",
+    "renders/f3_drain_channel/angle.png",
+    "renders/f3_drain_channel/top.png"
+  ]
+}

@@ -1,0 +1,1 @@
+この反復は階段のprototypeキー接続で `urban[kind] is not a function` を検出し、従来都市へ復帰した実画面です。追加素材の成功画像ではありません。接続と試験の期待mode判定を修正し、後続 `f3-industrial-wip-reflections-fixed` で industrial-trial / sourceHashesVerified / lane obstruction0 を確認しています。

@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/grating_catwalk/props/f3_grating_catwalk.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 4896,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 4896,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 3057560,
+          "sha256": "40d41f7c25dd39c6a471e5ef0035afb0ffc3b95a73ee8070d7a03b7a21d4e079"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 262753,
+          "sha256": "a7bebdf3cec6cb210400d64abdd563a8d1bd6f69dc2c906e4ad6fdfb2dd21931"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 261093,
+          "sha256": "adcd8b640166e8e97daffff468c21903666f098ae89815225c54be296c7e86da"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 285915,
+          "sha256": "0b6ee5861b6315cf8cfdcb8d2ff12bb8cc5dc681f6436e563d9c35237ac19026"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 259981,
+          "sha256": "722035ba07e513a179eb91a8b13b3385ac46e819148cf17b2914c009a8c280d9"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 2692,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 2763280,
+          "sha256": "f2ad7766d1a193829116dccbf92a42220d150b0ca9049c4c122dd60749cbaa94"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 262992,
+          "sha256": "a589bde278592531e7b84683828e513220f18677ab3069c26447ce41167a046f"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 261097,
+          "sha256": "44de2b6f4bac73b9f6e1bb692c367e49d6e1c07f6fdae1a6e5dc6ccac11c2af5"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 286192,
+          "sha256": "d668ba71eb091caa03eafdda2e235ac62833c7eb6169299286790f28642cdc18"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 260005,
+          "sha256": "08279e8c3df0c8c459e62fbdbc70a277a647ed15dfa2b1205fd02a32a69c4099"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 1224,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 2612192,
+          "sha256": "d8bb782ae543792e3a376d83fb234fffa7cde35878f74ed5832289dd332604fe"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 262739,
+          "sha256": "d1c8ebb6c4b16e8ab3401c9554b479ac940e90bc3bd5a1753c0e74f5d08f6290"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 261246,
+          "sha256": "52d97baf5e2957211b9a9d3cde76e9056287a75cdd22d2e9e1a2932491c2de58"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 285864,
+          "sha256": "bbaef570d3889f621d871d9b6100a6276fd53c0c4de9402ea681898d0ee9ba5e"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 259700,
+          "sha256": "23835753eafda97912ad49d9085d249971f76bcd9d0e6bab5c1a959497f1961d"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "711822cf4194859fed9f87315b77237c4a65b4bdca5cdb2f8840a4a421ffde5b",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "grating_catwalk",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}

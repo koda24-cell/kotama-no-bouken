@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/landing_railing/props/f3_landing_railing.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 928,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 928,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 4977068,
+          "sha256": "4b0a9a9810720f7207906fac3421b9244aa54b44416ffbfb261b64e71196b921"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 274135,
+          "sha256": "eccea25f82b75dfe4af406987cf3778c147e408d6d58b9ac63778c7a78b24140"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 272927,
+          "sha256": "cd50e052b7ddbb090592f181f093d6b52c64282e0df19e401c714130b5005dac"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 295866,
+          "sha256": "169bea195a7aab615560b774a7fd984cbc68e5eab9efc0a08ea81c3c1c3ced5d"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 286844,
+          "sha256": "b0691f130c4cb320ba6535ebe42dcb8dba8b3b10882aa70461dab7080ed6d696"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 510,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 4931196,
+          "sha256": "d7f99f79813484c78d8636e8329f782eb9fd04c307de95ff959f78e0fb05d4eb"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 273885,
+          "sha256": "22f1e9a398c0f9f36c277bb2bb1f9f6eb1018456d430fff378ba5892e0589390"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 273182,
+          "sha256": "254234f7cc15b9f2782c8f74940bd6638cbe2cc7517e4ee3f02416a47071b2bf"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 295775,
+          "sha256": "06abf2d030706ad587464ed439bfc84dd262d01ab70945664a514d78b967c1e8"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 286906,
+          "sha256": "92591e76fa0aa8aefed2b29ee87fb4c93ea188cdf623ed1195f2e53582e52afb"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 232,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 4906380,
+          "sha256": "28aa29c86d7599704247047cab8b6f2a1ae5b1c6f13b1f1c545074ef8b0a75f1"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 273598,
+          "sha256": "8b972d2c7bb9628f6f546bc5805ffa99fa81bd8d5da26e009ff7842b8e0f6151"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 273222,
+          "sha256": "eda3817502939f30d16a5cbe135b37d687c7ef3a2abfb2754f7d241cbebbd4c0"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 295190,
+          "sha256": "9fbd1b58c77d9317a37f6d744a8f286f7aace35eaeb615273367ac4c370ea916"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 286253,
+          "sha256": "3e612eb9f306f2530c6275285303d1e7b1352b6291a7bf075e40650c60a5d853"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "aeb03d9fea13b93fb476cc7f2409da836855935693c459cc53f977b71a483f51",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "landing_railing",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}

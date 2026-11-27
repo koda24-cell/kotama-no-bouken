@@ -1,0 +1,54 @@
+{
+  "bytes": 5096700,
+  "sha256": "d16e1d17f99042e6372a87009951ca9d582ca42bb926de1402102d98e8fd15d4",
+  "tris": 2552,
+  "verts": 3116,
+  "meshes": 4,
+  "drawCalls": 4,
+  "materials": [
+    "f3_aged_rubber",
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete"
+  ],
+  "textureCount": 12,
+  "textureBytes": 4924532,
+  "sizeMeters": [
+    1.3575,
+    1.3575,
+    0.63
+  ],
+  "bboxMin": [
+    -0.9925,
+    -0.035,
+    -0.315
+  ],
+  "bboxMax": [
+    0.365,
+    1.3225,
+    0.315
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_flanged_pipe",
+  "file": "props/f3_flanged_pipe.glb",
+  "category": "props",
+  "desc_ja": "\u30d5\u30e9\u30f3\u30b8\u4ed8\u304d\u7834\u65ad\u914d\u7ba1",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "b777bf019444bc2255cc9e921547e5cad762f8ab",
+  "workflowRun": "45335192544",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_flanged_pipe.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_flanged_pipe/front.png",
+    "renders/f3_flanged_pipe/back.png",
+    "renders/f3_flanged_pipe/side.png",
+    "renders/f3_flanged_pipe/angle.png",
+    "renders/f3_flanged_pipe/top.png"
+  ]
+}

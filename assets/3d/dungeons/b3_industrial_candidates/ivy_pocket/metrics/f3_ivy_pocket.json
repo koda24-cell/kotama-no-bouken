@@ -1,0 +1,53 @@
+{
+  "bytes": 3930928,
+  "sha256": "a7617d2957bd1a40633e038a5d11895e6168a570a3b7093d66f42f4099ad459a",
+  "tris": 4300,
+  "verts": 9148,
+  "meshes": 3,
+  "drawCalls": 3,
+  "materials": [
+    "f3_damp_concrete",
+    "f3_ivy_woody_stem",
+    "f3_lobed_ivy_veined"
+  ],
+  "textureCount": 8,
+  "textureBytes": 3460596,
+  "sizeMeters": [
+    1.7177,
+    2.7029,
+    0.3985
+  ],
+  "bboxMin": [
+    -0.6501,
+    -0.0089,
+    -0.2833
+  ],
+  "bboxMax": [
+    1.0676,
+    2.694,
+    0.1153
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_ivy_pocket",
+  "file": "props/f3_ivy_pocket.glb",
+  "category": "props",
+  "desc_ja": "\u9244\u3068\u77f3\u3092\u8986\u3046\u8526\u30fb\u30b7\u30c0\u306e\u7fa4\u843d",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "89e5719795ed97ee6075c642ffed377bf0fbf949",
+  "workflowRun": "45363706593",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_ivy_pocket.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_ivy_pocket/front.png",
+    "renders/f3_ivy_pocket/back.png",
+    "renders/f3_ivy_pocket/side.png",
+    "renders/f3_ivy_pocket/angle.png",
+    "renders/f3_ivy_pocket/top.png"
+  ]
+}

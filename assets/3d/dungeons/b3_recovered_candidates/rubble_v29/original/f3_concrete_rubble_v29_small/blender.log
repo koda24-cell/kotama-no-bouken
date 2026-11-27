@@ -1,0 +1,27 @@
+/work/tools/floor3/concrete_rubble01/build_v29_variants.py:216: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  mat.use_nodes=True
+F3_V29_ACTUAL_DIMENSIONS_MM small 341.62 275.84 80.11
+INFO Draco is available, use library at /opt/blender/blender-5.3.0-linux-x64/lib/libbf_intern_draco_bridge.so
+INFO MeshOptimizer is available, use library at /opt/blender/blender-5.3.0-linux-x64/lib/libbf_intern_meshopt_bridge.so
+06:18:39 | INFO: Starting glTF 2.0 export
+06:18:39 | INFO: Extracting primitive: F3_RUBBLE_V29_CORE_FRACTURE
+06:18:39 | INFO: Primitives created: 2
+06:18:39 | INFO: Finished glTF 2.0 export in 0.10068559646606445 s
+/work/tools/floor3/concrete_rubble01/build_v29_variants.py:370: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  world.use_nodes=True
+00:20.206  render           | Saved: '/work/out/f3_concrete_rubble_v29_small/f3_concrete_rubble_v29_small-front.png'
+
+Info: Saved as "f3_concrete_rubble_v29_small.blend"
+F3_RUBBLE_V29_RENDER_OK small front
+00:31.604  render           | Saved: '/work/out/f3_concrete_rubble_v29_small/f3_concrete_rubble_v29_small-side.png'
+F3_RUBBLE_V29_RENDER_OK small side
+00:43.747  render           | Saved: '/work/out/f3_concrete_rubble_v29_small/f3_concrete_rubble_v29_small-angle.png'
+F3_RUBBLE_V29_RENDER_OK small angle
+00:55.839  render           | Saved: '/work/out/f3_concrete_rubble_v29_small/f3_concrete_rubble_v29_small-top.png'
+F3_RUBBLE_V29_RENDER_OK small top
+01:14.852  render           | Saved: '/work/out/f3_concrete_rubble_v29_small/f3_concrete_rubble_v29_small-fracture_detail.png'
+F3_RUBBLE_V29_RENDER_OK small fracture_detail
+F3_RUBBLE_V29_ALL_COMPLETE small
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit

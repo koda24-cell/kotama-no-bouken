@@ -1,0 +1,59 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_courtyard_facade/props/f3_v2_courtyard_facade.glb",
+      "file_bytes": 22379900,
+      "glb_meshes": 13,
+      "total_mesh_primitives": 13,
+      "scene_nodes": 14,
+      "scene_mesh_nodes": 13,
+      "scene_primitive_instances": 13,
+      "estimated_scene_triangles": 29106,
+      "materials": 13,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_deep_crack",
+        "f3_exposed_aggregate",
+        "f3_ivy_woody_stem",
+        "f3_lobed_ivy_veined",
+        "f3_oxidized_iron",
+        "f3_v2_aged_render",
+        "f3_v2_aged_structure",
+        "f3_v2_crushed_aggregate",
+        "v2_dry_woody_liana",
+        "v2_exposed_infill_brick",
+        "v2_unlit_room_concrete"
+      ],
+      "mesh_names": [
+        "storey slab 0.008",
+        "storey slab 0.012",
+        "storey slab 0.007",
+        "storey slab 0.002",
+        "storey slab 0.010",
+        "storey slab 0.011",
+        "storey slab 0.003",
+        "storey slab 0.005",
+        "storey slab 0.001",
+        "storey slab 0.009",
+        "storey slab 0",
+        "storey slab 0.006",
+        "storey slab 0.004"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 13,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 39,
+      "textures": 51,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

@@ -1,0 +1,125 @@
+{
+  "schema": "kotama-rigid-lod-review-v1",
+  "status": "NOT_APPROVED",
+  "source": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/riveted_girder/props/f3_riveted_girder.glb",
+  "original_modified": false,
+  "category": "rigid_opaque_only",
+  "comparison_cameras": [
+    "front",
+    "side",
+    "angle",
+    "top"
+  ],
+  "original_triangle_equivalent": 3156,
+  "variants": [
+    {
+      "lod": 0,
+      "target_ratio": 1.0,
+      "triangle_equivalent": 3156,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod0_NOT_APPROVED.glb",
+          "bytes": 2785736,
+          "sha256": "25f23db295db1e0bbf14e0f7c53c5a5cde481e89e2ecf4cd08e4c8007d1d2d86"
+        },
+        {
+          "name": "lod0_front.png",
+          "bytes": 258671,
+          "sha256": "e9340e9a88a13ffb0df58bfe4073716be551c363a1fa156b0d4a21a312e96d81"
+        },
+        {
+          "name": "lod0_side.png",
+          "bytes": 258624,
+          "sha256": "c0a02d8f83d14ae5509fd9bbb5e1d2fe89b6e883604ceb74297e29175f25abee"
+        },
+        {
+          "name": "lod0_angle.png",
+          "bytes": 263689,
+          "sha256": "95e9eafa210f7712a55321dd55718ea4dc9aefe1214bd9898da1ab6adaddf178"
+        },
+        {
+          "name": "lod0_top.png",
+          "bytes": 258413,
+          "sha256": "7b500a91c476bfe6443e97cd820c4a8da723e379a00efe689b22829b524ec92f"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 1,
+      "target_ratio": 0.55,
+      "triangle_equivalent": 1735,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod1_NOT_APPROVED.glb",
+          "bytes": 2705392,
+          "sha256": "a90ffbcd661ded4a6e53f1d7f6b77006b667ed851ae9df133f5344782e6246f2"
+        },
+        {
+          "name": "lod1_front.png",
+          "bytes": 258696,
+          "sha256": "bc569b359e40ad1b836e7958e01d9a29d3eadc67195d8faa50b7b0867f719f7e"
+        },
+        {
+          "name": "lod1_side.png",
+          "bytes": 258518,
+          "sha256": "6d3dae6bc9ba13fe833912e2fb1b0a867db40704d77832cd798b97e720057e41"
+        },
+        {
+          "name": "lod1_angle.png",
+          "bytes": 263550,
+          "sha256": "b51da775c2327453c352d79cb5b81d37493ca1f8375380ebdd1482b6760b97e3"
+        },
+        {
+          "name": "lod1_top.png",
+          "bytes": 258215,
+          "sha256": "e6255beac34b23cc3123176503c1cc4139c3c9f82868e7b689dd0f9abc1f8f11"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    },
+    {
+      "lod": 2,
+      "target_ratio": 0.25,
+      "triangle_equivalent": 789,
+      "mesh_objects": 2,
+      "files": [
+        {
+          "name": "lod2_NOT_APPROVED.glb",
+          "bytes": 2586568,
+          "sha256": "4636701c71b5cca49537fb6ecbe90f930361cc03361b215d2d3feb9253b13c34"
+        },
+        {
+          "name": "lod2_front.png",
+          "bytes": 258666,
+          "sha256": "300e4bab120e245cd29c0093dc45bf80e891d3d1bb1e83a893b4e81f7763660c"
+        },
+        {
+          "name": "lod2_side.png",
+          "bytes": 258504,
+          "sha256": "edc70c5c7703319ea19ca3307e5fab0ddfb22fd9c09c920e57d9d7f12e0a40bf"
+        },
+        {
+          "name": "lod2_angle.png",
+          "bytes": 263584,
+          "sha256": "9a862690003d46b9a57408c2f72ac072a308af47f8405e7e6ff0fb41392c5c13"
+        },
+        {
+          "name": "lod2_top.png",
+          "bytes": 258094,
+          "sha256": "b4b78689f8f92e112445dc1938427eabca97301917307de313618e1dcb5d18bf"
+        }
+      ],
+      "zeroTangentFallbackVertices": 0
+    }
+  ],
+  "warning": "Not safe for foliage/glass/rigged meshes. Geometry LOD candidates are not visually approved and are not integrated into the game.",
+  "sourceSha256": "54c35d61b5ba9fa07ef18e9450454fb3949fcecf11a47914e82c7c6077517725",
+  "sourceCommit": "21cbdd634849b774fcf37e68cbbff98284ca79e1",
+  "workflowRun": "45372771290",
+  "assetId": "riveted_girder",
+  "blender": "5.3.0",
+  "artisticStatus": "NOT_APPROVED"
+}

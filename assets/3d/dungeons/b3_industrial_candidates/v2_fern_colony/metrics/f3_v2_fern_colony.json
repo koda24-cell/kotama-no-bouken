@@ -1,0 +1,51 @@
+{
+  "bytes": 2093244,
+  "sha256": "0083c9aa96391a8c6d03746f80f9f0a94162d67b8b67301167012629a7c204a9",
+  "tris": 6232,
+  "verts": 4403,
+  "meshes": 1,
+  "drawCalls": 1,
+  "materials": [
+    "f3_v2_polyhaven_fern02"
+  ],
+  "textureCount": 3,
+  "textureBytes": 1842256,
+  "sizeMeters": [
+    2.0283,
+    0.4405,
+    0.9205
+  ],
+  "bboxMin": [
+    -0.9891,
+    0.0,
+    -0.4103
+  ],
+  "bboxMax": [
+    1.0392,
+    0.4405,
+    0.5103
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v2_fern_colony",
+  "file": "props/f3_v2_fern_colony.glb",
+  "category": "props",
+  "desc_ja": "\u5199\u771f\u7531\u6765\u306e\u8449\u3068\u7acb\u4f53\u30b7\u30eb\u30a8\u30c3\u30c8\u3092\u6301\u3064\u30b7\u30c0\u7fa4\u843dV2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "3d4b00119ab06a34a0377402dda1f8f97550cb2d",
+  "workflowRun": "45416559718",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_fern_colony.blend",
+  "renderedFrom": "final alpha-MASK GLB reimport",
+  "renders": [
+    "renders/f3_v2_fern_colony/front.png",
+    "renders/f3_v2_fern_colony/back.png",
+    "renders/f3_v2_fern_colony/side.png",
+    "renders/f3_v2_fern_colony/angle.png",
+    "renders/f3_v2_fern_colony/top.png"
+  ]
+}

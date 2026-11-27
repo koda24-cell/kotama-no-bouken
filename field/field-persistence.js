@@ -63,6 +63,15 @@ function fieldDeserialize(d) {
     if (Object.hasOwn(d.enemyEncounters, "魔王軍の騎士")) enemyEncounterCounts["黒骸騎士"] = Math.max(0, enemyEncounterCounts["黒骸騎士"] || 0, Math.floor(Number(d.enemyEncounters["魔王軍の騎士"]) || 0));
   }
   fieldLootDeserialize(d);   // [LOOT] フラグ・踏破ビットを読み込んだ後に行う
+  // セーブした帰還地点も復元する。旧データ・不正な座標は従来通り未設定にする。
+  const cp = d.checkpoint;
+  if (cp && typeof cp === "object") {
+    const n = Number(cp.area), f = Number(cp.floor ?? 0), x = Number(cp.x), y = Number(cp.y);
+    if (Number.isInteger(n) && n >= 1 && n <= areaCount && Number.isInteger(f) && f >= 0 && f < fieldFloorCount(n) && Number.isFinite(x) && Number.isFinite(y)) {
+      const target = fieldArea(n, f);
+      if (!fieldBoxBlocked(target, x, y) && (typeof fieldRandomMazePosOk !== "function" || fieldRandomMazePosOk(target, x, y))) fieldState.checkpoint = { area: n, floor: f, x, y };
+    }
+  }
 }
 
 /* ------------------------------------------------------------

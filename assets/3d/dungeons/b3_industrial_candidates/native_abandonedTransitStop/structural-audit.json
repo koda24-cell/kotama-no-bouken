@@ -1,0 +1,45 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/native_abandonedTransitStop/props/f3_native_abandonedTransitStop.glb",
+      "file_bytes": 5215272,
+      "glb_meshes": 6,
+      "total_mesh_primitives": 6,
+      "scene_nodes": 7,
+      "scene_mesh_nodes": 6,
+      "scene_primitive_instances": 6,
+      "estimated_scene_triangles": 1252,
+      "materials": 6,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_deep_crack",
+        "f3_exposed_aggregate",
+        "f3_native_bark",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "Cylinder",
+        "Mesh_3.001",
+        "localized exposed aggregate weather skin",
+        "Mesh_4.001",
+        "Mesh_0.001",
+        "Mesh_1.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 6,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 16,
+      "textures": 16,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_wildflower_colony/props/f3_v2_wildflower_colony.glb",
+      "file_bytes": 4110712,
+      "glb_meshes": 1,
+      "total_mesh_primitives": 1,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 1,
+      "scene_primitive_instances": 1,
+      "estimated_scene_triangles": 34350,
+      "materials": 1,
+      "material_names": [
+        "f3_v2_polyhaven_periwinkle_plant"
+      ],
+      "mesh_names": [
+        "tree"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 0,
+        "MASK": 1,
+        "BLEND": 0
+      },
+      "images": 3,
+      "textures": 3,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

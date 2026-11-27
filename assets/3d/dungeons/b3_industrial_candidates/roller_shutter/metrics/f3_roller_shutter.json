@@ -1,0 +1,52 @@
+{
+  "bytes": 3031948,
+  "sha256": "a7c8974ee7fed10c5dc9ac7c45a7bb517e8cc0830d364f0aa36190c27ac03cda",
+  "tris": 4396,
+  "verts": 10674,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2489421,
+  "sizeMeters": [
+    3.9,
+    4.46,
+    0.52
+  ],
+  "bboxMin": [
+    -1.95,
+    0.0,
+    -0.32
+  ],
+  "bboxMax": [
+    1.95,
+    4.46,
+    0.2
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_roller_shutter",
+  "file": "props/f3_roller_shutter.glb",
+  "category": "props",
+  "desc_ja": "\u7834\u308c\u305f\u5de5\u5834\u30b7\u30e3\u30c3\u30bf\u30fc",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_roller_shutter.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_roller_shutter/front.png",
+    "renders/f3_roller_shutter/back.png",
+    "renders/f3_roller_shutter/side.png",
+    "renders/f3_roller_shutter/angle.png",
+    "renders/f3_roller_shutter/top.png"
+  ]
+}

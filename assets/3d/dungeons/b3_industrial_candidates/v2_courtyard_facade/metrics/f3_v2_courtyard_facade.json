@@ -1,0 +1,63 @@
+{
+  "bytes": 22379900,
+  "sha256": "3cdee26b37df52679227c40be2866fa5bfa5a37a4c8901277741ba186b264aa2",
+  "tris": 29106,
+  "verts": 67557,
+  "meshes": 13,
+  "drawCalls": 13,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_ivy_woody_stem",
+    "f3_lobed_ivy_veined",
+    "f3_oxidized_iron",
+    "f3_v2_aged_render",
+    "f3_v2_aged_structure",
+    "f3_v2_crushed_aggregate",
+    "v2_dry_woody_liana",
+    "v2_exposed_infill_brick",
+    "v2_unlit_room_concrete"
+  ],
+  "textureCount": 39,
+  "textureBytes": 18396803,
+  "sizeMeters": [
+    4.12,
+    16.2053,
+    4.1106
+  ],
+  "bboxMin": [
+    -2.06,
+    0.0034,
+    -1.9247
+  ],
+  "bboxMax": [
+    2.06,
+    16.2087,
+    2.1859
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v2_courtyard_facade",
+  "file": "props/f3_v2_courtyard_facade.glb",
+  "category": "props",
+  "desc_ja": "\u5d29\u843d\u3057\u305f\u96c6\u5408\u4f4f\u5b85\u306e\u7acb\u4f53\u30d5\u30a1\u30b5\u30fc\u30c9V2",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "7f50b334d1c62f0213dbfd7010fc70e1712aee7d",
+  "workflowRun": "45425172072",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v2_courtyard_facade.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v2_courtyard_facade/front.png",
+    "renders/f3_v2_courtyard_facade/back.png",
+    "renders/f3_v2_courtyard_facade/side.png",
+    "renders/f3_v2_courtyard_facade/angle.png",
+    "renders/f3_v2_courtyard_facade/top.png"
+  ]
+}

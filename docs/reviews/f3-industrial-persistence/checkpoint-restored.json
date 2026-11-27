@@ -1,0 +1,90 @@
+{
+  "before": {
+    "area": 3,
+    "floor": 0,
+    "x": 272,
+    "y": 628,
+    "positioned": true,
+    "checkpoint": {
+      "area": 3,
+      "floor": 0,
+      "x": 272,
+      "y": 628
+    },
+    "flags": {
+      "rmaze:e0": true
+    },
+    "enemyEncounters": {},
+    "maps": {},
+    "gatherUsed": {},
+    "gatherTimes": {},
+    "discovered": [],
+    "expedition": 0
+  },
+  "after": {
+    "area": 3,
+    "floor": 0,
+    "x": 272,
+    "y": 628,
+    "positioned": true,
+    "checkpoint": {
+      "area": 3,
+      "floor": 0,
+      "x": 272,
+      "y": 628
+    },
+    "flags": {
+      "rmaze:e0": true
+    },
+    "enemyEncounters": {},
+    "maps": {},
+    "gatherUsed": {},
+    "gatherTimes": {},
+    "discovered": [],
+    "expedition": 0
+  },
+  "differences": [],
+  "invalidCases": [
+    {
+      "input": null,
+      "actual": null
+    },
+    {
+      "input": {
+        "area": 999,
+        "floor": 0,
+        "x": 272,
+        "y": 628
+      },
+      "actual": null
+    },
+    {
+      "input": {
+        "area": 3,
+        "floor": 999,
+        "x": 272,
+        "y": 628
+      },
+      "actual": null
+    },
+    {
+      "input": {
+        "area": 3,
+        "floor": 0,
+        "x": "invalid",
+        "y": 628
+      },
+      "actual": null
+    },
+    {
+      "input": {
+        "area": 3,
+        "floor": 0,
+        "x": -900,
+        "y": -900
+      },
+      "actual": null
+    }
+  ],
+  "passed": true
+}

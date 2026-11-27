@@ -1,0 +1,52 @@
+{
+  "bytes": 3878448,
+  "sha256": "5f2b838be8631175ed3d637bfcdb92df29ba08a37b345eff2a6ef2190127d605",
+  "tris": 11060,
+  "verts": 27474,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2489421,
+  "sizeMeters": [
+    1.62,
+    3.7554,
+    3.734
+  ],
+  "bboxMin": [
+    -0.81,
+    0.025,
+    -1.724
+  ],
+  "bboxMax": [
+    0.81,
+    3.7804,
+    2.01
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_service_stair",
+  "file": "props/f3_service_stair.glb",
+  "category": "props",
+  "desc_ja": "\u5d29\u308c\u305f\u5de5\u5834\u4fdd\u5b88\u968e\u6bb5",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_service_stair.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_service_stair/front.png",
+    "renders/f3_service_stair/back.png",
+    "renders/f3_service_stair/side.png",
+    "renders/f3_service_stair/angle.png",
+    "renders/f3_service_stair/top.png"
+  ]
+}

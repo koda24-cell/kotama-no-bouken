@@ -1,0 +1,37 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v2_fractured_road/props/f3_v2_fractured_road.glb",
+      "file_bytes": 3291484,
+      "glb_meshes": 2,
+      "total_mesh_primitives": 2,
+      "scene_nodes": 3,
+      "scene_mesh_nodes": 2,
+      "scene_primitive_instances": 2,
+      "estimated_scene_triangles": 900,
+      "materials": 2,
+      "material_names": [
+        "f3_broken_asphalt",
+        "f3_porous_asphalt_fracture"
+      ],
+      "mesh_names": [
+        "irregular weathered road plate.015",
+        "irregular weathered road plate"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 2,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 6,
+      "textures": 6,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

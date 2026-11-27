@@ -1,0 +1,109 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-column_joint/comparison/lod0_NOT_APPROVED.glb",
+      "file_bytes": 7588688,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 3460,
+      "materials": 4,
+      "material_names": [
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "oxidized bolt washer",
+        "Cube.006",
+        "exposed deformed reinforcing bar",
+        "Cube.001"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-column_joint/comparison/lod1_NOT_APPROVED.glb",
+      "file_bytes": 7438720,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 1902,
+      "materials": 4,
+      "material_names": [
+        "f3_bare_worn_steel.001",
+        "f3_damp_concrete.001",
+        "f3_oxidized_iron.001",
+        "f3_weathered_concrete.001"
+      ],
+      "mesh_names": [
+        "oxidized bolt washer.001",
+        "Cube.002",
+        "exposed deformed reinforcing bar.001",
+        "Cube.003"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    },
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/render-output/f3-industrial-lod-column_joint/comparison/lod2_NOT_APPROVED.glb",
+      "file_bytes": 7314872,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 4,
+      "scene_mesh_nodes": 4,
+      "scene_primitive_instances": 4,
+      "estimated_scene_triangles": 865,
+      "materials": 4,
+      "material_names": [
+        "f3_bare_worn_steel.002",
+        "f3_damp_concrete.002",
+        "f3_oxidized_iron.002",
+        "f3_weathered_concrete.002"
+      ],
+      "mesh_names": [
+        "oxidized bolt washer.002",
+        "Cube.004",
+        "exposed deformed reinforcing bar.002",
+        "Cube.005"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 4,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 12,
+      "textures": 12,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

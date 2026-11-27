@@ -1,0 +1,36 @@
+{
+  "asset": "floor3_1floor_tall_wall",
+  "version": "v5",
+  "approval": "NOT_APPROVED",
+  "height_m": 4.6,
+  "width_m": 2.0,
+  "reference_material": "Poly Haven CC0 reused from approved V10 stairs",
+  "source_commit": "244b672ee7fac71fcc773135d07d4c497ba52bad",
+  "run_id": "44060951836",
+  "files": {
+    "f3_ruined_wall_floor1_v5.glb": {
+      "sha256": "f098fad24987e49eb5471b59c9ff44553952d1a7eaa5fed83358e4808780cb78",
+      "bytes": 2831364
+    },
+    "f3_ruined_wall_floor1_v5.blend": {
+      "sha256": "8a3235685cbf96293ece4ef646509d301140ece71b38d359d29126b58ba02b4c",
+      "bytes": 4455683
+    },
+    "f3_ruined_wall_floor1_v5-front.png": {
+      "sha256": "fdfbe2277b16a8f43b4aab7b405c920d28b6cc45794bdaf24786bd9975fa0fd4",
+      "bytes": 622511
+    },
+    "f3_ruined_wall_floor1_v5-side.png": {
+      "sha256": "8d7976f1102f0ede20949ff6e7d045937f18dd21e5feece89228ae435720a5b3",
+      "bytes": 474163
+    },
+    "f3_ruined_wall_floor1_v5-angle.png": {
+      "sha256": "62bc9d66e0845014636bdc952835b653acafdc685b4a31dda58006f289d2dba7",
+      "bytes": 606294
+    },
+    "f3_ruined_wall_floor1_v5-game-eye.png": {
+      "sha256": "a85273a7662964bf4887b48db82184fa68c89bfd89e658d2dc61475846750653",
+      "bytes": 620547
+    }
+  }
+}

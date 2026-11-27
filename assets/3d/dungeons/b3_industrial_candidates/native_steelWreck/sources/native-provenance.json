@@ -1,0 +1,9 @@
+{
+  "preservedNativeVertices": 800,
+  "sourceFile": "assets/3d/dungeons/b3_industrial_candidates/native_originals/steelWreck.glb",
+  "sourceSha256": "996b9f3b18352bab3e3ffacb7d93632d21897513febef18d86d2851416b23d02",
+  "geometryPreserved": true,
+  "originalGeometryHash": "2c6f6840bd68cf242f1766e3001810d8ad64be2ac557e9968c2773da9ed1c336",
+  "anchoredOriginalBars": 0,
+  "leafFinish": "original vein atlas with original leaf UVs retained"
+}

@@ -1,0 +1,18 @@
+request failed: https://fonts.googleapis.com/css2?family=DotGothic16&display=swap net::ERR_CERT_AUTHORITY_INVALID
+3D ready
+floor 0
+floor 1
+page.screenshot: Timeout 30000ms exceeded.
+Call log:
+[2m  - taking page screenshot[22m
+[2m  - waiting for fonts to load...[22m
+[2m  - fonts loaded[22m
+
+    at /workspace/work/kotama/tools/f3-industrial/game-test.cjs:59:12 {
+  log: [
+    '  - taking page screenshot',
+    '  - waiting for fonts to load...',
+    '  - fonts loaded'
+  ],
+  name: 'TimeoutError'
+}

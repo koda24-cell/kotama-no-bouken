@@ -1,0 +1,55 @@
+{
+  "bytes": 4894144,
+  "sha256": "f69e47b610ae005ee19dc41314376a1abde0103e13b930b00cae4eeb566bab39",
+  "tris": 588,
+  "verts": 1076,
+  "meshes": 5,
+  "drawCalls": 5,
+  "materials": [
+    "f3_aged_rubber",
+    "f3_bare_worn_steel",
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 15,
+  "textureBytes": 4829971,
+  "sizeMeters": [
+    1.8235,
+    4.5761,
+    0.55
+  ],
+  "bboxMin": [
+    -0.275,
+    0.0,
+    -0.275
+  ],
+  "bboxMax": [
+    1.5485,
+    4.5761,
+    0.275
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 3,
+  "id": "f3_broken_streetlamp",
+  "file": "props/f3_broken_streetlamp.glb",
+  "category": "props",
+  "desc_ja": "\u6298\u308c\u305f\u8857\u8def\u706f\u3068\u5782\u4e0b\u914d\u7dda",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "18c5ea07914557437ccb5cc4cadb0d5d5e72d3ce",
+  "workflowRun": "45332418931",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_broken_streetlamp.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_broken_streetlamp/front.png",
+    "renders/f3_broken_streetlamp/back.png",
+    "renders/f3_broken_streetlamp/side.png",
+    "renders/f3_broken_streetlamp/angle.png",
+    "renders/f3_broken_streetlamp/top.png"
+  ]
+}

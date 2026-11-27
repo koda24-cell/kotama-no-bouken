@@ -1,0 +1,253 @@
+{
+  "schema": "kotama-all-floor-optimization-plan-v1",
+  "source": "GLB structure only, not actual WebGL FPS/draw calls",
+  "approved_for_game_integration": false,
+  "approval_required": true,
+  "scope": "all present repository GLBs, floor6 or uncommitted models are not assumed to exist",
+  "floors": {
+    "floor3": {
+      "models": 25,
+      "triangles": 106559,
+      "primitive_instances": 101,
+      "candidate_modes": {
+        "rigid_geometry_review": 22,
+        "foliage_or_transparency_review": 3
+      },
+      "high_priority": 0
+    }
+  },
+  "assets": [
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/bridge_abutment/props/f3_bridge_abutment.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 1980,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/broken_signal/props/f3_broken_signal.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 1540,
+      "primitive_instances": 8
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/broken_streetlamp/props/f3_broken_streetlamp.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 588,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/buckled_portal/props/f3_buckled_portal.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 1748,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/column_joint/props/f3_column_joint.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 3460,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/control_cabinet/props/f3_control_cabinet.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 3140,
+      "primitive_instances": 7
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/drain_channel/props/f3_drain_channel.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 3024,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/factory_door/props/f3_factory_door.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 2242,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/flanged_pipe/props/f3_flanged_pipe.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 2552,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/grating_catwalk/props/f3_grating_catwalk.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 4896,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/heaved_asphalt/props/f3_heaved_asphalt.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 1372,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/ivy_pocket/props/f3_ivy_pocket.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 4300,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/landing_railing/props/f3_landing_railing.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 928,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_abandonedTransitStop/props/f3_native_abandonedTransitStop.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 1252,
+      "primitive_instances": 6
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_collapsedOverpass/props/f3_native_collapsedOverpass.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 1286,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_ruinedBuilding/props/f3_native_ruinedBuilding.glb",
+      "floor": "floor3",
+      "mode": "foliage_or_transparency_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 2602,
+      "primitive_instances": 5
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_steelWreck/props/f3_native_steelWreck.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 741,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/native_utilityPole/props/f3_native_utilityPole.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 1472,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/pipe_rack/props/f3_pipe_rack.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 2116,
+      "primitive_instances": 3
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/rebar_rubble/props/f3_rebar_rubble.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "medium",
+      "triangles": 42864,
+      "primitive_instances": 7
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/retaining_wall/props/f3_retaining_wall.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 2528,
+      "primitive_instances": 4
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/riveted_girder/props/f3_riveted_girder.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 3156,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/roller_shutter/props/f3_roller_shutter.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 4396,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/service_stair/props/f3_service_stair.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": true,
+      "priority": "normal",
+      "triangles": 11060,
+      "primitive_instances": 2
+    },
+    {
+      "path": "assets/3d/dungeons/b3_industrial_candidates/shattered_window/props/f3_shattered_window.glb",
+      "floor": "floor3",
+      "mode": "rigid_geometry_review",
+      "rigid_candidate": false,
+      "priority": "normal",
+      "triangles": 1316,
+      "primitive_instances": 7
+    }
+  ],
+  "next_steps": [
+    "Keep source GLBs immutable and compare source/LOD screenshots",
+    "Use rigid LOD review only for static opaque eligible assets",
+    "Use leaf material batching and multiview impostors for vegetation",
+    "Keep water/magma/VFX and characters out of generic geometry simplification",
+    "Measure scene draw calls, frame time and visual popping in real Three.js before integration"
+  ]
+}

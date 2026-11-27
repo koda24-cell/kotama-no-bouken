@@ -1,0 +1,107 @@
+request failed: https://fonts.googleapis.com/css2?family=DotGothic16&display=swap net::ERR_CERT_AUTHORITY_INVALID
+3D ready
+floor 0
+viewProbe {"active":true,"raf":524,"camera":[30.9,1.6,76],"scene":"9d0c2122-e704-46e0-99bc-b4f4d2491fa8","composerScene":"9d0c2122-e704-46e0-99bc-b4f4d2491fa8","maxFps":2,"renderInfo":{"calls":486,"triangles":3117498,"memory":{"geometries":165,"textures":174}},"hits":[{"sample":[-0.7,0],"hits":[{"material":"f3_v2_aged_structure","point":[33.57631070192578,1.5062908577408718,73.5821770101182],"instance":1,"owners":["v2_courtyard_facade:facade"]},{"material":"f3_v2_aged_structure","point":[33.722000413544244,1.5011896346646711,73.45055853477193],"instance":1,"owners":["v2_courtyard_facade:facade"]},{"material":"f3_v2_aged_render","point":[33.80699044260007,1.4982137684030787,73.37377714836039],"instance":1,"owners":["v2_courtyard_facade:facade"]}]},{"sample":[0.7,0],"hits":[{"material":"f3_v2_aged_structure","point":[33.57631070192578,1.5062908577408716,78.41782298988163],"instance":2,"owners":["v2_courtyard_facade:facade"]},{"material":"f3_v2_aged_structure","point":[33.722000413544436,1.5011896346646643,78.54944146522807],"instance":2,"owners":["v2_courtyard_facade:facade"]},{"material":"f3_v2_aged_render","point":[33.80699032802026,1.49821377241501,78.62622274812615],"instance":2,"owners":["v2_courtyard_facade:facade"]}]},{"sample":[-0.5,0],"hits":[{"material":"v2_unlit_room_concrete","point":[36.63889375370039,1.3990566600549925,72.29670660216779],"instance":3,"owners":["v2_courtyard_facade:facade"]},{"material":"v2_unlit_room_concrete","point":[36.74143678787354,1.3954661876296124,72.23053584561697],"instance":3,"owners":["v2_courtyard_facade:facade"]},{"material":"v2_unlit_room_concrete","point":[37.45594713436121,1.3704481089527036,71.76946415438303],"instance":0,"owners":["v2_courtyard_facade:facade"]}]},{"sample":[0.5,0],"hits":[{"material":"v2_unlit_room_concrete","point":[36.63889375370035,1.3990566600549939,79.70329339783221],"instance":4,"owners":["v2_courtyard_facade:facade"]},{"material":"v2_unlit_room_concrete","point":[36.7414367878735,1.3954661876296137,79.76946415438303],"instance":4,"owners":["v2_courtyard_facade:facade"]},{"material":"","point":[89.07174141721998,-0.4368427283143892,113.53807531144624],"owners":[]}]},{"sample":[-0.5,0.3],"hits":[{"material":"f3_oxidized_iron","point":[34.42832295114283,2.1862695543128354,73.73920055318479],"instance":3,"owners":["v2_courtyard_facade:facade"]},{"material":"f3_oxidized_iron","point":[34.470985017343615,2.193358324497406,73.71186451365487],"instance":3,"owners":["v2_courtyard_facade:facade"]},{"material":"v2_unlit_room_concrete","point":[36.67955515195909,2.5603364742924124,72.29670660216779],"instance":3,"owners":["v2_courtyard_facade:facade"]}]},{"sample":[0.5,0.3],"hits":[{"material":"v2_unlit_room_concrete","point":[36.67955515195906,2.5603364742924066,79.70329339783221],"instance":4,"owners":["v2_courtyard_facade:facade"]},{"material":"v2_unlit_room_concrete","point":[36.782824727401334,2.5774958468348235,79.76946415438303],"instance":4,"owners":["v2_courtyard_facade:facade"]},{"material":"","point":[88.34709663772546,11.145465142712284,112.80965889407669],"owners":[]}]},{"sample":[0,0],"hits":[{"material":"f3_porous_asphalt_fracture","point":[74.81528870173022,0.06233696508408548,76.00000000000001],"instance":3,"owners":["v2_truss_bridge:upper-structure"]},{"material":"f3_porous_asphalt_fracture","point":[75.04415443187452,0.05432339205278636,76.00000000000001],"instance":3,"owners":["v2_truss_bridge:upper-structure"]},{"material":"f3_porous_asphalt_fracture","point":[75.04778332621564,0.054196328862473386,76.00000000000001],"instance":3,"owners":["v2_truss_bridge:upper-structure"]}]},{"sample":[0.5,-0.6],"hits":[{"material":"v6_sedge_cutout:canopy-lighting","point":[33.307468865121756,0.5261725794530658,77.5758642041197],"instance":3,"owners":[]},{"material":"v6_fern_cutout:canopy-lighting","point":[33.4257558241474,0.47341186385875705,77.6532916580084],"instance":4,"owners":[]},{"material":"v6_fern_cutout:canopy-lighting","point":[33.4787623204944,0.44976884605314754,77.68798828125],"instance":4,"owners":[]}]}]}
+page.screenshot: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /usr/bin/chromium --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,HttpsUpgrades,HttpsFirstBalancedModeAutoEnable,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,AvoidCorsURLLoaderRestartOnRedirect,TcpPortRandomizationWin,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,PreconnectToSearch,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface,SkipListAccountsWithoutGaiaCookies --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --enable-unsafe-swiftshader --edge-skip-compat-layer-relaunch --disable-stack-profiler --disable-infobars --disable-sync --do-not-de-elevate --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --no-sandbox --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist --user-data-dir=/tmp/playwright_chromiumdev_profile-NQOXXJ --remote-debugging-pipe --no-startup-window
+<launched> pid=1403
+[pid=1403][err] [1403:1403:1126/183504.451190:ERROR:third_party/crashpad/crashpad/util/file/filesystem_posix.cc:63] mkdir : No such file or directory (2)
+[pid=1403][err] chrome_crashpad_handler: --database is required
+[pid=1403][err] Try 'chrome_crashpad_handler --help' for more information.
+[pid=1403][err] [1403:1429:1126/183504.504262:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=1403][err] Fontconfig error: No writable cache directories
+[pid=1403][err] [1403:1429:1126/183504.545128:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183504.545208:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=1403][err] [1403:1429:1126/183504.545222:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=1403][err] [1403:1429:1126/183504.545232:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=1403][err] [1403:1429:1126/183504.545237:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183504.545241:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1438:1126/183504.556651:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1440: Read-only file system (30)
+[pid=1403][err] [1403:1438:1126/183504.645059:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1467: Read-only file system (30)
+[pid=1403][err] [1403:1429:1126/183504.647784:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1403:1126/183504.717131:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1403:1126/183504.717209:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1429:1126/183504.719986:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183504.720003:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1403:1126/183504.725402:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1429:1126/183504.725521:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183504.734600:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=1403][err] [1403:1429:1126/183504.734623:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=1403][err] [1403:1403:1126/183504.734680:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1403:1126/183504.734718:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1429:1126/183504.734877:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1403:1126/183504.735775:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1403:1126/183504.737380:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error type: 
+[pid=1403][err] [1403:1403:1126/183504.737406:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1429:1126/183504.737542:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1403:1126/183504.742649:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] [1403:1429:1126/183504.742726:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1403:1126/183504.744478:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[pid=1403][err] 
+[pid=1403][err] (process:1403): dconf-CRITICAL **: 18:35:04.777: unable to create directory '/home/agent/.cache/dconf': Read-only file system.  dconf will not work properly.
+[pid=1403][err] 
+[pid=1403][err] (process:1403): dconf-CRITICAL **: 18:35:04.777: unable to create directory '/home/agent/.cache/dconf': Read-only file system.  dconf will not work properly.
+[pid=1403][err] 
+[pid=1403][err] (process:1403): dconf-CRITICAL **: 18:35:04.777: unable to create directory '/home/agent/.cache/dconf': Read-only file system.  dconf will not work properly.
+[pid=1403][err] [1403:1438:1126/183504.822385:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1489: Read-only file system (30)
+[pid=1403][err] [1403:1438:1126/183504.867423:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1499: Read-only file system (30)
+[pid=1403][err] [1403:1438:1126/183504.868847:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1502: Read-only file system (30)
+[pid=1403][err] [1403:1426:1126/183504.927219:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:/home/agent/.pki/nssdb): NSS error code: -8126
+[pid=1403][err] [1444:1463:1126/183504.946834:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] [1444:1463:1126/183504.949460:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] [1444:1463:1126/183505.442580:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] [1444:1463:1126/183505.956698:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] Failed to create secure directory (/home/agent/.config/pulse): Read-only file system
+[pid=1403][err] [1444:1463:1126/183508.704232:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+[pid=1403][err] ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+[pid=1403][err] ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+[pid=1403][err] ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+[pid=1403][err] ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+[pid=1403][err] ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+[pid=1403][err] ALSA lib conf.c:5728:(snd_config_expand) Evaluate error: No such file or directory
+[pid=1403][err] ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+[pid=1403][err] [1564:1564:1126/183509.662687:ERROR:media/audio/alsa/alsa_util.cc:204] PcmOpen: default,No such file or directory
+[pid=1403][err] ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+[pid=1403][err] ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+[pid=1403][err] ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+[pid=1403][err] ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+[pid=1403][err] ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+[pid=1403][err] ALSA lib conf.c:5205:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+[pid=1403][err] ALSA lib conf.c:5728:(snd_config_expand) Evaluate error: No such file or directory
+[pid=1403][err] ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+[pid=1403][err] [1564:1564:1126/183509.662997:ERROR:media/audio/alsa/alsa_util.cc:204] PcmOpen: plug:default,No such file or directory
+[pid=1403][err] [1403:1429:1126/183510.040502:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044626:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044646:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044651:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044655:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044660:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044665:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044669:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044673:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044677:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044680:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044684:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044688:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1403:1429:1126/183510.044691:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=1403][err] [1444:1463:1126/183516.645518:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] [1444:1463:1126/183539.669412:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] [1403:1438:1126/183543.954848:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1580: Read-only file system (30)
+[pid=1403][err] [1403:1438:1126/183543.977280:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:312] Failed to adjust OOM score of renderer with pid 1589: Read-only file system (30)
+[pid=1403][err] [1444:1463:1126/183544.057898:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=1403][err] [1444:1463:1126/183604.766074:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+Call log:
+[2m  - taking page screenshot[22m
+[2m  - waiting for fonts to load...[22m
+[2m  - fonts loaded[22m
+
+    at /workspace/work/kotama/tools/f3-industrial/game-test.cjs:76:12 {
+  log: [
+    '  - taking page screenshot',
+    '  - waiting for fonts to load...',
+    '  - fonts loaded'
+  ]
+}

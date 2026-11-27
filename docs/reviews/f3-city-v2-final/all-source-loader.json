@@ -1,0 +1,56 @@
+{
+  "result": [
+    {
+      "sourceHashesVerified": true,
+      "models": 35,
+      "catalogModels": 35,
+      "skippedUnusedModels": 0,
+      "materials": 62,
+      "textures": 117,
+      "sharedImages": 97,
+      "decodedImages": 105,
+      "estimatedDecodedImageBytes": 355336192,
+      "renderedModels": 35,
+      "memory": {
+        "geometries": 159,
+        "textures": 106
+      }
+    },
+    {
+      "disposedMemory": {
+        "geometries": 0,
+        "textures": 1
+      }
+    },
+    {
+      "sourceHashesVerified": true,
+      "models": 35,
+      "catalogModels": 35,
+      "skippedUnusedModels": 0,
+      "materials": 62,
+      "textures": 117,
+      "sharedImages": 97,
+      "decodedImages": 105,
+      "estimatedDecodedImageBytes": 355336192,
+      "renderedModels": 35,
+      "memory": {
+        "geometries": 159,
+        "textures": 106
+      }
+    },
+    {
+      "disposedMemory": {
+        "geometries": 0,
+        "textures": 1
+      }
+    },
+    {
+      "rendererDisposedMemory": {
+        "geometries": 0,
+        "textures": 1
+      }
+    }
+  ],
+  "errors": [],
+  "leak": false
+}

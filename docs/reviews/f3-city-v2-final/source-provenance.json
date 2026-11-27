@@ -1,0 +1,213 @@
+{
+  "gameSourceCommit": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
+  "originalAssetAuditRun": 45793054822,
+  "originalAssetAuditJob": 139816655112,
+  "statueLODJob": 139816824378,
+  "archiveJob": 139820879877,
+  "status": "NOT_APPROVED",
+  "runtimeModels": [
+    {
+      "id": "retaining_wall",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/retaining_wall/runtime/f3_retaining_wall.glb",
+      "sha256": "f023e9857f2cdd1b194bec30a1a2047099c6a9480dcadde8aa28c6ee7ff6c804"
+    },
+    {
+      "id": "column_joint",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/column_joint/runtime/f3_column_joint.glb",
+      "sha256": "e24aaa5f2b5809a19ae06728250814b5c2b6726ec26ceee28d9d78f130564bce"
+    },
+    {
+      "id": "riveted_girder",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/riveted_girder/runtime/f3_riveted_girder.glb",
+      "sha256": "13ea16f6338dc381e4e7ea08b6951c9474a7efa6d99c5ff93642c5200b6584a0"
+    },
+    {
+      "id": "buckled_portal",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/buckled_portal/runtime/f3_buckled_portal.glb",
+      "sha256": "40c41fddcc1531a93a47f39f81923b87c5a7fa68f925c7c089129219a06ac0ab"
+    },
+    {
+      "id": "grating_catwalk",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/grating_catwalk/runtime/f3_grating_catwalk.glb",
+      "sha256": "03f100ee0cefe9f387edc5aa7a8e41b02c6197e9a6b4cd0164cb3339da002936"
+    },
+    {
+      "id": "service_stair",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/service_stair/runtime/f3_service_stair.glb",
+      "sha256": "33476a62264a867dea81dcb15ea20c7e28fec03935a4cdefd3b394a6ed75344e"
+    },
+    {
+      "id": "landing_railing",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/landing_railing/runtime/f3_landing_railing.glb",
+      "sha256": "65b784afbd88f6ffd622ca9912c005c71d1db0a762ecdc92736d0fa6b45d9726"
+    },
+    {
+      "id": "bridge_abutment",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/bridge_abutment/runtime/f3_bridge_abutment.glb",
+      "sha256": "a54903860e2f31fe852eb766da12e54980c944eac2dd106ba11e2b956e72e4a7"
+    },
+    {
+      "id": "broken_signal",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/broken_signal/runtime/f3_broken_signal.glb",
+      "sha256": "52757c4dcf615416c9508c8bdb5b597723abe0a0655b2aca8a9454b500287914"
+    },
+    {
+      "id": "broken_streetlamp",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/broken_streetlamp/runtime/f3_broken_streetlamp.glb",
+      "sha256": "41163b7c168cc0dcfdb892075ce6945e76f1510e00048926e5ce447bb6adb9b9"
+    },
+    {
+      "id": "control_cabinet",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/control_cabinet/runtime/f3_control_cabinet.glb",
+      "sha256": "9e17924e7e4e1cd745d9db4d98c5ece8ef7ebad93950e84654c5f5e8eac00586"
+    },
+    {
+      "id": "flanged_pipe",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/flanged_pipe/runtime/f3_flanged_pipe.glb",
+      "sha256": "39eb514c7b3dfafeb01678def8537b046432a72e9207a7f03da344776d503908"
+    },
+    {
+      "id": "pipe_rack",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/pipe_rack/runtime/f3_pipe_rack.glb",
+      "sha256": "70a8f5e168e0f35659253f9bab7685d2dadaf1daf25ec6d2d57dd417a6fb9233"
+    },
+    {
+      "id": "roller_shutter",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/roller_shutter/runtime/f3_roller_shutter.glb",
+      "sha256": "e0b79f8b76df958d82909d53301ea268ff7b984bc387fa39d611ed3aafeea71b"
+    },
+    {
+      "id": "shattered_window",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/shattered_window/runtime/f3_shattered_window.glb",
+      "sha256": "558f281136a9a15569e272bfa70c3cacb8ddf7df1a1dce279bb13adb30786db4"
+    },
+    {
+      "id": "rebar_rubble",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/rebar_rubble/runtime/f3_rebar_rubble.glb",
+      "sha256": "9f809cb5681b4bcfc544fe0b0ae6077db5b4e46191e924b20a5e88ba67b8a6c2"
+    },
+    {
+      "id": "heaved_asphalt",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/heaved_asphalt/runtime/f3_heaved_asphalt.glb",
+      "sha256": "59d0f4b79181be9f700b988da81ab07b1202d867e668ddd178d6ca54e3a741a8"
+    },
+    {
+      "id": "drain_channel",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/drain_channel/runtime/f3_drain_channel.glb",
+      "sha256": "0cae38caf61782b0418685758b640bec7dc07b1e9bac5297f87dd7d96f5e2e6b"
+    },
+    {
+      "id": "factory_door",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/factory_door/runtime/f3_factory_door.glb",
+      "sha256": "e34e159d0db146dd429abc82e2d66ac16dce835b2897bf4317b2806a37904298"
+    },
+    {
+      "id": "ivy_pocket",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/ivy_pocket/runtime/f3_ivy_pocket.glb",
+      "sha256": "b4f269587e9c82f9f1212aec164f768d79c0dbbe9d5b47d00de44d76d6ef8749"
+    },
+    {
+      "id": "native_ruinedBuilding",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/native_ruinedBuilding/runtime/f3_native_ruinedBuilding.glb",
+      "sha256": "61d39493fccc1744abc4939d85c3c1659b271a47c57f5ad7db5bf68751cbeb56"
+    },
+    {
+      "id": "native_collapsedOverpass",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/native_collapsedOverpass/runtime/f3_native_collapsedOverpass.glb",
+      "sha256": "e34e2c4f474f8b38fd3c3e4b90464b83589c6610d17d6cf91be26712631c1f62"
+    },
+    {
+      "id": "native_utilityPole",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/native_utilityPole/runtime/f3_native_utilityPole.glb",
+      "sha256": "b54761aa760843d1f2ff6947764d0f7a66fbe03aaa923464ea03e3d070be7e23"
+    },
+    {
+      "id": "native_steelWreck",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/native_steelWreck/runtime/f3_native_steelWreck.glb",
+      "sha256": "7c7865eb9cc4ab7cf16fd091d409e78821c7f036f53129d38822c4945e7e6565"
+    },
+    {
+      "id": "native_abandonedTransitStop",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/native_abandonedTransitStop/runtime/f3_native_abandonedTransitStop.glb",
+      "sha256": "cd7e5bd5cf11112a94a6fe371f37882fd47b80aaed144f5ce8a3b0de34ac7d81"
+    },
+    {
+      "id": "v2_courtyard_facade",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_courtyard_facade/runtime/f3_v2_courtyard_facade.glb",
+      "sha256": "9ad401ffb7eb3128b5a2135f8f133b7549cafb8d60c8621fa198a076f8acb401"
+    },
+    {
+      "id": "v2_service_tower",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_service_tower/runtime/f3_v2_service_tower.glb",
+      "sha256": "b8b5205f16b9b54d7dda809aeadafa3dee6394e917f022c7f8dc36bc5241709e"
+    },
+    {
+      "id": "v2_fern_colony",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_fern_colony/runtime/f3_v2_fern_colony.glb",
+      "sha256": "3973c1632a0ad3e2abc923d1b5ccc787022e26a8b066ae513b18533428e8ee5e"
+    },
+    {
+      "id": "v2_truss_bridge",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_truss_bridge/runtime/f3_v2_truss_bridge.glb",
+      "sha256": "67d1ee87ad8148f652db1bc03c7495291cecc8bf2c2872fc7356704af4b7c828"
+    },
+    {
+      "id": "v2_fractured_road",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_fractured_road/runtime/f3_v2_fractured_road.glb",
+      "sha256": "4c4b7c07d4dc4252b3cbc7b7b51064c8245366c108e60618afc4b22e48118c3b"
+    },
+    {
+      "id": "v2_factory_bay",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_factory_bay/runtime/f3_v2_factory_bay.glb",
+      "sha256": "a96f179e693b824196c4fb4b937f2ec8e27e004bcc31d86e6e13b9c41fd40738"
+    },
+    {
+      "id": "v2_wildflower_colony",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_wildflower_colony/runtime/f3_v2_wildflower_colony.glb",
+      "sha256": "c0a529bbca406ad3629dcf4189f839f2f764c22cb049cffa5ec7dd6f21ef07e4"
+    },
+    {
+      "id": "v2_memory_statue",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/v2_memory_statue/runtime/f3_v2_memory_statue.glb",
+      "sha256": "c19228ae3a8b69a50ad01d505cdad36bac4b7ca11ad6865662e8e95e3b2c42d5"
+    },
+    {
+      "id": "reused_stairs_v8",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/../../../models/floor3/ruined_connector/stairs_v8.glb",
+      "sha256": "27c1b5dec9d03046eaa9e35bfaf990d277d9c6fbbaaad0cdca7469c33030e01b"
+    },
+    {
+      "id": "reused_stairs_v10",
+      "file": "assets/3d/dungeons/b3_industrial_candidates/../../../models/floor3/double_flight/stairs_v10.glb",
+      "sha256": "337f4aaf08f1998b55c1101a61662dcb193a39bd256d758b59a599dd8a9de606"
+    }
+  ],
+  "catalogSha256": "26bae58edd2c2c1d68db5b85ffb5f80c7a95f9235286ec32f044343802a25f49",
+  "limitations": "Structure audit counts are not FPS; LOD comparisons are not adopted; authoring originals remain unchanged.",
+  "publicWrapperCommit": "dad994710c9ed1068680d730241a38771ad8cc14",
+  "gameplayCoverage": {
+    "pcControls": "0b3d233fcf3e5a0de4a65ccfbdc8b10d2cada634",
+    "mobileControls": "7654a1c8332c9027c5ae5b115db39cee73becf52",
+    "finalPCVisual": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
+    "finalActualCDN": "bf178b2d5e6ff84ae178097b84b3c1e28feb12f7",
+    "note": "Final difference is opaque terrain and foundations restricted to solid cells; navigation, input and event code unchanged."
+  },
+  "sceneImagesCommit": "8b2777a2b9dc2c9e129224bc9d9edcd7ec0ec33d",
+  "sourcePR": {
+    "number": 785,
+    "state": "OPEN_DRAFT_NOT_APPROVED"
+  },
+  "documentationPR": {
+    "number": 848,
+    "state": "MERGED_DEVELOPMENT_DOCS_ONLY",
+    "commit": "4e13d9dcf6e597d3a60c0ecd97d827fcc95b752c"
+  },
+  "galleryPR": {
+    "repository": "koda24-cell/kotama-3d-progress",
+    "number": 21,
+    "state": "MERGED",
+    "commit": "8522467ef2c8c6b71973dd06b4e011cecdd13726",
+    "browserWorkflow": 45801370261
+  },
+  "workspaceNote": "Reversible sparse checkout omits older V1 lod_reviews working files to fit workspace disk; all original tracked blobs and remote history retained. Current V2 statue LOD is checked out. No asset deletion."
+}

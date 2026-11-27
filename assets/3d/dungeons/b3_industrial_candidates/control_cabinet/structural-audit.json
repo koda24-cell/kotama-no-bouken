@@ -1,0 +1,47 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/control_cabinet/props/f3_control_cabinet.glb",
+      "file_bytes": 7606280,
+      "glb_meshes": 7,
+      "total_mesh_primitives": 7,
+      "scene_nodes": 8,
+      "scene_mesh_nodes": 7,
+      "scene_primitive_instances": 7,
+      "estimated_scene_triangles": 3140,
+      "materials": 7,
+      "material_names": [
+        "f3_aged_rubber",
+        "f3_bare_worn_steel",
+        "f3_damp_concrete",
+        "f3_deep_crack",
+        "f3_faded_safety_ochre",
+        "f3_oxidized_iron",
+        "f3_weathered_concrete"
+      ],
+      "mesh_names": [
+        "loose switchboard wire",
+        "oxidized bolt washer",
+        "Cube",
+        "Cylinder.005",
+        "Cube.006",
+        "Cube.001",
+        "Cube.008"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 7,
+        "MASK": 0,
+        "BLEND": 0
+      },
+      "images": 21,
+      "textures": 21,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}

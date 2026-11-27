@@ -1,0 +1,95 @@
+[migrations] started
+[migrations] no migrations found
+usermod: no changes
+───────────────────────────────────────
+
+      ██╗     ███████╗██╗ ██████╗
+      ██║     ██╔════╝██║██╔═══██╗
+      ██║     ███████╗██║██║   ██║
+      ██║     ╚════██║██║██║   ██║
+      ███████╗███████║██║╚██████╔╝
+      ╚══════╝╚══════╝╚═╝ ╚═════╝
+
+   Brought to you by linuxserver.io
+───────────────────────────────────────
+
+To support LSIO projects visit:
+https://www.linuxserver.io/donate/
+
+───────────────────────────────────────
+GID/UID
+───────────────────────────────────────
+
+User UID:    911
+User GID:    911
+───────────────────────────────────────
+Linuxserver.io version: 5.3.0-ls247
+Build-date: 2026-11-10T13:58:17+00:00
+───────────────────────────────────────
+    
+..............+...+...+.......+...+..+.+......+.....+...+.+.....+.+.....+++++++++++++++++++++++++++++++++++++++*.+........+.+......+.....+.+..+.+..+....+...........+....+...........+..........+..+...+.............+..+...+.+...+.....+.+.....+++++++++++++++++++++++++++++++++++++++*....+.+...............+...........+..........+.....+....+...+............+...............+...+...+..+.............+.....+...+.+...+..+...+.......+.....+....+..............+.+...............+............+..+.++++++
+...+.......+.........+.....+.+..+......+.......+........+++++++++++++++++++++++++++++++++++++++*.+......+...+.....+...+...+.+...........+.........+...+...+....+...+........+...+++++++++++++++++++++++++++++++++++++++*...+..+.+..............+.+...+.......................................+.....+.+..+....+.....+....+......+.........+....................++++++
+-----
+[ls.io-init] Creating initial backup of menu.xml
+[ls.io-init] Generating labwc rc.xml from template
+[custom-init] No custom files found, skipping...
+[svc-de] Wayland mode: Waiting for socket at /config/.XDG/wayland-1...
+[ls.io-init] done.
+19
+20
+[pixelflux] No hardware encoder on render node 0 (nvenc): Could not load CUDA library (libcuda.so.1): dlopen failed
+[pixelflux] Thread priority -15 refused and rtkit does not grant it; capture threads run at normal priority.
+[Wayland] Renderer: software (Pixman), no render node.
+[Wayland] View 1 created over output 0: 1024x768 @ (0, 0).
+[Wayland] Socket listening on: "wayland-1"
+INFO:server:Wayland compositor socket: wayland-1
+INFO:main:Selkies 2.2.1 starting: websockets transport, Wayland capture, encoder h264enc at 8-240 fps, sized by the client, audio on, gamepads off, access open.
+INFO:server:Starting service: websockets
+INFO:gamepad:4 virtual gamepads ready ('Microsoft X-Box 360 pad', sockets under /config/.XDG); kernel uinput off.
+INFO:input:Wayland clipboard: native compositor callback active (no polling).
+INFO:input:Apps panel enabled: selkies-proot can run here.
+INFO:input:Apps installed in this session: none
+/work/tools/floor3/wall/build_tall_wall_v5.py:14: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m=bpy.data.materials.new(name);m.use_nodes=True
+/work/tools/floor3/wall/build_tall_wall_v5.py:36: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  rust=bpy.data.materials.new('Embedded corroded steel core');rust.use_nodes=True
+/work/tools/floor3/wall/build_tall_wall_v5.py:40: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  fracture=bpy.data.materials.new('Dark mineral fracture section');fracture.use_nodes=True
+INFO:server:Selkies server running on http://[::1]:8082, http://127.0.0.1:8082
+INFO:printing:Print queue Selkies listening on /config/.XDG/selkies-cups/cups.sock, spooling to /config/.local/state/selkies/print, on A4 paper
+[svc-de] /config/.XDG/wayland-1 found launching de
+Info: Saved as "f3_ruined_wall_floor1_v5.blend"
+INFO Draco is available, use library at /blender/lib/libbf_intern_draco_bridge.so
+INFO MeshOptimizer is available, use library at /blender/lib/libbf_intern_meshopt_bridge.so
+10:03:06 | INFO: Starting glTF 2.0 export
+10:03:06 | INFO: Extracting primitive: Cylinder
+10:03:06 | INFO: Primitives created: 1
+10:03:06 | INFO: Extracting primitive: Cylinder.001
+10:03:06 | INFO: Primitives created: 1
+10:03:06 | INFO: Extracting primitive: Cylinder.002
+10:03:06 | INFO: Primitives created: 1
+10:03:06 | INFO: Extracting primitive: Cube.001
+10:03:06 | INFO: Primitives created: 1
+10:03:06 | INFO: Extracting primitive: V5 one-storey tall concrete ruin wall geometry
+10:03:06 | INFO: Primitives created: 2
+10:03:06 | INFO: Finished glTF 2.0 export in 0.13170242309570312 s
+INFO:input:Wayland app compositor 'wayland-0' (auto-detected); routing input + clipboard there, capture stays on 'wayland-1'.
+INFO:input:Wayland clipboard: app-compositor data-control watch active (no forks).
+00:21.894  render           | Saved: '/work/out/f3_ruined_wall_floor1_v5-front.png'
+00:42.777  render           | Saved: '/work/out/f3_ruined_wall_floor1_v5-side.png'
+01:06.977  render           | Saved: '/work/out/f3_ruined_wall_floor1_v5-angle.png'
+01:31.727  render           | Saved: '/work/out/f3_ruined_wall_floor1_v5-game-eye.png'
+
+F3_TALL_WALL_V5_COMPLETE 5
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit
+Waiting up to 5 seconds for desktop processes to terminate...
+Io error: Broken pipe (os error 32)
+[Clipboard] app-compositor watch ended: read: Io error: Broken pipe (os error 32)
+All desktop processes terminated cleanly.
+INFO:main:Received SIGTERM, shutting down
+INFO:server:Shutdown signal received...
+INFO:server:Stopping service: websockets
+WARNING:ws:No display clients connected. Video pipelines remain stopped.
+INFO:ws:DataStreamingServer shutdown complete.

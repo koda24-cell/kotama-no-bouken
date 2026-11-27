@@ -1,0 +1,14 @@
+{
+  "status": "NOT_APPROVED",
+  "author": "Benny Weimer",
+  "asset": "gothic_statue",
+  "assetURL": "https://polyhaven.com/a/gothic_statue",
+  "license": "CC0",
+  "licenseURL": "https://polyhaven.com/license",
+  "originalVertices": 23314,
+  "verticesRemoved": 0,
+  "uvPreserved": true,
+  "scale": 0.8633049272996679,
+  "gameRole": "Existing area3 statue NPC; same tile/dialogue/gate flag; opt-in visual replacement only",
+  "sourceSculptUnchanged": true
+}

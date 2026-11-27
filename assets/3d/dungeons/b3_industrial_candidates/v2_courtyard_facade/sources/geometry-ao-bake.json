@@ -1,0 +1,18 @@
+{
+  "status": "NOT_APPROVED",
+  "engine": "Cycles",
+  "samples": 32,
+  "resolution": [
+    1024,
+    2048
+  ],
+  "uv": "CityAO",
+  "originalUV": "UVMap",
+  "originalUVUnchanged": true,
+  "imageSha256": "0a7749ef18c1f9d24b987596df211d454fd83e7745b85b2b4a8733f93afca137",
+  "range": [
+    0.0,
+    1.0
+  ],
+  "note": "Geometry occlusion replaces derivative AO socket only; original source files preserved."
+}
