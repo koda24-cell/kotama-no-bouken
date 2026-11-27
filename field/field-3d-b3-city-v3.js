@@ -168,10 +168,18 @@ export function createTheme(api){
   const catalog=await nature.json(),tufts=[];
   for(const name of['sedge','fern','trifoliate']){const row=catalog.sources.find(a=>a.name===name),held=await retainFirstLayerSource(row.file,row.sha256);grassHeld.push(held);let source;held.source.updateMatrixWorld(true);held.source.traverse(o=>{if(o.isMesh)source=o;});tufts.push({geometry:geo(source.geometry.clone().applyMatrix4(source.matrixWorld)),material:animateCanopy(source.material)});}
   if(bundle.models.has('v3_whiteflower_atlas')){const replaced=new Map();bundle.models.get('v3_whiteflower_atlas').traverse(o=>{if(o.isMesh){if(!replaced.has(o.material))replaced.set(o.material,animateCanopy(o.material));o.material=replaced.get(o.material);}});}
+  const mossGeometry=new THREE.BufferGeometry(),mossPositions=[0,.006,0],mossUV=[.5,.5],mossIndices=[];
+  for(let k=0;k<16;k++){const angle=k*Math.PI/8,r=.80+hash(k,5,760)*.30;mossPositions.push(Math.cos(angle)*r,.004+hash(k,5,761)*.012,Math.sin(angle)*r);mossUV.push(.5+Math.cos(angle)*.5,.5+Math.sin(angle)*.5);}
+  for(let k=0;k<16;k++)mossIndices.push(0,(k+1)%16+1,k+1);
+  mossGeometry.setAttribute('position',new THREE.Float32BufferAttribute(mossPositions,3));mossGeometry.setAttribute('uv',new THREE.Float32BufferAttribute(mossUV,2));mossGeometry.setIndex(mossIndices);mossGeometry.computeVertexNormals();geo(mossGeometry);
+  const mossMaterial=mat(P.stone.clone());mossMaterial.name='sheltered living moss';mossMaterial.color.setHex(0x7c9669);mossMaterial.roughness=.98;
   let flowers=0,plants=0;
   for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
    if(!open(x,z))continue;const px=x*4,pz=z*4,tag=plan.tags[x+','+z],degree=DIR_ORDER.filter(d=>{const[dx,dz]=DIR_VEC[d];return open(x+dx,z+dz);}).length;
    for(const d of DIR_ORDER){const[dx,dz]=DIR_VEC[d];if(!closed(x+dx,z+dz)&&tag!=='greenhouse'&&tag!=='white-garden')continue;
+    for(let k=0;k<3;k++){const along=(hash(x*3+k,z,762)-.5)*4,mx=px+dx*1.57+dz*along,mz=pz+dz*1.57-dx*along;
+     if(Math.abs(plan.heightWorld(mx-.4,mz)-plan.heightWorld(mx+.4,mz))<.05){const patch=new THREE.Mesh(mossGeometry,mossMaterial);patch.position.set(mx,plan.heightWorld(mx,mz)+.026,mz);patch.scale.set(dx?.32:.8+hash(x,z+k,763)*.6,1,dz?.32:.8+hash(z,x+k,764)*.6);patch.rotation.y=(hash(x+k,z,765)-.5)*.25;root.add(patch);}
+    }
     const n=g.high?12:8;for(let k=0;k<n;k++){
      const q=hash(x*37+k,z*19+k,301),r=hash(x+k,z-k,303),bank=1.23+q*.63,along=(r-.5)*3.8,wx=px+dx*bank+dz*along,wz=pz+dz*bank-dx*along,y=plan.heightWorld(wx,wz),species=tufts[Math.floor(hash(x+k,z,305)*3)];
      const plant=new THREE.Mesh(species.geometry,species.material),s=.45+hash(x,z+k,306)*.95;plant.position.set(wx,y+.018,wz);plant.rotation.y=r*6.28;plant.scale.setScalar(s);root.add(plant);plants++;
