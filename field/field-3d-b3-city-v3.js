@@ -53,8 +53,8 @@ export function createTheme(api){
  async function build(a,S,info){
   dispose();plan=window.KotamaCityV3Layout.create(a.f,a.floor);root=new THREE.Group();root.name='b3_city_v3_map';g.world.add(root);
   stats={mode:'b3-city-v3-trial',artRevision:'V3 structural city in progress',floor:a.key,layoutVersion:plan.version,objects:0,placements:[],edgePlacements:[],terrainCells:0,upperWalkCells:0,stairCells:0,skylineSealed:true};
-  const wanted=['v2_courtyard_facade','v2_factory_bay','v2_service_tower','v2_truss_bridge','v2_fractured_road','ivy_pocket','rebar_rubble','drain_channel','flanged_pipe','column_joint',
-   'v3_straight_access_stair','v3_switchback_stair','v3_catwalk_junction','v3_riveted_span','v3_structural_corner','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
+  const wanted=['v2_truss_bridge','v2_fractured_road',
+   'v3_catwalk_junction','v3_riveted_span','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
   boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
   const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil;concrete.color.multiplyScalar(.85);P.stone.color.multiplyScalar(.82);
@@ -75,6 +75,7 @@ export function createTheme(api){
     box('opaque supported street deck',concrete,px,y-.20,pz,4.025,.40,4.025);
     if(bundle.models.has('v2_fractured_road')&&!plan.tags[x+','+z])model('v2_fractured_road',px,y+.018,pz,{ry:Math.floor(hash(x,z,29)*4)*Math.PI/2});
    }
+   if(y>=3.1&&open(x,z-1)&&open(x,z+1)&&closed(x-1,z)&&closed(x+1,z)&&hash(x,z,920)>.9)model('v3_catwalk_junction',px,y-3.2,pz);
    if(y>.5){
     for(const sx of[-1.72,1.72])for(const sz of[-1.72,1.72])if(hash(x,z,91)>.55)box('raised street load bearing pier',concrete,px+sx,y/2-.2,pz+sz,.25,y+.4,.25);
    }
@@ -95,11 +96,11 @@ export function createTheme(api){
    box('continuous building footing',concrete,px,h0+.13,pz,4.04,.28,4.04);
    for(const d of adjacent){const[dx,dz]=DIR_VEC[d],ry=FACE_YAW[d]+Math.PI;
     fronts.push({x,z,dx,dz,h:h0,ry,streetX:x+dx,streetZ:z+dz});
-    const id=bundle.models.has('v3_deep_window_bay')?'v3_deep_window_bay':hash(Math.floor(x/3),Math.floor(z/3),38)<(a.f===1?.65:.25)?'v2_factory_bay':'v2_courtyard_facade';
+    const id='v3_deep_window_bay';
     if(!bundle.models.has(id))continue;
     const source=bundle.models.get(id),sourceSize=new THREE.Box3().setFromObject(source).getSize(new THREE.Vector3()),single=id==='v3_deep_window_bay',levels=single?Math.ceil(height/3.2):1;
     for(let level=0;level<levels;level++){
-     const holder=new THREE.Group(),o=source.clone(true);o.rotation.y=ry;holder.add(o);
+     const holder=new THREE.Group(),o=source.clone(true);o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
      o.traverse(m=>{if(m.isMesh&&m.material?.name==='v2_exposed_infill_brick')m.visible=false;});
      const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,sx=dx?1.0/s.x:scale,sz=dz?1.0/s.z:scale;
      holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*1.48-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*1.48-center.z*sz);root.add(holder);
@@ -120,7 +121,7 @@ export function createTheme(api){
     box('girder bolted bearing socket',steel,px+dx*side*2.2,level-.22,pz+dz*side*2.2,.56,.65,.56);
     beam('crossing diagonal knee brace',steel,[px+dx*side*2.5,level-1.45,pz+dz*side*2.5],[px+dx*side*1.25,level,pz+dz*side*1.25],.10,.10);
    }
-   if(bundle.models.has('v2_truss_bridge')&&crossings%3===0)model('v2_truss_bridge',px,h,pz,{ry:acrossX?0:Math.PI/2});crossings++;
+   if(bundle.models.has('v2_truss_bridge')&&crossings%3===0)model(bundle.models.has('v3_riveted_span')?'v3_riveted_span':'v2_truss_bridge',px,h,pz,{ry:acrossX?0:Math.PI/2});crossings++;
   }
   stats.crossings=crossings;
   // Electrical/service continuity follows the fronts, not isolated ornaments.
