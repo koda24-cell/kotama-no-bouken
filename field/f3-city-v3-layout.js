@@ -16,6 +16,7 @@
   // Break the continuous boundary street into offset side streets.
   for(let x=5;x<w-4;x+=8){grid[h-2][x]='#';for(let q=x-1;q<=x+1;q++){grid[h-3][q]='.';grid[h-4][q]='.';}}
   const tags={},water=[],rooms=[];
+  if(f===0){const room={type:'light-court',x0:10,z0:8,x1:12,z1:10};rooms.push(room);for(let z=8;z<=10;z++)for(let x=10;x<=12;x++){grid[z][x]='.';tags[key(x,z)]='light-court';}}
   if(f===1){
    const room={type:'greenhouse',x0:13,z0:11,x1:19,z1:15};rooms.push(room);
    for(let z=room.z0;z<=room.z1;z++)for(let x=room.x0;x<=room.x1;x++){grid[z][x]='.';tags[key(x,z)]='greenhouse';}

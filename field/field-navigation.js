@@ -23,6 +23,7 @@ function fieldShow({ returning = false } = {}) {
 function fieldPlaceAtStart() {
   const a = fieldArea(), p = fieldTileCenter(a.start.tx, a.start.ty);
   fieldState.x = p.x; fieldState.y = p.y; fieldState.dir = "up"; fieldState.positioned = true;
+  if(a.floor.cityV3){let score=-1;for(const[dir,d]of Object.entries(FIELD_DIRS)){let length=0;while(length<8&&fieldCanEnter(a,a.start.tx+d.dx*(length+1),a.start.ty+d.dy*(length+1),'player'))length++;if(length>score){fieldState.dir=dir;score=length;}}}
 }
 function fieldPlayStageIntro(stage) {
   const ids = { 1: "forest-intro", 2: "goblin-intro", 3: "wolf-intro", 4: "dragon-intro", 5: "maou-intro" };
