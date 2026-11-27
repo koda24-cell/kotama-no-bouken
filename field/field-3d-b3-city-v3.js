@@ -102,8 +102,8 @@ export function createTheme(api){
     for(let level=0;level<levels;level++){
      const holder=new THREE.Group(),o=source.clone(true);o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
      o.traverse(m=>{if(m.isMesh&&m.material?.name==='v2_exposed_infill_brick')m.visible=false;});
-     const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,sx=dx?1.0/s.x:scale,sz=dz?1.0/s.z:scale;
-     holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*1.48-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*1.48-center.z*sz);root.add(holder);
+     const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,depth=dx?s.x:s.z,depthScale=single?Math.min(scale,1.95/depth):1.0/depth,sx=dx?depthScale:scale,sz=dz?depthScale:scale,offset=2-depth*depthScale/2;
+     holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*offset-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*offset-center.z*sz);root.add(holder);
     }
     for(let k=0;k<height/3.2;k++)box('bonded horizontal floor slab',concrete,px+dx*1.55,h0+k*3.2+.10,pz+dz*1.55,dx?.9:4.04,.20,dz?.9:4.04);
    }
@@ -121,7 +121,7 @@ export function createTheme(api){
     box('girder bolted bearing socket',steel,px+dx*side*2.2,level-.22,pz+dz*side*2.2,.56,.65,.56);
     beam('crossing diagonal knee brace',steel,[px+dx*side*2.5,level-1.45,pz+dz*side*2.5],[px+dx*side*1.25,level,pz+dz*side*1.25],.10,.10);
    }
-   if(bundle.models.has('v2_truss_bridge')&&crossings%3===0)model(bundle.models.has('v3_riveted_span')?'v3_riveted_span':'v2_truss_bridge',px,h,pz,{ry:acrossX?0:Math.PI/2});crossings++;
+   if(crossings%3===0){if(bundle.models.has('v3_riveted_span'))model('v3_riveted_span',px,level,pz,{ry:acrossX?Math.PI/2:0});else model('v2_truss_bridge',px,h,pz,{ry:acrossX?0:Math.PI/2});}crossings++;
   }
   stats.crossings=crossings;
   // Electrical/service continuity follows the fronts, not isolated ornaments.
@@ -129,7 +129,7 @@ export function createTheme(api){
    const {x,z,dx,dz,h,ry}=f,px=x*4,pz=z*4,sx=px+dx*2.27,sz=pz+dz*2.27;
    const upper=h+5.8;
    for(const off of[-.13,.13]){
-    const points=[];for(let k=0;k<=5;k++){const t=k/5;points.push([sx+dz*(t-.5)*4,upper-.12*Math.sin(t*Math.PI)+off,sz-dx*(t-.5)*4]);}
+    const points=[];for(let k=0;k<=5;k++){const t=k/5;const wx=sx+dz*(t-.5)*4,wz=sz-dx*(t-.5)*4;points.push([wx,plan.heightWorld(wx,wz)+5.8-.12*Math.sin(t*Math.PI)+off,wz]);}
     for(let k=0;k<5;k++)pipe('continuous sagged electrical service',steel,points[k],points[k+1],.014);
    }
    if(bundle.models.has('v3_fluorescent_fixture')&&hash(x,z,83)>.6)model('v3_fluorescent_fixture',sx,h+3.4,sz,{ry,scale:.85});
