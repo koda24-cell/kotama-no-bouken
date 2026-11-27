@@ -1,0 +1,117 @@
+{
+  "numErrors": 0,
+  "numWarnings": 0,
+  "numInfos": 18,
+  "numHints": 0,
+  "messages": [
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/0/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/1/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/2/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/3/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/4/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/5/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/6/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/7/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/8/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/9/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/10/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/11/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/12/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/13/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/14/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/15/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/16/uri"
+    },
+    {
+      "code": "URI_GLB",
+      "message": "URI is used in GLB container.",
+      "severity": 2,
+      "pointer": "/images/17/uri"
+    }
+  ],
+  "truncated": false
+}

@@ -230,7 +230,7 @@ function loadTheme2() {
 function loadTheme3() {
   if (g.theme?.area === 3) return Promise.resolve(g.theme);
   const industrial = window.KotamaIndustrialPlaytest === true || new URLSearchParams(location.search).get('f3industrial') === '1';
-  return import(industrial ? './field-3d-b3-industrial.js' : './field-3d-b3-city.js?v=20261110-quality-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, setEnvironment: env => applyEnv(3,env) }));
+  return import(window.KotamaCityV3Playtest===true?'./field-3d-b3-city-v3.js':industrial ? './field-3d-b3-industrial.js' : './field-3d-b3-city.js?v=20261110-quality-1').then(m => m.createTheme({ CELL, DIR_VEC, DIR_ORDER, FACE_YAW, hash, g, place, load, npcFile, FILES, setEnvironment: env => applyEnv(3,env) }));
 }
 async function loadTheme45(area) {
   if (area !== 4 && g.theme?.area === area) return g.theme;
@@ -492,6 +492,7 @@ function addWater(x, z) {
 // 物の状態（開けた・採り尽くした・解いた・開いた）を見た目に反映する
 async function syncEntry(e, S) {
   const o = e.o, x = o.tx * CELL, z = o.ty * CELL;
+  const groundY=e.groundY||0;
   let st = '';
   if (o.kind === 'chest') st = fieldState.flags[o.key] ? 'open' : 'closed';
   else if (o.kind === 'cache') st = fieldState.flags[`puzzle:${o.puzzle}:reward`] ? 'open' : 'closed';
@@ -505,21 +506,21 @@ async function syncEntry(e, S) {
   S = S || {};
   if (g.theme && Number(fieldState.area) === g.theme.area && await g.theme.sync(e, st)) { if (!first) g.lastLightKey = ''; return; }
   const get = async (k) => S[k] || load(FILES[k]);
-  if (o.kind === 'chest' || o.kind === 'cache') { removeObj(e.obj); e.obj = place(g.world, await get(st === 'open' ? 'chestOpen' : 'chest'), x, 0, z, e.ry); }
+  if (o.kind === 'chest' || o.kind === 'cache') { removeObj(e.obj); e.obj = place(g.world, await get(st === 'open' ? 'chestOpen' : 'chest'), x, groundY, z, e.ry); }
   else if (o.kind === 'gather') {
-    if (!e.obj) { const kind = gatherDef(o).kind, k = kind === 'chop' ? 'logging' : kind === 'mine' ? 'mining' : 'herb'; e.obj = place(g.world, await get(k), x, 0, z, e.ry, 0.8); }
+    if (!e.obj) { const kind = gatherDef(o).kind, k = kind === 'chop' ? 'logging' : kind === 'mine' ? 'mining' : 'herb'; e.obj = place(g.world, await get(k), x, groundY, z, e.ry, 0.8); }
     dimObj(e.obj, st.endsWith('empty'));
   }
   else if (o.kind === 'switch') { for (const L of e.obj?.userData.lights || []) L.off = st === 'solved'; }
   else if (o.kind === 'door') {
     if (!e.obj) e.obj = place(g.world, await get('gate'), x, 0, z, e.ry, 1.15);
-    const y = st === 'open' ? 3.3 : 0;
+    const y = groundY+(st === 'open' ? 3.3 : 0);
     e.obj.position.y = y; e.obj.updateMatrix(); e.obj.updateMatrixWorld(true);   // matrixAutoUpdate=false なので行列を作り直す
   }
   else if (o.kind === 'event') {
     if (!e.obj) {
-      if (o.hidden) e.obj = place(g.world, await get('roots'), x, 0, z, e.ry, 0.45);
-      else e.obj = place(g.world, await get(o.sprite === 'ev-stump' ? 'stump' : 'mushrooms'), x, 0, z, e.ry, o.sprite === 'ev-stump' ? 0.6 : 0.8);
+      if (o.hidden) e.obj = place(g.world, await get('roots'), x, groundY, z, e.ry, 0.45);
+      else e.obj = place(g.world, await get(o.sprite === 'ev-stump' ? 'stump' : 'mushrooms'), x, groundY, z, e.ry, o.sprite === 'ev-stump' ? 0.6 : 0.8);
     }
     if (!o.hidden) dimObj(e.obj, st === 'done');
   }
@@ -587,6 +588,7 @@ function syncFoes(t) {
     const inB5Vision = Number(fieldState.area) !== 5 || fieldState.visible?.has(`${Math.floor(f.x / FIELD_TILE)},${Math.floor(f.y / FIELD_TILE)}`);
     v.grp.visible = !f.defeated && !!inB5Vision;
     const p = f.view || f, target = new THREE.Vector3(p.x / FIELD_TILE * CELL - CELL / 2, 0, (p.y - 4) / FIELD_TILE * CELL - CELL / 2);
+    target.y=g.theme?.heightAt?.(target.x,target.z)||0;
     if (!v.pos) v.pos = target.clone(); else v.pos.lerp(target, 0.25);
     v.grp.position.copy(v.pos);
     const chase = f.mode === 'chase', pulse = 0.5 + 0.5 * Math.sin(t / (chase ? 140 : 380));
@@ -604,7 +606,8 @@ function syncFoes(t) {
    ------------------------------------------------------------ */
 function camTarget() {
   const tx = Math.floor(fieldState.x / FIELD_TILE), ty = Math.floor(fieldState.y / FIELD_TILE), [dx, dy] = DIR_VEC[fieldState.dir] || DIR_VEC.down;
-  return { pos: new THREE.Vector3(tx * CELL - dx * BACK, EYE, ty * CELL - dy * BACK), yaw: DIR_YAW[fieldState.dir] ?? Math.PI };
+  const groundY=g.theme?.heightAt?.(tx*CELL,ty*CELL)||0,back=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?.25:BACK;
+  return { pos: new THREE.Vector3(tx * CELL - dx * back, EYE+groundY, ty * CELL - dy * back), yaw: DIR_YAW[fieldState.dir] ?? Math.PI };
 }
 function updateCamera(dt) {
   const t = camTarget(), c = g.cam;

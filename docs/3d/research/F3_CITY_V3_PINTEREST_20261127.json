@@ -1,5 +1,5 @@
 {
-  "status": "Research: metadata retrieved, thumbnails pending visual review; not saved to Pinterest; reference only",
+  "status": "40 public thumbnails visually reviewed in 3 contact sheets; no Pins saved; composition and structural reference only",
   "queries": [
     {
       "keyword": "abandoned greenhouse overgrown ruins",
@@ -401,6 +401,44 @@
           }
         ]
       }
+    }
+  ],
+  "selected": [
+    {
+      "id": "24418022973948563",
+      "use": "Real greenhouse curved ribs, corroded glazing frame and enclosed aisle"
+    },
+    {
+      "id": "734720126699409897",
+      "use": "Dense edge vegetation, broken overhead glass, lateral light"
+    },
+    {
+      "id": "739716307589841498",
+      "use": "Manufacturer supported suspended catwalk and connection geometry"
+    },
+    {
+      "id": "917678861547569643",
+      "use": "Grating depth, guardrails, piers and building-side landings"
+    },
+    {
+      "id": "747738344432299480",
+      "use": "Multiple storey stairs connect load-bearing platforms"
+    },
+    {
+      "id": "239253798926605645",
+      "use": "Waterline against intact lower windows and visible submerged street; concept only"
+    },
+    {
+      "id": "806988827403683516",
+      "use": "Natural flowing white groundcover density and flower scale"
+    },
+    {
+      "id": "142356038220007867",
+      "use": "Light/dark split and oblique shaft on white flowers; composition only"
+    },
+    {
+      "id": "943152346982041834",
+      "use": "Real derelict car with missing windows, wheels and surrounding plants"
     }
   ]
 }

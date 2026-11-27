@@ -622,9 +622,16 @@
       6.8,
       8.0
     ],
-    "status": "DESIGNED_NOT_RENDERED",
+    "status": "RENDERED_NOT_APPROVED",
     "existingUpgrade": true,
-    "revisionOf": "v2_memory_statue"
+    "revisionOf": "v2_memory_statue",
+    "workflowRun": "45950675969",
+    "sourceCommit": "3bf09b1200b534911fe216fd25e36202f448b30d",
+    "actualGltfSizeMeters": [
+      7.4,
+      7.9,
+      6.8
+    ]
   },
   {
     "id": "v3_switchback_stair",
