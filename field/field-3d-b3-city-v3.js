@@ -74,7 +74,7 @@ export function createTheme(api){
  async function build(a,S,info){
   dispose();plan=window.KotamaCityV3Layout.create(a.f,a.floor);root=new THREE.Group();root.name='b3_city_v3_map';g.world.add(root);
   stats={mode:'b3-city-v3-trial',artRevision:'V3 structural city in progress',floor:a.key,layoutVersion:plan.version,objects:0,placements:[],edgePlacements:[],terrainCells:0,upperWalkCells:0,stairCells:0,skylineSealed:true};
-  const wanted=['v2_truss_bridge','v2_fractured_road',
+  const wanted=['v2_fractured_road','v3_structural_corner',
    'v3_catwalk_junction','v3_riveted_span','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
   boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
@@ -88,7 +88,7 @@ export function createTheme(api){
    const px=x*4,pz=z*4,y=plan.height(x,z),left=plan.height(x-.5,z),right=plan.height(x+.5,z),ramp=Math.abs(left-right)>.05;
    stats.terrainCells++;if(y>2.9)stats.upperWalkCells++;
    if(ramp){
-    stats.stairCells++;const n=12;for(let i=0;i<n;i++){const xx=px-2+(i+.5)*4/n,h=plan.heightWorld(xx,pz);box('climbable supported stair tread',concrete,xx,h-.075,pz,4/n+.006,.15,4.02);}
+    stats.stairCells++;if(a.f===1)for(const dz of[-1.82,1.82])for(const[off,w,d]of[[-.20,.10,.24],[-.08,.20,.04],[-.32,.20,.04]])beam('continuous rolled stair stringer',steel,[px-2,left+off,pz+dz],[px+2,right+off,pz+dz],w,d);const n=12;for(let i=0;i<n;i++){const xx=px-2+(i+.5)*4/n,h=plan.heightWorld(xx,pz);box('climbable supported stair tread',a.f===1?steel:concrete,xx,h-.075,pz,4/n+.006,.15,4.02);if(a.f===1)box('steel stair anti slip nosing',steel,xx-4/n*.42,h+.012,pz,.035,.03,3.8);}
     for(const dz of[-1.55,1.55])if(closed(x,z+Math.sign(dz))){
      beam('continuous ramp guardrail',steel,[px-1.98,left+1.05,pz+dz],[px+1.98,right+1.05,pz+dz],.05,.05);
      for(const xx of[-1.7,0,1.7])pipe('ramp rail stanchion',steel,[px+xx,plan.heightWorld(px+xx,pz),pz+dz],[px+xx,plan.heightWorld(px+xx,pz)+1.05,pz+dz]);
@@ -124,6 +124,7 @@ export function createTheme(api){
    box('solid city block core',concrete,px,h0+height/2,pz,1.3,height,1.3);
    for(const sx of[-1.5,1.5])for(const sz of[-1.5,1.5])box('full depth bonded corner pier',concrete,px+sx,h0+height/2,pz+sz,1.02,height,1.02);
    box('continuous building footing',concrete,px,h0+.13,pz,4.04,.28,4.04);
+   if(adjacent.length>1&&hash(x,z,44)>.6)model('v3_structural_corner',px+1.2,h0,pz+1.2,{maxWidth:1.5,maxDepth:1.5});
    for(const d of adjacent){const[dx,dz]=DIR_VEC[d],ry=FACE_YAW[d]+Math.PI;
     fronts.push({x,z,dx,dz,h:h0,ry,streetX:x+dx,streetZ:z+dz});
     if(!bundle.models.has('v3_deep_window_bay'))throw Error('Sealed V3 window bay is required');
@@ -159,7 +160,7 @@ export function createTheme(api){
     box('girder bolted bearing socket',steel,px+dx*side*2.2,level-.22,pz+dz*side*2.2,.56,.65,.56);
     beam('crossing diagonal knee brace',steel,[px+dx*side*2.5,level-1.45,pz+dz*side*2.5],[px+dx*side*1.25,level,pz+dz*side*1.25],.10,.10);
    }
-   if(crossings%3===0){if(bundle.models.has('v3_riveted_span'))model('v3_riveted_span',px,level,pz,{ry:acrossX?Math.PI/2:0});else model('v2_truss_bridge',px,h,pz,{ry:acrossX?0:Math.PI/2});}crossings++;
+   if(crossings%3===0){if(bundle.models.has('v3_riveted_span'))model('v3_riveted_span',px,level,pz,{ry:acrossX?Math.PI/2:0});}crossings++;
   }
   stats.crossings=crossings;
   // Electrical/service continuity follows the fronts, not isolated ornaments.
