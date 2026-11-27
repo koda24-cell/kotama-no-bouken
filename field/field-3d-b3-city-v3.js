@@ -195,7 +195,7 @@ export function createTheme(api){
   let flowers=0,plants=0;
   for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
    if(!open(x,z))continue;const px=x*4,pz=z*4,tag=plan.tags[x+','+z],degree=DIR_ORDER.filter(d=>{const[dx,dz]=DIR_VEC[d];return open(x+dx,z+dz);}).length;
-   for(const d of DIR_ORDER){const[dx,dz]=DIR_VEC[d];if(!closed(x+dx,z+dz)&&tag!=='greenhouse'&&tag!=='white-garden')continue;
+   for(const d of DIR_ORDER){if(tag==='white-garden')continue;const[dx,dz]=DIR_VEC[d];if(!closed(x+dx,z+dz)&&tag!=='greenhouse')continue;
     for(let k=0;k<3;k++){const along=(hash(x*3+k,z,762)-.5)*4,mx=px+dx*1.57+dz*along,mz=pz+dz*1.57-dx*along;
      if(Math.abs(plan.heightWorld(mx-.4,mz)-plan.heightWorld(mx+.4,mz))<.05){const patch=new THREE.Mesh(mossGeometry,mossMaterial);patch.position.set(mx,plan.heightWorld(mx,mz)+.026,mz);patch.scale.set(dx?.32:.8+hash(x,z+k,763)*.6,1,dz?.32:.8+hash(z,x+k,764)*.6);patch.rotation.y=(hash(x+k,z,765)-.5)*.25;root.add(patch);}
     }

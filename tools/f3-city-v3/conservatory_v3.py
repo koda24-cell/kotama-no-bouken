@@ -24,8 +24,8 @@ def build(asset,e):
    s=.12+rng.random()*.45;o=box('moss covered broken foundation',(x+(rng.random()-.5)*2.4,y+(rng.random()-.5)*1.5,z+s*.3),(s,s*.8,s*.5),moss if k%3==0 else fracture,.02);o.rotation_euler=(rng.random()*.4,rng.random()*.5,rng.random()*6.28)
  def roots(x,y,z):
   for k in range(8):
-   a=k*math.pi/4;points=[(x,y,z+.65)]
-   for j in range(1,5):points.append((x+math.cos(a)*j*.42,y+math.sin(a)*j*.4,z+.5*math.exp(-j)+rng.random()*.06))
+   a=k*math.pi/4;points=[(x,y,z+.15)]
+   for j in range(1,5):points.append((x+math.cos(a)*j*.42,y+math.sin(a)*j*.4,z+.10*math.exp(-j)+rng.random()*.025))
    for j,(p,q)in enumerate(zip(points,points[1:])):rod('old woody roots levering the paving',p,q,.10-j*.018,dark,12)
  if asset=='v3_greenhouse_bay':
   ribs=[arch(y)for y in[-3.9,0,3.9]]
