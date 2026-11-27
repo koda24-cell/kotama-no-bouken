@@ -1,0 +1,56 @@
+{
+  "bytes": 19783132,
+  "sha256": "8c50f8e9530f9abecd13fdf7c10cf62fd3343ba2bb758e7f409716a733e99116",
+  "tris": 31711,
+  "verts": 34087,
+  "meshes": 6,
+  "drawCalls": 6,
+  "materials": [
+    "f3_damp_concrete",
+    "f3_deep_crack",
+    "f3_exposed_aggregate",
+    "f3_oxidized_iron",
+    "f3_weathered_concrete",
+    "gothic_statue"
+  ],
+  "textureCount": 18,
+  "textureBytes": 17945887,
+  "sizeMeters": [
+    7.4,
+    7.9,
+    6.8
+  ],
+  "bboxMin": [
+    -3.7,
+    0.0,
+    -3.4
+  ],
+  "bboxMax": [
+    3.7,
+    7.9,
+    3.4
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 1,
+  "id": "f3_v3_memory_monument",
+  "file": "props/f3_v3_memory_monument.glb",
+  "category": "props",
+  "desc_ja": "\u516b\u30e1\u30fc\u30c8\u30eb\u306e\u8a18\u61b6\u306e\u30e2\u30cb\u30e5\u30e1\u30f3\u30c8",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "3bf09b1200b534911fe216fd25e36202f448b30d",
+  "workflowRun": "45950675969",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_memory_monument.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_memory_monument/front.png",
+    "renders/f3_v3_memory_monument/back.png",
+    "renders/f3_v3_memory_monument/side.png",
+    "renders/f3_v3_memory_monument/angle.png",
+    "renders/f3_v3_memory_monument/top.png"
+  ]
+}

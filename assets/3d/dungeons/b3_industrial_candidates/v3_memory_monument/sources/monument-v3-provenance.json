@@ -1,0 +1,12 @@
+{
+  "status": "NOT_APPROVED",
+  "asset": "gothic_statue",
+  "license": "CC0",
+  "sourceURL": "https://polyhaven.com/a/gothic_statue",
+  "originalVertices": 23314,
+  "verticesRemoved": 0,
+  "uvPreserved": true,
+  "sculptHeightMeters": 6.4,
+  "plinthHeightMeters": 1.5,
+  "design": "Large civic monument in white flower court; interaction anchor at front edge, not on a blocking route"
+}

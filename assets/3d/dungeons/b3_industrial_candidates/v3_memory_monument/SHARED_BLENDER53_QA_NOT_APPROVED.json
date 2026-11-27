@@ -1,0 +1,374 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 10020,
+      "sha256": "6817ebc1ba259f2c7c09ddc7a6a62b4407a2490dc45745ed69b35ea7aec474d1"
+    },
+    "metrics/f3_v3_memory_monument.json": {
+      "bytes": 1406,
+      "sha256": "1d3562b321d50cb5e59b1631f9d83289623c31a12bbf9623b6e7177827c437b3"
+    },
+    "props/f3_v3_memory_monument.glb": {
+      "bytes": 19783132,
+      "sha256": "8c50f8e9530f9abecd13fdf7c10cf62fd3343ba2bb758e7f409716a733e99116"
+    },
+    "renders/f3_v3_memory_monument/angle.png": {
+      "bytes": 496816,
+      "sha256": "305384a5b1e0bfcfb51e4e62a879d3b07c7b9ae8f942c0ea302823a1d095e2fc"
+    },
+    "renders/f3_v3_memory_monument/back.png": {
+      "bytes": 524010,
+      "sha256": "870897294476b539eb7b8214716b1ca0803ae12e2bd581e569e8152f531f7f64"
+    },
+    "renders/f3_v3_memory_monument/front.png": {
+      "bytes": 508355,
+      "sha256": "f3849e2fb45be46db80d1728367711d6d08c54a37b5b22c161413b16143412ba"
+    },
+    "renders/f3_v3_memory_monument/side.png": {
+      "bytes": 501963,
+      "sha256": "cf25a8515be31fb26d5d6604e3167f5ae08bb2fc6878f00a634b9bd3efde809a"
+    },
+    "renders/f3_v3_memory_monument/top.png": {
+      "bytes": 647479,
+      "sha256": "cefa6805c817d930dbacc13b3230e6c5ab3d9ee8de679b9a9f0423d9d81274d0"
+    },
+    "runtime/f3_v3_memory_monument.glb": {
+      "bytes": 1837724,
+      "sha256": "99980cce86877a92939d5f9313265bb9ff457adb4b4bcf98e11a0fe03d2e84d7"
+    },
+    "security/all-texture-inputs.log": {
+      "bytes": 292,
+      "sha256": "07993308fecfb6adab5634b253d183dcdcf68dfe0276950b238031c224139925"
+    },
+    "security/existing-cc0-inputs.log": {
+      "bytes": 289,
+      "sha256": "834b1681c3aa2a6994f342bc4fa678e51c0d3020f3c118be4fec64dfc09e15d1"
+    },
+    "security/licensed-complete-source.log": {
+      "bytes": 291,
+      "sha256": "a032967b36dcc84d8f0d5f55329718e0198a62c6766e8269e24b1b0aa6910a13"
+    },
+    "security/licensed-input-0.log": {
+      "bytes": 291,
+      "sha256": "d52d1e2e29570b181a000c62aecb1e22f577ae5d43ec1590a02d7ebc082d725d"
+    },
+    "security/licensed-input-1.log": {
+      "bytes": 289,
+      "sha256": "4095b04edb69e58dff2f5dc2119ac19def42b199b0aef264f61d006701e9725d"
+    },
+    "security/licensed-input-2.log": {
+      "bytes": 289,
+      "sha256": "b76238f806375cab38f54457bc682be7a529f79c95a48b28416d8607da8ec09d"
+    },
+    "security/licensed-input-3.log": {
+      "bytes": 289,
+      "sha256": "5e06482f409e58d7a9f5d016eaa67adca030bfd0472ae4b58cd6063be518e003"
+    },
+    "security/licensed-input-4.log": {
+      "bytes": 289,
+      "sha256": "dfa08679b55b88b3bd4be062b04f821c55f3f6a6d0830900c71417daeda35490"
+    },
+    "security/licensed-input-5.log": {
+      "bytes": 291,
+      "sha256": "f08d2bd76b07e14d328fed797b4b6c72e662f821e0141b3eae4b614126ad8c6d"
+    },
+    "security/renderer-source.log": {
+      "bytes": 289,
+      "sha256": "29ae989f3b78abce44c15f14413dce8c9a4ca89581af62b77f47370407db155d"
+    },
+    "security/shared-source.log": {
+      "bytes": 294,
+      "sha256": "70e046d0da2fe1afdf0437d539718e829ad13975655991585e1a6dca1c4fb85b"
+    },
+    "security/source.log": {
+      "bytes": 294,
+      "sha256": "189d1228ae2ac897df77e486ce87f1dbd9ce3ffa5560a166f701658367f211d9"
+    },
+    "security/v3-source.log": {
+      "bytes": 290,
+      "sha256": "e17e7f161c4da955f89d499798644fe9a917f61b390276d96c51f6f7dbb12916"
+    },
+    "shared_textures/04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb.jpg": {
+      "bytes": 733167,
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+    },
+    "shared_textures/109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c.jpg": {
+      "bytes": 8996,
+      "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+    },
+    "shared_textures/2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff.jpg": {
+      "bytes": 716081,
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+    },
+    "shared_textures/531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg": {
+      "bytes": 990005,
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+    },
+    "shared_textures/6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg": {
+      "bytes": 6785,
+      "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+    },
+    "shared_textures/7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc.jpg": {
+      "bytes": 697265,
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+    },
+    "shared_textures/7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1.jpg": {
+      "bytes": 489576,
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+    },
+    "shared_textures/afdc45a14314f4f51e690e974d7ac5918f8509e50da3df2b8aef2b7020b3b959.jpg": {
+      "bytes": 3663305,
+      "sha256": "afdc45a14314f4f51e690e974d7ac5918f8509e50da3df2b8aef2b7020b3b959"
+    },
+    "shared_textures/b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098.jpg": {
+      "bytes": 5400,
+      "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+    },
+    "shared_textures/b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182.png": {
+      "bytes": 1244933,
+      "sha256": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182"
+    },
+    "shared_textures/ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710.jpg": {
+      "bytes": 6746,
+      "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+    },
+    "shared_textures/dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb.jpg": {
+      "bytes": 5836,
+      "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+    },
+    "shared_textures/df56b97655114d1d94a8cb33877677754eda42864340e44d22e10eefcea4de08.png": {
+      "bytes": 3772620,
+      "sha256": "df56b97655114d1d94a8cb33877677754eda42864340e44d22e10eefcea4de08"
+    },
+    "shared_textures/e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd.png": {
+      "bytes": 710347,
+      "sha256": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd"
+    },
+    "shared_textures/e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a.jpg": {
+      "bytes": 3282839,
+      "sha256": "e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a"
+    },
+    "shared_textures/ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b.jpg": {
+      "bytes": 898376,
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+    },
+    "shared_textures/efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea.png": {
+      "bytes": 708778,
+      "sha256": "efd90569f3fc1131254362084abff5258eb2efe90fdf781705abade6975de5ea"
+    },
+    "shared_textures/f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1.jpg": {
+      "bytes": 4832,
+      "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+    },
+    "sources/authoring-portability.json": {
+      "bytes": 2730,
+      "sha256": "1273574985e33035c06303646ed22c0e1900ee9853ecab3c0943c2bba369e80e"
+    },
+    "sources/f3_v3_memory_monument.blend": {
+      "bytes": 20153654,
+      "sha256": "63988e7e787e81f0c24c6e8396bb83d8f0859f8f7d2b3f09746f10fb115694b7"
+    },
+    "sources/f3_v3_memory_monument_authoring.blend": {
+      "bytes": 20119451,
+      "sha256": "a2252bb4a5833c709a6e95172a1d214d29c3b4f674d437f7b79b3f166a264ebf"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
+      "bytes": 8773,
+      "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_normal.jpg": {
+      "bytes": 6755,
+      "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_orm.jpg": {
+      "bytes": 6217,
+      "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_basecolor.jpg": {
+      "bytes": 4832,
+      "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_normal.jpg": {
+      "bytes": 6785,
+      "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_orm.jpg": {
+      "bytes": 5836,
+      "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_basecolor.jpg": {
+      "bytes": 8996,
+      "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_normal.jpg": {
+      "bytes": 6746,
+      "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_orm.jpg": {
+      "bytes": 5400,
+      "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+    },
+    "sources/licensed-provenance.json": {
+      "bytes": 2105,
+      "sha256": "5806d4979a274bfb8356acf52b0faabc11bf193ec5e538ef59bc9880e9bf221c"
+    },
+    "sources/monument-v3-provenance.json": {
+      "bytes": 385,
+      "sha256": "69c69f316da62042d63b357a3a6c7c6054fde3acba00a2683f26485b2b7de0aa"
+    },
+    "sources/polyhaven_gothic_statue_original/files-api.json": {
+      "bytes": 25412,
+      "sha256": "61a7b4048de324fe16d7e1daa5d6ec1f88177d561391e4247fb283ad16e796e9"
+    },
+    "sources/polyhaven_gothic_statue_original/gothic_statue.bin": {
+      "bytes": 912484,
+      "sha256": "8608701ecff6b56e9fd9cddd130541f831ff8131a7758d54e7964af3d0152b9c"
+    },
+    "sources/polyhaven_gothic_statue_original/gothic_statue_2k.gltf": {
+      "bytes": 2900,
+      "sha256": "589beb2aea6ab11eb3016f95f273acfabe1fdf436d3c6c5a7ad08662c937db75"
+    },
+    "sources/polyhaven_gothic_statue_original/textures/gothic_statue_arm_2k.jpg": {
+      "bytes": 3258126,
+      "sha256": "82e9c16943259aef27bef8f59a5bf296d645ba5e5c95248cc445c95e69845c4e"
+    },
+    "sources/polyhaven_gothic_statue_original/textures/gothic_statue_diff_2k.jpg": {
+      "bytes": 3663305,
+      "sha256": "afdc45a14314f4f51e690e974d7ac5918f8509e50da3df2b8aef2b7020b3b959"
+    },
+    "sources/polyhaven_gothic_statue_original/textures/gothic_statue_nor_gl_2k.jpg": {
+      "bytes": 3282839,
+      "sha256": "e9f75e0ad1c472b439a4cd66f64b3a1d917c01c718fe1ac8ccb24bf839bac41a"
+    },
+    "structural-audit.json": {
+      "bytes": 1282,
+      "sha256": "91a797b5e6002699dff08b58d900ecb24f812ff2c4ece1fffe80c2917ce49f9b"
+    },
+    "textures/asphalt_02-api.json": {
+      "bytes": 27252,
+      "sha256": "1249520977b7ba990db96a9b4dea2d7d5b8ff6d70c61a7d348310e92f68130d2"
+    },
+    "textures/asphalt_02_diffuse.jpg": {
+      "bytes": 731707,
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed"
+    },
+    "textures/asphalt_02_normal.jpg": {
+      "bytes": 1240122,
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3"
+    },
+    "textures/asphalt_02_roughness.jpg": {
+      "bytes": 544032,
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712"
+    },
+    "textures/chipped_concrete_diffuse.jpg": {
+      "bytes": 716081,
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+    },
+    "textures/chipped_concrete_normal.jpg": {
+      "bytes": 990005,
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+    },
+    "textures/chipped_concrete_roughness.jpg": {
+      "bytes": 336460,
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+    },
+    "textures/concrete_debris-api.json": {
+      "bytes": 26898,
+      "sha256": "340c3b6b1d0f547f8d85a0b27e50f43218ce8c6889a8cc5a9a4a2b85cd9b62a9"
+    },
+    "textures/concrete_debris_diffuse.jpg": {
+      "bytes": 811730,
+      "sha256": "5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9"
+    },
+    "textures/concrete_debris_normal.jpg": {
+      "bytes": 1462829,
+      "sha256": "39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb"
+    },
+    "textures/concrete_debris_roughness.jpg": {
+      "bytes": 530326,
+      "sha256": "bbdf4da5c579b1d7282021e265a0bda3df87ca2cb9972f93d0caa5c3aeca47e4"
+    },
+    "textures/concrete_moss_diffuse.jpg": {
+      "bytes": 697265,
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+    },
+    "textures/concrete_moss_normal.jpg": {
+      "bytes": 898376,
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+    },
+    "textures/concrete_moss_roughness.jpg": {
+      "bytes": 320901,
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+    },
+    "textures/concrete_slab_wall-api.json": {
+      "bytes": 27880,
+      "sha256": "32767ba84eeb6000779c5ee52049e1cdc32d549c288636ae1a12ec032d14898a"
+    },
+    "textures/concrete_slab_wall_diffuse.jpg": {
+      "bytes": 576735,
+      "sha256": "5eaccddc4c15dfcab06d6d7a79f1884bde76cf5eed9b892a188ec2acf373de72"
+    },
+    "textures/concrete_slab_wall_normal.jpg": {
+      "bytes": 740730,
+      "sha256": "7fdfe954fbff16da7888fe68b9b56ed1e0bb7e1d87c18ff4180e4073f74c71ba"
+    },
+    "textures/concrete_slab_wall_roughness.jpg": {
+      "bytes": 305483,
+      "sha256": "0108afabf6b9ad59f9d63668e5a80be08435453fe382a7d749576d82f3b9fea8"
+    },
+    "textures/cracked_concrete_wall-api.json": {
+      "bytes": 28917,
+      "sha256": "a173adc1ce4deaf5d8fc4e677795f26872644326eecc4875d98d2c9d3d902c90"
+    },
+    "textures/cracked_concrete_wall_diffuse.jpg": {
+      "bytes": 1073985,
+      "sha256": "f910cbaff5a0fbd778a8c41947ac826f2313e70e9b4077bc39221a417fa8d5b4"
+    },
+    "textures/cracked_concrete_wall_normal.jpg": {
+      "bytes": 950747,
+      "sha256": "d247bdc21f3d37eb514d058aaa3c2193a6955d12191d1190cedf5285985f8604"
+    },
+    "textures/cracked_concrete_wall_roughness.jpg": {
+      "bytes": 591307,
+      "sha256": "0f18937de6a05b34797d2ddaac5a3996e922696431161d312b7304ac1b110312"
+    },
+    "textures/rusty_iron-api.json": {
+      "bytes": 25191,
+      "sha256": "8968aeea82c1dfeab7a138f128511e348f449f29acc7e426bebfcd0624eb5a6d"
+    },
+    "textures/rusty_iron_diffuse.jpg": {
+      "bytes": 733167,
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+    },
+    "textures/rusty_iron_normal.jpg": {
+      "bytes": 489576,
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+    },
+    "textures/rusty_iron_roughness.jpg": {
+      "bytes": 873519,
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+    },
+    "textures/sources.json": {
+      "bytes": 4215,
+      "sha256": "b7d8a1ef07ec0eb0fa35ef980bf361734ec12d4074f73938367167de1776cc75"
+    },
+    "textures/worn_mossy_plasterwall-api.json": {
+      "bytes": 36654,
+      "sha256": "b327d3422bc686cf2222d3fe505311108d05294e03b17768092d9b5113a15de3"
+    },
+    "textures/worn_mossy_plasterwall_diffuse.jpg": {
+      "bytes": 964249,
+      "sha256": "415cbcbe8f70269569aa4f2f1efc13ca1bd5f2fabc791dff428ef0fa243e1e9e"
+    },
+    "textures/worn_mossy_plasterwall_normal.jpg": {
+      "bytes": 870753,
+      "sha256": "0fdf1e22066c4f6fc2c820ae9b11aa5f9ea6ea131ccf3abb65f37251ab9f6a5d"
+    },
+    "textures/worn_mossy_plasterwall_roughness.jpg": {
+      "bytes": 635042,
+      "sha256": "b33938d0ac7889b7b8580b8e3920958c0aa13a1154d6ad783676a540afd628e9"
+    }
+  }
+}
