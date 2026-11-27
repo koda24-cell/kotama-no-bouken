@@ -51,6 +51,7 @@ Cloudflare Zero Trust（Access）は Free プランでもカード登録が必�
 - ユーザー報告: BGMと画像が一部しか出ない／第1層3階が最新でない。
 - 原因1（確認済み）: 選別ツールの文字列パス検出が英数字のファイル名しか拾わず、日本語・空白入りの BGM・画像（`assets/music/戦闘/*.mp3`、`Final Battle Arc.mp3` 等）を落としていた → 修正。
 - 原因2（確認済み）: 第3層の `b3_industrial_candidates`（1.8GB）がフォルダ上限で丸ごと除外され、`catalog.json` 経由の読込が失敗 → 巨大フォルダは最上位の catalog/manifest JSON を同梱し、そこに列挙されたファイルを辿るよう修正。修正後: 966 ファイル / 約 1.0 GB（development 90cfa71）。
+- 原因3（2026-11-28 ユーザー報告「効果音が出ない」）: `playSe("assets/se/senntou/ダメージ")` のように拡張子なしで書き実行時に `.mp3` を付けるため検出できていなかった → 拡張子なし `assets/...` 文字列に .mp3 等を補って探索、加えて `assets/se`・`assets/serihu` は常に丸ごと同梱。修正後 1005 ファイル（効果音・ボイス 39 件）。
 - main にだけある「Add files via upload」の素材 31 件（BGM・GIF 等）は development のコードから参照されていないため、確認サイトの欠落原因ではない。
 - 第1層3階: development は #849 で聖域の森 F3（game-layout-v6）を有効化済みで、その参照ファイルは全て同梱済み。ユーザーの言う「最新」が未マージ PR の可能性 → 「development ＋選択 PR」を表示する仕組み（AGENTS.md「確認サイトを更新して」）を追加。
 

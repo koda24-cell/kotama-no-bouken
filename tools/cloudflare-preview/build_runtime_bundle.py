@@ -43,6 +43,12 @@ JS_IMPORT = re.compile(r"""(?:import|export)\s[^'"]*?from\s*["']([^"']+)["']|imp
 # Any characters except quotes / template interpolation / whitespace-only:
 # file names in this repo include Japanese text and spaces (e.g. BGM).
 STR_PATH = re.compile(r"""["'`]((?:\./|\.\./|/)?[^"'`\n\r<>${}()]+?\.(?:%s))(?:\?[^"'`\n]*)?["'`]""" % ASSET_EXT, re.I)
+# Asset paths written without an extension; the code appends one at run time
+# (e.g. playSe("assets/se/senntou/ダメージ") -> ".mp3").
+NOEXT_PATH = re.compile(r"""["'`]((?:\./)?assets/[^"'`\n\r<>${}()]+?)["'`]""")
+NOEXT_TRY = (".mp3", ".ogg", ".wav", ".m4a", ".png", ".webp", ".gif", ".jpg", ".glb")
+# Small runtime folders shipped whole because file names are built at run time.
+ALWAYS_INCLUDE_DIRS = ["assets/se", "assets/serihu"]
 EXTERNAL = re.compile(r"""https?://[^\s"'`)<>]+""")
 
 
@@ -116,6 +122,12 @@ def dir_candidates(repo, script_rel, d):
 
 def scan(repo):
     queue = list(ENTRY_POINTS)
+    for d in ALWAYS_INCLUDE_DIRS:
+        for root, _, names in os.walk(os.path.join(repo, d)):
+            for n in names:
+                fr = posixpath.relpath(os.path.join(root, n), repo).replace(os.sep, "/")
+                if RUNTIME_FILE_RE.search(n) and not is_denied(fr):
+                    queue.append(fr)
     seen, missing, denied, externals, hinted = set(), {}, {}, {}, {}
     dir_included, dir_skipped = {}, {}
     bare = set()
@@ -153,6 +165,14 @@ def scan(repo):
         elif rel.endswith((".js", ".mjs")):
             refs += [a or b or c for a, b, c in JS_IMPORT.findall(text)]
             refs += STR_PATH.findall(text)
+            for ref in NOEXT_PATH.findall(text):
+                base = posixpath.normpath(ref[2:] if ref.startswith("./") else ref)
+                if os.path.splitext(base)[1] or os.path.isdir(os.path.join(repo, base)):
+                    continue
+                for ext in NOEXT_TRY:
+                    if os.path.isfile(os.path.join(repo, base + ext)):
+                        refs.append(base + ext)
+                        break
         elif rel.endswith(".json"):
             refs += STR_PATH.findall(text)
         dir_hints = [d for d in DIR_CONST.findall(text) if not d.startswith("http")]
