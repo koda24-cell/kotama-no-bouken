@@ -73,7 +73,7 @@ export function createTheme(api){
  }
  async function build(a,S,info){
   dispose();plan=window.KotamaCityV3Layout.create(a.f,a.floor);root=new THREE.Group();root.name='b3_city_v3_map';g.world.add(root);
-  stats={mode:'b3-city-v3-trial',artRevision:'V3 structural city in progress',floor:a.key,layoutVersion:plan.version,objects:0,placements:[],edgePlacements:[],terrainCells:0,upperWalkCells:0,stairCells:0,skylineSealed:true};
+  stats={mode:'b3-city-v3-trial',artRevision:'V3 ruined city review - 22 individual assets',floor:a.key,layoutVersion:plan.version,objects:0,placements:[],edgePlacements:[],terrainCells:0,upperWalkCells:0,stairCells:0,skylineSealed:true};
   const wanted=['v2_fractured_road','v3_structural_corner',
    'v3_catwalk_junction','v3_riveted_span','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');

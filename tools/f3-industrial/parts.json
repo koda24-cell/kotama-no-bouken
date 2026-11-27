@@ -631,7 +631,13 @@
       7.4,
       7.9,
       6.8
-    ]
+    ],
+    "actualSizeMeters": [
+      7.4,
+      7.9,
+      6.8
+    ],
+    "triangles": 31711
   },
   {
     "id": "v3_switchback_stair",
@@ -641,7 +647,15 @@
       7.3,
       4.3
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      3.79,
+      4.5878,
+      6.94
+    ],
+    "triangles": 69868,
+    "sourceCommit": "88da9effe5a9e87fbc82269595bf02db7907925b",
+    "workflowRun": "45951697520"
   },
   {
     "id": "v3_straight_access_stair",
@@ -651,7 +665,15 @@
       8,
       4.3
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      2.69,
+      4.5863,
+      8.553
+    ],
+    "triangles": 47516,
+    "sourceCommit": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+    "workflowRun": "45952971246"
   },
   {
     "id": "v3_catwalk_junction",
@@ -661,7 +683,15 @@
       3.6,
       4.3
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      3.84,
+      4.2415,
+      3.84
+    ],
+    "triangles": 7556,
+    "sourceCommit": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+    "workflowRun": "45952971246"
   },
   {
     "id": "v3_riveted_span",
@@ -671,7 +701,15 @@
       3.2,
       5
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      3.05,
+      2.0936,
+      8.2548
+    ],
+    "triangles": 15736,
+    "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+    "workflowRun": "45957518181"
   },
   {
     "id": "v3_structural_corner",
@@ -681,7 +719,15 @@
       4,
       3.2
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      1.5,
+      3.2,
+      1.5
+    ],
+    "triangles": 1584,
+    "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+    "workflowRun": "45957518181"
   },
   {
     "id": "v3_deep_window_bay",
@@ -691,7 +737,15 @@
       1.2,
       3.2
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      4.0,
+      3.2377,
+      1.915
+    ],
+    "triangles": 5208,
+    "sourceCommit": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+    "workflowRun": "45977005320"
   },
   {
     "id": "v3_spalled_wall",
@@ -701,7 +755,15 @@
       1.2,
       3.2
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      4.0,
+      3.2522,
+      1.602
+    ],
+    "triangles": 19788,
+    "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+    "workflowRun": "45974649926"
   },
   {
     "id": "v3_collapsed_storey",
@@ -711,7 +773,15 @@
       4,
       4
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      7.9562,
+      8.2541,
+      4.9162
+    ],
+    "triangles": 7486,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_leaning_facade",
@@ -721,7 +791,15 @@
       4,
       10
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      6.4574,
+      7.4911,
+      4.5001
+    ],
+    "triangles": 7452,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_greenhouse_bay",
@@ -731,7 +809,15 @@
       4,
       8
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      8.9559,
+      6.1594,
+      8.45
+    ],
+    "triangles": 14836,
+    "sourceCommit": "6f5d6b1da7bbed207ae2f78f95a9f02f96516b7e",
+    "workflowRun": "45977005320"
   },
   {
     "id": "v3_greenhouse_gate",
@@ -741,7 +827,15 @@
       3,
       5
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      7.5397,
+      3.9397,
+      3.6767
+    ],
+    "triangles": 5436,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_sunken_colonnade",
@@ -751,7 +845,15 @@
       4,
       5
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      5.5,
+      3.49,
+      2.7133
+    ],
+    "triangles": 3564,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_sunken_shopfront",
@@ -761,7 +863,15 @@
       2,
       4
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      5.5,
+      3.49,
+      2.9499
+    ],
+    "triangles": 4968,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_derelict_car",
@@ -771,7 +881,15 @@
       4.5,
       1.7
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      2.124,
+      1.5828,
+      4.652
+    ],
+    "triangles": 31780,
+    "sourceCommit": "266cf727b66b2730fe480a50862e1586718a39be",
+    "workflowRun": "45974748139"
   },
   {
     "id": "v3_electric_cabinet",
@@ -781,7 +899,15 @@
       0.8,
       2
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      1.5,
+      1.88,
+      1.2155
+    ],
+    "triangles": 6700,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_fluorescent_fixture",
@@ -791,7 +917,15 @@
       0.4,
       0.5
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      1.55,
+      0.765,
+      0.299
+    ],
+    "triangles": 1012,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_cable_pole",
@@ -801,7 +935,15 @@
       2,
       8
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      2.2,
+      6.8027,
+      0.65
+    ],
+    "triangles": 4836,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_shutter_shop",
@@ -811,7 +953,15 @@
       1,
       3.2
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      4.05,
+      3.2,
+      0.92
+    ],
+    "triangles": 3900,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_rubble_bank",
@@ -821,7 +971,15 @@
       3,
       1.4
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      4.3329,
+      1.3166,
+      3.12
+    ],
+    "triangles": 7272,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_asphalt_heave",
@@ -831,7 +989,15 @@
       4,
       0.5
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      4.3662,
+      0.7868,
+      3.7277
+    ],
+    "triangles": 4034,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   },
   {
     "id": "v3_whiteflower_atlas",
@@ -841,6 +1007,14 @@
       1.5,
       0.7
     ],
-    "status": "DESIGNED_NOT_RENDERED"
+    "status": "RENDERED_NOT_APPROVED",
+    "actualSizeMeters": [
+      1.4,
+      0.3838,
+      1.4
+    ],
+    "triangles": 8,
+    "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+    "workflowRun": "45960157429"
   }
 ]

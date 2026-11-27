@@ -1,4 +1,5 @@
 name: F3 V3 actual source performance audit
+# Final revisions: glazed window, low conservatory roots and dark tire rubber.
 on:
   push:
     branches: [feature/f3-city-v3-20261127]
