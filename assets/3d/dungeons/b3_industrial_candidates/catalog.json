@@ -783,6 +783,27 @@
       ],
       "portableAuthoring": "v3_straight_access_stair/sources/f3_v3_straight_access_stair_authoring.blend",
       "portableSha256": "dc6d6cd10aa3f30519568edd43341bf827f7a535b6810a9a02594d4ac69541c5"
+    },
+    {
+      "id": "v3_catwalk_junction",
+      "name": "支持された歩廊分岐踊り場",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_catwalk_junction/runtime/f3_v3_catwalk_junction.glb",
+      "sha256": "a762b0790f928639ff76c1d87722cd11341fa09779c46ecafdbe2b22b94fb9b0",
+      "bytes": 923028,
+      "triangles": 7556,
+      "sourceCommit": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+      "workflowRun": "45952971246",
+      "embeddedOriginal": "v3_catwalk_junction/props/f3_v3_catwalk_junction.glb",
+      "embeddedOriginalBytes": 3412276,
+      "sizeMeters": [
+        3.84,
+        4.2415,
+        3.84
+      ],
+      "portableAuthoring": "v3_catwalk_junction/sources/f3_v3_catwalk_junction_authoring.blend",
+      "portableSha256": "b5621ab0d97a2d83618c0529eed40ad1c84669d255c7ab5842ca4afac9beb3b9"
     }
   ],
   "sharedImages": [
@@ -1273,15 +1294,14 @@
     }
   ],
   "totals": {
-    "individualParts": 22,
+    "individualParts": 23,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 55065176,
+    "runtimeGeometryBytes": 55988204,
     "sharedImageBytes": 50954812,
-    "embeddedOriginalBytes": 265896988
+    "embeddedOriginalBytes": 269309264
   },
   "v3Pending": [
-    "v3_catwalk_junction",
     "v3_riveted_span",
     "v3_structural_corner",
     "v3_deep_window_bay",

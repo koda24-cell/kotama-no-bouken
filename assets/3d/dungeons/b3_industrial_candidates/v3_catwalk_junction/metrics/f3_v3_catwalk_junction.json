@@ -1,0 +1,52 @@
+{
+  "bytes": 3412276,
+  "sha256": "021cc4e1fb8b3b2bdbc42fb972ef8b4f7d478d4ac15cf85f2f31d61868f19aa1",
+  "tris": 7556,
+  "verts": 18200,
+  "meshes": 2,
+  "drawCalls": 2,
+  "materials": [
+    "f3_bare_worn_steel",
+    "f3_oxidized_iron"
+  ],
+  "textureCount": 6,
+  "textureBytes": 2489421,
+  "sizeMeters": [
+    3.84,
+    4.2415,
+    3.84
+  ],
+  "bboxMin": [
+    -1.92,
+    0.0225,
+    -1.92
+  ],
+  "bboxMax": [
+    1.92,
+    4.264,
+    1.92
+  ],
+  "extensions": [],
+  "animations": [],
+  "pointLights": 0,
+  "emitters": 0,
+  "valid": true,
+  "zeroTangentFallbackVertices": 0,
+  "id": "f3_v3_catwalk_junction",
+  "file": "props/f3_v3_catwalk_junction.glb",
+  "category": "props",
+  "desc_ja": "\u652f\u6301\u3055\u308c\u305f\u6b69\u5eca\u5206\u5c90\u8e0a\u308a\u5834",
+  "approvalStatus": "NOT_APPROVED",
+  "sourceCommit": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+  "workflowRun": "45952971246",
+  "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
+  "source": "sources/f3_v3_catwalk_junction.blend",
+  "renderedFrom": "reimported GLB",
+  "renders": [
+    "renders/f3_v3_catwalk_junction/front.png",
+    "renders/f3_v3_catwalk_junction/back.png",
+    "renders/f3_v3_catwalk_junction/side.png",
+    "renders/f3_v3_catwalk_junction/angle.png",
+    "renders/f3_v3_catwalk_junction/top.png"
+  ]
+}
