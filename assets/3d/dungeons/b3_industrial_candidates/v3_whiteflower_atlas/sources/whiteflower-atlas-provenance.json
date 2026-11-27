@@ -1,0 +1,15 @@
+{
+  "status": "NOT_APPROVED",
+  "source": "https://polyhaven.com/a/flower_heliophila",
+  "license": "CC0",
+  "author": "Jenelle van Heerden",
+  "views": 4,
+  "resolution": [
+    2048,
+    512
+  ],
+  "originalVertices": 59689,
+  "originalSceneRetained": true,
+  "cardTriangles": 8,
+  "wind": "Runtime vertex displacement with per-instance phase, alpha tested"
+}

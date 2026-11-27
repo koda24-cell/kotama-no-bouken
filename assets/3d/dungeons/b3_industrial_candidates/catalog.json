@@ -825,6 +825,27 @@
       ],
       "portableAuthoring": "v3_deep_window_bay/sources/f3_v3_deep_window_bay_authoring.blend",
       "portableSha256": "22028d5aa689bdcc8d265844326b0c078727a18be00512f669d4a27c96689cb0"
+    },
+    {
+      "id": "v3_whiteflower_atlas",
+      "name": "白い花の透過アトラス群落",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_whiteflower_atlas/runtime/f3_v3_whiteflower_atlas.glb",
+      "sha256": "64d9654b3ccf43794528a1e53d87160fdba49635e8aee030a1b764f696763f50",
+      "bytes": 4445100,
+      "triangles": 101629,
+      "sourceCommit": "3935892412fefc15356cd03b1660989aa9e5211e",
+      "workflowRun": "45955096132",
+      "embeddedOriginal": "v3_whiteflower_atlas/props/f3_v3_whiteflower_atlas.glb",
+      "embeddedOriginalBytes": 7400452,
+      "sizeMeters": [
+        1.4,
+        1.05,
+        1.4
+      ],
+      "portableAuthoring": "v3_whiteflower_atlas/sources/f3_v3_whiteflower_atlas_authoring.blend",
+      "portableSha256": "ad91ba39a7752c1e0c3b5c1c91794c828a7439b05c3246edf9e4d67e74122659"
     }
   ],
   "sharedImages": [
@@ -1312,15 +1333,35 @@
       "file": "shared_textures/df56b97655114d1d94a8cb33877677754eda42864340e44d22e10eefcea4de08.png",
       "sha256": "df56b97655114d1d94a8cb33877677754eda42864340e44d22e10eefcea4de08",
       "bytes": 3772620
+    },
+    {
+      "file": "shared_textures/ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a.jpg",
+      "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a",
+      "bytes": 501286
+    },
+    {
+      "file": "shared_textures/b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a.png",
+      "sha256": "b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a",
+      "bytes": 1302944
+    },
+    {
+      "file": "shared_textures/678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64.png",
+      "sha256": "678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64",
+      "bytes": 695621
+    },
+    {
+      "file": "shared_textures/9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171.png",
+      "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171",
+      "bytes": 455611
     }
   ],
   "totals": {
-    "individualParts": 24,
+    "individualParts": 25,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 56614380,
-    "sharedImageBytes": 50954812,
-    "embeddedOriginalBytes": 274879452
+    "runtimeGeometryBytes": 61059480,
+    "sharedImageBytes": 53910274,
+    "embeddedOriginalBytes": 282279904
   },
   "v3Pending": [
     "v3_riveted_span",
@@ -1338,8 +1379,7 @@
     "v3_cable_pole",
     "v3_shutter_shop",
     "v3_rubble_bank",
-    "v3_asphalt_heave",
-    "v3_whiteflower_atlas"
+    "v3_asphalt_heave"
   ],
   "v3Complete": false
 }

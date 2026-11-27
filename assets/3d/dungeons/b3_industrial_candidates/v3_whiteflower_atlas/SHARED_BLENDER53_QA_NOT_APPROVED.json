@@ -1,0 +1,346 @@
+{
+  "status": "NOT_APPROVED",
+  "blender": "5.3.0",
+  "files": {
+    "manifest.json": {
+      "bytes": 6947,
+      "sha256": "3a74771452e48fcea17205ad95a3f234524b35eb85125ceb4444df4c7800c267"
+    },
+    "metrics/f3_v3_whiteflower_atlas.json": {
+      "bytes": 1330,
+      "sha256": "d2dfbe95d25c9021cfec715acff3f5dfdd1bdc4f1662f27fe670ca288b43110f"
+    },
+    "props/f3_v3_whiteflower_atlas.glb": {
+      "bytes": 7400452,
+      "sha256": "24904cfa9dea7a20a64e324635dd4f1260bbfe8b7121fe529c936533e0d1f075"
+    },
+    "renders/f3_v3_whiteflower_atlas/angle.png": {
+      "bytes": 404194,
+      "sha256": "bf380badc0b0066d6393fc81d3dd94e17d1824d39d9caef6fe52c4325d41ebd6"
+    },
+    "renders/f3_v3_whiteflower_atlas/back.png": {
+      "bytes": 393110,
+      "sha256": "acbc854846649bdbf955170a74073ff5b7e4cd4f9c4874d0e51bfea2ce665cc1"
+    },
+    "renders/f3_v3_whiteflower_atlas/front.png": {
+      "bytes": 394220,
+      "sha256": "24a991c9c307c17e6db18420986c46907a758d7ced81ef0d96cd573b5a59478d"
+    },
+    "renders/f3_v3_whiteflower_atlas/side.png": {
+      "bytes": 407934,
+      "sha256": "2fb2fe411d7d4208ce7f9e917dbf812fef2d9db1a68b5b32d369272019d1555c"
+    },
+    "renders/f3_v3_whiteflower_atlas/top.png": {
+      "bytes": 402394,
+      "sha256": "e3ff8bf55182094f50a1e17c9f1d7d0a148159b2a71eef5e89a2138ea5b4fcef"
+    },
+    "runtime/f3_v3_whiteflower_atlas.glb": {
+      "bytes": 4445100,
+      "sha256": "64d9654b3ccf43794528a1e53d87160fdba49635e8aee030a1b764f696763f50"
+    },
+    "security/all-texture-inputs.log": {
+      "bytes": 292,
+      "sha256": "2bb6e29d69b68bd18349f8fa400d7e5f007f4559f821ccb936727535446457ea"
+    },
+    "security/existing-cc0-inputs.log": {
+      "bytes": 289,
+      "sha256": "120797763ab1e63e68f05afa64614513591a05809171adf6ae6d46035f3ad97a"
+    },
+    "security/licensed-complete-source.log": {
+      "bytes": 289,
+      "sha256": "4285b92d3c990f0906c7043fb372702eac12da79b4b5961c0db79a45f0f83647"
+    },
+    "security/licensed-input-0.log": {
+      "bytes": 291,
+      "sha256": "95b8b3467fe986cdeb6ebec19ceaf2fefbb1cb469a3ae8bf82f5ad8d352fbd14"
+    },
+    "security/licensed-input-1.log": {
+      "bytes": 289,
+      "sha256": "3b29fd17b4211503bc4b60ee4cdbc3484ec01d185f3dfbd385c00e456d6d7da3"
+    },
+    "security/licensed-input-2.log": {
+      "bytes": 293,
+      "sha256": "c4792d0702e7e7215821e0daf2d4799c58c08be794f92b6ce84480756b179825"
+    },
+    "security/licensed-input-3.log": {
+      "bytes": 293,
+      "sha256": "a51a590c10542dc46614bcbfced2d19e4bd70efb6cb8d1854b840c99fec2f46d"
+    },
+    "security/licensed-input-4.log": {
+      "bytes": 293,
+      "sha256": "26a656d730ecceaa6b7fc13351b90ca05de119c656add73adab71da23d16fe98"
+    },
+    "security/licensed-input-5.log": {
+      "bytes": 289,
+      "sha256": "1dfbb69cb93777cb24abd9dc3713aa3f0fd80969a03eb5ab840820388a6e0081"
+    },
+    "security/licensed-input-6.log": {
+      "bytes": 291,
+      "sha256": "24ee3e1da3425aebf4e75466deefec35bd71947fb7b1a48e0b4099a8772f6b21"
+    },
+    "security/renderer-source.log": {
+      "bytes": 289,
+      "sha256": "debefb7aa56b572108dd07ea37362e352de41826963a218dc8fd7615ef91bc1e"
+    },
+    "security/shared-source.log": {
+      "bytes": 294,
+      "sha256": "31ef616739129b7c4e573b0408e82bd16d637d712f128502170953259f6060d4"
+    },
+    "security/source.log": {
+      "bytes": 294,
+      "sha256": "7221fbe2202c2344fe3222d5015a1e2c93d1a4e6d85fff2c0efeb593502e27ca"
+    },
+    "security/v3-source.log": {
+      "bytes": 292,
+      "sha256": "f6768b48561b48622245591494c470c601c9e0485cf42b36ad973912ec2b37dd"
+    },
+    "shared_textures/678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64.png": {
+      "bytes": 695621,
+      "sha256": "678aa84b0555ba2bbfbea46b221630a36fa8f9bdc075af39bda09ae30ebe7d64"
+    },
+    "shared_textures/9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171.png": {
+      "bytes": 455611,
+      "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171"
+    },
+    "shared_textures/ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a.jpg": {
+      "bytes": 501286,
+      "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a"
+    },
+    "shared_textures/b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a.png": {
+      "bytes": 1302944,
+      "sha256": "b7dc80651fef3b6647d9bbd83e04f7405919fb75153a405ca35547861b70125a"
+    },
+    "sources/authoring-portability.json": {
+      "bytes": 2977,
+      "sha256": "757bd73ce9b8c9a4e1231422267f0a1c7d6a44df99a1d4798b83c853f95fbf3d"
+    },
+    "sources/f3_v3_whiteflower_atlas.blend": {
+      "bytes": 13796913,
+      "sha256": "2c8f98fbd87e36e4d52a3484aee6ea406e942a8203fdae3bdeb09d1e3ed33c02"
+    },
+    "sources/f3_v3_whiteflower_atlas_authoring.blend": {
+      "bytes": 13797739,
+      "sha256": "ad91ba39a7752c1e0c3b5c1c91794c828a7439b05c3246edf9e4d67e74122659"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_basecolor.jpg": {
+      "bytes": 8773,
+      "sha256": "90e49d60db23ed35dfc4b83fa7e59351a003c067700b539377563fd76f0ffd57"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_normal.jpg": {
+      "bytes": 6755,
+      "sha256": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5"
+    },
+    "sources/generated_materials/f3_bare_worn_steel_8b421a61ea81_orm.jpg": {
+      "bytes": 6217,
+      "sha256": "0b69636661609debfa28050aca559bdb6f52cca6d51e0acf914bd7d075f527a8"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_basecolor.jpg": {
+      "bytes": 4832,
+      "sha256": "f0e42499d8c63b34183ba0a74c8bf1fd0849aa6dbb98581760be2f9082008df1"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_normal.jpg": {
+      "bytes": 6785,
+      "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
+    },
+    "sources/generated_materials/f3_deep_crack_9d554bcb78e9_orm.jpg": {
+      "bytes": 5836,
+      "sha256": "dca06987cb5a6e05ea06adb93b2141d725834cd495c5098b1b05a86746cb6ebb"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_basecolor.jpg": {
+      "bytes": 8996,
+      "sha256": "109de99499ca4489a05a5140f16bf52b3b8395ae2ad935e8a87ab4907172cd6c"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_normal.jpg": {
+      "bytes": 6746,
+      "sha256": "ca782ab62a46d9b0cb7c6b8a8d415e1bc8f5e0bb6e56276e9ed5664ba2c44710"
+    },
+    "sources/generated_materials/f3_exposed_aggregate_010b21ab9520_orm.jpg": {
+      "bytes": 5400,
+      "sha256": "b3da3d38b1d20531da348a3795a83bd1eb664cb3159a0981f0e7ccd26bb0f098"
+    },
+    "sources/licensed-provenance.json": {
+      "bytes": 2538,
+      "sha256": "c6208f4d406583e86e96879b271e77ab5fc906245b4890af2bda59a7bd688b0c"
+    },
+    "sources/polyhaven_flower_heliophila_original/files-api.json": {
+      "bytes": 36264,
+      "sha256": "46f64e9f3812b20107ad8c9915044caa4d338e6572250fdce2263fed8e1f5bca"
+    },
+    "sources/polyhaven_flower_heliophila_original/flower_heliophila.bin": {
+      "bytes": 2519780,
+      "sha256": "dd5cba0ea1890ed9dc2e13e109551cefd069fe47bb34f8deb2b302af76b2bab1"
+    },
+    "sources/polyhaven_flower_heliophila_original/flower_heliophila_1k.gltf": {
+      "bytes": 5983,
+      "sha256": "629274399d44a1a9c8666d7a341bf7c5b2083c3ec292166cb23419ff9eb192b1"
+    },
+    "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_Alpha_1k.png": {
+      "bytes": 41796,
+      "sha256": "5680fb3b96c6061844eb3bfefaa3f7f6fcba04197e0a9df37d947fdf3ad503f5"
+    },
+    "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_arm_1k.jpg": {
+      "bytes": 444561,
+      "sha256": "61c7a47fdf8ff0f5251c0f569588efefad7856b3b069d07c1c025d18a1420e22"
+    },
+    "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_diff_1k.jpg": {
+      "bytes": 377527,
+      "sha256": "50a3eb8afd206eff0ea95ff73db7dc3ca9188d3e120d93a708d2a72790fa0240"
+    },
+    "sources/polyhaven_flower_heliophila_original/textures/flower_heliophila_nor_gl_1k.jpg": {
+      "bytes": 501286,
+      "sha256": "ab22e05c1f350a2f95914049f832bb52817e951142b259aec751e16a4a75d54a"
+    },
+    "sources/whiteflower-atlas-provenance.json": {
+      "bytes": 360,
+      "sha256": "90ff8a689501dc9a5f727b74d3d568cd9105268c91db191cc15b16488ff225b2"
+    },
+    "sources/whiteflower-bake-view-0.png": {
+      "bytes": 105337,
+      "sha256": "9ec59c036cfc7c7342292494d0f6ff4ea9df677c1e7ad0a6979b9f92ddd824b1"
+    },
+    "sources/whiteflower-bake-view-1.png": {
+      "bytes": 102459,
+      "sha256": "e7f2ba80510baff7231d37a1a1dd4780c674de0c13bf172fe2f85bca05762fc5"
+    },
+    "sources/whiteflower-bake-view-2.png": {
+      "bytes": 100232,
+      "sha256": "47c149bace9753fab6b553a074e037d8f521278b03b2145d511e75c99c2043ed"
+    },
+    "sources/whiteflower-bake-view-3.png": {
+      "bytes": 137602,
+      "sha256": "cbe00c9c5da6083832ef1e567e951c4b1ac1c9732c56dee6d1742c75c5ccc2a5"
+    },
+    "sources/whiteflower-four-view-atlas.png": {
+      "bytes": 455611,
+      "sha256": "9dfe4b1c2d812d5f1a9ffa3a7707f451fb2ef842e822e57a9ea01820876ae171"
+    },
+    "structural-audit.json": {
+      "bytes": 1148,
+      "sha256": "efcb1a3e51b1126eb8f2f6c941c254f236d3a0bba234030e42eef1e09c2e5a55"
+    },
+    "textures/asphalt_02-api.json": {
+      "bytes": 27252,
+      "sha256": "1249520977b7ba990db96a9b4dea2d7d5b8ff6d70c61a7d348310e92f68130d2"
+    },
+    "textures/asphalt_02_diffuse.jpg": {
+      "bytes": 731707,
+      "sha256": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed"
+    },
+    "textures/asphalt_02_normal.jpg": {
+      "bytes": 1240122,
+      "sha256": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3"
+    },
+    "textures/asphalt_02_roughness.jpg": {
+      "bytes": 544032,
+      "sha256": "70ba3edc65525eb4dc366cf010ca7ae0bd34e0251ff0225c2dad627a873d0712"
+    },
+    "textures/chipped_concrete_diffuse.jpg": {
+      "bytes": 716081,
+      "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff"
+    },
+    "textures/chipped_concrete_normal.jpg": {
+      "bytes": 990005,
+      "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304"
+    },
+    "textures/chipped_concrete_roughness.jpg": {
+      "bytes": 336460,
+      "sha256": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc"
+    },
+    "textures/concrete_debris-api.json": {
+      "bytes": 26898,
+      "sha256": "340c3b6b1d0f547f8d85a0b27e50f43218ce8c6889a8cc5a9a4a2b85cd9b62a9"
+    },
+    "textures/concrete_debris_diffuse.jpg": {
+      "bytes": 811730,
+      "sha256": "5d30b24d4e01a784f521f0f78486e41e94bd2397a2743dacec543494852954f9"
+    },
+    "textures/concrete_debris_normal.jpg": {
+      "bytes": 1462829,
+      "sha256": "39cdf70225f4f09780af88b6ab0637c4346f429ae3db2ce900a158041ddfdceb"
+    },
+    "textures/concrete_debris_roughness.jpg": {
+      "bytes": 530326,
+      "sha256": "bbdf4da5c579b1d7282021e265a0bda3df87ca2cb9972f93d0caa5c3aeca47e4"
+    },
+    "textures/concrete_moss_diffuse.jpg": {
+      "bytes": 697265,
+      "sha256": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc"
+    },
+    "textures/concrete_moss_normal.jpg": {
+      "bytes": 898376,
+      "sha256": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b"
+    },
+    "textures/concrete_moss_roughness.jpg": {
+      "bytes": 320901,
+      "sha256": "ca41216de508cf2afd619e2e617bbb620082b22f20e75dd80c6c415ce1e6d95c"
+    },
+    "textures/concrete_slab_wall-api.json": {
+      "bytes": 27880,
+      "sha256": "32767ba84eeb6000779c5ee52049e1cdc32d549c288636ae1a12ec032d14898a"
+    },
+    "textures/concrete_slab_wall_diffuse.jpg": {
+      "bytes": 576735,
+      "sha256": "5eaccddc4c15dfcab06d6d7a79f1884bde76cf5eed9b892a188ec2acf373de72"
+    },
+    "textures/concrete_slab_wall_normal.jpg": {
+      "bytes": 740730,
+      "sha256": "7fdfe954fbff16da7888fe68b9b56ed1e0bb7e1d87c18ff4180e4073f74c71ba"
+    },
+    "textures/concrete_slab_wall_roughness.jpg": {
+      "bytes": 305483,
+      "sha256": "0108afabf6b9ad59f9d63668e5a80be08435453fe382a7d749576d82f3b9fea8"
+    },
+    "textures/cracked_concrete_wall-api.json": {
+      "bytes": 28917,
+      "sha256": "a173adc1ce4deaf5d8fc4e677795f26872644326eecc4875d98d2c9d3d902c90"
+    },
+    "textures/cracked_concrete_wall_diffuse.jpg": {
+      "bytes": 1073985,
+      "sha256": "f910cbaff5a0fbd778a8c41947ac826f2313e70e9b4077bc39221a417fa8d5b4"
+    },
+    "textures/cracked_concrete_wall_normal.jpg": {
+      "bytes": 950747,
+      "sha256": "d247bdc21f3d37eb514d058aaa3c2193a6955d12191d1190cedf5285985f8604"
+    },
+    "textures/cracked_concrete_wall_roughness.jpg": {
+      "bytes": 591307,
+      "sha256": "0f18937de6a05b34797d2ddaac5a3996e922696431161d312b7304ac1b110312"
+    },
+    "textures/rusty_iron-api.json": {
+      "bytes": 25191,
+      "sha256": "8968aeea82c1dfeab7a138f128511e348f449f29acc7e426bebfcd0624eb5a6d"
+    },
+    "textures/rusty_iron_diffuse.jpg": {
+      "bytes": 733167,
+      "sha256": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb"
+    },
+    "textures/rusty_iron_normal.jpg": {
+      "bytes": 489576,
+      "sha256": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+    },
+    "textures/rusty_iron_roughness.jpg": {
+      "bytes": 873519,
+      "sha256": "cc08d370358b0f8bd2c44757d688f41f03b6d393887273d07b3b111eef5532a3"
+    },
+    "textures/sources.json": {
+      "bytes": 4215,
+      "sha256": "b7d8a1ef07ec0eb0fa35ef980bf361734ec12d4074f73938367167de1776cc75"
+    },
+    "textures/worn_mossy_plasterwall-api.json": {
+      "bytes": 36654,
+      "sha256": "b327d3422bc686cf2222d3fe505311108d05294e03b17768092d9b5113a15de3"
+    },
+    "textures/worn_mossy_plasterwall_diffuse.jpg": {
+      "bytes": 964249,
+      "sha256": "415cbcbe8f70269569aa4f2f1efc13ca1bd5f2fabc791dff428ef0fa243e1e9e"
+    },
+    "textures/worn_mossy_plasterwall_normal.jpg": {
+      "bytes": 870753,
+      "sha256": "0fdf1e22066c4f6fc2c820ae9b11aa5f9ea6ea131ccf3abb65f37251ab9f6a5d"
+    },
+    "textures/worn_mossy_plasterwall_roughness.jpg": {
+      "bytes": 635042,
+      "sha256": "b33938d0ac7889b7b8580b8e3920958c0aa13a1154d6ad783676a540afd628e9"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "kotama-glb-audit-v1",
+  "models": [
+    {
+      "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_whiteflower_atlas/props/f3_v3_whiteflower_atlas.glb",
+      "file_bytes": 7400452,
+      "glb_meshes": 4,
+      "total_mesh_primitives": 4,
+      "scene_nodes": 2,
+      "scene_mesh_nodes": 1,
+      "scene_primitive_instances": 1,
+      "estimated_scene_triangles": 8,
+      "materials": 2,
+      "material_names": [
+        "flower_heliophila",
+        "v3 whiteflower atlas MASK"
+      ],
+      "mesh_names": [
+        "Plane.5122",
+        "Plane.5143",
+        "Plane.2197",
+        "photographic flower card"
+      ],
+      "skins": 0,
+      "animations": 0,
+      "morph_target_meshes": 0,
+      "alpha_materials": {
+        "OPAQUE": 0,
+        "MASK": 2,
+        "BLEND": 0
+      },
+      "images": 4,
+      "textures": 4,
+      "limitations": "Scene primitive instances are a structural proxy, NOT measured draw calls or FPS. GLTFLoader may merge/reorder resources; frustum culling, instancing and postprocessing affect runtime."
+    }
+  ],
+  "errors": [],
+  "source_only": true
+}
