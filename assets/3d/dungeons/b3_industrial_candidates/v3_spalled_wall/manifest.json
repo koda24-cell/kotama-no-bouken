@@ -2,35 +2,35 @@
   "status": "NOT_APPROVED",
   "assetName": "v3_spalled_wall",
   "asset": {
-    "bytes": 7245508,
-    "sha256": "7d3466a9beb8f73779cd5be0c338170d55d813db4e74e5d75883fe5582a4ff45",
-    "tris": 18608,
-    "verts": 45887,
+    "bytes": 7376684,
+    "sha256": "d025034d621f4bf17f770c93b4c7b26bc835b258c516e55dfb3655fe400f5306",
+    "tris": 19788,
+    "verts": 48470,
     "meshes": 5,
     "drawCalls": 5,
     "materials": [
+      "f3_aged_brick_infill",
       "f3_deep_crack",
       "f3_exposed_aggregate",
       "f3_oxidized_iron",
-      "f3_weathered_concrete",
-      "v3 exposed old infill"
+      "f3_weathered_concrete"
     ],
     "textureCount": 12,
     "textureBytes": 4922704,
     "sizeMeters": [
       4.0,
-      3.267,
-      1.5798
+      3.2522,
+      1.602
     ],
     "bboxMin": [
       -2.0,
-      -0.067,
+      -0.0522,
       -0.425
     ],
     "bboxMax": [
       2.0,
       3.2,
-      1.1548
+      1.177
     ],
     "extensions": [],
     "animations": [],
@@ -43,8 +43,8 @@
     "category": "props",
     "desc_ja": "剥落と鉄筋と落下片の壁",
     "approvalStatus": "NOT_APPROVED",
-    "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
-    "workflowRun": "45957518181",
+    "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+    "workflowRun": "45974649926",
     "verificationEnvironment": "Shared pinned Blender 5.3.0 + ClamAV",
     "source": "sources/f3_v3_spalled_wall.blend",
     "renderedFrom": "reimported GLB",
@@ -163,11 +163,26 @@
   ],
   "runtime": {
     "file": "f3_v3_spalled_wall.glb",
-    "sourceSha256": "7d3466a9beb8f73779cd5be0c338170d55d813db4e74e5d75883fe5582a4ff45",
-    "sha256": "3834ead7372fea3210c6ca1c527609ebe296d1c4bf2e87ee907f22bf86328eeb",
-    "bytes": 2323152,
-    "embeddedOriginalBytes": 7245508,
+    "sourceSha256": "d025034d621f4bf17f770c93b4c7b26bc835b258c516e55dfb3655fe400f5306",
+    "sha256": "1e5939bba43834d5f63ada478f42b2f63be28eb39e1a1ec3572096a897bf7588",
+    "bytes": 2454324,
+    "embeddedOriginalBytes": 7376684,
     "images": [
+      {
+        "file": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
+        "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
+        "bytes": 990005
+      },
+      {
+        "file": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff.jpg",
+        "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
+        "bytes": 716081
+      },
+      {
+        "file": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd.png",
+        "sha256": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd",
+        "bytes": 710347
+      },
       {
         "file": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2.jpg",
         "sha256": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2",
@@ -212,21 +227,6 @@
         "file": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182.png",
         "sha256": "b708702fd3cf980f5a2d1d80433dde61bc494a759bf54e9a0e70d01155bb0182",
         "bytes": 1244933
-      },
-      {
-        "file": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304.jpg",
-        "sha256": "531084848f6cfa994eb168cd3f8d1d0ffc0864f7998256f4deaa972f70aba304",
-        "bytes": 990005
-      },
-      {
-        "file": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff.jpg",
-        "sha256": "2adf65fe5b702c8882480b04f1802b81d1e8868a03e7047504f5a77a726fd6ff",
-        "bytes": 716081
-      },
-      {
-        "file": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd.png",
-        "sha256": "e820925c6886646c2d8db636b60b5c0721cd68c00bbc2feff3c1359d2e27fbdd",
-        "bytes": 710347
       }
     ],
     "geometryAndMaterialDataUnchanged": true,

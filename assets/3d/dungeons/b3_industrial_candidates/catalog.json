@@ -874,20 +874,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_spalled_wall/runtime/f3_v3_spalled_wall.glb",
-      "sha256": "3834ead7372fea3210c6ca1c527609ebe296d1c4bf2e87ee907f22bf86328eeb",
-      "bytes": 2323152,
-      "triangles": 18608,
-      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
-      "workflowRun": "45957518181",
+      "sha256": "1e5939bba43834d5f63ada478f42b2f63be28eb39e1a1ec3572096a897bf7588",
+      "bytes": 2454324,
+      "triangles": 19788,
+      "sourceCommit": "fe01195dc8d8fc14b166811bb5cc8606de95cb9f",
+      "workflowRun": "45974649926",
       "embeddedOriginal": "v3_spalled_wall/props/f3_v3_spalled_wall.glb",
-      "embeddedOriginalBytes": 7245508,
+      "embeddedOriginalBytes": 7376684,
       "sizeMeters": [
         4.0,
-        3.267,
-        1.5798
+        3.2522,
+        1.602
       ],
       "portableAuthoring": "v3_spalled_wall/sources/f3_v3_spalled_wall_authoring.blend",
-      "portableSha256": "bc18b670d32748c6c72b501cd8aa3ba89b7fd1072ce2ecb33776a32a512411c1"
+      "portableSha256": "411dfe6744fbb150b3f56228b24a08684c6875aa64c94fa719a4d41ebc09d60d"
     },
     {
       "id": "v3_collapsed_storey",
@@ -1720,9 +1720,9 @@
     "individualParts": 41,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 73331204,
+    "runtimeGeometryBytes": 73462376,
     "sharedImageBytes": 63359159,
-    "embeddedOriginalBytes": 375991956
+    "embeddedOriginalBytes": 376123132
   },
   "v3Pending": [],
   "v3Complete": true
