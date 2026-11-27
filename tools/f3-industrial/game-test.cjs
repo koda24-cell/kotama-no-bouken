@@ -96,10 +96,12 @@ if (process.argv.includes('--visual-only')) {
 }
 // Real input: move, turn without spending a turn, and bump into a solid boundary.
 const check=async()=>page.evaluate(()=>({tile:fieldPlayerTile(),dir:fieldState.dir,turn:fieldState.turn,foes:fieldState.foes.map(f=>({x:f.tx,y:f.ty})),near:fieldState.nearKey}));
-await page.evaluate(()=>{const c=window.KotamaCityV3Playtest?fieldTileCenter(1,29):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.encounterSteps=0;fieldState.nextEncounter=9999;fieldUpdateVision(true);});
+await page.evaluate(()=>{const c=window.__fieldTestControlOrigin?fieldTileCenter(...window.__fieldTestControlOrigin):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.encounterSteps=0;fieldState.nextEncounter=9999;fieldUpdateVision(true);});
 const key=async k=>{await page.keyboard.down(k);await page.waitForTimeout(100);await page.keyboard.up(k);await page.waitForTimeout(700);};
+const controlOrigin=await page.evaluate(()=>{if(!window.KotamaCityV3Playtest)return window.__fieldTestControlOrigin=[8,19];const a=fieldArea();for(let z=2;z<a.h-1;z++)for(let x=1;x<a.w-3;x++)if([0,1,2].every(dx=>fieldTileAt(a,x+dx,z)==='.')&&fieldTileAt(a,x+1,z-1)==='#'&&fieldState.foes.every(f=>Math.abs(f.tx-x)+Math.abs(f.ty-z)>5))return window.__fieldTestControlOrigin=[x,z];throw Error('No clear input-test route');});
+await page.evaluate(([x,z])=>{const p=fieldTileCenter(x,z);fieldState.x=p.x;fieldState.y=p.y;fieldState.dir='right';fieldState.view=null;fieldState.stepUntil=0;fieldUpdateVision(true);},controlOrigin);
 const controls={before:await check()};await key('ArrowUp');
-await page.waitForFunction(()=>fieldPlayerTile().tx===(window.KotamaCityV3Playtest?2:9),null,{timeout:30000});controls.move=await check();await key('ArrowLeft');
+await page.waitForFunction(()=>fieldPlayerTile().tx===window.__fieldTestControlOrigin[0]+1,null,{timeout:30000});controls.move=await check();await key('ArrowLeft');
 await page.waitForFunction(()=>fieldState.dir==='up',null,{timeout:30000});controls.turn=await check();
 const bumpFrame=await page.evaluate(()=>__perf.length);await key('ArrowUp');
 await page.waitForFunction(n=>__perf.length>=n+2,bumpFrame,{timeout:30000});controls.bump=await check();
@@ -136,8 +138,8 @@ const puzzle=await page.evaluate(()=>({solved:fieldPuzzleSolved('a3-lanterns'),d
 if(mobile){
  await settle();
  await page.waitForFunction(()=>!fieldState.lock&&!fieldState.mapOpen&&!fieldDialogAdvance&&!fieldChoiceState&&!fieldModalOpen(),null,{timeout:30000});
- await page.evaluate(()=>{const c=window.KotamaCityV3Playtest?fieldTileCenter(1,29):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
- const before=await check();console.log('touch before',JSON.stringify(before));await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===(window.KotamaCityV3Playtest?2:9),null,{timeout:30000});const after=await check();logs.push({touch:{before,after}});
+ await page.evaluate(()=>{const c=window.__fieldTestControlOrigin?fieldTileCenter(...window.__fieldTestControlOrigin):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
+ const before=await check();console.log('touch before',JSON.stringify(before));await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===window.__fieldTestControlOrigin[0]+1,null,{timeout:30000});const after=await check();logs.push({touch:{before,after}});
  await page.evaluate(()=>scrollTo(0,0));await page.screenshot({timeout:120000,path:out+'/mobile-controls.png',fullPage:true});
 }
 
@@ -170,7 +172,7 @@ await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()
 logs.push({stairs:{floor:await page.evaluate(()=>fieldState.floor)}});
 const failures=[];
 for(const x of logs){if(x.overlaps?.length)failures.push('scenery overlaps '+x.floor);if(x.edgeOverlaps?.length)failures.push('body-lane obstruction '+x.floor);if(x.hardLaneVerification?.overlaps.length)failures.push('triangle body-lane obstruction '+x.floor);}
-if(controls.move.tile.tx!==(cityV3?2:9)||controls.move.turn!==controls.before.turn+1||controls.turn.turn!==controls.move.turn||controls.bump.tile.tx!==(cityV3?2:9)||controls.bump.turn!==controls.move.turn)failures.push('controls');
+if(controls.move.tile.tx!==(controlOrigin[0]+1)||controls.move.turn!==controls.before.turn+1||controls.turn.turn!==controls.move.turn||controls.bump.tile.tx!==(controlOrigin[0]+1)||controls.bump.turn!==controls.move.turn)failures.push('controls');
 if(!interactions.find(x=>x.kind==='chest')?.after.flag)failures.push('chest');
 if(!interactions.find(x=>x.kind==='gather')?.after.used)failures.push('gather');
 if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?(cityV3?60:44):48)))failures.push('lifecycle');
@@ -179,7 +181,7 @@ if(lifecycle[1].memory.textures!==lifecycle[3].memory.textures)failures.push('te
 if(!save.same)failures.push('save roundtrip');
 if(!cityV3&&(!lodCheck.groups||lodCheck.invalid||lodCheck.nearTriangles<=lodCheck.farTriangles))failures.push('LOD');
 if(!puzzle.solved||puzzle.door!=='open')failures.push('puzzle door');
-if(logs.find(x=>x.touch)&&logs.find(x=>x.touch).touch.after.tile.tx!==(cityV3?2:9))failures.push('touch');
+if(logs.find(x=>x.touch)&&logs.find(x=>x.touch).touch.after.tile.tx!==(controlOrigin[0]+1))failures.push('touch');
 if(errors.some(x=>!x.includes('ERR_CERT_AUTHORITY_INVALID')))failures.push('browser errors');
 logs.push({failures});
 
