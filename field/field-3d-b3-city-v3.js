@@ -11,13 +11,13 @@ export function createTheme(api){
  const env={background:0xb9c5c2,fog:{color:0xb9c5c2,density:.027},hemi:{sky:0xe2e6dd,ground:0x435044,high:.86,low:1.02}};
  let root,bundle,finish,plan,sun,water,shafts,stats={},geometry=[],materials=[],batches=[],grassHeld=[],oldFar=g.camera.far;
  let oldShadow=null,lastShadow='',wind={value:0},windShaders=[],hardBounds=[];
- let boxes;
+ let boxes,cylinder;
  const modelCache=new Map(),heldPointLights=g.pool.slice(g.high?4:2);
  const hash=(x,z,s=1)=>{let n=Math.imul(x+s*53,374761393)^Math.imul(z+s*71,668265263);n=Math.imul(n^n>>>13,1274126177);return((n^n>>>16)>>>0)/4294967296;};
  const geo=o=>(geometry.push(o),o),mat=o=>(materials.push(o),o);
  function box(name,m,x,y,z,sx,sy,sz,ry=0){const o=new THREE.Mesh(boxes,m);o.name=name;o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.rotation.y=ry;root.add(o);return o;}
  function beam(name,m,a,b,w=.16,d=.16){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),o=box(name,m,0,0,0,w,d,start.distanceTo(end));o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),end.sub(start).normalize());return o;}
- function pipe(name,m,a,b,r=.025){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),shape=geo(new THREE.CylinderGeometry(r,r,start.distanceTo(end),8)),o=new THREE.Mesh(shape,m);o.name=name;o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());root.add(o);return o;}
+ function pipe(name,m,a,b,r=.025){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),o=new THREE.Mesh(cylinder,m);o.name=name;o.position.copy(start).add(end).multiplyScalar(.5);o.scale.set(r,start.distanceTo(end),r);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());root.add(o);return o;}
  function model(id,x,y,z,{ry=0,scale=1,maxWidth=null,maxDepth=null,ground=true}={}){
   if(!bundle.models.has(id))return null;
   const holder=new THREE.Group(),o=bundle.models.get(id).clone(true);o.rotation.y=ry;holder.add(o);
@@ -56,7 +56,7 @@ export function createTheme(api){
   const wanted=['v2_courtyard_facade','v2_factory_bay','v2_service_tower','v2_truss_bridge','v2_fractured_road','ivy_pocket','rebar_rubble','drain_channel','flanged_pipe','column_joint',
    'v3_straight_access_stair','v3_switchback_stair','v3_catwalk_junction','v3_riveted_span','v3_structural_corner','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
-  boxes=new THREE.BoxGeometry(1,1,1);bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
+  boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
   const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil;concrete.color.multiplyScalar(.73);P.stone.color.multiplyScalar(.72);
   heldPointLights.forEach(l=>g.scene.remove(l));oldFar=g.camera.far;g.camera.far=60;g.camera.updateProjectionMatrix();api.setEnvironment(env);
   // The opaque terrain bed remains below the submerged street, never on top of water.
