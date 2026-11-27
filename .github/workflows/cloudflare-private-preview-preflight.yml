@@ -143,11 +143,13 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           # Read-only unauthenticated baseline. A public dummy is expected before Access.
           for url in "https://$host" "$deploy"; do
-            for file in index.html probe.css probe.js probe.svg; do
-              status="$(curl --silent --show-error --proto '=https' --max-time 20 --retry 2 --output "$response" --write-out '%{http_code}' "$url/$file")"
-              echo "Unauthenticated baseline $url/$file HTTP $status"
+            for file in / /index.html /probe.css /probe.js /probe.svg; do
+              status="$(curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 20 --retry 5 --retry-all-errors --retry-max-time 120 --output "$response" --write-out '%{http_code}' "$url$file")"
+              echo "Unauthenticated baseline $url$file HTTP $status"
               if [[ "$status" == 200 ]]; then
-                cmp -s "$response" "site/$file" || { echo "::error::Unexpected asset body"; exit 1; }
+                expected="${file#/}"
+                [[ -n "$expected" ]] || expected=index.html
+                cmp -s "$response" "site/$expected" || { echo "::error::Unexpected asset body"; exit 1; }
               elif [[ "$status" == 301 || "$status" == 302 || "$status" == 307 || "$status" == 308 || "$status" == 401 || "$status" == 403 ]]; then
                 echo "Redirect or denial; not yet proof of Access."
               else
