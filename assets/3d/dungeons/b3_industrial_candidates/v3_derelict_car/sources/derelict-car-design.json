@@ -1,0 +1,19 @@
+{
+  "status": "NOT_APPROVED",
+  "source": "Original unbranded sedan geometry; real derelict car photographs used only as structural reference",
+  "referenceIndex": "docs/3d/research/F3_CITY_V3_PINTEREST_20261127.json",
+  "features": [
+    "physical body shell",
+    "cut wheel arches",
+    "open stripped cabin",
+    "dented roof and lifted hood",
+    "engine and loose hoses",
+    "flattened tires and wheels",
+    "broken lights and door seams"
+  ],
+  "dimensionsMetresApprox": [
+    2,
+    4.6,
+    1.6
+  ]
+}

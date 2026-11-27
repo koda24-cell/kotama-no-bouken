@@ -1016,6 +1016,27 @@
       "portableSha256": "364103255a6f2da817aa7ad875cd4a23819d496ad5a6f1a60aa002b84a92bc35"
     },
     {
+      "id": "v3_derelict_car",
+      "name": "錆と欠損と内装を持つ廃車",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_derelict_car/runtime/f3_v3_derelict_car.glb",
+      "sha256": "7f1a5c63d89c06076619de8754b2d06618e90cf973ed30cfa5be77626693578d",
+      "bytes": 3844008,
+      "triangles": 31780,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_derelict_car/props/f3_v3_derelict_car.glb",
+      "embeddedOriginalBytes": 6371676,
+      "sizeMeters": [
+        2.124,
+        1.5828,
+        4.652
+      ],
+      "portableAuthoring": "v3_derelict_car/sources/f3_v3_derelict_car_authoring.blend",
+      "portableSha256": "0be5a433f2bad65a61b042f30b65a6677178f3589461f2aedbaaa840de8fa4c9"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1555,15 +1576,14 @@
     }
   ],
   "totals": {
-    "individualParts": 34,
+    "individualParts": 35,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 66565564,
+    "runtimeGeometryBytes": 70409572,
     "sharedImageBytes": 56464668,
-    "embeddedOriginalBytes": 334691892
+    "embeddedOriginalBytes": 341063568
   },
   "v3Pending": [
-    "v3_derelict_car",
     "v3_electric_cabinet",
     "v3_fluorescent_fixture",
     "v3_cable_pole",
