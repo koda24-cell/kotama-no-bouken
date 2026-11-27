@@ -41,6 +41,9 @@ def build(asset,e):
  elif asset=='v3_whiteflower_atlas':
   from whiteflowers_v3 import build as flowers
   flowers(e)
+ elif asset=='v3_derelict_car':
+  from derelict_car_v3 import build as car
+  car(e)
  else:
   from architecture_v3 import build as architecture
   from conservatory_v3 import build as conservatory

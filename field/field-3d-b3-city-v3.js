@@ -8,7 +8,7 @@ import {createCityV3Water,createCityV3LightShafts} from './f3-city-v3-vfx.js';
 
 export function createTheme(api){
  const {g,CELL,DIR_VEC,DIR_ORDER,FACE_YAW,place,load,npcFile,FILES}=api;
- const env={background:0xb9c5c2,fog:{color:0xb9c5c2,density:.027},hemi:{sky:0xe2e6dd,ground:0x435044,high:.86,low:1.02}};
+ const env={background:0xb9c5c2,fog:{color:0xb9c5c2,density:.027},hemi:{sky:0xe2e6dd,ground:0x435044,high:1.3,low:1.4}};
  let root,bundle,finish,plan,sun,water,shafts,stats={},geometry=[],materials=[],batches=[],grassHeld=[],oldFar=g.camera.far;
  let oldShadow=null,lastShadow='',wind={value:0},windShaders=[],hardBounds=[];
  let boxes,cylinder;
@@ -57,7 +57,7 @@ export function createTheme(api){
    'v3_straight_access_stair','v3_switchback_stair','v3_catwalk_junction','v3_riveted_span','v3_structural_corner','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
   boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
-  const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil;concrete.color.multiplyScalar(.73);P.stone.color.multiplyScalar(.72);
+  const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil;concrete.color.multiplyScalar(.85);P.stone.color.multiplyScalar(.82);
   heldPointLights.forEach(l=>g.scene.remove(l));oldFar=g.camera.far;g.camera.far=60;g.camera.updateProjectionMatrix();api.setEnvironment(env);
   // The opaque terrain bed remains below the submerged street, never on top of water.
   box('continuous submerged terrain',soil,(a.w-1)*2,-6.3,(a.h-1)*2,(a.w+2)*4,.5,(a.h+2)*4);
