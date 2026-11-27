@@ -9,7 +9,7 @@ import {createCityV3Water,createCityV3LightShafts} from './f3-city-v3-vfx.js';
 export function createTheme(api){
  const {g,CELL,DIR_VEC,DIR_ORDER,FACE_YAW,place,load,npcFile,FILES}=api;
  const env={background:0xb9c5c2,fog:{color:0xb9c5c2,density:.027},hemi:{sky:0xe2e6dd,ground:0x435044,high:1.3,low:1.4}};
- let root,bundle,finish,plan,sun,water,shafts,stats={},geometry=[],materials=[],batches=[],grassHeld=[],oldFar=g.camera.far;
+ let root,bundle,finish,plan,sun,water,shafts,sky,stats={},geometry=[],materials=[],batches=[],grassHeld=[],oldFar=g.camera.far;
  let oldShadow=null,lastShadow='',wind={value:0},windShaders=[],hardBounds=[];
  let boxes,cylinder;
  const modelCache=new Map(),heldPointLights=g.pool.slice(g.high?4:2);
@@ -73,7 +73,7 @@ export function createTheme(api){
     }
    }else{
     box('opaque supported street deck',concrete,px,y-.20,pz,4.025,.40,4.025);
-    if(bundle.models.has('v2_fractured_road')&&!plan.tags[x+','+z])model('v2_fractured_road',px,y+.018,pz,{ry:Math.floor(hash(x,z,29)*4)*Math.PI/2});
+    if(!plan.tags[x+','+z]){const road=bundle.models.has('v3_asphalt_heave')&&hash(x,z,30)>.84?'v3_asphalt_heave':'v2_fractured_road';model(road,px,y+.018,pz,{ry:Math.floor(hash(x,z,29)*4)*Math.PI/2});}
    }
    if(y>=3.1&&open(x,z-1)&&open(x,z+1)&&closed(x-1,z)&&closed(x+1,z)&&hash(x,z,920)>.9)model('v3_catwalk_junction',px,y-3.2,pz);
    if(y>.5){
@@ -192,17 +192,18 @@ export function createTheme(api){
    g.entries.push(e);
   }
   stats.objects=g.entries.length;stats.placed=true;
+  sky=finish.sky();sky.userData.cityDynamic=true;root.add(sky);
   batch();
   sun=new THREE.DirectionalLight(0xffefd2,2.2);sun.position.set(-20,36,-18);sun.target.position.set(16,0,20);g.scene.add(sun,sun.target);
   oldShadow={enabled:g.renderer.shadowMap.enabled,type:g.renderer.shadowMap.type};g.renderer.shadowMap.enabled=g.high;g.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   if(g.high){sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-22,right:22,top:22,bottom:-22,near:.5,far:90});sun.shadow.bias=-.0003;sun.shadow.normalBias=.06;sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;}
  }
  function tick(time){
-  const t=(typeof time==='number'?time:performance.now())*.001;wind.value=t;water?.tick(t);shafts?.tick(t);
+  const t=(typeof time==='number'?time:performance.now())*.001;wind.value=t;water?.tick(t);shafts?.tick(t);if(sky)sky.position.copy(g.camera.position);
   if(sun){const x=Math.floor(g.camera.position.x/4)*4,z=Math.floor(g.camera.position.z/4)*4,k=x+','+z;if(k!==lastShadow){lastShadow=k;sun.position.set(x-20,36,z-18);sun.target.position.set(x,0,z);sun.target.updateMatrixWorld();sun.shadow.needsUpdate=true;}}
  }
  function dispose(){
-  water?.dispose();shafts?.dispose();water=shafts=null;sun?.shadow.dispose();if(sun){sun.target.removeFromParent();sun.removeFromParent();sun=null;}
+  water?.dispose();shafts?.dispose();water=shafts=null;sky=null;sun?.shadow.dispose();if(sun){sun.target.removeFromParent();sun.removeFromParent();sun=null;}
   if(oldShadow){g.renderer.shadowMap.enabled=oldShadow.enabled;g.renderer.shadowMap.type=oldShadow.type;oldShadow=null;}
   root?.removeFromParent();batches.forEach(o=>o.dispose());batches=[];geometry.forEach(o=>o.dispose());geometry=[];materials.forEach(o=>o.dispose());materials=[];grassHeld.forEach(o=>o.release());grassHeld=[];
   bundle?.dispose();bundle=null;finish?.dispose();finish=null;heldPointLights.forEach(l=>{if(!l.parent)g.scene.add(l);});g.camera.far=oldFar;g.camera.updateProjectionMatrix();modelCache.clear();windShaders=[];hardBounds=[];root=null;stats={};plan=null;
