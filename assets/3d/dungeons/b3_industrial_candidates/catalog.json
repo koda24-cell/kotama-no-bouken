@@ -869,6 +869,27 @@
       "portableSha256": "22028d5aa689bdcc8d265844326b0c078727a18be00512f669d4a27c96689cb0"
     },
     {
+      "id": "v3_spalled_wall",
+      "name": "剥落と鉄筋と落下片の壁",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_spalled_wall/runtime/f3_v3_spalled_wall.glb",
+      "sha256": "3834ead7372fea3210c6ca1c527609ebe296d1c4bf2e87ee907f22bf86328eeb",
+      "bytes": 2323152,
+      "triangles": 18608,
+      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflowRun": "45957518181",
+      "embeddedOriginal": "v3_spalled_wall/props/f3_v3_spalled_wall.glb",
+      "embeddedOriginalBytes": 7245508,
+      "sizeMeters": [
+        4.0,
+        3.267,
+        1.5798
+      ],
+      "portableAuthoring": "v3_spalled_wall/sources/f3_v3_spalled_wall_authoring.blend",
+      "portableSha256": "bc18b670d32748c6c72b501cd8aa3ba89b7fd1072ce2ecb33776a32a512411c1"
+    },
+    {
       "id": "v3_greenhouse_bay",
       "name": "腐食した廃植物館トラス",
       "existingUpgrade": false,
@@ -1445,15 +1466,14 @@
     }
   ],
   "totals": {
-    "individualParts": 29,
+    "individualParts": 30,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 61285324,
+    "runtimeGeometryBytes": 63608476,
     "sharedImageBytes": 55187226,
-    "embeddedOriginalBytes": 302675608
+    "embeddedOriginalBytes": 309921116
   },
   "v3Pending": [
-    "v3_spalled_wall",
     "v3_collapsed_storey",
     "v3_leaning_facade",
     "v3_sunken_colonnade",
