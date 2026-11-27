@@ -37,7 +37,7 @@ Cloudflare Zero Trust（Access）は Free プランでもカード登録が必�
 |---|---|---|
 | `cloudflare-protected-probe.yml` | feature ブランチで `tools/cloudflare-preview/update-check.json`（revision +1）か worker を変更して push | `update`: パスワード登録 → Worker 付きダミー配信 → 新デプロイ検証 → 旧・未保護デプロイ削除 → 全ホスト検証。`rollback`: 直前の保護済みデプロイへ戻し全ホスト検証 |
 | `cloudflare-access-gate.yml`（名称は互換のため維持、中身はパスワードゲート） | 自身/`pages_gate.py` の変更 push、他 workflow から呼出 | 全デプロイの全ホスト×全パスを Cookie なし・偽 Cookie で取得し、Worker の 401 ログイン画面のみ合格（TLSエラー・リダイレクト・404・5xx・200 は不合格）。未使用ランダムサブドメインは 401/404 で可。各ホストで誤パスワード=401、正パスワード=ログイン後にファイル取得可を確認 |
-| `cloudflare-dev-preview-deploy.yml` | `preview/refresh` の `tools/cloudflare-preview/refresh-stamp.txt` 変更 push のみ。**変数 `KOTAMA_GAME_PREVIEW_ENABLED=true` の時だけ** | 事前ゲート → 配信ファイル選別＋Worker 同梱 → 配信 → 事後ゲート → 失敗時は固定URLを戻し新デプロイ削除 → 成功時は保護済みデプロイを最新5件に整理 |
+| `cloudflare-dev-preview-deploy.yml` | 予約ブランチ `preview/refresh` への push のみ（通常は `refresh-stamp.txt` を変更。大規模差分で見落とさないよう paths フィルターなし）。**変数 `KOTAMA_GAME_PREVIEW_ENABLED=true` の時だけ** | 事前ゲート → 配信ファイル選別＋Worker 同梱 → 配信 → 事後ゲート → 失敗時は固定URLを戻し新デプロイ削除 → 成功時は保護済みデプロイを最新5件に整理 |
 
 ## 検証の進め方（順番厳守）
 
