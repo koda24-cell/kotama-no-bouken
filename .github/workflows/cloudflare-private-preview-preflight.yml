@@ -1,0 +1,67 @@
+name: Cloudflare private preview preflight
+on:
+  push:
+    branches: [feature/gpt-cloudflare-private-preview-preflight-20261127]
+    paths:
+      - '.github/workflows/cloudflare-private-preview-preflight.yml'
+      - 'tools/cloudflare-preview/probe/**'
+  pull_request:
+    branches: [development]
+    paths:
+      - '.github/workflows/cloudflare-private-preview-preflight.yml'
+      - 'tools/cloudflare-preview/probe/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: cloudflare-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/cloudflare-preview/probe
+      - name: Validate harmless probe only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path("tools/cloudflare-preview/probe")
+          expected = {"index.html", "probe.css", "probe.js", "probe.svg"}
+          assert {p.name for p in root.iterdir()} == expected
+          for p in root.iterdir():
+              assert p.is_file() and not p.is_symlink() and 0 < p.stat().st_size < 16384
+          html = (root / "index.html").read_text()
+          assert all(x in html for x in ["probe.css", "probe.js", "probe.svg", "Dummy content only"])
+          print("Dummy probe structure OK; no game assets packaged.")
+          PY
+      - name: Cloudflare API read-only connection check
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/feature/gpt-cloudflare-private-preview-preflight-20261127'
+        env:
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$CF_ACCOUNT" || -z "$CF_TOKEN" ]]; then
+            echo "::error::Cloudflare account ID or API token missing from Actions secrets. No deployment attempted."
+            exit 1
+          fi
+          if [[ ! "$CF_ACCOUNT" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            echo "::error::Invalid Cloudflare account ID format."
+            exit 1
+          fi
+          response="$(mktemp)"
+          trap 'rm -f "$response"' EXIT
+          code="$(curl --silent --show-error --proto '=https' --max-time 30 --output "$response" --write-out '%{http_code}' --header "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects?per_page=1")"
+          if [[ "$code" != 200 ]] || ! jq -e '.success == true and (.result | type == "array")' "$response" >/dev/null; then
+            echo "::error::Cloudflare Pages read-only API check failed (HTTP $code). Response withheld."
+            exit 1
+          fi
+          echo "Cloudflare Pages API reachable with supplied credentials. No project or deployment changed."
+          echo "Cloudflare API read-only preflight: PASS. Access policies, free plan and deployment not verified." >> "$GITHUB_STEP_SUMMARY"
