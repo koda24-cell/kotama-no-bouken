@@ -15,8 +15,7 @@ name: Cloudflare private dev preview (development + selected PRs -> fixed URL)
 on:
   push:
     branches: [preview/refresh]
-    paths:
-      - 'tools/cloudflare-preview/refresh-stamp.txt'
+    # Reserved refresh branch: no path filter, so a large accumulated diff cannot hide the refresh stamp.
 
 permissions:
   contents: read
