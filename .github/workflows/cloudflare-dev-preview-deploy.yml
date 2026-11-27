@@ -1,9 +1,9 @@
 name: Cloudflare private dev preview (development + selected PRs -> fixed URL)
 # 「確認サイトを更新して」: force-push the development tip to branch
-# `preview/refresh` (or push to development). The fixed URL then shows
+# `preview/refresh` only. Normal development pushes never deploy. The fixed URL then shows
 # development + open PRs chosen in tools/cloudflare-preview/preview-sources.json
 # (label `preview` by default). Conflicting PRs are skipped and listed.
-# Auto-deploys the game's runtime files from `development` to the private,
+# Deploys the game's runtime files on explicit refresh requests to the private,
 # password-protected Pages project. Fail-closed:
 #   1. does nothing unless repository variable KOTAMA_GAME_PREVIEW_ENABLED == 'true'
 #      (set only after the checks in docs/CLOUDFLARE_ACCESS_SETUP.md pass)
@@ -14,15 +14,9 @@ name: Cloudflare private dev preview (development + selected PRs -> fixed URL)
 #      and the new deployment deleted
 on:
   push:
-    branches: [development, preview/refresh]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - 'references/**'
-      - 'review-shots/**'
-      - 'render-output/**'
-      - 'prototypes/**'
-      - '_trash/**'
+    branches: [preview/refresh]
+    paths:
+      - 'tools/cloudflare-preview/refresh-stamp.txt'
 
 permissions:
   contents: read
