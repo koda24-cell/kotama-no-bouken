@@ -41,7 +41,12 @@ jobs:
           print("Dummy probe structure OK; no game assets packaged.")
           PY
       - name: Cloudflare API read-only connection check
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/feature/gpt-cloudflare-private-preview-preflight-20261127'
+        if: >-
+          github.repository == 'koda24-cell/kotama-no-bouken' &&
+          ((github.event_name != 'pull_request' && github.ref == 'refs/heads/feature/gpt-cloudflare-private-preview-preflight-20261127') ||
+          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.head.ref == 'feature/gpt-cloudflare-private-preview-preflight-20261127' &&
+          github.event.pull_request.base.ref == 'development'))
         env:
           CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
