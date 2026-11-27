@@ -158,7 +158,7 @@ def main():
  authoring_vertices=sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')
  bpy.ops.wm.save_as_mainfile(filepath=str(authoring),compress=True)
  metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset not in ['v2_fern_colony','v2_wildflower_colony','v2_factory_bay'])
- if asset in ['v2_fern_colony','v2_wildflower_colony']:
+ if asset in ['v2_fern_colony','v2_wildflower_colony','v3_whiteflower_atlas']:
   from fern_colony_v2 import finalize
   metrics=finalize(c,model,metrics)
  if asset=='v2_factory_bay':

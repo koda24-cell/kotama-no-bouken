@@ -140,6 +140,7 @@ export function createTheme(api){
   const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Verified grass catalog unavailable');
   const catalog=await nature.json(),tufts=[];
   for(const name of['sedge','fern','trifoliate']){const row=catalog.sources.find(a=>a.name===name),held=await retainFirstLayerSource(row.file,row.sha256);grassHeld.push(held);let source;held.source.updateMatrixWorld(true);held.source.traverse(o=>{if(o.isMesh)source=o;});tufts.push({geometry:geo(source.geometry.clone().applyMatrix4(source.matrixWorld)),material:animateCanopy(source.material)});}
+  if(bundle.models.has('v3_whiteflower_atlas')){const replaced=new Map();bundle.models.get('v3_whiteflower_atlas').traverse(o=>{if(o.isMesh){if(!replaced.has(o.material))replaced.set(o.material,animateCanopy(o.material));o.material=replaced.get(o.material);}});}
   let flowers=0,plants=0;
   for(let z=1;z<a.h-1;z++)for(let x=1;x<a.w-1;x++){
    if(!open(x,z))continue;const px=x*4,pz=z*4,tag=plan.tags[x+','+z],degree=DIR_ORDER.filter(d=>{const[dx,dz]=DIR_VEC[d];return open(x+dx,z+dz);}).length;
@@ -150,7 +151,7 @@ export function createTheme(api){
     }
    }
    if(tag==='white-garden'&&bundle.models.has('v3_whiteflower_atlas')){
-    const n=g.high?32:18;for(let k=0;k<n;k++){const wx=px+(hash(x*71+k,z,421)-.5)*4,wz=pz+(hash(x,z*37+k,422)-.5)*4;
+    const n=g.high?48:30;for(let k=0;k<n;k++){const wx=px+(hash(x*71+k,z,421)-.5)*4,wz=pz+(hash(x,z*37+k,422)-.5)*4;
      model('v3_whiteflower_atlas',wx,plan.heightWorld(wx,wz),wz,{ry:hash(x+k,z,423)*6.28,scale:.48+hash(x,z+k,424)*.4});flowers++;}
    }
    if(degree<3&&hash(x,z,317)>.95&&bundle.models.has('v3_derelict_car')){
@@ -186,10 +187,10 @@ export function createTheme(api){
    else if(o.kind==='sign')e.obj=place(g.world,S.sign,x,y,z,ry);
    else if(o.kind==='switch')e.obj=place(g.world,S.lever,x,y,z,ry,.85);
    else if(o.kind==='gate')e.obj=place(g.world,S.runeDoor,x,y,z,ry);
-   else if(o.kind==='exit')e.obj=place(g.world,S.rootArch,x,y,z,ry,.92);
+   else if(o.kind==='exit'){e.obj=place(g.world,S.sign,x,y,z,ry);for(const sx of[-1.55,1.55])beam('city entrance jamb',steel,[x+sx,y,z],[x+sx,y+3.2,z],.2,.22);beam('city entrance connected lintel',steel,[x-1.65,y+3.2,z],[x+1.65,y+3.2,z],.22,.25);}
    g.entries.push(e);
   }
-  stats.objects=g.entries.length;
+  stats.objects=g.entries.length;stats.placed=true;
   batch();
   sun=new THREE.DirectionalLight(0xffefd2,2.2);sun.position.set(-20,36,-18);sun.target.position.set(16,0,20);g.scene.add(sun,sun.target);
   oldShadow={enabled:g.renderer.shadowMap.enabled,type:g.renderer.shadowMap.type};g.renderer.shadowMap.enabled=g.high;g.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
