@@ -78,7 +78,7 @@ export function createTheme(api){
    'v3_catwalk_junction','v3_riveted_span','v3_deep_window_bay','v3_spalled_wall','v3_collapsed_storey','v3_leaning_facade','v3_derelict_car','v3_electric_cabinet','v3_fluorescent_fixture','v3_cable_pole','v3_shutter_shop','v3_rubble_bank','v3_asphalt_heave'];
   if(a.f===1)wanted.push('v3_greenhouse_bay','v3_greenhouse_gate');if(a.f===2)wanted.push('v3_memory_monument','v3_sunken_colonnade','v3_sunken_shopfront','v3_whiteflower_atlas');
   boxes=new THREE.BoxGeometry(1,1,1);cylinder=geo(new THREE.CylinderGeometry(1,1,1,8));bundle=await loadIndustrialAssets({onlyModels:wanted});finish=createCitySurfaces(THREE,g.high,bundle.materials);geometry.push(boxes);
-  const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil;concrete.color.multiplyScalar(.85);P.stone.color.multiplyScalar(.82);
+  const P=finish.palette,concrete=P.concrete,steel=P.rust,soil=P.soil,farDark=mat(new THREE.MeshStandardMaterial({color:new THREE.Color().setRGB(.025,.029,.026),roughness:.97}));concrete.color.multiplyScalar(.85);P.stone.color.multiplyScalar(.82);
   heldPointLights.forEach(l=>g.scene.remove(l));oldFar=g.camera.far;api.setEnvironment(env);g.camera.far=api.viewFar(60);g.camera.updateProjectionMatrix();
   // The opaque terrain bed remains below the submerged street, never on top of water.
   box('continuous submerged terrain',soil,(a.w-1)*2,-6.3,(a.h-1)*2,(a.w+2)*4,.5,(a.h+2)*4);
@@ -136,9 +136,10 @@ export function createTheme(api){
      holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*offset-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*offset-center.z*sz);root.add(holder);
      // Closed, recessed far proxy. Original meshes, UVs and near detail are intact.
      const proxy=(u,yy,w,hh,normal,depth,m)=>{const o=box('city-v3 distant recessed bay',m,px+dx*normal+dz*u,h0+level*3.2+yy,pz+dz*normal-dx*u,dx?depth:w,hh,dz?depth:w);o.userData.cityLodRole='far';o.userData.cityBucket=holder.userData.cityBucket;};
+     proxy(0,1.6,4.0,3.2,.76,.12,farDark);
      for(const u of[-1.85,0,1.85])proxy(u,1.6,.30,3.2,1.68,.6,concrete);
      for(const yy of[.23,2.98])proxy(0,yy,4.0,.46,1.68,.6,concrete);
-     for(const u of[-.925,.925])proxy(u,1.65,1.56,2.16,.95,.12,P.dark);
+     for(const u of[-.925,.925])proxy(u,1.65,1.56,2.16,.95,.12,farDark);
     }
     for(let k=0;k<height/3.2;k++)box('bonded horizontal floor slab',concrete,px+dx*1.55,h0+k*3.2+.10,pz+dz*1.55,dx?.9:4.04,.20,dz?.9:4.04);
    }
