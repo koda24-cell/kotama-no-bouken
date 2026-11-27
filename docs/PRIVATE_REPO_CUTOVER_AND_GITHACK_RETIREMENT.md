@@ -1,23 +1,21 @@
-# 非公開移行と旧 raw.githack URL の廃止計画
+# 非公開移行と旧URLの廃止
 
-状態: 準備のみ。Cloudflare接続、実配信、GitHubの非公開化、キャッシュ削除、失効確認は未実施。公開設定は維持する。PR #856 の無害なプローブを使用する。既存のmain・development・作業ブランチを削除しない。
+ゲームの確認は認証付き Cloudflare 固定URLを使う。GitHubの公開設定変更は、公開版・公式リンク・制作進捗サイト・制作環境の切替前検証を済ませ、ユーザー承認を得てから行う。[移行条件](PRIVATE_GAME_AND_PUBLIC_TOOLING_MIGRATION.md)
 
-## 移行ゲート（順番厳守）
-1. Cloudflare Pages/AccessをFreeで設定し、ダミーサイトだけを配信。production hostnameとwildcard preview hostnameを別々に認証保護する。公式手順 https://developers.cloudflare.com/pages/platform/known-issues/ 。認証なしのHTML/JS/CSS/画像取得が拒否され、許可済みメールでiPhone/PCが動作することを実測。
-2. 配信用の明示許可リスト、ファイル数・サイズ・LFS・パス参照チェックを準備。制作資料・履歴・参考資料・秘密情報を出力に含めない。旧URLを参照するruntime/進捗サイトを特定し、配信先の相対パスまたは承認済み公開画像へ移行。公開サイトの画像は公開許可とライセンスを別確認。
-3. 認証付き開発版の自動更新、動作・保存・復元を確認。ブラウザ保存はoriginが変わるため、セーブのエクスポート・インポートも確認。Actions無料枠と支出上限、外部制作システムへの連携を確認。
-4. 既存mainから承認済み公開版の必要ファイルのみ別の公開リポジトリへコピー。Git履歴をコピーしない。管理者機能・未公開階層・内部リンクを除外し、公開版を実プレイ。旧mainは保持。
-5. 共有URL台帳を作成。過去チャット、PR・issue・コメント、README/開発資料、進捗サイト、本人が共有したリンクから、実際に使用されたURLを集める。全チャットのURLが検索可能とは限らず、取得できないURLは未把握として記録。固定SHA・ブランチ・タグ、両githackホスト、HTMLとJS/CSS/GLB/画像/音源を区別。存在しないURLを共有済みと扱わない。
-6. 移行前の復旧手段を確認し、本人がGitHub SettingsのDanger Zoneで既存repoをPrivateに変更。既に公開されたfork・外部コピー・キャッシュは別管理である。公開中は旧キャッシュを削除しても再取得されるため、ここまでは削除しない。
-7. ログアウトした環境でGitHubの元ファイル取得が拒否されることを先に確認。その後、台帳内の対象URLのみ公式purge機能で削除。公式 https://raw.githack.com/ の DELETE /purge?url=... を使用。URLごとに結果を記録し、レート制限や失敗時は停止して確認。パス全体の一括消去が可能と仮定しない。
-8. 認証なしの別ブラウザ/ネットワークで旧URLを確認。404/403等で元ファイルが取得できないこと、HTMLだけでなくJS/画像等の直接URLも確認。HTMLの注意画面やタイムアウトを失効成功としない。失敗は再確認・サービス運営者(admin@githack.com)への問い合わせ候補。CDNの全拠点、把握していないURL、第三者の保存済みコピーまで完全削除されたとは保証しない。
-9. 確認結果と新URLを引き継ぎルールへ登録。非公開化後はraw.githackの新規共有を停止。必要なアクセス権のみに限定。
+## 旧URLの台帳
 
-## 台帳形式
-旧URL | 根拠/出典 | 対象版 | 種別 | purge日時・結果 | HTTP結果・確認日時 | 状態
-現時点の具体的な共有URLは未収集。過去チャットの検索結果から固定SHA形式を使用していたことは確認したが、実URL全件は取得できなかった。テンプレートURLや推測したURLを削除対象にしない。
+`python3 tools/cloudflare-preview/inventory_legacy_urls.py <UTF-8の資料またはPR・コメント書き出し>` で、実際に記載されたゲーム本体へのリンクと記載箇所をJSONに抽出する。接続や削除操作は行わない。ブランチ名にスラッシュが入ることがあるので、固定SHA以外は ref とファイルの境界をAPIなどで照合する。実リンク一覧は切替担当者の保護領域で扱う。
 
-## 公式資料
-- raw.githack キャッシュ削除とCDN仕様: https://raw.githack.com/
-- Cloudflare プレビュー既定公開: https://developers.cloudflare.com/pages/configuration/preview-deployments/
-- Cloudflare production/preview双方の認証: https://developers.cloudflare.com/pages/platform/known-issues/
+2026-11-28 JST時点で、development の AGENTS・README・docs・Actions内の該当参照、直近100 PR・100 issueコメント・取得されたレビューコメントを調査。重複を除き raw.githack 10件（固定SHA 9、development 1）、GitHub Raw 10件（JS 6、PNG 4）、GitHub Pages 1件を確認。この範囲では rawcdn.githack の実URLは0件。追加の共有先、進捗サイトの動的生成URL、HTMLから読み込まれるCSS・画像・GLB・音源、古いPRやコメント、外部ミラーの棚卸しは継続する。
+
+移行前の HEAD 試験では GitHub Raw 10件と Pages 1件が200。raw.githack 10件は検査経路上で403。403だけでは元データ失効やCDNキャッシュ削除を証明できない。GitHub forks の匿名APIで公開フォークは0件。外部コピーと検索結果は未確認。
+
+## 非公開化後の確認
+
+1. 匿名の別セッションで GitHub の元ファイルと旧Pagesを検証する。
+2. 既知の raw.githack／rawcdn の正確なURLを確認し、公式 purge をURLごとに実施する。CDN版は正確なURL単位で永続キャッシュする仕様のため、クエリ付きも台帳に残す。GitHubの元ファイルがまだ公開中なら先にそちらを解決する。
+3. URLごとに日時、出典、対象版、purge結果、匿名GETのステータスと本文の確認結果を記録する。HTML・JS・CSS・PNG・WebP・GLB・音源を対象にし、タイムアウトやゲートウェイ拒否で成功判定しない。
+4. 確認できないURL・削除不可URLを残課題として記録する。第三者保存、未把握URL、外部ミラー、全CDN配信点からの回収は保証できない。
+
+[raw.githack 公式キャッシュ仕様とpurge](https://raw.githack.com/)  
+[GitHubの公開範囲を変えた場合の影響](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility)
