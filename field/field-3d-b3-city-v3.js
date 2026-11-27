@@ -238,7 +238,7 @@ export function createTheme(api){
   // Existing story identities, keys, choices and puzzle state stay owned by the game.
   for(const o of a.objects){
    const f=info.facing(o.tx,o.ty),[dx,dz]=DIR_VEC[f],ry=FACE_YAW[f],x=o.tx*4+(o.onWall?dx*2.22:0),z=o.ty*4+(o.onWall?dz*2.22:0),y=o.onWall?plan.height(o.tx+dx,o.ty+dz):plan.height(o.tx,o.ty);
-   const e={o,kind:o.kind,obj:null,state:null,ry,groundY:y,at:new THREE.Vector3(x,y+1.6,z)};
+   const e={o,kind:o.kind,obj:null,state:null,ry,cityV3:true,groundY:y,at:new THREE.Vector3(x,y+1.6,z)};
    if(o.kind==='npc'&&o.id==='statue'){
     if(!bundle.models.has('v3_memory_monument'))throw Error('Monument has not passed the V3 source intake');
     e.obj=place(g.world,bundle.models.get('v3_memory_monument'),plan.monument.center[0]*4,y+.75,plan.monument.center[1]*4,0,1);e.at.set(x,y+4.75,z);

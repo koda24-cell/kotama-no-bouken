@@ -492,7 +492,7 @@ function addWater(x, z) {
 // 物の状態（開けた・採り尽くした・解いた・開いた）を見た目に反映する
 async function syncEntry(e, S) {
   const o = e.o, x = o.tx * CELL, z = o.ty * CELL;
-  const groundY=e.groundY||0;
+  const groundY=e.cityV3?(e.groundY||0):0;
   let st = '';
   if (o.kind === 'chest') st = fieldState.flags[o.key] ? 'open' : 'closed';
   else if (o.kind === 'cache') st = fieldState.flags[`puzzle:${o.puzzle}:reward`] ? 'open' : 'closed';
@@ -588,7 +588,7 @@ function syncFoes(t) {
     const inB5Vision = Number(fieldState.area) !== 5 || fieldState.visible?.has(`${Math.floor(f.x / FIELD_TILE)},${Math.floor(f.y / FIELD_TILE)}`);
     v.grp.visible = !f.defeated && !!inB5Vision;
     const p = f.view || f, target = new THREE.Vector3(p.x / FIELD_TILE * CELL - CELL / 2, 0, (p.y - 4) / FIELD_TILE * CELL - CELL / 2);
-    target.y=g.theme?.heightAt?.(target.x,target.z)||0;
+    target.y=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.heightAt?.(target.x,target.z)||0):0;
     if (!v.pos) v.pos = target.clone(); else v.pos.lerp(target, 0.25);
     v.grp.position.copy(v.pos);
     const chase = f.mode === 'chase', pulse = 0.5 + 0.5 * Math.sin(t / (chase ? 140 : 380));
@@ -606,7 +606,7 @@ function syncFoes(t) {
    ------------------------------------------------------------ */
 function camTarget() {
   const tx = Math.floor(fieldState.x / FIELD_TILE), ty = Math.floor(fieldState.y / FIELD_TILE), [dx, dy] = DIR_VEC[fieldState.dir] || DIR_VEC.down;
-  const groundY=g.theme?.heightAt?.(tx*CELL,ty*CELL)||0,back=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?.25:BACK;
+  const groundY=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.heightAt?.(tx*CELL,ty*CELL)||0):0,back=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?.25:BACK;
   return { pos: new THREE.Vector3(tx * CELL - dx * back, EYE+groundY, ty * CELL - dy * back), yaw: DIR_YAW[fieldState.dir] ?? Math.PI };
 }
 function updateCamera(dt) {
