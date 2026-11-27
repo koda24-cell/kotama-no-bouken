@@ -762,6 +762,27 @@
       ],
       "portableAuthoring": "v3_switchback_stair/sources/f3_v3_switchback_stair_authoring.blend",
       "portableSha256": "088d6a575711eaf881fbcc4cecd272010e64603f10f19d594039e8a91a54cde1"
+    },
+    {
+      "id": "v3_straight_access_stair",
+      "name": "連結踊り場付き直線鉄骨階段",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_straight_access_stair/runtime/f3_v3_straight_access_stair.glb",
+      "sha256": "20983eaf8c5f25469c7d701928f5ba0084c3a89946014d934ed99c2249eec289",
+      "bytes": 6380512,
+      "triangles": 47516,
+      "sourceCommit": "5521a06a94e1ca19d0916fee4b92ef8a70887187",
+      "workflowRun": "45952971246",
+      "embeddedOriginal": "v3_straight_access_stair/props/f3_v3_straight_access_stair.glb",
+      "embeddedOriginalBytes": 8869764,
+      "sizeMeters": [
+        2.69,
+        4.5863,
+        8.553
+      ],
+      "portableAuthoring": "v3_straight_access_stair/sources/f3_v3_straight_access_stair_authoring.blend",
+      "portableSha256": "dc6d6cd10aa3f30519568edd43341bf827f7a535b6810a9a02594d4ac69541c5"
     }
   ],
   "sharedImages": [
@@ -1252,15 +1273,14 @@
     }
   ],
   "totals": {
-    "individualParts": 21,
+    "individualParts": 22,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 48684664,
+    "runtimeGeometryBytes": 55065176,
     "sharedImageBytes": 50954812,
-    "embeddedOriginalBytes": 257027224
+    "embeddedOriginalBytes": 265896988
   },
   "v3Pending": [
-    "v3_straight_access_stair",
     "v3_catwalk_junction",
     "v3_riveted_span",
     "v3_structural_corner",
