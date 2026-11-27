@@ -39,22 +39,22 @@ export function createTheme(api){
   const overlaps=[],tri=new THREE.Triangle(),v=[tri.a,tri.b,tri.c];let tested=0;
   for(const {object,id}of hardCandidates){
    object.updateWorldMatrix(true,true);const bounds=new THREE.Box3().setFromObject(object),near=lanes.filter(b=>b.intersectsBox(bounds));if(!near.length)continue;tested++;
-   let hit=false;object.traverse(mesh=>{if(hit||!mesh.isMesh)return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index,n=index?index.count:p.count;
+   let hit=false;object.traverse(mesh=>{if(hit||!mesh.isMesh||mesh.material.alphaTest>0)return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index,n=index?index.count:p.count;
     for(let i=0;i<n&&!hit;i+=3){for(let j=0;j<3;j++)v[j].fromBufferAttribute(p,index?index.getX(i+j):i+j).applyMatrix4(mesh.matrixWorld);if(near.some(b=>b.intersectsTriangle(tri)))hit=true;}
    });if(hit)overlaps.push({id,position:object.position.toArray()});
   }
   stats.hardLaneVerification={width:1.8,bodyHeight:[.5,2.05],candidates:hardCandidates.length,narrowPhaseObjects:tested,overlaps};
  }
- function animateCanopy(source,white=false){
-  const m=grassCutoutMaterialV6(source),previous=m.onBeforeCompile;m.customProgramCacheKey=()=> 'city-v3-canopy-wind';if(white)m.color.multiplyScalar(1/.78);
+ function animateCanopy(source,white=false,strength=1){
+  const m=grassCutoutMaterialV6(source),previous=m.onBeforeCompile;m.customProgramCacheKey=()=> 'city-v3-canopy-wind:'+strength;if(white)m.color.multiplyScalar(1/.78);
   m.onBeforeCompile=shader=>{previous(shader);shader.uniforms.uCityWind=wind;shader.vertexShader='uniform float uCityWind;\n'+shader.vertexShader;
    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
     float phase=0.0;
     #ifdef USE_INSTANCING
       phase=instanceMatrix[3].x*.21+instanceMatrix[3].z*.14;
     #endif
-    transformed.x+=sin(uCityWind*1.3+phase+position.y*2.0)*.10*max(position.y,0.0);
-    transformed.z+=cos(uCityWind*.85+phase)*.045*max(position.y,0.0);`);windShaders.push(shader);};
+    transformed.x+=sin(uCityWind*1.3+phase+position.y*2.0)*${(.10*strength).toFixed(4)}*max(position.y,0.0);
+    transformed.z+=cos(uCityWind*.85+phase)*${(.045*strength).toFixed(4)}*max(position.y,0.0);`);windShaders.push(shader);};
   materials.push(m);return m;
  }
  function batch(){
@@ -63,7 +63,7 @@ export function createTheme(api){
   for(const group of groups.values()){
    const first=group[0],mesh=new THREE.InstancedMesh(first.geometry,first.material,group.length);mesh.name='city-v3:spatial-batch';
    group.forEach((o,i)=>mesh.setMatrixAt(i,o.matrixWorld));mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingBox();mesh.computeBoundingSphere();
-   mesh.castShadow=g.high&&!first.material.transparent&&first.material.alphaTest===0;mesh.receiveShadow=true;batches.push(mesh);root.add(mesh);
+   mesh.castShadow=g.high&&!first.material.transparent&&(first.material.alphaTest===0||first.material.name.includes('cedar'));mesh.receiveShadow=true;batches.push(mesh);root.add(mesh);
   }
   for(const child of [...root.children])if(!child.isInstancedMesh&&!child.userData.cityDynamic)root.remove(child);
   stats.sourceMeshes=meshes.length;stats.batches=groups.size;
@@ -169,6 +169,12 @@ export function createTheme(api){
   const nature=await fetch(new URL('../assets/3d/dungeons/b1_nature_v6_candidates/catalog.json',import.meta.url));if(!nature.ok)throw Error('Verified grass catalog unavailable');
   const catalog=await nature.json(),tufts=[];
   for(const name of['sedge','fern','trifoliate']){const row=catalog.sources.find(a=>a.name===name),held=await retainFirstLayerSource(row.file,row.sha256);grassHeld.push(held);let source;held.source.updateMatrixWorld(true);held.source.traverse(o=>{if(o.isMesh)source=o;});tufts.push({geometry:geo(source.geometry.clone().applyMatrix4(source.matrixWorld)),material:animateCanopy(source.material)});}
+  if(a.f===1){
+   const held=await retainFirstLayerSource('assets/3d/dungeons/b1_sacred_forest_candidates/props/sacred_cedar_tree.glb','60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb');grassHeld.push(held);const leafMaterials=new Map();
+   for(const key of Object.keys(plan.tags).filter(k=>plan.tags[k]==='root-planter')){const[x,z]=key.split(',').map(Number),tree=held.source.clone(true);tree.scale.setScalar(.65);tree.position.set(x*4,plan.height(x,z)+.8,z*4);
+    tree.traverse(o=>{if(o.isMesh&&o.material.alphaTest>0){if(!leafMaterials.has(o.material))leafMaterials.set(o.material,animateCanopy(o.material,false,.15));o.material=leafMaterials.get(o.material);}});root.add(tree);hardCandidates.push({object:tree,id:'reused-cedar'});
+   }stats.reusedCedar={sourceSha256:'60b90a273602e7cc9c60328b101e8702e029e5c5ef085e6cebd372ff648456cb',instances:2,sourceTriangles:14712,status:'existing review source retained, no formal promotion'};
+  }
   if(bundle.models.has('v3_whiteflower_atlas')){const replaced=new Map();bundle.models.get('v3_whiteflower_atlas').traverse(o=>{if(o.isMesh){if(!replaced.has(o.material))replaced.set(o.material,animateCanopy(o.material,true));o.material=replaced.get(o.material);}});}
   const mossGeometry=new THREE.BufferGeometry(),mossPositions=[0,.006,0],mossUV=[.5,.5],mossIndices=[];
   for(let k=0;k<16;k++){const angle=k*Math.PI/8,r=.80+hash(k,5,760)*.30;mossPositions.push(Math.cos(angle)*r,.004+hash(k,5,761)*.012,Math.sin(angle)*r);mossUV.push(.5+Math.cos(angle)*.5,.5+Math.sin(angle)*.5);}
