@@ -1,6 +1,8 @@
 // Visual + gameplay regression against an isolated browser profile; never uses user saves.
 const fs = require('fs'), path = require('path'), http = require('http');
 const {chromium} = require(process.env.PLAYWRIGHT || 'playwright');
+const cityV3=process.env.F3_CITY_V3==='1';
+const expectedMode=cityV3?'b3-city-v3-trial':'b3-industrial-trial';
 const root=process.env.REPO || path.resolve(__dirname, '../..'), out=process.env.OUT || path.join(root, 'work/b3-check');
 fs.mkdirSync(out, {recursive:true});
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.glb':'model/gltf-binary','.png':'image/png','.mp3':'audio/mpeg','.jpg':'image/jpeg'};
@@ -23,7 +25,7 @@ if(process.env.F3_ASSET_SNAPSHOT)await context.route('**/assets/3d/dungeons/b3_i
  const relative=decodeURIComponent(new URL(route.request().url()).pathname.split('/b3_industrial_candidates/')[1]),file=path.resolve(process.env.F3_ASSET_SNAPSHOT,relative);
  if(!file.startsWith(path.resolve(process.env.F3_ASSET_SNAPSHOT)+path.sep))return route.abort();return route.fulfill({path:file});
 });
-await page.addInitScript(()=>{window.KotamaIndustrialPlaytest=true;});
+await page.addInitScript(v3=>{window.KotamaIndustrialPlaytest=true;window.KotamaCityV3Playtest=v3;},cityV3);
 await page.goto('http://localhost:8773/index.html?f3industrial=1');
 await page.waitForFunction(()=>window.KotamaField3D);
 await page.evaluate(()=>{try{tutorialFinish();tutorialClose();}catch{};if(typeof tutorialState!=='undefined'){tutorialState.phase='complete';tutorialState.completed=true;tutorialState.started=false;}document.querySelectorAll('#tutorial-overlay').forEach(e=>e.hidden=true);document.body.classList.remove('tutorial-active','tutorial-home-focus');state.firstStageStarted=true;state.maxUnlockedStage=5;window.persistAutoSave=()=>true;});
@@ -59,7 +61,7 @@ for(const p of edgePlacements||[]){
  }
 }
 return {...x,edgePlacementCount:edgePlacements?.length,edgePlacements,edgeOverlaps,overlaps,entryKinds:__test3d.g.entries.map(e=>({kind:e.kind,visible:!!e.obj,tx:e.o.tx,ty:e.o.ty}))};});logs.push(info);
-const pos=floor===2?[11,12,'up']:floor===1?[9,19,'right']:[8,19,'right'];
+const pos=cityV3?[1,29,'up']:floor===2?[11,12,'up']:floor===1?[9,19,'right']:[8,19,'right'];
 await page.evaluate(([tx,ty,dir])=>{const c=fieldTileCenter(tx,ty);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir=dir;fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);},pos);
 if(process.env.F3_INSPECT_VIEW){
  info.viewProbe=await page.evaluate(async()=>{
@@ -87,21 +89,32 @@ fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-floor-checkpoints.json`,JSON.st
 
 }
 if (process.argv.includes('--visual-only')) {
- const failures=logs.filter(r=>r.mode!=='b3-industrial-trial'||!r.industrialAssets?.sourceHashesVerified||r.fallbackReason||r.overlaps?.length||r.edgeOverlaps?.length).map(r=>({floor:r.floor,mode:r.mode,reason:r.fallbackReason,hardOverlaps:r.edgeOverlaps?.length}));
+ const failures=logs.filter(r=>r.mode!==expectedMode||!r.industrialAssets?.sourceHashesVerified||r.fallbackReason||r.overlaps?.length||r.edgeOverlaps?.length||r.hardLaneVerification?.overlaps.length).map(r=>({floor:r.floor,mode:r.mode,reason:r.fallbackReason,hardOverlaps:r.edgeOverlaps?.length}));
  if(errors.some(e=>!e.includes('ERR_CERT_AUTHORITY_INVALID')))failures.push({reason:'browser errors'});
  fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-results.json`,JSON.stringify({logs,errors,failures},null,2));
  console.log(JSON.stringify({floors:logs.map(({edgePlacements,...x})=>x),errors,failures},null,2));await browser.close();server.close();if(failures.length)process.exitCode=1;return;
 }
 // Real input: move, turn without spending a turn, and bump into a solid boundary.
 const check=async()=>page.evaluate(()=>({tile:fieldPlayerTile(),dir:fieldState.dir,turn:fieldState.turn,foes:fieldState.foes.map(f=>({x:f.tx,y:f.ty})),near:fieldState.nearKey}));
-await page.evaluate(()=>{const c=fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.encounterSteps=0;fieldState.nextEncounter=9999;fieldUpdateVision(true);});
+await page.evaluate(()=>{const c=window.KotamaCityV3Playtest?fieldTileCenter(1,29):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.encounterSteps=0;fieldState.nextEncounter=9999;fieldUpdateVision(true);});
 const key=async k=>{await page.keyboard.down(k);await page.waitForTimeout(100);await page.keyboard.up(k);await page.waitForTimeout(700);};
 const controls={before:await check()};await key('ArrowUp');
-await page.waitForFunction(()=>fieldPlayerTile().tx===9,null,{timeout:30000});controls.move=await check();await key('ArrowLeft');
+await page.waitForFunction(()=>fieldPlayerTile().tx===(window.KotamaCityV3Playtest?2:9),null,{timeout:30000});controls.move=await check();await key('ArrowLeft');
 await page.waitForFunction(()=>fieldState.dir==='up',null,{timeout:30000});controls.turn=await check();
 const bumpFrame=await page.evaluate(()=>__perf.length);await key('ArrowUp');
 await page.waitForFunction(n=>__perf.length>=n+2,bumpFrame,{timeout:30000});controls.bump=await check();
 logs.push({controls});
+if(cityV3){
+ const ramp=await page.evaluate(()=>{const a=fieldArea();for(let z=2;z<a.h-2;z++)if([17,18,19].every(x=>fieldTileAt(a,x,z)==='.')&&fieldState.foes.every(f=>Math.abs(f.tx-18)+Math.abs(f.ty-z)>5)){const p=fieldTileCenter(17,z);fieldState.x=p.x;fieldState.y=p.y;fieldState.dir='right';fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);return z;}throw Error('No safe actual stair route for elevation test');});
+ const elevation=[];
+ for(const x of[17,18,19]){
+  if(x!==17){await key('ArrowUp');await page.waitForFunction(x=>fieldPlayerTile().tx===x,x,{timeout:30000});}
+  await page.waitForFunction(()=>{const p=fieldPlayerTile(),g=__test3d.g;return Math.abs(g.camera.position.y-(1.6+g.theme.heightAt(p.tx*4,p.ty*4)))<.1;},null,{timeout:30000});
+  elevation.push(await page.evaluate(()=>({tile:fieldPlayerTile(),cameraY:__test3d.g.camera.position.y,groundY:__test3d.g.theme.heightAt(fieldPlayerTile().tx*4,fieldPlayerTile().ty*4)})));
+ }
+ if(elevation[2].cameraY-elevation[0].cameraY<3)throw Error('Walking upstairs did not raise the actual camera');
+ logs.push({elevation});
+}
 const interactions=[];
 const settle=async()=>{for(let i=0;i<18;i++){await page.evaluate(()=>{if(fieldChoiceState){fieldChoiceKey('z');return;}if(fieldDialogTyping){fieldDialogTyping();return;}if(fieldDialogAdvance){const f=fieldDialogAdvance;fieldDialogAdvance=null;f();}});await page.waitForTimeout(100);}};
 for(const kind of ['chest','gather','switch']) {
@@ -123,8 +136,8 @@ const puzzle=await page.evaluate(()=>({solved:fieldPuzzleSolved('a3-lanterns'),d
 if(mobile){
  await settle();
  await page.waitForFunction(()=>!fieldState.lock&&!fieldState.mapOpen&&!fieldDialogAdvance&&!fieldChoiceState&&!fieldModalOpen(),null,{timeout:30000});
- await page.evaluate(()=>{const c=fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
- const before=await check();console.log('touch before',JSON.stringify(before));await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===9,null,{timeout:30000});const after=await check();logs.push({touch:{before,after}});
+ await page.evaluate(()=>{const c=window.KotamaCityV3Playtest?fieldTileCenter(1,29):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.lock=false;fieldUpdateVision(true);});
+ const before=await check();console.log('touch before',JSON.stringify(before));await page.locator('#field-pad [data-dir="up"]').tap();await page.waitForFunction(()=>fieldPlayerTile().tx===(window.KotamaCityV3Playtest?2:9),null,{timeout:30000});const after=await check();logs.push({touch:{before,after}});
  await page.evaluate(()=>scrollTo(0,0));await page.screenshot({timeout:120000,path:out+'/mobile-controls.png',fullPage:true});
 }
 
@@ -146,7 +159,7 @@ for(const area of [1,3,1,3]) {
  const frameStart=await page.evaluate(()=>__perf.length);
  await page.waitForFunction(n=>__perf.length>=n+2,frameStart,{timeout:120000});
  if (area === 1 && lifecycle.length === 0) await page.screenshot({timeout:120000,path:out+'/'+(mobile?'mobile':'pc')+'-b1-reference.png',fullPage:mobile});
- lifecycle.push(await page.evaluate(()=>({area:fieldState.area,far:__test3d.g.camera.far,roots:__test3d.g.world.children.filter(c=>c.name==='b3_ruined_city_map').length,points:__test3d.g.pool.filter(l=>l.parent).length,memory:{...__test3d.g.renderer.info.memory}})));
+ lifecycle.push(await page.evaluate(()=>({area:fieldState.area,far:__test3d.g.camera.far,roots:__test3d.g.world.children.filter(c=>c.name===(window.KotamaCityV3Playtest?'b3_city_v3_map':'b3_ruined_city_map')).length,points:__test3d.g.pool.filter(l=>l.parent).length,memory:{...__test3d.g.renderer.info.memory}})));
 }
 logs.push({lifecycle});
 const save=await page.evaluate(()=>{if(typeof fieldRandomMazeOnLoad==='function')fieldRandomMazeOnLoad();const saved=JSON.parse(JSON.stringify(fieldSerialize()));fieldDeserialize(saved);const round=fieldSerialize();const stable=value=>Array.isArray(value)?value.map(stable):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])])):value;
@@ -156,17 +169,17 @@ const stairs=await page.evaluate(()=>{fieldState.lock=false;fieldOnStairs('down'
 await page.waitForFunction(()=>KotamaField3D.active()&&KotamaField3D.themeInfo()?.floor==='3-1',null,{timeout:120000});
 logs.push({stairs:{floor:await page.evaluate(()=>fieldState.floor)}});
 const failures=[];
-for(const x of logs){if(x.overlaps?.length)failures.push('scenery overlaps '+x.floor);if(x.edgeOverlaps?.length)failures.push('body-lane obstruction '+x.floor);}
-if(controls.move.tile.tx!==9||controls.move.turn!==controls.before.turn+1||controls.turn.turn!==controls.move.turn||controls.bump.tile.tx!==9||controls.bump.turn!==controls.move.turn)failures.push('controls');
+for(const x of logs){if(x.overlaps?.length)failures.push('scenery overlaps '+x.floor);if(x.edgeOverlaps?.length)failures.push('body-lane obstruction '+x.floor);if(x.hardLaneVerification?.overlaps.length)failures.push('triangle body-lane obstruction '+x.floor);}
+if(controls.move.tile.tx!==(cityV3?2:9)||controls.move.turn!==controls.before.turn+1||controls.turn.turn!==controls.move.turn||controls.bump.tile.tx!==(cityV3?2:9)||controls.bump.turn!==controls.move.turn)failures.push('controls');
 if(!interactions.find(x=>x.kind==='chest')?.after.flag)failures.push('chest');
 if(!interactions.find(x=>x.kind==='gather')?.after.used)failures.push('gather');
-if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?44:48)))failures.push('lifecycle');
+if(lifecycle.some(x=>x.roots!==(x.area===3?1:0)||x.far!==(x.area===3?(cityV3?60:44):48)))failures.push('lifecycle');
 if(lifecycle[1].memory.geometries!==lifecycle[3].memory.geometries)failures.push('geometry leak');
 if(lifecycle[1].memory.textures!==lifecycle[3].memory.textures)failures.push('texture leak');
 if(!save.same)failures.push('save roundtrip');
-if(!lodCheck.groups||lodCheck.invalid||lodCheck.nearTriangles<=lodCheck.farTriangles)failures.push('LOD');
+if(!cityV3&&(!lodCheck.groups||lodCheck.invalid||lodCheck.nearTriangles<=lodCheck.farTriangles))failures.push('LOD');
 if(!puzzle.solved||puzzle.door!=='open')failures.push('puzzle door');
-if(logs.find(x=>x.touch)&&logs.find(x=>x.touch).touch.after.tile.tx!==9)failures.push('touch');
+if(logs.find(x=>x.touch)&&logs.find(x=>x.touch).touch.after.tile.tx!==(cityV3?2:9))failures.push('touch');
 if(errors.some(x=>!x.includes('ERR_CERT_AUTHORITY_INVALID')))failures.push('browser errors');
 logs.push({failures});
 
