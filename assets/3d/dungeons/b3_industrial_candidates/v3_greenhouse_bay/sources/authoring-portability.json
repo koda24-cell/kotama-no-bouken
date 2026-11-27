@@ -1,7 +1,7 @@
 {
   "status": "NOT_APPROVED",
   "reopened": true,
-  "vertices": 7852,
+  "vertices": 7756,
   "packedImageSha256": {
     "asphalt_02_normal.jpg": "42a1c381b53204e83a982db2864479a30bc127bbdeebb1006f8ee51bff099df3",
     "concrete_moss_normal.jpg": "ead99715fadfd3b1b037b6219a9ed97342701732bffee5b05084da4c99b7467b",
@@ -20,10 +20,10 @@
     "rusty_iron_diffuse.jpg": "04efe66cc0cc235b4b9954351a3d53020510fa347db135b2826851ae8b7919bb",
     "chipped_concrete_roughness.jpg": "e3f3f06e067452216c37b2ed168368acccde273537db337a4308fb8efabec5fc",
     "asphalt_02_diffuse.jpg": "1aa5ce99f58a625c71d48cfc3e68b65ca85ccb00f39e045c0a928608a0ea25ed",
+    "rusty_iron_normal.jpg": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1",
     "f3_bare_worn_steel_8b421a61ea81_normal.jpg": "53fa7b9d482cd6f3ffe51c18fc4e741669c020273485efc1ed0761d20d0605f5",
     "concrete_moss_diffuse.jpg": "7a3f88bcdf20c2b6b1851549594611c0c24677d4f42c669a21d4367b8f5aeacc",
-    "f3_deep_crack_9d554bcb78e9_normal.jpg": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2",
-    "rusty_iron_normal.jpg": "7e578fca0f1c281c9d19ee9d77ce85698e7443d04912645728f108aa0aff31c1"
+    "f3_deep_crack_9d554bcb78e9_normal.jpg": "6dade8b5834fb4c6c5c7a3f73c554d4a4eda6bc7ab37151b550d1dca99dc0cf2"
   },
-  "blendSha256": "7a488ca36b6298b92a668f2966175369c1f559fdff752fc205bff136aea00952"
+  "blendSha256": "abd34673b7360c6b2a9e6f54fae7388b34e604695f17868ea3cee4f5f8b24c5b"
 }

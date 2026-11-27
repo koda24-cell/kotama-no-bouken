@@ -832,20 +832,20 @@
       "existingUpgrade": false,
       "revisionOf": null,
       "file": "v3_greenhouse_bay/runtime/f3_v3_greenhouse_bay.glb",
-      "sha256": "05e547690df51180d5cc31c9a0601d16b5e14a18daebde16dd9c45dc78e9212a",
-      "bytes": 1885420,
-      "triangles": 15052,
-      "sourceCommit": "c99503f36c2d910aafd0f50d1d2a3afe68f209ab",
-      "workflowRun": "45955589363",
+      "sha256": "1b0ec9ea81a83defcc284191d77852cabaaaeaca3cb8141b335c36dfb84c53dd",
+      "bytes": 1850996,
+      "triangles": 14836,
+      "sourceCommit": "a86f7fcb8b69dd041dda9e7d4fb9c85a9caba5cf",
+      "workflowRun": "45957518181",
       "embeddedOriginal": "v3_greenhouse_bay/props/f3_v3_greenhouse_bay.glb",
-      "embeddedOriginalBytes": 9133788,
+      "embeddedOriginalBytes": 9099364,
       "sizeMeters": [
-        8.9556,
+        8.9564,
         6.1594,
-        8.22
+        8.45
       ],
       "portableAuthoring": "v3_greenhouse_bay/sources/f3_v3_greenhouse_bay_authoring.blend",
-      "portableSha256": "7a488ca36b6298b92a668f2966175369c1f559fdff752fc205bff136aea00952"
+      "portableSha256": "abd34673b7360c6b2a9e6f54fae7388b34e604695f17868ea3cee4f5f8b24c5b"
     },
     {
       "id": "v3_whiteflower_atlas",
@@ -1385,9 +1385,9 @@
     "individualParts": 26,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 58517200,
+    "runtimeGeometryBytes": 58482776,
     "sharedImageBytes": 55187226,
-    "embeddedOriginalBytes": 285307564
+    "embeddedOriginalBytes": 285273140
   },
   "v3Pending": [
     "v3_riveted_span",

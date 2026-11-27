@@ -3,13 +3,13 @@
   "models": [
     {
       "path": "/__w/kotama-no-bouken/kotama-no-bouken/assets/3d/dungeons/b3_industrial_candidates/v3_greenhouse_bay/props/f3_v3_greenhouse_bay.glb",
-      "file_bytes": 9133788,
+      "file_bytes": 9099364,
       "glb_meshes": 7,
       "total_mesh_primitives": 7,
       "scene_nodes": 8,
       "scene_mesh_nodes": 7,
       "scene_primitive_instances": 7,
-      "estimated_scene_triangles": 15052,
+      "estimated_scene_triangles": 14836,
       "materials": 7,
       "material_names": [
         "f3_bare_worn_steel",
@@ -22,12 +22,12 @@
       ],
       "mesh_names": [
         "Cube.019",
-        "Cube.100",
+        "Cube.094",
         "old woody roots levering the paving",
-        "Cube.101",
+        "Cube.095",
         "Cube",
-        "Cube.090",
-        "Cube.081"
+        "Cube.087",
+        "roof shard"
       ],
       "skins": 0,
       "animations": 0,
