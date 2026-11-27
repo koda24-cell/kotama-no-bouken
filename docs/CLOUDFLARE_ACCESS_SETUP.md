@@ -1,4 +1,4 @@
-# Cloudflare 非公開開発版（パスワード認証）設定・検証・自動配信 引継ぎ（2026-11-27, Claude）
+# Cloudflare 非公開開発版（パスワード認証）設定・検証・手動配信 引継ぎ（2026-11-27, Claude）
 
 PR #856（`feature/gpt-cloudflare-private-preview-preflight-20261127`）の続き。GPT・Claude・Codex 共通の引継ぎ資料。
 
@@ -23,7 +23,7 @@ Cloudflare Zero Trust（Access）は Free プランでもカード登録が必�
 | 2回目の更新後の認証維持 | 合格 run 46006356747（26005b45 → 4203a551、全ホスト検証 PASS） |
 | ロールバック後の認証維持 | 合格 run 46007504826（固定URL 4203a551 → 26005b45、全ホスト検証 PASS） |
 | ユーザー実機確認 | iPhone 合格（2026-11-27 22:27 JST: ログイン画面、誤パスワード不可、正パスワードで revision 4 表示・Interaction OK・画像表示）。PC 合格（2026-11-27 22:35 JST ユーザー報告） |
-| ゲーム本体の配信 | **未実施（禁止中）** |
+| ゲーム本体の配信 | 初回配信 run 46009323457 成功。最新確認 run 46021906771 成功（実プレイの全機能確認とは別） |
 
 ## ユーザー作業（これだけ）
 
@@ -37,7 +37,7 @@ Cloudflare Zero Trust（Access）は Free プランでもカード登録が必�
 |---|---|---|
 | `cloudflare-protected-probe.yml` | feature ブランチで `tools/cloudflare-preview/update-check.json`（revision +1）か worker を変更して push | `update`: パスワード登録 → Worker 付きダミー配信 → 新デプロイ検証 → 旧・未保護デプロイ削除 → 全ホスト検証。`rollback`: 直前の保護済みデプロイへ戻し全ホスト検証 |
 | `cloudflare-access-gate.yml`（名称は互換のため維持、中身はパスワードゲート） | 自身/`pages_gate.py` の変更 push、他 workflow から呼出 | 全デプロイの全ホスト×全パスを Cookie なし・偽 Cookie で取得し、Worker の 401 ログイン画面のみ合格（TLSエラー・リダイレクト・404・5xx・200 は不合格）。未使用ランダムサブドメインは 401/404 で可。各ホストで誤パスワード=401、正パスワード=ログイン後にファイル取得可を確認 |
-| `cloudflare-dev-preview-deploy.yml` | development への push。**変数 `KOTAMA_GAME_PREVIEW_ENABLED=true` の時だけ** | 事前ゲート → 配信ファイル選別＋Worker 同梱 → 配信 → 事後ゲート → 失敗時は固定URLを戻し新デプロイ削除 → 成功時は保護済みデプロイを最新5件に整理 |
+| `cloudflare-dev-preview-deploy.yml` | 予約ブランチ `preview/refresh` への push のみ（通常は `refresh-stamp.txt` を変更。大規模差分で見落とさないよう paths フィルターなし）。**変数 `KOTAMA_GAME_PREVIEW_ENABLED=true` の時だけ** | 事前ゲート → 配信ファイル選別＋Worker 同梱 → 配信 → 事後ゲート → 失敗時は固定URLを戻し新デプロイ削除 → 成功時は保護済みデプロイを最新5件に整理 |
 
 ## 検証の進め方（順番厳守）
 
@@ -71,5 +71,11 @@ development `01ffc8604a47a68d0c6d1b59fc18b7146e65fea1` でのローカル実行�
 
 ## 未完了・未検証（完了と扱わない）
 
-- PR #856 の development マージ、`KOTAMA_GAME_PREVIEW_ENABLED=true` はユーザー設定済み（2026-11-27 22:35）。ゲーム初回配信と実プレイ — 未実施。
+- PR #856 は development にマージ済み。初回・最新配信の認証ゲートは成功。全階層・戦闘・保存等の実プレイ試験は別途必要。
 - Access 案の調査記録（無料プランの条件・2アプリ必要）は git 履歴 88031b5 を参照。
+
+## 2026-11-28 手動更新への切替・非公開化の前提
+
+- 通常の development マージでは配信しない。ユーザーが確認を希望したときだけ AGENTS.md の手順で `preview/refresh` の `refresh-stamp.txt` を更新する。既存の PR 選択、認証ゲート、ロールバック、固定 URL を維持する。
+- GitHub リポジトリの公開範囲と Cloudflare 認証は別。GitHub 本体の visibility 変更前に、公開版の移管、GitHub Pages・raw.githack 依存、公開進捗サイトの素材リンク、GitHub Actions の private 無料枠・課金停止設定を確認する。過去の公開 fork・キャッシュ・取得済み素材までは回収できない。追加課金・main 変更なし。
+- この変更は配信トリガーの設定変更。新しい手動更新の実 Actions 成功は run で確認するまで未検証とする。
