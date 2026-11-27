@@ -166,6 +166,66 @@
       ],
       "design": "docs/3d/F3_CITY_V2_REVIEW_20261126.md",
       "preview": "preview/f3-industrial-playtest.html"
+    },
+    {
+      "id": "f3-city-v3",
+      "version": "V3-vertical",
+      "floor": 3,
+      "title": "第3層 遺跡都市 V3",
+      "author": "Codex",
+      "updated_at": "2026-11-27T10:43:22.958621+00:00",
+      "source_sha": "deb952c28c6d0e597066d05f6ccd7b2e1ddca6cd",
+      "game_source_sha": "a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01",
+      "pr": 851,
+      "public_review": true,
+      "approval": "NOT_APPROVED",
+      "kind": "scene",
+      "images": [
+        {
+          "path": "docs/3d/f3-city-v3-review-20261127/7f-light-court.png",
+          "label": "7F 斜光の中庭と厚い廃ビル"
+        },
+        {
+          "path": "docs/3d/f3-city-v3-review-20261127/8f-greenhouse.png",
+          "label": "8F 廃植物館と根の花壇"
+        },
+        {
+          "path": "docs/3d/f3-city-v3-review-20261127/8f-connected-stairs.png",
+          "label": "8F 上層へ接続する鉄階段"
+        },
+        {
+          "path": "docs/3d/f3-city-v3-review-20261127/9f-white-monument.png",
+          "label": "9F 大型像と段状の白花の庭"
+        },
+        {
+          "path": "docs/3d/f3-city-v3-review-20261127/9f-submerged-city.png",
+          "label": "9F 低い手摺越しの水没区画"
+        },
+        {
+          "path": "docs/3d/f3-city-v3-review-20261127/mobile-white-court.png",
+          "label": "9F 横画面のタッチ表示"
+        }
+      ],
+      "assets": [
+        {
+          "label": "閉じた廃ビル・地盤・街路・植生",
+          "path": "field/field-3d-b3-city-v3.js"
+        },
+        {
+          "label": "35×31の立体迷宮と高さ場",
+          "path": "field/f3-city-v3-layout.js"
+        },
+        {
+          "label": "反射水面・波紋・斜光",
+          "path": "field/f3-city-v3-vfx.js"
+        },
+        {
+          "label": "個別22点・5方向・出典・正常run",
+          "path": "tools/f3-industrial/parts.json"
+        }
+      ],
+      "design": "docs/3d/F3_CITY_V3_DESIGN_20261127.md",
+      "preview": "preview/f3-city-v3-playtest.html"
     }
   ]
 }

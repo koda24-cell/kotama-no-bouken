@@ -1,0 +1,51 @@
+{
+  "game_source_sha": "a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01",
+  "renderer": "Chromium/SwiftShader; no hardware FPS claim",
+  "pc_full_before_settlement": {
+    "source_sha": "2c0c63df115864f2e6c7ffb5ac8996cbed270008",
+    "report": "pc-before-footing-settlement.json",
+    "only_failure": "six conservatory rubble body-lane intersections",
+    "other_checks": "all controls, actual camera elevation, chest, gathering, puzzle, save roundtrip, stairs and stable lifecycle passed"
+  },
+  "pc_affected_scene_retest": {
+    "source_sha": "a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01",
+    "report": "pc-settled-conservatory.json",
+    "failures": []
+  },
+  "mobile_final": {
+    "source_sha": "a7b71faa433bf4f0c5bdbe4dddcd588fb2739d01",
+    "report": "mobile-results.json",
+    "floors": [
+      7,
+      8,
+      9
+    ],
+    "failures": [],
+    "touch": true,
+    "portrait_gate": true
+  },
+  "gltf_validation": {
+    "models": 22,
+    "errors": 0,
+    "warnings": 0
+  },
+  "public_delivery": {
+    "cdn_all_floors": {
+      "report": "cdn-delivery.json",
+      "passed": true,
+      "success_response_mocks": false
+    },
+    "actual_public_url": {
+      "report": "public-url.json",
+      "passed": true,
+      "url": "https://raw.githack.com/koda24-cell/kotama-no-bouken/3e4dc60dd611ba09f29b6d928f4f59a9174b4dfa/preview/f3-city-v3-playtest.html",
+      "success_response_mocks": false
+    }
+  },
+  "normal_mode": {
+    "report": "default-mode.json",
+    "mode": "b3-ruined-city",
+    "candidate_requests": 0,
+    "page_errors": 0
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "reports": [
+    {
+      "floor": 7,
+      "walkable": 552,
+      "closedReach": 551,
+      "loops": 69,
+      "interactions": 6,
+      "maxHeightMeters": 3.2
+    },
+    {
+      "floor": 8,
+      "walkable": 578,
+      "closedReach": 578,
+      "loops": 102,
+      "interactions": 1,
+      "maxHeightMeters": 6.4
+    },
+    {
+      "floor": 9,
+      "walkable": 561,
+      "closedReach": 561,
+      "loops": 93,
+      "interactions": 1,
+      "maxHeightMeters": 3.2
+    }
+  ]
+}
