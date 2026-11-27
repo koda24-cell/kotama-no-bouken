@@ -117,7 +117,7 @@ export function createTheme(api){
    // Connected corners + an internal core are opaque at every yaw. Recesses
    // stop on the core, while their side depth remains a full metre.
    const height=16+3.2*Math.floor(hash(Math.floor(x/3),Math.floor(z/3),31)*3);
-   box('solid city block core',concrete,px,(height+h0)/2,pz,2.1,height-h0,2.1);
+   box('solid city block core',concrete,px,(height+h0)/2,pz,1.3,height-h0,1.3);
    for(const sx of[-1.5,1.5])for(const sz of[-1.5,1.5])box('full depth bonded corner pier',concrete,px+sx,(height+h0)/2,pz+sz,1.02,height-h0,1.02);
    box('continuous building footing',concrete,px,h0+.13,pz,4.04,.28,4.04);
    for(const d of adjacent){const[dx,dz]=DIR_VEC[d],ry=FACE_YAW[d]+Math.PI;
@@ -128,7 +128,7 @@ export function createTheme(api){
     for(let level=0;level<levels;level++){
      const holder=new THREE.Group(),o=source.clone(true);o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
      o.traverse(m=>{if(m.isMesh&&m.material?.name==='v2_exposed_infill_brick')m.visible=false;});
-     const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,depth=dx?s.x:s.z,depthScale=single?Math.min(scale,1.95/depth):1.0/depth,sx=dx?depthScale:scale,sz=dz?depthScale:scale,offset=2-depth*depthScale/2;
+     const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,depth=dx?s.x:s.z,depthScale=single?Math.min(scale,1.95/depth):1.0/depth,sx=dx?depthScale:scale,sz=dz?depthScale:scale,offset=single?1.70:2-depth*depthScale/2;
      holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*offset-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*offset-center.z*sz);root.add(holder);
     }
     for(let k=0;k<height/3.2;k++)box('bonded horizontal floor slab',concrete,px+dx*1.55,h0+k*3.2+.10,pz+dz*1.55,dx?.9:4.04,.20,dz?.9:4.04);
