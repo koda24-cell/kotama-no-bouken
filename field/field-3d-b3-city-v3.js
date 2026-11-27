@@ -283,5 +283,5 @@ export function createTheme(api){
   root?.removeFromParent();batches.forEach(o=>o.dispose());batches=[];geometry.forEach(o=>o.dispose());geometry=[];materials.forEach(o=>o.dispose());materials=[];grassHeld.forEach(o=>o.release());grassHeld=[];
   bundle?.dispose();bundle=null;finish?.dispose();finish=null;heldPointLights.forEach(l=>{if(!l.parent)g.scene.add(l);});g.camera.far=oldFar;g.camera.updateProjectionMatrix();modelCache.clear();windShaders=[];hardBounds=[];hardCandidates=[];root=null;stats={};plan=null;
  }
- return {area:3,env,build,tick,dispose,heightAt:(x,z)=>plan?.heightWorld(x,z)||0,async sync(){return false;},info:()=>({...stats,animationTime:wind.value,industrialAssets:bundle?.info(),v3Complete:bundle?.catalog.v3Complete,pendingAssets:bundle?.catalog.v3Pending,elevationRange:plan?[0,plan.f===1?6.4:3.2]:null})};
+ return {area:3,env,build,tick,dispose,heightAt:(x,z)=>plan?.heightWorld(x,z)||0,pitchAt:(x,z,dir)=>{const[dx,dz]=DIR_VEC[dir];return plan?.floor.map[z+dz]?.[x+dx]==='~'?-.38:-.035;},async sync(){return false;},info:()=>({...stats,animationTime:wind.value,industrialAssets:bundle?.info(),v3Complete:bundle?.catalog.v3Complete,pendingAssets:bundle?.catalog.v3Pending,elevationRange:plan?[0,plan.f===1?6.4:3.2]:null})};
 }

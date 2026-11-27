@@ -607,11 +607,11 @@ function syncFoes(t) {
 function camTarget() {
   const tx = Math.floor(fieldState.x / FIELD_TILE), ty = Math.floor(fieldState.y / FIELD_TILE), [dx, dy] = DIR_VEC[fieldState.dir] || DIR_VEC.down;
   const groundY=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.heightAt?.(tx*CELL,ty*CELL)||0):0,back=window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?.25:BACK;
-  return { pos: new THREE.Vector3(tx * CELL - dx * back, EYE+groundY, ty * CELL - dy * back), yaw: DIR_YAW[fieldState.dir] ?? Math.PI };
+  return { pos: new THREE.Vector3(tx * CELL - dx * back, EYE+groundY, ty * CELL - dy * back), yaw: DIR_YAW[fieldState.dir] ?? Math.PI, pitch:window.KotamaCityV3Playtest===true&&Number(fieldState.area)===3?(g.theme?.pitchAt?.(tx,ty,fieldState.dir)??-.035):-.035 };
 }
 function updateCamera(dt) {
   const t = camTarget(), c = g.cam;
-  if (!c.ready) { c.pos.copy(t.pos); c.yaw = t.yaw; c.ready = true; }
+  if (!c.ready) { c.pos.copy(t.pos); c.yaw = t.yaw;c.pitch=t.pitch; c.ready = true; }
   const kp = 1 - Math.exp(-dt * 13), ky = 1 - Math.exp(-dt * 15);
   c.pos.lerp(t.pos, kp);
   let dyaw = t.yaw - c.yaw; while (dyaw > Math.PI) dyaw -= Math.PI * 2; while (dyaw < -Math.PI) dyaw += Math.PI * 2;
@@ -623,7 +623,7 @@ function updateCamera(dt) {
   const eye=resolveFirstLayerCameraV6(c.pos.x+bx,c.pos.z+bz,g.cameraPortals||[]);
   g.lastCameraClearanceAdjustments=eye.adjusted;
   g.camera.position.set(eye.x, c.pos.y + bob, eye.z);
-  g.camera.rotation.set(-0.035, c.yaw, 0, 'YXZ');
+  c.pitch+=(t.pitch-c.pitch)*kp;g.camera.rotation.set(c.pitch, c.yaw, 0, 'YXZ');
 }
 
 /* ------------------------------------------------------------
