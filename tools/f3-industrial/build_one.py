@@ -157,7 +157,20 @@ def main():
  authoring=OUT/'sources'/(model+'_authoring.blend')
  authoring_vertices=sum(len(o.data.vertices)for o in bpy.context.scene.objects if o.type=='MESH')
  bpy.ops.wm.save_as_mainfile(filepath=str(authoring),compress=True)
+ if asset.startswith('v3_'):
+  # Keep the hierarchical authoring scene above. For export only, bake parents
+  # before common.finish reparents material groups to its new asset root.
+  bpy.context.view_layer.update()
+  world={o:o.matrix_world.copy() for o in bpy.context.scene.objects if o.type=='MESH'}
+  for o,matrix in world.items():o.parent=None;o.matrix_world=matrix
+  # The glTF selection filter can include a selected object from another scene.
+  # In particular, retain the flower bake originals without exporting its last
+  # selected pollen sphere alongside the eight-triangle cards.
+  for scene in bpy.data.scenes:
+   for layer in scene.view_layers:
+    for o in layer.objects:o.select_set(False,view_layer=layer)
  metrics=c.finish(model,description=next(p['name']for p in parts if p['id']==asset),render=asset not in ['v2_fern_colony','v2_wildflower_colony','v2_factory_bay'])
+ if asset=='v3_whiteflower_atlas':assert metrics['tris']==8,'Only the four source-baked cards belong in the runtime GLB'
  if asset in ['v2_fern_colony','v2_wildflower_colony','v3_whiteflower_atlas']:
   from fern_colony_v2 import finalize
   metrics=finalize(c,model,metrics)
