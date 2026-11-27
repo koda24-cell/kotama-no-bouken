@@ -118,3 +118,11 @@ Build a separately versioned original rear cranium first, then own temporal/ear/
 - GPT・Claude・Codexはコタマ用の立ち絵、敵・ボス、背景、タイトル、UI、アニメーション・GIFを制作したら、公開可否を確認して元画像を適切な assets 配下へ保存し、制作担当自身が `koda24-cell/kotama-3d-progress` の `illustrations.json` に登録する。確認サイト `illustrations.html` で閲覧できるよう掲載PR・表示検証まで行う。自動収集を待たない。
 - 固定コミット、安定ID、名称、分類、版、使用参照の有無、承認状況、担当、原本パスを記録する。同一絵のPNG/WebPはまとめ、別ポーズ・別版は別IDで保存し旧版を残す。確認できない権利や承認は未確認とする。非公開資料・Notion/Pinterestの参考画像は公開しない。ゲーム内への採用承認と閲覧用台帳登録は別。
 - サイト側のAGENTS.mdの登録仕様を確認し、元PRと掲載PRを報告する。制作・保存・掲載の未実施は明記する。
+
+## 「確認サイトを更新して」＝非公開開発版の更新手順（2026-11-27、GPT・Claude・Codex 共通）
+- 確認サイト（非公開開発版）: https://kotama-private-probe-20261127.pages.dev （パスワード認証。中身の一覧は `/preview-info.html`）。raw.githack に代わる動作確認URL。パスワードは GitHub Secret `PREVIEW_PASSWORD` にのみ存在し、チャット・ログ・リポジトリに書かない。
+- 中身は **development ＋ 選択した open PR**。選択は `tools/cloudflare-preview/preview-sources.json`（既定 `mode: label` → ラベル `preview` 付き PR。`all` で development 宛の全 open 非draft PR、`none` で development のみ）。競合する PR は自動で除外され、run の Summary と `/preview-info.html` に表示される。development・main には何もマージしない。
+- ユーザーに「確認サイトを更新して」と言われたら: (1) 指示された PR に `preview` ラベルを付ける（指示がなければ現状維持）、(2) `git push --force origin <development の最新SHA>:refs/heads/preview/refresh`、(3) workflow `Cloudflare private dev preview` の run を確認（gate-before / deploy / gate-after がすべて success）、(4) 含めた PR・除外した PR・run URL を報告。run 未確認で「更新した」と言わない。
+- development への push でも自動更新される（docs 等のみの変更を除く）。停止はリポジトリ変数 `KOTAMA_GAME_PREVIEW_ENABLED` を `true` 以外に。
+- 配信ファイルは `tools/cloudflare-preview/build_runtime_bundle.py` が runtime の参照から選別する。新しい素材が表示されない場合は run の Artifact `bundle-report` の `missing_references` を確認し、選別ツールを直す（日本語・空白入りファイル名も対象）。
+- 詳細: `docs/CLOUDFLARE_ACCESS_SETUP.md`。

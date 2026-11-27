@@ -1,0 +1,6 @@
+{
+  "_note": "What the private preview (fixed URL) shows: development + open PRs selected here. mode: label | all | none. PRs that conflict are skipped and listed in the run summary and /preview-info.html.",
+  "mode": "label",
+  "label": "preview",
+  "exclude": []
+}
