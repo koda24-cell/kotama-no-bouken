@@ -59,9 +59,12 @@ export function createTheme(api){
  }
  function batch(){
   root.updateMatrixWorld(true);const meshes=[];root.traverse(o=>{if(o.isMesh){let dynamic=false;for(let p=o;p;p=p.parent)if(p.userData.cityDynamic)dynamic=true;if(!dynamic)meshes.push(o);}});const groups=new Map();
-  for(const o of meshes){const p=new THREE.Vector3().setFromMatrixPosition(o.matrixWorld),k=[Math.floor(p.x/16),Math.floor(p.z/16),o.geometry.uuid,o.material.uuid].join(':');if(!groups.has(k))groups.set(k,[]);groups.get(k).push(o);}
+  for(const o of meshes){let role='',bucket=null;for(let p=o;p&&p!==root;p=p.parent){if(p.userData.cityLodRole)role=p.userData.cityLodRole;if(p.userData.cityBucket)bucket=p.userData.cityBucket;}
+   const p=new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);o.userData.cityLodRole=role;o.userData.cityBucket=bucket;
+   const k=[...(bucket||[Math.floor(p.x/16),Math.floor(p.z/16)]),role,o.geometry.uuid,o.material.uuid].join(':');if(!groups.has(k))groups.set(k,[]);groups.get(k).push(o);
+  }
   for(const group of groups.values()){
-   const first=group[0],mesh=new THREE.InstancedMesh(first.geometry,first.material,group.length);mesh.name='city-v3:spatial-batch';
+   const first=group[0],mesh=new THREE.InstancedMesh(first.geometry,first.material,group.length);mesh.name='city-v3:spatial-batch';mesh.userData.cityLodRole=first.userData.cityLodRole;mesh.userData.cityBucket=first.userData.cityBucket;
    group.forEach((o,i)=>mesh.setMatrixAt(i,o.matrixWorld));mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingBox();mesh.computeBoundingSphere();
    mesh.castShadow=g.high&&!first.material.transparent&&(first.material.alphaTest===0||first.material.name.includes('cedar'));mesh.receiveShadow=true;batches.push(mesh);root.add(mesh);
   }
@@ -127,10 +130,15 @@ export function createTheme(api){
     for(let level=0;level<levels;level++){
      const variation=hash(x*7+level,z,893),variant=level===0&&variation>.74&&bundle.models.has('v3_shutter_shop')?'v3_shutter_shop':variation<.13&&bundle.models.has('v3_spalled_wall')?'v3_spalled_wall':'v3_deep_window_bay',source=bundle.models.get(variant);
      stats.facades=stats.facades||{};stats.facades[variant]=(stats.facades[variant]||0)+1;
-     const holder=new THREE.Group(),o=source.clone(true);o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
+     const holder=new THREE.Group(),o=source.clone(true);holder.userData.cityLodRole='near';holder.userData.cityBucket=[Math.floor(px/8),Math.floor(pz/8)];o.rotation.y=single?FACE_YAW[d]:ry;holder.add(o);
      o.traverse(m=>{if(m.isMesh&&m.material?.name==='v2_exposed_infill_brick')m.visible=false;});
      const b=new THREE.Box3().setFromObject(holder),s=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),along=dx?s.z:s.x,scale=3.98/along,depth=dx?s.x:s.z,depthScale=single?Math.min(scale,1.95/depth):1.0/depth,sx=dx?depthScale:scale,sz=dz?depthScale:scale,offset=single?1.70:2-depth*depthScale/2;
      holder.scale.set(sx,single?3.2/s.y:Math.min(1.05,scale),sz);holder.position.set(px+dx*offset-center.x*sx,h0+level*3.2-b.min.y*holder.scale.y,pz+dz*offset-center.z*sz);root.add(holder);
+     // Closed, recessed far proxy. Original meshes, UVs and near detail are intact.
+     const proxy=(u,yy,w,hh,normal,depth,m)=>{const o=box('city-v3 distant recessed bay',m,px+dx*normal+dz*u,h0+level*3.2+yy,pz+dz*normal-dx*u,dx?depth:w,hh,dz?depth:w);o.userData.cityLodRole='far';o.userData.cityBucket=holder.userData.cityBucket;};
+     for(const u of[-1.85,0,1.85])proxy(u,1.6,.30,3.2,1.68,.6,concrete);
+     for(const yy of[.23,2.98])proxy(0,yy,4.0,.46,1.68,.6,concrete);
+     for(const u of[-.925,.925])proxy(u,1.65,1.56,2.16,.95,.12,P.dark);
     }
     for(let k=0;k<height/3.2;k++)box('bonded horizontal floor slab',concrete,px+dx*1.55,h0+k*3.2+.10,pz+dz*1.55,dx?.9:4.04,.20,dz?.9:4.04);
    }
@@ -241,6 +249,11 @@ export function createTheme(api){
  }
  function tick(dt,now){
   const t=(typeof now==='number'?now:performance.now())*.001;wind.value=t;water?.tick(t);shafts?.tick(t);if(sky)sky.position.copy(g.camera.position);
+  let nearBatches=0,farBatches=0;
+  for(const mesh of batches){const role=mesh.userData.cityLodRole,b=mesh.userData.cityBucket;if(!role||!b)continue;
+   const dx=Math.max(b[0]*8-g.camera.position.x,0,g.camera.position.x-(b[0]+1)*8),dz=Math.max(b[1]*8-g.camera.position.z,0,g.camera.position.z-(b[1]+1)*8),near=Math.hypot(dx,dz)<(g.high?28:14);
+   mesh.visible=role==='near'?near:!near;if(mesh.visible){if(role==='near')nearBatches++;else farBatches++;}
+  }stats.rigidLOD={nearBatches,farBatches,originalNearPreserved:true,proxy:'closed recessed concrete and dark window frames',distance:g.high?28:14};
   if(sun){const x=Math.floor(g.camera.position.x/4)*4,z=Math.floor(g.camera.position.z/4)*4,k=x+','+z;if(k!==lastShadow){lastShadow=k;sun.position.set(x-20,36,z-18);sun.target.position.set(x,0,z);sun.target.updateMatrixWorld();sun.shadow.needsUpdate=true;}}
  }
  function dispose(){
