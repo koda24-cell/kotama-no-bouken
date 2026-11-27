@@ -22,12 +22,14 @@ def build(asset,e):
   for k in range(count):
    s=.07+rng.random()*.20;o=box('fallen irregular aggregate',(x+(rng.random()-.5)*1.5,y+(rng.random()-.5)*.6,z+s*.3),(s,s*(.6+rng.random()),s*.6),fracture,.01);o.rotation_euler=(rng.random()*.6,rng.random()*.6,rng.random()*6.28)
  def infill(x,y,z,w=1.2,h=1.3):
-  brick=bpy.data.materials.get('v3 exposed old infill')
+  brick=bpy.data.materials.get('f3_aged_brick_infill')
   if not brick:
-   brick=bpy.data.materials.new('v3 exposed old infill');brick.diffuse_color=(.25,.16,.115,1);brick.use_nodes=True;brick.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.94
+   brick=e['pbr']('aged_brick_infill','chipped_concrete');p=brick.node_tree.nodes.get('Principled BSDF');socket=p.inputs['Base Color'];previous=socket.links[0].from_socket
+   grade=brick.node_tree.nodes.new('ShaderNodeMixRGB');grade.blend_type='MULTIPLY';grade.inputs[0].default_value=1;grade.inputs[2].default_value=(.48,.25,.14,1);brick.node_tree.links.new(previous,grade.inputs[1]);brick.node_tree.links.new(grade.outputs[0],socket)
   for row in range(int(h/.16)):
    for col in range(int(w/.32)):
-    if rng.random()<.18 or row>h/.16-2 and rng.random()<.4:continue
+    xx=-w/2+col*.32+(row%2)*.14;zz=row*.16
+    if (w>2 and ((xx-.55)/.60)**2+((zz-h*.55)/.65)**2<1) or row>h/.16-2 and rng.random()<.35:continue
     o=box('eroded masonry inside spall',(x-w/2+col*.32+(row%2)*.14,y,z+row*.16),(.30,.13,.14),brick,.012);o.rotation_euler.z=(rng.random()-.5)*.035
   chips(x,y-.35,.04)
  if asset=='v3_deep_window_bay':
@@ -56,7 +58,15 @@ def build(asset,e):
   for x in[-1.85,1.85]:broken_slab('spalled load bearing pier',(x,0,1.6),(.3,.8,3.2))
   for z in[.18,3.02]:broken_slab('cracked retaining beam',(0,0,z),(4,.8,.36))
   infill(0,-.09,.25,3.5,2.6)
-  for x in[-1.4,-.55,.35,1.2]:rod('exposed corroded reinforcement',(x,-.26,1.0),(x+.09,-.3,2.7),.018,rust,10)
+  # Irregular retained plaster bounds the exposed masonry, rather than
+  # presenting isolated clean brick rectangles on an unrelated facade.
+  for outline in[[(-1.7,.34),(-.95,.34),(-1.10,.85),(-.85,1.2),(-1.25,1.55),(-1.14,2.65),(-1.7,2.75)],[(-.65,2.8),(1.7,2.8),(1.7,1.95),(1.1,2.12),(.9,2.45),(.35,2.3) ],[(.5,.35),(1.7,.35),(1.7,.95),(1.25,.78),(.98,1.02),(.6,.66)]]:
+   n=len(outline);vertices=[(x,y,z)for y in[-.23,-.14]for x,z in outline];faces=[tuple(range(n-1,-1,-1)),tuple(range(n,n*2))]+[(i,(i+1)%n,(i+1)%n+n,i+n)for i in range(n)]
+   mesh=bpy.data.meshes.new('fractured surviving plaster');mesh.from_pydata(vertices,[],faces);mesh.update();o=bpy.data.objects.new('attached irregular plaster remnants',mesh);bpy.context.collection.objects.link(o);mesh.materials.append(concrete);mesh.materials.append(fracture)
+   for face in list(mesh.polygons)[2:]:face.material_index=1
+  for x in[-1.4,-.55,.35,1.2]:
+   rod('exposed corroded reinforcement',(x,-.26,1.0),(x+.04,-.28,1.9),.018,rust,10)
+   rod('broken bent reinforcement tip',(x+.04,-.28,1.9),(x+.13,-.34,2.7),.018,rust,10)
   chips(0,-.7,.02,25)
  elif asset in['v3_collapsed_storey','v3_leaning_facade']:
   tilt=.20 if asset=='v3_leaning_facade' else .55
