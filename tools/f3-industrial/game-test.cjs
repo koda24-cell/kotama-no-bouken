@@ -83,6 +83,7 @@ for(const view of JSON.parse(process.env.F3_EXTRA_VIEWS||'[]').filter(v=>v.floor
  await page.evaluate(({tx,ty,dir})=>{const a=fieldArea();if(!fieldCanEnter(a,tx,ty,'player'))throw Error('Review viewpoint is not walkable');const p=fieldTileCenter(tx,ty);fieldState.x=p.x;fieldState.y=p.y;fieldState.dir=dir;fieldState.view=null;__test3d.g.cam.ready=false;fieldUpdateVision(true);__test3d.g.lastRender=0;KotamaField3D.frame();},view);
  await page.waitForTimeout(700);await page.screenshot({timeout:120000,path:`${out}/${mobile?'mobile':'pc'}-${view.name}.png`,fullPage:mobile});console.log('extra view '+view.name);
 }
+if(cityV3){const clock=await page.evaluate(()=>({time:KotamaField3D.themeInfo().animationTime,tile:fieldPlayerTile()}));await page.waitForFunction(t=>KotamaField3D.themeInfo().animationTime>t+.5,clock.time,{timeout:30000});info.stationaryAnimation={before:clock,after:await page.evaluate(()=>({time:KotamaField3D.themeInfo().animationTime,tile:fieldPlayerTile()}))};}
 await page.evaluate(()=>window.__perf=[]);await page.waitForTimeout(4000);
 info.performance=await page.evaluate(()=>{const p=window.__perf,t=p.map(x=>x.time);return {frames:p.length,fps:p.length>1?(p.length-1)*1000/(t.at(-1)-t[0]):0,calls:Math.max(...p.map(x=>x.calls)),triangles:Math.max(...p.map(x=>x.triangles)),memory:{...__test3d.g.renderer.info.memory}};});
 fs.writeFileSync(`${out}/${mobile?'mobile':'pc'}-floor-checkpoints.json`,JSON.stringify({logs,errors,complete:false},null,2));
