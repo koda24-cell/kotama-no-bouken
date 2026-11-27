@@ -223,8 +223,8 @@ export function createTheme(api){
   oldShadow={enabled:g.renderer.shadowMap.enabled,type:g.renderer.shadowMap.type};g.renderer.shadowMap.enabled=g.high;g.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   if(g.high){sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-22,right:22,top:22,bottom:-22,near:.5,far:90});sun.shadow.bias=-.0003;sun.shadow.normalBias=.06;sun.shadow.autoUpdate=false;sun.shadow.needsUpdate=true;}
  }
- function tick(time){
-  const t=(typeof time==='number'?time:performance.now())*.001;wind.value=t;water?.tick(t);shafts?.tick(t);if(sky)sky.position.copy(g.camera.position);
+ function tick(dt,now){
+  const t=(typeof now==='number'?now:performance.now())*.001;wind.value=t;water?.tick(t);shafts?.tick(t);if(sky)sky.position.copy(g.camera.position);
   if(sun){const x=Math.floor(g.camera.position.x/4)*4,z=Math.floor(g.camera.position.z/4)*4,k=x+','+z;if(k!==lastShadow){lastShadow=k;sun.position.set(x-20,36,z-18);sun.target.position.set(x,0,z);sun.target.updateMatrixWorld();sun.shadow.needsUpdate=true;}}
  }
  function dispose(){
