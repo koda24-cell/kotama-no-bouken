@@ -98,7 +98,7 @@ if (process.argv.includes('--visual-only')) {
 // Real input: move, turn without spending a turn, and bump into a solid boundary.
 const check=async()=>page.evaluate(()=>({tile:fieldPlayerTile(),dir:fieldState.dir,turn:fieldState.turn,foes:fieldState.foes.map(f=>({x:f.tx,y:f.ty})),near:fieldState.nearKey}));
 await page.evaluate(()=>{const c=window.__fieldTestControlOrigin?fieldTileCenter(...window.__fieldTestControlOrigin):fieldTileCenter(8,19);fieldState.x=c.x;fieldState.y=c.y;fieldState.dir='right';fieldState.view=null;fieldState.encounterSteps=0;fieldState.nextEncounter=9999;fieldUpdateVision(true);});
-const key=async k=>{await page.keyboard.down(k);await page.waitForTimeout(100);await page.keyboard.up(k);await page.waitForTimeout(700);};
+const key=async k=>{const dir={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[k];if(mobile&&dir)await page.locator('#field-pad [data-dir="'+dir+'"]').tap();else{await page.keyboard.down(k);await page.waitForTimeout(100);await page.keyboard.up(k);}await page.waitForTimeout(700);};
 const controlOrigin=await page.evaluate(()=>{if(!window.KotamaCityV3Playtest)return window.__fieldTestControlOrigin=[8,19];const a=fieldArea();for(let z=2;z<a.h-1;z++)for(let x=1;x<a.w-3;x++)if([0,1,2].every(dx=>fieldTileAt(a,x+dx,z)==='.')&&fieldTileAt(a,x+1,z-1)==='#'&&fieldState.foes.every(f=>Math.abs(f.tx-x)+Math.abs(f.ty-z)>5))return window.__fieldTestControlOrigin=[x,z];throw Error('No clear input-test route');});
 await page.evaluate(([x,z])=>{const p=fieldTileCenter(x,z);fieldState.x=p.x;fieldState.y=p.y;fieldState.dir='right';fieldState.view=null;fieldState.stepUntil=0;fieldUpdateVision(true);},controlOrigin);
 const controls={before:await check()};await key('ArrowUp');
