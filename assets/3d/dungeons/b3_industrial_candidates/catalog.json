@@ -974,6 +974,27 @@
       "portableSha256": "98e1c2ea1ac8af0e090be89759decf5533f604c38375994ae5dca6a5685c5788"
     },
     {
+      "id": "v3_sunken_colonnade",
+      "name": "水没した都市の柱廊",
+      "existingUpgrade": false,
+      "revisionOf": null,
+      "file": "v3_sunken_colonnade/runtime/f3_v3_sunken_colonnade.glb",
+      "sha256": "0368fd147b3ad74a0760095ccfb959cdce76f1e02841e613994033bd8a2f4837",
+      "bytes": 456924,
+      "triangles": 3564,
+      "sourceCommit": "e661d90aee5e1375181307619afc213f0f44a00e",
+      "workflowRun": "45960157429",
+      "embeddedOriginal": "v3_sunken_colonnade/props/f3_v3_sunken_colonnade.glb",
+      "embeddedOriginalBytes": 5198676,
+      "sizeMeters": [
+        5.5,
+        3.49,
+        2.7133
+      ],
+      "portableAuthoring": "v3_sunken_colonnade/sources/f3_v3_sunken_colonnade_authoring.blend",
+      "portableSha256": "1aa4b755423bd660a2a0d5d07c695aefdbb265d10edfe998f79a4feacb69efd9"
+    },
+    {
       "id": "v3_whiteflower_atlas",
       "name": "白い花の透過アトラス群落",
       "existingUpgrade": false,
@@ -1513,15 +1534,14 @@
     }
   ],
   "totals": {
-    "individualParts": 32,
+    "individualParts": 33,
     "existingUpgrades": 14,
     "reusedApproved": 2,
-    "runtimeGeometryBytes": 65473076,
+    "runtimeGeometryBytes": 65930000,
     "sharedImageBytes": 56464668,
-    "embeddedOriginalBytes": 321630932
+    "embeddedOriginalBytes": 326829608
   },
   "v3Pending": [
-    "v3_sunken_colonnade",
     "v3_sunken_shopfront",
     "v3_derelict_car",
     "v3_electric_cabinet",
